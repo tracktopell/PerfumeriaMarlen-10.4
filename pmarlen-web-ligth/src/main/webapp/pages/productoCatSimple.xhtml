@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+        Producto
+    </ui:define>
+
+    <ui:define name="body-title">
+        Producto
+    </ui:define>
+
+    <ui:define name="body">
+		<h:form id="form1">
+
+			<h:panelGrid columns="1" cellpadding="5" id="panel" width="100%">
+
+				<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
+
+				<p:dataGrid   var="producto" value="#{productoMB.entityList}"
+							 columns="4" rows="24" paginator="true" 
+							 id="productoTable"
+							 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{productoCatSimple.sizeList}]"
+							 rowsPerPageTemplate="12,24,40" style="background: none repeat scroll 0 0 #ffffff;">
+
+					
+						<h:panelGrid columns="1" style="width:100%">
+							<!--
+							<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+											cache="true"
+											alt="Producto #{producto.codigoBarras}" 
+											title="Producto #{producto.codigoBarras}"
+											style="cursor:pointer"/>
+							
+							<p:overlayPanel  id="imgPanel" for="img" showEffect="blind" hideEffect="explode" showEvent="click" hideEvent="mousedown"
+											dismissable="false" showCloseIcon="true">
+								
+								<p:graphicImage value="/multimedio/productos/med/#{producto.codigoBarras}"/>
+								
+							</p:overlayPanel>
+							-->
+							<p:lightBox id="lighbox2" >
+								<h:outputLink value="#">
+									<p:graphicImage id="img2" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+													cache="true"
+													alt="Producto #{producto.codigoBarras}" 
+													title="Producto #{producto.codigoBarras}"
+													style="cursor:pointer"/>
+							
+								</h:outputLink>
+
+								<f:facet name="inline">
+										<p:panelGrid columns="2">
+											<p:graphicImage value="/multimedio/productos/med/#{producto.codigoBarras}"/>
+											<p:panelGrid columns="1">
+												<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
+												
+												<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
+												
+												<h:outputText value="PRESENTACION:#{producto.presentacion}" />
+												
+												<h:outputText value="CONTENIDO:#{producto.contenido} #{producto.unidadMedida}" />
+							
+												<h:outputText value="MARCA: #{producto.marca}" />
+
+												<h:outputText value="LINEA: #{producto.linea}" />
+
+											</p:panelGrid>
+										</p:panelGrid>
+									
+								</f:facet>
+							</p:lightBox>
+
+							<h:outputText value="#{producto.nombre}/#{producto.presentacion}" />
+							
+							<h:outputText value="" />
+							
+						</h:panelGrid>
+				
+
+					<f:facet name="footer">
+						xx-xx
+					</f:facet>
+				</p:dataGrid>
+
+			</h:panelGrid>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

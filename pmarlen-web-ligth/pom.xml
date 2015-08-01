@@ -1,0 +1,375 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.pmarlen.erp</groupId>
+		<artifactId>pmarlen-parent</artifactId>
+		<version>10.4.1</version>
+	</parent>
+	<artifactId>pmarlen-web-ligth</artifactId>
+	<version>10.4.1</version>
+	<name>Perfumeria Marlen 10.4.x - Web - ligth (Primefaces 5)</name>
+	<packaging>war</packaging>
+
+	<repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>Prime Repo</name>
+			<url>http://repository.primefaces.org</url>
+		</repository>
+	</repositories>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		
+		<environment.stage>deve</environment.stage>
+		<environment.webdescriptor.enviId>Development</environment.webdescriptor.enviId>
+		<environment.jdbc.url>jdbc:mysql://localhost/PMDB103_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
+		<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB103_DEVE?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
+		<environment.jdbc.db>PMDB103_DEVE</environment.jdbc.db>
+		<environment.jdbc.jndi>jdbc/PMDB103_DEVE_DS</environment.jdbc.jndi>
+		<environment.jdbc.user>PMDB103_DEVE_USR</environment.jdbc.user>
+		<environment.jdbc.password>PMDB103_DEVE_PWD</environment.jdbc.password>
+		<environment.jdbc.root_user>root</environment.jdbc.root_user>
+		<environment.jdbc.root_password>root</environment.jdbc.root_password>
+		
+	</properties>
+
+	<dependencies>
+		<!-- ================= MAIN DEPENDENCIES ============ --> 
+		<dependency>
+			<groupId>com.pmarlen.erp</groupId>
+			<artifactId>pmarlen-commons</artifactId>
+			<version>10.4.1</version>
+		</dependency>
+
+		<!-- ================= LIBRARY DEPENDENCIES ============ --> 
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+	
+		<!-- PrimeFaces -->
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>5.1</version>
+		</dependency>
+		<dependency>  
+			<groupId>org.primefaces.themes</groupId>  
+			<artifactId>all-themes</artifactId>  
+			<version>1.0.10</version>  
+		</dependency> 		
+		<!-- JSF -->
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>2.1.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-impl</artifactId>
+			<version>2.1.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<scope>provided</scope>
+			<version>1.2</version>
+		</dependency>
+		
+		<!-- JDBC MySQL -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>			
+			<scope>compile</scope>
+			<version>7.0.26</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<scope>compile</scope>
+			<version>7.0.26</version>
+		</dependency>		
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.10</version>			
+			<scope>compile</scope>
+		</dependency>	
+		<!-- EL
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>el-impl</artifactId>
+			<version>2.2</version>
+		</dependency>
+		-->
+		<!-- REST -->
+        <dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>1.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>1.8</version>
+		</dependency>
+
+		<!-- Java Mail API -->
+		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		
+		<dependency>		
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<finalName>${artifactId}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<!--
+			<resource>
+				<directory>src/main/web/WEB-INF/templates</directory>
+				<filtering>true</filtering>				
+			</resource>
+			-->
+		</resources>		
+		
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>${project.jdk.version}</source>
+					<target>${project.jdk.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<url>http://localhost:8070/manager/text</url>
+					<server>tomcat7_test</server>
+					<path>/pmarlen-web-ligth</path>
+				</configuration>
+			</plugin>
+
+			<plugin> 
+				<artifactId>maven-antrun-plugin</artifactId> 
+				<executions> 
+					<execution> 
+						<id>filter-web-config-files</id> 
+						<phase>process-resources</phase> 
+						<configuration> 
+							<tasks> 
+								<echo message="======================= filter-web-config-files, in process-resources phase : version_timeStamp=${version_timeStamp}, environment.stage=${environment.stage} ==============>>>"/>								
+								<copy file="target/classes/META-INF/context_environment.xml" tofile="src/main/webapp/META-INF/context.xml" />
+								<copy file="target/classes/WEB-INF/web_environment.xml" tofile="src/main/webapp/WEB-INF/web.xml" />
+							</tasks> 
+						</configuration> 
+						<goals> 
+							<goal>run</goal> 
+						</goals> 
+					</execution> 
+				</executions> 
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<directory>${basedir}/src/main/webapp</directory>
+							<includes>
+								<include>WEB-INF/templates/*</include>								
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>local_dev</id>
+			<build>
+				<finalName>${artifactId}</finalName>
+				<plugins>
+
+					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<url>http://localhost:8070/manager/text</url>
+							<server>tomcat7_dev</server>
+							<path>/pmarlen-web-ligth</path>
+						</configuration>
+					</plugin>
+					
+				</plugins>
+			</build>
+			
+			<properties>
+				<environment.stage>deve</environment.stage>
+				<environment.webdescriptor.enviId>Development</environment.webdescriptor.enviId>
+				<environment.jdbc.url>jdbc:mysql://localhost/PMDB103_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
+				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB103_DEVE?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
+				<environment.jdbc.db>PMDB103_DEVE</environment.jdbc.db>
+				<environment.jdbc.jndi>jdbc/PMDB103_DEVE_DS</environment.jdbc.jndi>
+				<environment.jdbc.user>PMDB103_DEVE_USR</environment.jdbc.user>
+				<environment.jdbc.password>PMDB103_DEVE_PWD</environment.jdbc.password>
+				<environment.jdbc.root_user>root</environment.jdbc.root_user>
+				<environment.jdbc.root_password>root</environment.jdbc.root_password>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>local_stage</id>
+			<build>
+				<finalName>${artifactId}</finalName>
+				<plugins>
+
+					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<url>http://localhost:8080/manager/text</url>
+							<server>tomcat7_stage</server>
+							<path>/pmarlen-web-ligth</path>
+						</configuration>
+					</plugin>
+					
+				</plugins>
+			</build>
+			
+			<properties>
+				<environment.stage>prod</environment.stage>
+				<environment.webdescriptor.enviId>Development</environment.webdescriptor.enviId>
+				<environment.jdbc.url>jdbc:mysql://localhost/PMDB103_PROD?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
+				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB103_PROD?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
+				<environment.jdbc.db>PMDB103_PROD</environment.jdbc.db>
+				<environment.jdbc.jndi>jdbc/PMDB103_PROD_DS</environment.jdbc.jndi>
+				<environment.jdbc.user>PMDB103_PROD_USR</environment.jdbc.user>
+				<environment.jdbc.password>PMDB103_PROD_PWD</environment.jdbc.password>
+				<environment.jdbc.root_user>root</environment.jdbc.root_user>
+				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
+			</properties>
+		</profile>
+				
+		<profile>
+			<id>cloud_prod</id>
+			<build>
+				<finalName>${artifactId}</finalName>
+				<plugins>
+
+					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<url>http://localhost:8080/manager/text</url>
+							<server>tomcat7</server>
+							<path>/pmarlen-web-ligth</path>
+						</configuration>
+					</plugin>
+					
+				</plugins>
+			</build>
+			
+			<properties>
+				<environment.stage>prod</environment.stage>
+				<environment.webdescriptor.enviId>Production</environment.webdescriptor.enviId>
+				<environment.jdbc.url>jdbc:mysql://localhost/PMDB103_PROD?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
+				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB103_PROD?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
+				<environment.jdbc.db>PMDB103_PROD</environment.jdbc.db>
+				<environment.jdbc.jndi>jdbc/PMDB103_PROD_DS</environment.jdbc.jndi>
+				<environment.jdbc.user>PMDB103_PROD_USR</environment.jdbc.user>
+				<environment.jdbc.password>PMDB103_PROD_PWD</environment.jdbc.password>
+				<environment.jdbc.root_user>root</environment.jdbc.root_user>
+				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
+			</properties>
+		</profile>
+		
+		<profile>
+			<id>cloud_test</id>
+			<build>
+				<finalName>${artifactId}</finalName>
+				<plugins>
+
+					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<url>http://localhost:8070/manager/text</url>
+							<server>tomcat7_test</server>
+							<path>/pmarlen-web-ligth</path>
+						</configuration>
+					</plugin>
+					
+				</plugins>
+			</build>
+			
+			<properties>
+				<environment.stage>test</environment.stage>
+				<environment.webdescriptor.enviId>Development</environment.webdescriptor.enviId>
+				<environment.jdbc.url>jdbc:mysql://localhost/PMDB103_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
+				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB103_DEVE?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
+				<environment.jdbc.db>PMDB103_DEVE</environment.jdbc.db>
+				<environment.jdbc.jndi>jdbc/PMDB103_DEVE_DS</environment.jdbc.jndi>
+				<environment.jdbc.user>PMDB103_DEVE_USR</environment.jdbc.user>
+				<environment.jdbc.password>PMDB103_DEVE_PWD</environment.jdbc.password>
+				<environment.jdbc.root_user>root</environment.jdbc.root_user>
+				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
+			</properties>
+		</profile>
+
+	</profiles>	
+
+</project>

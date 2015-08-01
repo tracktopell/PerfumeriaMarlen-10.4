@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee   http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <display-name>pmarlen-web-ligth</display-name>
+    <session-config>
+        <session-timeout>10</session-timeout>
+    </session-config>
+    <!-- Change to "Production" when you are ready to deploy -->
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>${environment.webdescriptor.enviId}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <!--
+		[	afterdark, afternoon, afterwork, aristo, black-tie, blitzer, bluesky, bootstrap, casablanca, cupertino, 
+			cruze, dark-hive, delta, dot-luv, eggplant, excite-bike, flick, glass-x, home, hot-sneaks, humanity, 
+			le-frog, metroui, midnight, mint-choc, overcast, pepper-grinder, redmond, rocket, sam, smoothness, 
+			south-street, start, sunny, swanky-purse, trontastic, ui-darkness, ui-lightness, vader]
+			
+			afternoon,cupertino,cruze,redmond,start
+		-->
+        <param-value>afternoon</param-value>
+    </context-param>
+	<context-param>
+		<param-name>primefaces.FONT_AWESOME</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>facelets.SKIP_COMMENTS</param-name>
+		<param-value>true</param-value>
+	</context-param>
+    <!-- Welcome page -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    <servlet>
+        <servlet-name>GetTime</servlet-name>
+        <servlet-class>com.pmarlen.web.servlet.GetTime</servlet-class>
+    </servlet>
+    <!-- JSF mapping -->
+    <servlet>
+        <servlet-name>facesServlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>com.pmarlen.web.servlet.Logout</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GenerarPDFPedidoVenta</servlet-name>
+        <servlet-class>com.pmarlen.web.servlet.GenerarPDFPedidoVenta</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GenerarPDFTicketPedidoVenta</servlet-name>
+		<servlet-class>com.pmarlen.web.servlet.GenerarPDFTicketPedidoVenta</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetXMLCFDI</servlet-name>
+        <servlet-class>com.pmarlen.web.servlet.GetXMLCFDI</servlet-class>
+    </servlet>
+	<servlet>
+        <servlet-name>GenerarPDFFactura</servlet-name>
+        <servlet-class>com.pmarlen.web.servlet.GenerarPDFFactura</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ImageServlet</servlet-name>
+        <servlet-class>com.pmarlen.web.servlet.ImageServlet</servlet-class>
+    </servlet>
+	<servlet>
+        <servlet-name>RespaldarDB</servlet-name>
+        <servlet-class>com.pmarlen.web.servlet.RespaldarDB</servlet-class>
+    </servlet>
+	<!-- Map these files with JSF -->
+
+	
+	<servlet>
+        <servlet-name>jersey-serlvet</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.pmarlen.rest</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>SyncServlet</servlet-name>
+        <servlet-class>com.pmarlen.rest.servlet.SyncServlet</servlet-class>
+    </servlet>
+	<servlet>
+        <servlet-name>PMCajaUpdateServlet</servlet-name>
+        <servlet-class>com.pmarlen.web.servlet.PMCajaUpdateServlet</servlet-class>
+        <init-param>
+            <param-name>pmcajadist</param-name>
+            <param-value>/usr/local/pmcajadist</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>GetTime</servlet-name>
+        <url-pattern>/gt</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>facesServlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>facesServlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>facesServlet</servlet-name>
+        <url-pattern>*.faces</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>facesServlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GenerarPDFPedidoVenta</servlet-name>
+        <url-pattern>/docs/notas/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GenerarPDFTicketPedidoVenta</servlet-name>
+        <url-pattern>/docs/tickets/*</url-pattern>
+    </servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>GetXMLCFDI</servlet-name>
+        <url-pattern>/docs/cfdi/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GenerarPDFFactura</servlet-name>
+        <url-pattern>/docs/facturas/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ImageServlet</servlet-name>
+        <url-pattern>/multimedio/productos/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>jersey-serlvet</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>SyncServlet</servlet-name>
+        <url-pattern>/sync/data</url-pattern>
+    </servlet-mapping>    
+	<servlet-mapping>
+        <servlet-name>PMCajaUpdateServlet</servlet-name>
+        <url-pattern>/pmcajaupdate/*</url-pattern>
+    </servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>RespaldarDB</servlet-name>
+        <url-pattern>/respaldardb/PMDB103_mysqldump.sql.tgz</url-pattern>
+    </servlet-mapping>    
+
+    <!--
+    <filter>
+        <filter-name>JSFTraceFilter</filter-name>
+        <filter-class>com.pmarlen.web.servlet.JSFTraceFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>JSFTraceFilter</filter-name>
+        <url-pattern>*.jsf</url-pattern>
+    </filter-mapping>
+	-->
+    <listener>
+        <description>ServletContextListener, HttpSessionListener</description>
+        <listener-class>com.pmarlen.web.servlet.ContextAndSessionListener</listener-class>
+    </listener>
+    <context-param>
+        <param-name>javax.faces.CONFIG_FILES</param-name>
+        <param-value>/WEB-INF/faces-config.xml</param-value>
+    </context-param>
+    <security-constraint>
+        <display-name>Security Data Constraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>Web Security Data</web-resource-name>
+            <description>This data are all the pages in the application</description>
+            <url-pattern>/pages/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>Dynamic Documents</web-resource-name>
+            <description>Dynamic Documents</description>
+            <url-pattern>/docs/*</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>Multimedio</web-resource-name>
+            <description>Multimedio</description>
+            <url-pattern>/multimedio/*</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <description>Usuario de Sistema a todas las paginas entra</description>
+            <role-name>pmarlenuser</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <!--
+			<form-login-page>/loginRealm.jsp</form-login-page>
+			<form-error-page>/loginRealm.jsp?error=ok</form-error-page>			
+			-->
+            <form-login-page>/loginFresh.jsp</form-login-page>
+            <form-error-page>/loginFresh.jsp?error=ok</form-error-page>
+        </form-login-config>
+    </login-config>
+    <security-role>
+        <description>Usuario de Sistema</description>
+        <role-name>pmarlenuser</role-name>
+    </security-role>
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/sessionExpiredError.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>408</error-code>
+        <location>/errorTimeout.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    <resource-ref>
+        <description>DB Connection</description>
+        <res-ref-name>${environment.jdbc.jndi}</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+</web-app>

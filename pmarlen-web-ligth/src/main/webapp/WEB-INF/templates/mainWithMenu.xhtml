@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title><ui:insert name="title"/></title>
+            </f:facet>
+			<link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/default.css" />   
+			<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/images/turboload/Logo_T3.gif" />
+			<link rel="icon"          type="image/x-icon" href="#{request.contextPath}/images/Logo_icono_3.ico"/>
+			<ui:insert name="extraCss">
+				<!-- HERE INSSERT EXTRA CSS -->
+			</ui:insert>
+        </h:head>
+
+
+        <h:body>
+
+			<h:form id="formHeader">
+
+				<h:panelGrid columns="2" style="width: 100%" columnClasses="columnWidth40 centerAlign, columnWidth60 leftAlign">
+					<h:panelGrid columns="3" columnClasses="columnWidth10 centerAlign, columnWidth80 leftAlign,columnWidth10 centerAlign ">
+						
+						<h:outputLink id="link1" value="#{request.contextPath}/pages/home.jsf">
+							<p:graphicImage value="/images/PM_NewLogo_40x40.png" alt="(LOGO)" title="PERFUMERIA-MARLEN > INICIO"/>
+						</h:outputLink>
+						
+						<h:panelGrid columns="1">
+							<h:panelGroup>
+								<h:outputText value="PERFUMERIA MARLEN S.A. DE C.V."	style="font: normal 80% 'News Cycle', arial, sans-serif;"/>								
+							</h:panelGroup>
+							<h:panelGroup>
+								<h:outputText value="DISTRIBUCIONES"		style="font: normal 50%  'News Cycle', arial, sans-serif;"/>
+							</h:panelGroup>
+							
+						</h:panelGrid>
+						
+						<h:panelGroup>
+							<p:ajaxStatus>
+								<f:facet name="default">
+									<p:graphicImage value="/images/20_loading_stoped_icon.gif" alt=" " title=""/>
+								</f:facet>
+								<f:facet name="start">
+									<p:graphicImage value="/images/20_loading_icon.gif" alt="@" title="Cargando..."/>
+								</f:facet>
+								<f:facet name="complete">
+									<p:graphicImage value="/images/20_loading_stoped_icon.gif" alt=" " title=""/>
+								</f:facet>
+							</p:ajaxStatus>
+						</h:panelGroup>
+						
+					</h:panelGrid>
+				
+					
+					<p:menubar>
+						<p:submenu label="OPERACI&Oacute;N" icon="ui-icon-gear" rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}">
+							
+							<p:submenu label="VENTAS" icon="ui-icon-contact">
+								<p:menuitem value="NUEVO"       action="${navigationMB.pedidoVenta}"           icon="ui-icon-cart"/>
+								<p:menuitem value="EN PROCESO"  action="${navigationMB.pedidosVenta}"          icon="ui-icon-calculator"/>								
+								<p:menuitem value="HISTORICO"   action="${navigationMB.historicoPedidosVenta}" icon="ui-icon-clock"/>
+							</p:submenu>
+							
+							<p:submenu label="COMPRAS" icon="ui-icon-arrowstop-1-s">
+								<p:menuitem value="NUEVA" url="/pages/nuevaCompra.jsf" icon="ui-icon-cart"/>
+								<p:menuitem value="EN PROCESO" url="/pages/compras.jsf" icon="ui-icon-calculator"/>
+								<p:menuitem value="HISTORICO" url="/pages/historicoCompras.jsf" icon="ui-icon-clock"/>
+							</p:submenu>
+							
+							<p:submenu label="DEVOL.(VTA)" icon="ui-icon-arrowreturn-1-w">
+								<p:menuitem value="NUEVA" url="/pages/nuevaDevolucion.jsf" icon="ui-icon-cart"/>
+								<p:menuitem value="EN PROCESO" url="/pages/devoluciones.jsf" icon="ui-icon-calculator"/>
+								<p:menuitem value="HISTORICO" url="/pages/historicoDevoluciones.jsf" icon="ui-icon-clock"/>
+							</p:submenu>
+							
+							<p:submenu label="MERMAS" icon="ui-icon-trash" rendered="false">
+								<p:menuitem value="NUEVA" url="/pages/pendiente.jsf" icon="ui-icon-cart"/>
+								<p:menuitem value="EN PROCESO" url="/pages/pendiente.jsf" icon="ui-icon-calculator"/>
+								<p:menuitem value="HISTORICO" url="/pages/pendiente.jsf" icon="ui-icon-clock"/>
+							</p:submenu>
+							
+							<p:submenu label="MOVS. ALMACENES" icon="ui-icon-transfer-e-w" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
+								<p:menuitem value="A SUCURSAL" url="/pages/pendiente.jsf" icon="ui-icon-shuffle"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}"/>
+								<p:menuitem value="SUB-ALMACEN" url="/pages/pendiente.jsf" icon="ui-icon-arrow-1-se" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}"/>								
+							</p:submenu>
+
+							<p:submenu label="INVENTARIOS" icon="ui-icon-clipboard">					
+								<p:menuitem value="PRINCIPAL" url="/pages/inventarioPrincipal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}"/>
+								<p:menuitem value="CONTEO." url="/pages/pendiente.jsf" icon="ui-icon-shuffle"/>
+								<p:menuitem value="SUCURSALES " url="/pages/pendiente.jsf" icon="ui-icon-newwin"/>								
+							</p:submenu>
+
+						</p:submenu>
+
+						<p:submenu label="ADMINISTRACI&Oacute;N" icon="ui-icon-suitcase"  rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}">
+							
+							<p:submenu label="CAT&Aacute;LOGOS" icon="ui-icon-newwin">
+								<p:menuitem value="PRODUCTOS" url="/pages/producto.jsf" icon="ui-icon-cart"/>						
+								
+								<p:menuitem value="CLIENTES"  url="/pages/cliente.jsf" icon="ui-icon-person"/>
+								
+							</p:submenu>
+							
+							<p:submenu label="REPORTES" icon="ui-icon-script">
+								<p:submenu label="VENTAS" icon="ui-icon-check" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
+									<p:menuitem value="X #PEDIDO" url="/pages/pendiente.jsf" icon="ui-icon-star"/>
+									<p:menuitem value="X PRODUCTO" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
+									<p:menuitem value="X LINEA-MARCA" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
+									<p:menuitem value="X PROVEEDOR" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
+								</p:submenu>								
+							</p:submenu>
+							
+							<p:submenu label="SISTEMA" icon="ui-icon-newwin" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
+								<p:menuitem value="USUARIOS" url="/pages/usuario.jsf" icon="ui-icon-person" />
+								<p:menuitem value="SUCURSALES" url="/pages/pendiente.jsf" icon="ui-icon-star" />
+							</p:submenu>
+							
+						</p:submenu>
+
+						<p:submenu label="CONTROL" icon="ui-icon-locked" rendered="#{sessionUserMB.usuarioAuthenticated.habilitado and sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
+							<p:menuitem value="SESIONES ACTIVAS" url="/pages/sesionesActivas.jsf" icon="ui-icon-clock" ></p:menuitem>
+							<p:menuitem value="CONFIGURACIONES" url="/pages/pendiente.jsf" icon="ui-icon-wrench"  ></p:menuitem>
+							<p:menuitem value="REINICIAR SERVIDOR" url="/pages/pendiente.jsf" icon="ui-icon-power" ></p:menuitem>
+							<p:menuitem value="SQL" url="/pages/pendiente.jsf" icon="ui-icon-disk" ></p:menuitem>
+							<p:menuitem value="RESPALDO" url="/pages/pendiente.jsf" icon="ui-icon-alert"  ></p:menuitem>
+						</p:submenu>
+
+						<f:facet name="options">
+							<p:menuButton value="#{sessionUserMB.usuarioAuthenticated.nombreCompleto}" >
+								<p:menuitem value="AYUDA" url="/pages/pendiente.jsf" icon="ui-icon-help"  rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}"/>
+								<p:menuitem value="INFORMACI&Oacute;N USUARIO" url="/pages/informacionUsuario.jsf" icon="ui-icon-contact"  rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}"/>
+								<p:menuitem value="WEB-MAIL" url="/pages/pendiente.jsf" icon="ui-icon-mail-closed"  rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}"/>
+								<p:menuitem value="SALIR" url="/logout" icon="ui-icon-extlink" />
+							</p:menuButton>
+						</f:facet>
+					</p:menubar>
+				</h:panelGrid>
+				
+			</h:form>
+			
+			<h:form>
+				<p:idleMonitor timeout="#{sessionUserMB.timeOutSession}">
+					<p:ajax event="idle"   listener="#{sessionUserMB.onIdle}"   oncomplete="window.location.replace('/pmarlen-web-ligth/logout');" />
+				</p:idleMonitor>
+			</h:form>
+			
+			<p:panel id="basic" styleClass="preferencesPanel">
+				<f:facet name="header">
+					<ui:insert name="body-title">BodyTitle</ui:insert>
+				</f:facet>
+
+				<h:panelGrid columns="1" style="margin: auto;background-color: transparent; width: 100%; height: inherit; ">
+
+					<h:panelGroup style="display:block; text-align:center; background-color: transparent; ">
+						
+						<ui:insert name="body">Body</ui:insert>
+
+					</h:panelGroup>
+
+				</h:panelGrid>
+			</p:panel>
+			<br/>
+			<br/>
+			
+			<h:panelGroup class="footer-bar-#{systemInfoMB.environment}">
+				<h:form>
+					<h:panelGrid columns="2" columnClasses="columnWidth95 centerAlign, columnWidth5 rightAlign" width="100%">
+						<h:outputText	value="Perfumeria Marlen, Sistema de Adminisraci&oacute;n de Almacen Ver. #{systemInfoMB.systemVersion} / Construido: #{systemInfoMB.buildTimestamp}" 
+										title="( #{systemInfoMB.environment} ) Git RevID: #{systemInfoMB.gitSHA1}" />
+						<h:outputText id="txtFoter" class="txtFoter" value="#{systemInfoMB.sessionDate}" style="color: greenyellow;" title="HORA DEL SISTEMA, VERDE: ESTA EN LINEA, ROJO: DESCONECTADO" />
+					</h:panelGrid>
+					
+					<p:poll interval="120" listener="#{systemInfoMB.updateTime}" update="txtFoter" onerror="errorGetTime();" onsuccess="successGetTime()" rendered="false" />
+					<script>
+						var informeDescinetado = false;
+						function errorGetTime(){							
+							$(".txtFoter").css({ "color": 'red'});
+							if(!informeDescinetado) {
+								informeDescinetado = true;
+								alert("SE PERDI&Oacute; LA CONECCI&Oacute;N, SE REDIRECCIONARA A LA DIRECCI&Oacute;N DE INCIO");
+								window.location.href = "#{request.contextPath}/";
+							}
+						}
+						
+						function successGetTime(){							
+							informeDescinetado = false;
+							$(".txtFoter").css({ "color": 'greenyellow'});
+						}
+					</script>					
+					
+					
+				</h:form>
+				
+			</h:panelGroup>
+
+        </h:body>
+
+    </f:view>
+</html>
