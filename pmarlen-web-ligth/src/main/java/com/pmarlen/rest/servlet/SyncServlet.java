@@ -58,83 +58,98 @@ public class SyncServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		
+		logger.info("-->>processRequest: uri:"+request.getRequestURI()+", queryString:"+request.getQueryString());
+		
 		OutputStream os=response.getOutputStream();
 		String sucursalId=request.getParameter("sucursalId");
 		String cajaId=request.getParameter("caja");
 		String sessionId=request.getParameter("sessionId");
 		String format=request.getParameter("format");
+		String loggedIn=request.getParameter("loggedIn");
+		String userAgent = request.getHeader("User-Agent");
 		
 		if(sucursalId==null){
 			sucursalId = "1";
 		}
 		if(format==null){
-			format="zip";
+			format="iamalive";
 		}
-		logger.info("-->>sucursalId="+sucursalId+", caja="+cajaId+", format="+format+", sessionId="+sessionId);
+		if(loggedIn==null){
+			loggedIn="null";
+		}
+		
+		logger.info("-->>sucursalId="+sucursalId+", caja="+cajaId+", format="+format+", sessionId="+sessionId+",loggedIn="+loggedIn+", userAgent="+userAgent);
 		
 		CajaSessionInfo cajaSessionInfo = null;
 		if(sessionId != null) {
 			cajaSessionInfo = ContextAndSessionListener.cajaSessionInfoHT.get(sessionId);
 			logger.info("-->> cajaSessionInfo="+cajaSessionInfo);
 			if(cajaSessionInfo == null) {
-				logger.info("-->> add new cajaSessionInfo");
+				logger.info("-->> add new cajaSessionInfo, loggedIn="+loggedIn);
 				cajaSessionInfo = new CajaSessionInfo();
 				cajaSessionInfo.setSessionId(sessionId);
 				cajaSessionInfo.setCaja(cajaId);
-				cajaSessionInfo.setSucursal(sucursalId);
+				cajaSessionInfo.setSucursal(sucursalId);				
 				cajaSessionInfo.setRemoteAddr(request.getRemoteAddr());
-				
+				cajaSessionInfo.setUserAgent(userAgent);				
 				ContextAndSessionListener.cajaSessionInfoHT.put(sessionId,cajaSessionInfo);
+			}
+			if(loggedIn != null){
+				cajaSessionInfo.setLoggedIn(loggedIn);
 			}
 			cajaSessionInfo.setLastAccesedTime(System.currentTimeMillis());
 		}
 		try {
-			int sucId=new Integer(sucursalId);
-			SyncDTOPackage s= new SyncDTOPackage();
-			ArrayList<InventarioSucursalQuickView> xa = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
-			ArrayList<P> xb=new ArrayList<P>();
-			for(InventarioSucursalQuickView xia: xa){
-				xb.add(xia.generateFaccadeForREST());
-			}
-			s.setInventarioSucursalQVList(xb);
-			s.setUsuarioList(UsuarioDAO.getInstance().findAllForRest());
-			s.setClienteList(ClienteDAO.getInstance().findAll());
-			s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
-			s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
-			s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
-			
-			ObjectMapper mapper = new ObjectMapper();
-			ByteArrayOutputStream baos=new ByteArrayOutputStream();
-			byte[] data=null;
-			
-			if(format.equals("zip")){
-				ZipOutputStream zos = new ZipOutputStream(baos);
-				zos.putNextEntry(new ZipEntry("data.json"));				
-				byte[] jsonData=mapper.writeValueAsBytes(s);
-				zos.write(jsonData);
-				zos.closeEntry();
-				zos.finish();				
-				
-				baos.close();
-				data=baos.toByteArray();
-				
-				response.setContentType("application/zip");		
-				response.addHeader("Content-Disposition", "attachment; filename=data.zip");
-				response.setContentLength(data.length);
-				logger.info("-->>zip:ContentLength="+data.length+" bytes, jsonData.length="+jsonData.length);
-				os.write(data);
-				os.flush();
-			} else if(format.equals("json")){
-				
-				mapper.writeValue(baos,s);
-				data=baos.toByteArray();
-				
-				response.setContentType("application/json");		
-				response.addHeader("Content-Disposition", "attachment; filename=data.json");
-				response.setContentLength(data.length);
-				logger.info("-->>json:ContentLength="+data.length+" bytes");
-				os.write(data);
-				os.flush();				
+			if(format.equals("zip") || format.equals("json")){
+				int sucId=new Integer(sucursalId);
+				SyncDTOPackage s= new SyncDTOPackage();
+				ArrayList<InventarioSucursalQuickView> xa = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
+				ArrayList<P> xb=new ArrayList<P>();
+				for(InventarioSucursalQuickView xia: xa){
+					xb.add(xia.generateFaccadeForREST());
+				}
+				s.setInventarioSucursalQVList(xb);
+				s.setUsuarioList(UsuarioDAO.getInstance().findAllForRest());
+				s.setClienteList(ClienteDAO.getInstance().findAll());
+				s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
+				s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
+				s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
+
+				ObjectMapper mapper = new ObjectMapper();
+				ByteArrayOutputStream baos=new ByteArrayOutputStream();
+				byte[] data=null;
+
+				if(format.equals("zip")){
+					ZipOutputStream zos = new ZipOutputStream(baos);
+					zos.putNextEntry(new ZipEntry("data.json"));				
+					byte[] jsonData=mapper.writeValueAsBytes(s);
+					zos.write(jsonData);
+					zos.closeEntry();
+					zos.finish();				
+
+					baos.close();
+					data=baos.toByteArray();
+
+					response.setContentType("application/zip");		
+					response.addHeader("Content-Disposition", "attachment; filename=data.zip");
+					response.setContentLength(data.length);
+					logger.info("-->>zip:ContentLength="+data.length+" bytes, jsonData.length="+jsonData.length);
+					os.write(data);
+					os.flush();
+				} else if(format.equals("json")){
+
+					mapper.writeValue(baos,s);
+					data=baos.toByteArray();
+
+					response.setContentType("application/json");		
+					response.addHeader("Content-Disposition", "attachment; filename=data.json");
+					response.setContentLength(data.length);
+					logger.info("-->>json:ContentLength="+data.length+" bytes");
+					os.write(data);
+					os.flush();				
+				}
+			} else if(format.equals("iamalive")){
+				response.setStatus(HttpServletResponse.SC_OK);
 			}
 			logger.info("OK, finish !");
 		} catch (Exception ex) {

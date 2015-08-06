@@ -75,9 +75,9 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
             HashMap<String, String> staticVars = new HashMap();
             staticVars.put("${FECHA}", sdf_fecha.format(fecha));
             staticVars.put("${HORA}", sdf_hora.format(fecha));
-            staticVars.put("${CLIENTE}", applicationLogic.getCliente());
+            staticVars.put("${CLIENTE}", "?");
 
-			String nombreEmpresa = applicationLogic.getNombreNegocio();
+			String nombreEmpresa = "?";
 
             List<String> nombreEmpresaList = justifyText(nombreEmpresa, MAX_CHARS_PER_COLUMN - 2 );
 
@@ -86,7 +86,7 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
                 staticVars.put("?{NOMBRE_EMRPESA_1}", alignTextCenter(nombreEmpresaList.get(1),MAX_CHARS_PER_COLUMN - 2));
             }
             
-            String direccion = applicationLogic.getDireccion();
+            String direccion = "?";
 
             List<String> direccionList = justifyText(direccion, MAX_CHARS_PER_COLUMN - 2 );
 
@@ -100,7 +100,7 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
             if (direccionList.size() > 3) {
                 staticVars.put("?{DIRECCION_3}", alignTextCenter(direccionList.get(3),MAX_CHARS_PER_COLUMN - 2));
             }
-			staticVars.put("${TELEFONO_0}", alignTextCenter(applicationLogic.getTelefonos(),MAX_CHARS_PER_COLUMN - 2));
+			staticVars.put("${TELEFONO_0}", alignTextCenter("?",MAX_CHARS_PER_COLUMN - 2));
 
             boolean skipLine = false;
             boolean detailStart = false;

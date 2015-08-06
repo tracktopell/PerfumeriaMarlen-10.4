@@ -127,6 +127,7 @@ public class Main {
 				throw new IllegalAccessException("NO SE ACCESO ");
 			} else {
 				logger.info("->OK logedin, GO !");
+				
 				framePrincipalControl.enableAndDisableAdminControls();
 			}
 

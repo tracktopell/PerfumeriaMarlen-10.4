@@ -6,8 +6,12 @@
 
 package com.pmarlen.caja.view;
 
+import com.pmarlen.caja.model.Caja;
+import com.pmarlen.caja.model.Sucursal;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -21,6 +25,23 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
 	public FirstRunParamsConfigDialog() {
 		super("PM Caja >> Inicialización");
 		initComponents();
+		Object[] sucs=new Sucursal[]{
+			new Sucursal(2, "SAN MARTÍN"),
+			new Sucursal(3, "TECAMAC"),
+			new Sucursal(4, "OJO DE AGUA")
+		};
+		Object[] cajas=new Caja[]{
+			new Caja(1, "CAJA #1"),
+			new Caja(3, "CAJA #2"),
+			new Caja(4, "CAJA #3"),
+			new Caja(4, "CAJA #4"),
+			new Caja(4, "CAJA #5"),
+			new Caja(4, "CAJA #6"),
+			new Caja(4, "CAJA #7")
+		};
+		
+		sucursal.setModel(new DefaultComboBoxModel(sucs));
+		caja.setModel(new DefaultComboBoxModel(cajas));
 	}
 
 	/**
@@ -44,10 +65,10 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
         dropBoxDir = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        sucursal = new javax.swing.JTextField();
+        sucursal = new javax.swing.JComboBox();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        caja = new javax.swing.JTextField();
+        caja = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
         guardar = new javax.swing.JButton();
         cancelar = new javax.swing.JButton();
@@ -100,8 +121,6 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
         jLabel4.setText("SUCURSAL :");
         jLabel4.setPreferredSize(new java.awt.Dimension(200, 20));
         jPanel5.add(jLabel4);
-
-        sucursal.setColumns(2);
         jPanel5.add(sucursal);
 
         centerPanel.add(jPanel5);
@@ -112,8 +131,6 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
         jLabel5.setText("CAJA # :");
         jLabel5.setPreferredSize(new java.awt.Dimension(200, 20));
         jPanel6.add(jLabel5);
-
-        caja.setColumns(2);
         jPanel6.add(caja);
 
         centerPanel.add(jPanel6);
@@ -151,7 +168,7 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField caja;
+    private javax.swing.JComboBox caja;
     private javax.swing.JButton cancelar;
     private javax.swing.JPanel centerPanel;
     private javax.swing.JTextField dropBoxDir;
@@ -171,15 +188,8 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JTextField port;
     private javax.swing.JTextField server;
-    private javax.swing.JTextField sucursal;
+    private javax.swing.JComboBox sucursal;
     // End of variables declaration//GEN-END:variables
-
-	/**
-	 * @return the caja
-	 */
-	public javax.swing.JTextField getCaja() {
-		return caja;
-	}
 
 	/**
 	 * @return the cancelar
@@ -216,10 +226,12 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
 		return server;
 	}
 
-	/**
-	 * @return the sucursal
-	 */
-	public javax.swing.JTextField getSucursal() {
+	public JComboBox getSucursal() {
 		return sucursal;
 	}
+
+	public JComboBox getCaja() {
+		return caja;
+	}
+	
 }

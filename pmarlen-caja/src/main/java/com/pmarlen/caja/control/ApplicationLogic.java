@@ -50,56 +50,19 @@ public class ApplicationLogic {
 	private boolean adminLogedIn = false;
 	private String versionRead;
 	private static ApplicationLogic instance;
-	//private static PreferenciaDAO preferenciaDAO;
+	U logged;
+
 	private ApplicationLogic(){	
 	}
 
-	public boolean isAdminLogedIn() {
-		return adminLogedIn;
+	public void setLogged(U logged) {
+		this.logged = logged;
 	}
 
-	public void setAdminLogedIn(boolean a) {
-		adminLogedIn = a;
+	public U getLogged() {
+		return logged;
 	}
 	
-
-	public String getNombreNegocio() {
-		return null;
-	}
-
-	public void setNombreNegocio(String nombreNegocio) {
-		
-	}
-
-	public String getDireccion() {
-		return null;
-	}
-	
-	public void setDireccion(String direccion) {
-		
-	}
-
-	public String getTelefonos() {
-		return null;
-	}
-	public void setTelefonos(String telefonos) {
-		
-	}
-
-	public String getCliente() {
-		return null;
-	}
-	public void setCliente(String cliente) {
-		
-	}
-
-	public String getEmail() {
-		return null;
-	}
-	public void setEmail(String email) {
-		
-	}
-
 	public String getBTImpresora() {
 		return null;
 	}

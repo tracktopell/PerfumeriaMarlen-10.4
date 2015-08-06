@@ -147,7 +147,7 @@
 			
 			<h:form>
 				<p:idleMonitor timeout="#{sessionUserMB.timeOutSession}">
-					<p:ajax event="idle"   listener="#{sessionUserMB.onIdle}"   oncomplete="window.location.replace('/pmarlen-web-ligth/logout');" />
+					<p:ajax event="idle"   listener="#{sessionUserMB.onIdle}"   oncomplete="window.location.replace('#{request.contextPath}/logout');" />
 				</p:idleMonitor>
 			</h:form>
 			

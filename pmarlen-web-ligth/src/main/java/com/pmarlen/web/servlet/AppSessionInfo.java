@@ -14,10 +14,11 @@ import javax.servlet.http.HttpSession;
 public class AppSessionInfo {
 	protected long applicationContextCreationTime;
 	protected String remoteAddr;
-
+	protected String userAgent;
 	public AppSessionInfo(String remoteAddr) {
 		this.applicationContextCreationTime = System.currentTimeMillis();
 		this.remoteAddr		 = remoteAddr;
+		this.userAgent		 = "-";		
 	}
 	
 	public void setRemoteAddr(String remoteAddr) {
@@ -26,6 +27,14 @@ public class AppSessionInfo {
 
 	public String getRemoteAddr() {
 		return remoteAddr;
+	}
+	
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
 	}
 
 	public long getApplicationContextCreationTime() {

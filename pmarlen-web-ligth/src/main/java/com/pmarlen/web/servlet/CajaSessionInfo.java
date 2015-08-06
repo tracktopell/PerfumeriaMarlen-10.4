@@ -15,12 +15,15 @@ public class CajaSessionInfo extends AppSessionInfo{
 	private String sessionId;
 	private String sucursal;
 	private String caja;
+	private String loggedIn;
+	
 	private long lastAccesedTime;
 	
 	public CajaSessionInfo() {
 		super("-");
 		this.sucursal = "?";
 		this.caja = "?";
+		this.loggedIn = "?";
 	}
 
 	/**
@@ -86,6 +89,20 @@ public class CajaSessionInfo extends AppSessionInfo{
 
 	public boolean isTimeout() {
 		return (System.currentTimeMillis() - lastAccesedTime) >= TIMEOUT;
+	}
+
+	/**
+	 * @return the loggedIn
+	 */
+	public String getLoggedIn() {
+		return loggedIn;
+	}
+
+	/**
+	 * @param loggedIn the loggedIn to set
+	 */
+	public void setLoggedIn(String loggedIn) {
+		this.loggedIn = loggedIn.equalsIgnoreCase("null")?"?":loggedIn;
 	}
 
 }

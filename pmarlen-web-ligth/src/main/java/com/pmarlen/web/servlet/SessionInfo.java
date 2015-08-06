@@ -16,14 +16,13 @@ public class SessionInfo extends AppSessionInfo{
 	private HttpSession session;
 	private String userName;
 	private String lastVisitedPage;
-	private String userAgent;
+
 
 	public SessionInfo(HttpSession session, String userName) {
 		super("-");
 		this.session = session;
 		this.userName = userName;
 		this.lastVisitedPage = "home";
-		this.userAgent		 = "-";
 	}
 
 	/**
@@ -77,13 +76,5 @@ public class SessionInfo extends AppSessionInfo{
 
 	public String getLastVisitedPage() {
 		return lastVisitedPage;
-	}
-
-	public String getUserAgent() {
-		return userAgent;
-	}
-
-	public void setUserAgent(String userAgent) {
-		this.userAgent = userAgent;
 	}
 }

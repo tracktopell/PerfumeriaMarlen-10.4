@@ -7,6 +7,8 @@
 package com.pmarlen.caja.control;
 
 import com.pmarlen.caja.dao.MemoryDAO;
+import com.pmarlen.caja.model.Caja;
+import com.pmarlen.caja.model.Sucursal;
 import com.pmarlen.caja.view.FirstRunParamsConfigDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,8 +43,8 @@ public class FirstRunParamsConfigDialogControl implements ActionListener{
 		this.dlg.getServer().setText(MemoryDAO.getProperties().getProperty("host").trim());
 		this.dlg.getPort().setText(MemoryDAO.getProperties().getProperty("port").trim());
 		this.dlg.getDropBoxDir().setText(MemoryDAO.getProperties().getProperty("dropboxdir"));
-		this.dlg.getSucursal().setText(MemoryDAO.getProperties().getProperty("sucursal"));
-		this.dlg.getCaja().setText(MemoryDAO.getProperties().getProperty("caja"));
+		this.dlg.getSucursal().setSelectedItem(new Sucursal(Integer.parseInt(MemoryDAO.getProperties().getProperty("sucursal"))));
+		this.dlg.getCaja().setSelectedItem    (new Caja    (Integer.parseInt(MemoryDAO.getProperties().getProperty("caja"))));
 		this.dlg.setVisible(true);
 	}
 
@@ -68,8 +70,8 @@ public class FirstRunParamsConfigDialogControl implements ActionListener{
 		MemoryDAO.getProperties().setProperty("host",this.dlg.getServer().getText().trim());
 		MemoryDAO.getProperties().setProperty("port",this.dlg.getPort().getText().trim());
 		MemoryDAO.getProperties().setProperty("dropboxdir",this.dlg.getDropBoxDir().getText().trim());
-		MemoryDAO.getProperties().setProperty("sucursal",this.dlg.getSucursal().getText().trim());
-		MemoryDAO.getProperties().setProperty("caja",this.dlg.getCaja().getText().trim());
+		MemoryDAO.getProperties().setProperty("sucursal",String.valueOf(((Sucursal)this.dlg.getSucursal().getSelectedItem()).getId()));
+		MemoryDAO.getProperties().setProperty("caja"    ,String.valueOf(((Caja)    this.dlg.getCaja()    .getSelectedItem()).getId()));
 		
 		MemoryDAO.persistPRoperties();
 		

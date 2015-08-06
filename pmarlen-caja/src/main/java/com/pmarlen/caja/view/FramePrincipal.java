@@ -4,7 +4,9 @@
  */
 package com.pmarlen.caja.view;
 
+import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.dao.MemoryDAO;
+import com.pmarlen.rest.dto.U;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JLabel;
@@ -354,21 +356,48 @@ public class FramePrincipal extends javax.swing.JFrame {
 	}
 	
 	public void updateStatus(){
-		int s=MemoryDAO.getSyncPollState();
-		if(s == 0) {
-			statusConeccion.setForeground(Color.BLUE);
-			statusConeccion.setText("PREPARADO");
-		} if(s >= 1 && s <= 3) {
+		int s= MemoryDAO.getSyncPollState();
+		if(s == MemoryDAO.SYNC_STATE_BEFORE_RUNNING) {
+			statusConeccion.setForeground(Color.GRAY);
+			statusConeccion.setText("..PREPARADO");
+		} else if(s == MemoryDAO.SYNC_STATE_BEFORE_CONNECTING) {
+			statusConeccion.setForeground(Color.YELLOW);
+			statusConeccion.setText("..CONECTANDO DATOS");
+		} else if(s == MemoryDAO.SYNC_STATE_BEFORE_CONNECTINGLIVE) {
+			statusConeccion.setForeground(Color.YELLOW);
+			statusConeccion.setText("..CONECTADO LIVE");
+		} else if(s == MemoryDAO.SYNC_STATE_BEFORE_DOWNLOADED ) {
+			statusConeccion.setForeground(Color.DARK_GRAY);
+			statusConeccion.setText("OK DESCARGADO");
+		} else if(s == MemoryDAO.SYNC_STATE_READ ) {
 			statusConeccion.setForeground(Color.GREEN);
-			statusConeccion.setText("CONECTADO");
-		} if(s == 4 ) {
-			statusConeccion.setForeground(Color.ORANGE);
-			statusConeccion.setText("ERROR EN CONECCIÓN");
-		} if(s == 5) {
+			statusConeccion.setText("DATOS CARGADOS");
+		} else if(s == MemoryDAO.SYNC_STATE_IMLIVE ) {
+			statusConeccion.setForeground(Color.BLUE);
+			statusConeccion.setText("I'M ALIVE");
+		} else if(s == MemoryDAO.SYNC_STATE_ERROR_URL ) {
+			statusConeccion.setForeground(Color.CYAN);
+			statusConeccion.setText("URL ERROR");
+		} else if(s == MemoryDAO.SYNC_STATE_ERROR) {
 			statusConeccion.setForeground(Color.RED);
-			statusConeccion.setText("DESCONECTADO");
+			statusConeccion.setText("ERROR");
+		} else {
+			statusConeccion.setForeground(Color.DARK_GRAY);
+			statusConeccion.setText("???");
 		}
+		
 		statusConeccion.setToolTipText("STATUS:"+s);				
+	}
+	
+	public void updateStatusWest(){
+		statusConeccion.setForeground(Color.DARK_GRAY);
+		U logged = ApplicationLogic.getInstance().getLogged();
+		if( logged != null) {
+			statusWest.setText(MemoryDAO.getCajaGlobalInfo()+"/"+logged.getE());
+		} else {
+			statusWest.setText(MemoryDAO.getCajaGlobalInfo());
+		}
+		
 	}
 	
 	public void setFont(Font font){
@@ -377,8 +406,8 @@ public class FramePrincipal extends javax.swing.JFrame {
 		panelVentas.setFont(font);
 		statusPanel.setFont(font);
 		
-		statusWest.setFont(font);
-		statusCenter.setFont(font);
-		statusConeccion.setFont(font);
+		//statusWest.setFont(font);
+		//statusCenter.setFont(font);
+		//statusConeccion.setFont(font);
 	}
 }

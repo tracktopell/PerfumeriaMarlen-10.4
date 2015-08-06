@@ -101,6 +101,7 @@ public class FramePrincipalControl implements ActionListener{
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {				
 				framePrincipal.setVisible(true);
+				framePrincipal.updateStatusWest();
 				panelVentaControl.estadoInicial();				
 			}
 		});
@@ -139,7 +140,6 @@ public class FramePrincipalControl implements ActionListener{
 	public FramePrincipal getFramePrincipal() {
 		return framePrincipal;
 	}
-	
 	
 
 	@Override
@@ -224,23 +224,15 @@ public class FramePrincipalControl implements ActionListener{
 	}	
 
 	public void enableAndDisableAdminControls() {
+		framePrincipal.updateStatusWest();
 		final PanelProductos pp = (PanelProductos)framePrincipal.getPanelProductos();
-		if(ApplicationLogic.getInstance().isAdminLogedIn()){
-			System.err.println("--->> ADMIN HABILITANDO");
-			framePrincipal.getConfigMenu().setEnabled(true);
-			
-			pp.getEditar().setEnabled(true);
-			pp.getEliminar().setEnabled(true);
-			pp.getNuevo().setEnabled(true);
-		}else{					
-			System.err.println("--->> NORMAL HABILITANDO");
-			framePrincipal.getConfigMenu().setEnabled(false);
-			
-			pp.getEditar().setEnabled(false);
-			pp.getEliminar().setEnabled(false);
-			pp.getNuevo().setEnabled(false);
-		}
-		
+		System.err.println("--->> ADMIN HABILITANDO");
+		framePrincipal.getConfigMenu().setEnabled(true);
+
+		pp.getEditar().setEnabled(true);
+		pp.getEliminar().setEnabled(true);
+		pp.getNuevo().setEnabled(true);
+
 	}
 
 	public void setEnabledVentasMenus(boolean e){

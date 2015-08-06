@@ -86,7 +86,7 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 			leggedIn = true;
 			
 			JOptionPane.showMessageDialog(dialogLogin, "¡ BIENVENIDO "+logged.getNc().toUpperCase()+" !", "ENTRAR", JOptionPane.INFORMATION_MESSAGE);									
-			
+			ApplicationLogic.getInstance().setLogged(logged);
 			dialogLogin.dispose();
 		}
 	}
@@ -115,6 +115,10 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		return logged != null;
 	}
 
+	public U getLogged() {
+		return logged;
+	}
+	
 	@Override
 	public void focusGained(FocusEvent fe) {
 		

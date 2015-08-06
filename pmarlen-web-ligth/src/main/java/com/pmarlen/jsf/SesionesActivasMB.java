@@ -44,7 +44,7 @@ public class SesionesActivasMB {
 		while(elements.hasMoreElements()){
 			CajaSessionInfo csi = elements.nextElement();
 			logger.info("\t=>("+csi.getSessionId()+") creationTime:"+Constants.sdfLogDate.format(new Date(csi.getApplicationContextCreationTime()))+
-					", LastAccesedTime:"+Constants.sdfLogDate.format(new Date(csi.getLastAccesedTime())));
+					", LastAccesedTime:"+Constants.sdfLogDate.format(new Date(csi.getLastAccesedTime()))+", loggedIn="+csi.getLoggedIn());
 			if(! csi.isTimeout()) {
 				sesionesCajaActivas.add(csi);
 			} else {

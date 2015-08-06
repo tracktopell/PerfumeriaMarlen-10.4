@@ -33,12 +33,12 @@ public class DialogConfiguracionSistemaControl implements ActionListener {
 	}
 
 	public void estadoInicial() {
-		dialogConfiguracionSistema.getNombreNegocio()	 .setText(ApplicationLogic.getInstance().getNombreNegocio());
-		dialogConfiguracionSistema.getDireccion()		 .setText(ApplicationLogic.getInstance().getDireccion());
-		dialogConfiguracionSistema.getTelefonos()		 .setText(ApplicationLogic.getInstance().getTelefonos());
-		dialogConfiguracionSistema.getEmail()			 .setText(ApplicationLogic.getInstance().getEmail());
-		dialogConfiguracionSistema.getClientePorDefault().setText(ApplicationLogic.getInstance().getCliente());
-		
+//		dialogConfiguracionSistema.getNombreNegocio()	 .setText(ApplicationLogic.getInstance().getNombreNegocio());
+//		dialogConfiguracionSistema.getDireccion()		 .setText(ApplicationLogic.getInstance().getDireccion());
+//		dialogConfiguracionSistema.getTelefonos()		 .setText(ApplicationLogic.getInstance().getTelefonos());
+//		dialogConfiguracionSistema.getEmail()			 .setText(ApplicationLogic.getInstance().getEmail());
+//		dialogConfiguracionSistema.getClientePorDefault().setText(ApplicationLogic.getInstance().getCliente());
+//		
 		//dialogConfiguracionSistema.getAceptar().setEnabled(false);
 		//dialogConfiguracionSistema.getCancelar().setEnabled(false);
 		
@@ -59,11 +59,11 @@ public class DialogConfiguracionSistemaControl implements ActionListener {
 		if(!validate()){
 			return;
 		}		
-		ApplicationLogic.getInstance().setNombreNegocio(dialogConfiguracionSistema.getNombreNegocio().getText());
-		ApplicationLogic.getInstance().setDireccion(dialogConfiguracionSistema.getDireccion().getText());
-		ApplicationLogic.getInstance().setTelefonos(dialogConfiguracionSistema.getTelefonos().getText());
-		ApplicationLogic.getInstance().setEmail(dialogConfiguracionSistema.getEmail().getText());
-		ApplicationLogic.getInstance().setCliente(dialogConfiguracionSistema.getClientePorDefault().getText());
+//		ApplicationLogic.getInstance().setNombreNegocio(dialogConfiguracionSistema.getNombreNegocio().getText());
+//		ApplicationLogic.getInstance().setDireccion(dialogConfiguracionSistema.getDireccion().getText());
+//		ApplicationLogic.getInstance().setTelefonos(dialogConfiguracionSistema.getTelefonos().getText());
+//		ApplicationLogic.getInstance().setEmail(dialogConfiguracionSistema.getEmail().getText());
+//		ApplicationLogic.getInstance().setCliente(dialogConfiguracionSistema.getClientePorDefault().getText());
 
 		dialogConfiguracionSistema.dispose();
 	}

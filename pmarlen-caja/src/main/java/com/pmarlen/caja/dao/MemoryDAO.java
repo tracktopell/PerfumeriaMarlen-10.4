@@ -10,14 +10,17 @@ import com.pmarlen.backend.model.quickviews.SyncDTOPackage;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.control.FramePrincipalControl;
 import com.pmarlen.rest.dto.P;
+import com.pmarlen.rest.dto.U;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -115,33 +118,64 @@ public class MemoryDAO {
 	}
 	private static boolean runnigPool = true;
 	private static int     syncPollState = 0;
+	private static long    xt = 0;
+	
+	public final static int SYNC_STATE_BEFORE_RUNNING        = 0;
+	public final static int SYNC_STATE_BEFORE_CONNECTING     = 1;
+	public final static int SYNC_STATE_BEFORE_DOWNLOADED     = 2;
+	public final static int SYNC_STATE_READ                  = 3;
+	public final static int SYNC_STATE_BEFORE_CONNECTINGLIVE = 4;
+	public final static int SYNC_STATE_IMLIVE                = 5;
+	public final static int SYNC_STATE_ERROR_URL             = 6;
+	public final static int SYNC_STATE_ERROR                 = 10;
+	
+	
 	public static void getPaqueteSyncPoll(){
 		logger.info("----------------->>BEFORE while ");
-		syncPollState = 0;
+		syncPollState = SYNC_STATE_BEFORE_RUNNING;
 		while(runnigPool){
-			try {
-				logger.info("\t----------------->> while running, download");
-				syncPollState = 1;
-				download();
-				syncPollState = 2;
-				logger.info("\t----------------->> OK, downloded, read locally");
-				readLocally();
-				syncPollState = 3;
-			}catch(MalformedURLException e){
-				logger.error("URL: downoload",e);
-				syncPollState = 4;
-				break;
-			}catch(Exception e){
-				logger.error("X: downoload",e);
-				syncPollState = 5;
+			logger.info("\t----------------->> while running, download");
+			if(xt%6==0){
+				try {
+					syncPollState = SYNC_STATE_BEFORE_CONNECTING;
+					download();
+					syncPollState = SYNC_STATE_BEFORE_DOWNLOADED;
+					logger.info("\t----------------->> OK, downloded, read locally");
+					readLocally();
+					syncPollState = SYNC_STATE_READ;
+				}catch(MalformedURLException e){
+					logger.error("URL: downoload",e);
+					syncPollState = SYNC_STATE_ERROR_URL;
+					break;
+				}catch(Exception e){
+					logger.error("X: downoload",e);
+					syncPollState = SYNC_STATE_ERROR;
+				}
+
+			} else {
+				try {					
+					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
+					iamalive();
+					syncPollState = SYNC_STATE_IMLIVE;
+				}catch(MalformedURLException e){
+					logger.error("URL: imlive",e);
+					syncPollState = SYNC_STATE_ERROR_URL;
+					break;
+				}catch(Exception e){
+					logger.error("X: exception",e);
+					syncPollState = SYNC_STATE_ERROR;
+				}
+
 			}
 			
 			try {
 				logger.info("\t----------------->> while running, sleep,.....");
-				Thread.sleep(60000L);
+				Thread.sleep(10000L);
 			}catch(Exception e){
 				logger.error("downoload",e);
 			}
+			
+			xt++;
 		}
 	}
 
@@ -192,11 +226,20 @@ public class MemoryDAO {
 				append("&caja=").
 				append(properties.get("caja")).
 				append("&sessionId=").
-				append(getSessionID());
+				append(getSessionID()).
+				append("&loggedIn=").
+				append(getLoggedIn());
 		
 		url = new URL(sbURL.toString());
-		logger.info(">> Downloading from:"+url);
-		InputStream is = url.openStream();
+		logger.info(">> Downloading url:"+url);
+		
+		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+		connection.setRequestProperty("User-Agent",getUserAgentExpression());
+		connection.setConnectTimeout(2000);
+		connection.setRequestMethod("GET");		
+		connection.connect();
+		
+		InputStream is = connection.getInputStream();
 		FileOutputStream fos = new FileOutputStream(fileName);
 
 		byte buffer[] = new byte[1024];
@@ -209,6 +252,38 @@ public class MemoryDAO {
 		fos.close();
 		is.close();
 		logger.info(">> saving");
+	}
+	
+	private static void iamalive() throws IOException{
+		URL url = null;
+
+		StringBuilder sbURL = new StringBuilder("http://");
+		sbURL.append(properties.get("host")).
+				append(":").
+				append(properties.get("port")).
+				append(properties.get("context")).
+				append("/sync/data?format=iamalive&sucursalId=").
+				append(properties.get("sucursal")).
+				append("&caja=").
+				append(properties.get("caja")).
+				append("&sessionId=").
+				append(getSessionID()).
+				append("&loggedIn=").
+				append(getLoggedIn());
+		
+		url = new URL(sbURL.toString());
+		logger.info(">> I'm Alive URL:"+url);
+		
+		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+		
+		connection.setRequestProperty("User-Agent",getUserAgentExpression());
+		connection.setConnectTimeout(2000);
+		connection.setRequestMethod("GET");
+		connection.connect();
+
+		int code = connection.getResponseCode();
+
+		logger.info(">> code:"+code);
 	}
 
 	private static void readLocally() {
@@ -272,9 +347,42 @@ public class MemoryDAO {
 	public static String getProperty(String p){
 		return properties.getProperty(p);
 	}
+	
+	public static String getCajaGlobalInfo() {
+		return "pms"+properties.getProperty("sucursal")+"c"+properties.getProperty("caja");
+	}
 
 	public static P fastSearchProducto(String codigoBuscar) {
 		return productosParaBuscar.get(codigoBuscar);
+	}
+
+	private static Object getLoggedIn() {
+		U logged = ApplicationLogic.getInstance().getLogged();
+		if(logged == null){
+			return "null";
+		} else {
+			return logged.getE();
+		}
+	}
+	
+	private static String userAgentExpression;
+	
+	private static String getUserAgentExpression() {
+		if(userAgentExpression == null){			
+			String os = System.getProperty("os.name")+"_"+System.getProperty("os.version")+"("+System.getProperty("os.arch")+")";
+/*
+{java.runtime.name=Java(TM) SE Runtime Environment, sun.boot.library.path=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib, java.vm.version=24.51-b03, user.country.format=MX, gopherProxySet=false, java.vm.vendor=Oracle Corporation, java.vendor.url=http://java.oracle.com/, path.separator=:, java.vm.name=Java HotSpot(TM) 64-Bit Server VM, file.encoding.pkg=sun.io, user.country=ES, sun.java.launcher=SUN_STANDARD, sun.os.patch.level=unknown, java.vm.specification.name=Java Virtual Machine Specification, user.dir=/Users/alfredo/tmp/pmarlen-caja, java.runtime.version=1.7.0_51-b13, java.awt.graphicsenv=sun.awt.CGraphicsEnvironment, java.endorsed.dirs=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/endorsed, os.arch=x86_64, java.io.tmpdir=/var/folders/r0/x48m0drs5jjb972jf25km_pw0000gp/T/, line.separator=
+, java.vm.specification.vendor=Oracle Corporation, os.name=Mac OS X, sun.jnu.encoding=UTF-8, java.library.path=/Users/alfredo/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:., sun.awt.enableExtraMouseButtons=true, java.specification.name=Java Platform API Specification, java.class.version=51.0, sun.management.compiler=HotSpot 64-Bit Tiered Compilers, os.version=10.9.5, http.nonProxyHosts=local|*.local|169.254/16|*.169.254/16, user.home=/Users/alfredo, user.timezone=America/Mexico_City, java.awt.printerjob=sun.lwawt.macosx.CPrinterJob, file.encoding=UTF-8, java.specification.version=1.7, java.class.path=pmarlen-caja.jar, user.name=alfredo, java.vm.specification.version=1.7, sun.java.command=pmarlen-caja.jar, java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre, sun.arch.data.model=64, user.language=es, java.specification.vendor=Oracle Corporation, awt.toolkit=sun.lwawt.macosx.LWCToolkit, java.vm.info=mixed mode, java.version=1.7.0_51, java.ext.dirs=/Users/alfredo/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java, sun.boot.class.path=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/classes, java.vendor=Oracle Corporation, file.separator=/, java.vendor.url.bug=http://bugreport.sun.com/bugreport/, sun.font.fontmanager=sun.font.CFontManager, sun.io.unicode.encoding=UnicodeBig, sun.cpu.endian=little, socksNonProxyHosts=local|*.local|169.254/16|*.169.254/16, ftp.nonProxyHosts=local|*.local|169.254/16|*.169.254/16, sun.cpu.isalist=}			
+			
+			
+			*/
+			userAgentExpression =	"pmarlen-caja_"+ApplicationLogic.getInstance().getVersion()+
+									"|os="+os+
+									"|java-version="+System.getProperty("java.version")+
+									"|user-working="+System.getProperty("user.name")+"@"+System.getProperty("user.dir");
+		}
+		return userAgentExpression;
+		
 	}
 
 }
