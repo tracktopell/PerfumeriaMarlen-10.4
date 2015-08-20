@@ -190,7 +190,7 @@
 				<configuration>
 					<url>http://localhost:8070/manager/text</url>
 					<server>tomcat7_test</server>
-					<path>/pmarlen-web-ligth</path>
+					<path>/l30</path>
 				</configuration>
 			</plugin>
 
@@ -247,7 +247,7 @@
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_dev</server>
-							<path>/pmarlen-web-ligth</path>
+							<path>/l30</path>
 						</configuration>
 					</plugin>
 					
@@ -315,7 +315,7 @@
 						<configuration>
 							<url>http://localhost:8080/manager/text</url>
 							<server>tomcat7</server>
-							<path>/pmarlen-web-ligth</path>
+							<path>/l30</path>
 						</configuration>
 					</plugin>
 					
@@ -349,7 +349,7 @@
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_test</server>
-							<path>/pmarlen-web-ligth</path>
+							<path>/l30</path>
 						</configuration>
 					</plugin>
 					
