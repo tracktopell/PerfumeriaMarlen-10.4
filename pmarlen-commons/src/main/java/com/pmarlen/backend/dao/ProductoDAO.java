@@ -25,6 +25,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;	
 
 import java.util.ArrayList;
+import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
@@ -322,7 +323,114 @@ public class ProductoDAO {
 		}
 		return r;		
 	};
-    public ArrayList<ProductoQuickView> findAllForMultiediaShow(int almacenId) throws DAOException {
+	
+	public int findAllLazyCount() throws DAOException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		int totReg = -1;
+		try {
+			conn = getConnection();
+			//---------
+			
+			String q1 = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA "
+					+ "FROM PRODUCTO";
+			ps = conn.prepareStatement(q1);
+			rs = ps.executeQuery();
+			rs.last();
+			totReg = rs.getRow();
+			rs.beforeFirst();
+			rs.close();
+			ps.close();			
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return totReg;		
+	};
+
+	public ArrayList<ProductoQuickView> findAllLazy(int first, int pageSize, String sortField, int sortOrder, Map<String,Object> filters) throws DAOException {
+		ArrayList<ProductoQuickView> r = new ArrayList<ProductoQuickView>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			//---------
+			
+			String q1 = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA "
+					+ "FROM PRODUCTO";
+			ps = conn.prepareStatement(q1);
+			rs = ps.executeQuery();
+			rs.last();
+			int totReg = rs.getRow();
+			rs.beforeFirst();
+			rs.close();
+			ps.close();			
+			// --------
+			int last=0;
+			
+			int mod=totReg%pageSize;
+			if(totReg <= first + pageSize ){
+				last = first+mod;
+			} else {
+				last = first + pageSize;
+			}
+			
+			String q2 = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA "
+					+ "FROM PRODUCTO LIMIT "+first+", "+last;
+			
+			ps = conn.prepareStatement(q2);
+			rs = ps.executeQuery();
+			
+			
+			while(rs.next()) {
+				ProductoQuickView x = new ProductoQuickView();
+				x.setCodigoBarras((String)rs.getObject("CODIGO_BARRAS"));				
+				x.setIndustria((String)rs.getObject("INDUSTRIA"));
+				x.setLinea((String)rs.getObject("LINEA"));
+				x.setMarca((String)rs.getObject("MARCA"));
+				x.setNombre((String)rs.getObject("NOMBRE"));
+				x.setPresentacion((String)rs.getObject("PRESENTACION"));
+				x.setAbrebiatura((String)rs.getObject("ABREBIATURA"));
+				x.setUnidadesXCaja((Integer)rs.getObject("UNIDADES_X_CAJA"));
+				x.setContenido((String)rs.getObject("CONTENIDO"));
+				x.setUnidadMedida((String)rs.getObject("UNIDAD_MEDIDA"));
+				x.setUnidadEmpaque((String)rs.getObject("UNIDAD_EMPAQUE"));
+				x.setCosto((Double)rs.getObject("COSTO"));
+				x.setCostoVenta((Double)rs.getObject("COSTO_VENTA"));
+				r.add(x);
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+	};
+
+	public ArrayList<ProductoQuickView> findAllForMultiediaShow(int almacenId) throws DAOException {
 		ArrayList<ProductoQuickView> r = new ArrayList<ProductoQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
