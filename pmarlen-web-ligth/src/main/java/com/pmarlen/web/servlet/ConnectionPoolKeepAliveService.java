@@ -39,7 +39,9 @@ public class ConnectionPoolKeepAliveService extends Thread implements Runnable{
 	public void stopRunning(){
 		logger.info("-> stopRunning:");
 		running = false;
-		this.interrupt();
+		if(this.isAlive()){
+			this.interrupt();
+		}
 	}
 	
 	@Override
@@ -54,7 +56,11 @@ public class ConnectionPoolKeepAliveService extends Thread implements Runnable{
 				logger.debug("\t-> while ("+running+"): getting estados:"+(estados!=null?estados.size()+" elements.":null));				
 				Thread.sleep(60000);
 			} catch(Exception e){
-				logger.error("while running:", e);
+				if(!running){
+					logger.info("OK, Controled STOP. bye !");
+				} else {
+					logger.error("while running:", e);
+				}
 				break;
 			}
 		}

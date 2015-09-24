@@ -46,7 +46,7 @@ public class Constants {
 	public static final int ESTADO_DEVUELTO_SUCURSAL = 2048;
 	public static final int ESTADO_PAGADO = 4096;
 	public static final int ESTADO_CANCELADO = 65536;
-	//--------------------------------------------------------------------------
+	//--------------------------------------------------------------------------	
 	public static final int TIPO_MOV_CREACION = 10;
 	
 	public static final int TIPO_MOV_ENTRADA_ALMACEN_COMPRA     = 20;

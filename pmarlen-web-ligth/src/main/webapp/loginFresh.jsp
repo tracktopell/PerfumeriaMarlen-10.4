@@ -64,8 +64,8 @@
 						%>									
 		</form>
 	</div>
-	<div class="footer-bar-<%=SystemInfoMB.getEnvironmentStaticlay()%>" title="( <%=SystemInfoMB.getEnvironmentStaticlay()%> ) Git RevID: <%=Constants.getGitSHA1()%>">
-		Perfumeria Marlen, Sistema de Adminisraci&oacute;n de Almacen Ver. <%=Constants.getServerVersion()%> / Construido: <%=Constants.getBuildTimestamp()%> | <a href="<%=request.getContextPath()%>/pmcajaupdate/pmarlen-caja-installer.jar">CI</a>
+	<div class="footer-bar-<%=SystemInfoMB.getEnvironmentStaticlay()%>" title="Sistema de Adminisraci&oacute;n de Almacen Ver. <%=Constants.getServerVersion()%> (<%=SystemInfoMB.getEnvironmentStaticlay()%>) Git RevID: <%=Constants.getGitSHA1()%>">
+		Perfumeria Marlen - L30 / Construido: <%=Constants.getBuildTimestamp()%> | <a href="<%=request.getContextPath()%>/pmcajaupdate/pmarlen-caja-installer.jar">CI</a>
 	</div>
 
 </body>

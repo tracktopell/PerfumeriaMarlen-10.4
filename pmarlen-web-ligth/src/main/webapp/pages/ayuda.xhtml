@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+        PM > INICIO
+    </ui:define>
+
+    <ui:define name="body-title">
+        <h:outputText value="INICIO, BIENVENIDO #{sessionUserMB.bienvenido}"/>
+    </ui:define>
+
+    <ui:define name="body">
+		<h:form id="formHome">
+			<h:panelGrid columns="2" columnClasses="">
+				<h:panelGroup>
+					<table style="width: 100%;">
+						<tr>
+							<td>COLOR</td><td>ESTADO</td>
+						</tr>
+							<tr><td style="background: #E6EBE6"></td><td>CAPTURADO</td></tr>
+							<tr><td style="background: #B2B2FF"></td><td>SINCRONIZADO</td></tr>
+							<tr><td style="background: #FFFF00"></td><td>VERIFICADO</td></tr>
+							<tr><td style="background: #CC66FF"></td><td>SURTIDO</td></tr>
+							<tr><td style="background: #000099"></td><td>FACTURADO</td></tr>
+							<tr><td style="background: #33CCFF"></td><td>REMISIONADO</td></tr>
+							<tr><td style="background: #669999"></td><td>ENVIADO</td></tr>
+							<tr><td style="background: #66FF99"></td><td>ENTREGADO</td></tr>
+							<tr><td style="background: #FFCC99"></td><td>DEVUELTO</td></tr>
+							<tr><td style="background: #CCFF66"></td><td>VENDIDO_SUCURSAL</td></tr>
+							<tr><td style="background: #99CC00"></td><td>FACTURADO_SUCURSAL</td></tr>
+							<tr><td style="background: #FF6600"></td><td>DEVUELTO_SUCURSAL</td></tr>
+							<tr><td style="background: #009999"></td><td>PAGADO</td></tr>
+							<tr><td style="background: #FF0000"></td><td>CANCELADO</td></tr>												
+					</table>
+				</h:panelGroup>
+
+				<h:panelGroup>
+							
+				</h:panelGroup>
+
+			</h:panelGrid>
+
+		</h:form>		
+    </ui:define>
+
+</ui:composition>

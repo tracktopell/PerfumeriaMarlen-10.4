@@ -41,13 +41,12 @@ public class WEBDataSourceFacade extends DataSourceFacade{
 		Context ctx = null;
 		Connection conn = null;
         try {   
-			logger.debug("->getConnection: 1)ds="+ds);
+			logger.trace("->getConnection: 1)ds="+ds);
 			if(ds == null) {
 				ctx = new InitialContext();
-				logger.debug("->getConnection: ctx="+ctx);
-				ds = (DataSource) ctx.lookup("java:comp/env/"+prop.getProperty("jndi"));			
-				                              
-				logger.debug("->getConnection: 2)ds?"+ds);
+				logger.trace("->getConnection: ctx="+ctx);
+				ds = (DataSource) ctx.lookup("java:comp/env/"+prop.getProperty("jndi"));			                      
+				logger.trace("->getConnection: 2)ds?"+ds);
 			}
 			conn = ds.getConnection();
         } catch (Exception e) {
@@ -66,7 +65,7 @@ public class WEBDataSourceFacade extends DataSourceFacade{
 				ctx = new InitialContext();
 				ds = (DataSource) ctx.lookup("java:comp/env/"+prop.getProperty("jndi"));			
 			}
-			//logger.info("-->>DataSource class:"+ds.getClass()+" implements "+Arrays.asList(ds.getClass().getInterfaces()));
+			logger.trace("-->>DataSource class:"+ds.getClass()+" implements "+Arrays.asList(ds.getClass().getInterfaces()));
 			conn = ds.getConnection();
 			conn.setAutoCommit(false);
         } catch (Exception e) {

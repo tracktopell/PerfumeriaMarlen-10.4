@@ -189,12 +189,12 @@ public class ApplicationLogic {
 				fos.write(buffer, 0, (int)r);
 				fos.flush();
 				long advance = (100L * t) / length;
-				//logger.info("------->> Downloaded:\t [+ "+r+"]( "+t+"/"+length+") : "+advance+" %");
+				logger.debug("------->> Downloaded:\t [+ "+r+"]( "+t+"/"+length+") : "+advance+" %");
 				ual.updateProgress((int)advance);
 			}
 			ual.updateProgress(100);
 			logger.info("");
-			logger.info("finished");
+			logger.info("finished: saved to"+FILE_APP_PACKAGE);
 			is.close();
 			fos.close();
 			if(!keepDownlaod){
@@ -253,7 +253,8 @@ public class ApplicationLogic {
 				is.close();
 			}
 		}
-		
+		logger.info("-> OK, finish extracting, versionRead="+versionRead);
+		/*
 		logger.info("-> OK, finish extracting, update sym link for: versionRead="+versionRead);
 		try {
 			String cmdToRelink = "ln -sf pmarlen-caja-"+versionRead+".jar pmarlen-caja.jar";
@@ -261,8 +262,9 @@ public class ApplicationLogic {
 			int exitStatus = Runtime.getRuntime().exec(cmdToRelink).waitFor();
 			logger.info("-> exec: "+cmdToRelink+" ? "+exitStatus);
 		}catch(InterruptedException ie){
-			logger.error("RElink:", ie);
+			logger.error("Relink:", ie);
 		}
+		*/
 	}
 
 	boolean canDownlaodUpdateApplication() {
@@ -328,5 +330,4 @@ public class ApplicationLogic {
 	boolean isPrintingEnabled() {
 		return printingEnabled;
 	}
-	
 }

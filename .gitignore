@@ -8,3 +8,5 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .DS_Store
 */.DS_Store
+pmarlen-web-ligth/src/main/webapp/WEB-INF/web.xml
+pmarlen-web-ligth/src/main/webapp/META-INF/context.xml

@@ -59,7 +59,7 @@ public class SyncServlet extends HttpServlet {
 		
 		
 		logger.info("-->>processRequest: uri:"+request.getRequestURI()+", queryString:"+request.getQueryString());
-		
+				
 		OutputStream os=response.getOutputStream();
 		String sucursalId=request.getParameter("sucursalId");
 		String cajaId=request.getParameter("caja");
@@ -68,9 +68,12 @@ public class SyncServlet extends HttpServlet {
 		String loggedIn=request.getParameter("loggedIn");
 		String userAgent = request.getHeader("User-Agent");
 		
-		if(sucursalId==null){
-			sucursalId = "1";
+		if(request.getQueryString()==null || sucursalId==null|| cajaId==null){					
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			logger.info("-->>processRequest: :( BAD REQUEST !");
+			return;
 		}
+
 		if(format==null){
 			format="iamalive";
 		}

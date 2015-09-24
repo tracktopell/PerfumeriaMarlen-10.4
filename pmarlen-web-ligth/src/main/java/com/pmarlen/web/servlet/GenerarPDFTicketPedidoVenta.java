@@ -50,7 +50,7 @@ public class GenerarPDFTicketPedidoVenta extends HttpServlet {
 		try {
 			//                   /docs/tickets/
 			//                   /docs/tickets/Ticket_PerfumeriaMarlen_No_#####.pdf			
-			// /l30/docs/tickets/Ticket_PerfumeriaMarlen_No_3192.pdf
+			// /pmarlen-web-ligth/docs/tickets/Ticket_PerfumeriaMarlen_No_3192.pdf
 			// 0---------1---------2---------3---------4---------5-------
 			String requestURI = request.getRequestURI();
 			int pedidoIdIndex     = requestURI.lastIndexOf("No_")+3;

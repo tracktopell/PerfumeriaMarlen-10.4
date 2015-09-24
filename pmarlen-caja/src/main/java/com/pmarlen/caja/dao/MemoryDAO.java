@@ -42,7 +42,8 @@ public class MemoryDAO {
 		properties.put("caja","1");
 		properties.put("host","localhost");
 		properties.put("port","8070");
-		properties.put("context","/pmarlen-web-ligth");
+		//properties.put("context","/pmarlen-web-ligth");
+		properties.put("context","/l30");
 		properties.put("dropboxdir",System.getProperty("user.home")+"/DropBox/");
 	}
 	

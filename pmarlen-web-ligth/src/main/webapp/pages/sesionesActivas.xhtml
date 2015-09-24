@@ -30,19 +30,19 @@
 						-
 					</p:column>
 					
-					<p:column headerText="SESSION ID" sortBy="#{sessionInfo.session.id}" width="25%">
+					<p:column headerText="SESSION ID" sortBy="#{sessionInfo.session.id}" width="15%">
 						<h:outputText value="-#{sessionInfo.session.id}-" />
 					</p:column>
 
-					<p:column headerText="USER NAME" sortBy="#{sessionInfo.userName}" width="25%">
+					<p:column headerText="USER NAME" sortBy="#{sessionInfo.userName}" width="15%">
 						<h:outputText value="#{sessionInfo.userName}" />
 					</p:column>
 					
 					<p:column headerText="CREATION DIFF" width="15%">
 						<h:outputText value="#{sessionInfo.creationTimeDiff}" />
 					</p:column>
-										
-					<p:column headerText="USER AGENT" width="30%">
+					
+					<p:column headerText="USER AGENT" width="40%">
 						<h:outputText value="#{sessionInfo.userAgent}" />
 					</p:column>
 
@@ -50,47 +50,24 @@
 				</p:dataTable>
 				
 				<p:dataTable var="sessionCajaInfo" value="#{sesionesActivasMB.sesionesCajaActivas}"
-							 sortMode="single" emptyMessage="NO HAY CONECCIONES DE CAJAS"
+							 sortMode="single"
 							 id="entityTable2" >
 					<f:facet name="header">
 										
 					</f:facet>
 					
-					<p:column width="5%">
+					<p:column width="25%">
 						-
 					</p:column>
 					
-					<p:column headerText="SESSION ID" width="20%">
-						<h:outputText value="#{sessionCajaInfo.sessionId}" />
-					</p:column>
-					
-					<p:column headerText="SUCURSAL / CAJA" width="10%">
-						<h:outputText value="#{sessionCajaInfo.sucursal}" /> <br/>
-						<h:outputText value="#{sessionCajaInfo.caja}" />
-					</p:column>
-					
-					<p:column headerText="USUARIO AUTENTICADO" width="25%">
-						<h:outputText value="#{sessionCajaInfo.loggedIn}" />
-					</p:column>
-					
-					<p:column headerText="T.CONECTADO / ULT. AC."  width="10%">
-						<h:outputText value="#{sessionCajaInfo.creationTimeDiff}" />
-						<br/>
-						<h:outputText value="#{sessionCajaInfo.lastAccesedTimeDiff}" />
-					</p:column>
-					
-					<p:column headerText="DIR. REMOTA" width="10%">
-						<h:outputText value="#{sessionCajaInfo.remoteAddr}" />
-					</p:column>
-					
-					<p:column headerText="USER-AGENT" width="25%">
-						<h:outputText value="#{sessionCajaInfo.userAgent}" />
+					<p:column headerText="INFO" sortBy="#{sessionCajaInfo}" width="75%">
+						<h:outputText value="#{sessionCajaInfo}" />
 					</p:column>
 
 				</p:dataTable>
 
 				
-				<p:poll interval="5" listener="#{systemInfoMB.updateTime}" update="entityTable,entityTable2" />				
+				<p:poll interval="5" listener="#{systemInfoMB.updateTime}" update="entityTable" onerror="errorGetTime();" onsuccess="successGetTime()" />				
 
 			</h:panelGrid>
 						

@@ -27,7 +27,7 @@ a{
   background: rgba(200,200,200,.5);
   width: 50px;
   height: 70px;
-  margin: 0 auto;
+  margin: 0px 265px;
   position: relative;
   top: 19px;
   border: 1px solid rgba(255,255,255,.3);
@@ -55,7 +55,7 @@ a{
   color: #36383C;
   text-shadow: 0 1px 0 #FFF;
   max-width: 300px;
-  margin: 0 auto;
+  margin: 0px 100px;
   padding: 15px 40px 20px 40px;
   box-shadow: 0 0 3px #000;
 }
@@ -198,7 +198,7 @@ hr{
   margin-bottom: 5px;
 }
 
-.footer-bar {
+.footer-bar-UnitTest {
 	background: none repeat scroll 0 0 red;
     border-top: 3px solid orange;
 	color: yellow;
@@ -214,7 +214,7 @@ hr{
 	display: block;
 }
 
-.footer-bar-deve {
+.footer-bar-Development {
 	background: none repeat scroll 0 0 green;
     border-top: 3px solid orange;
 	color: yellow;
@@ -230,7 +230,7 @@ hr{
 	display: block;
 }
 
-.footer-bar-test {
+.footer-bar-SystemTest {
 	background: none repeat scroll 0 0 orange;
     border-top: 3px solid orange;
 	color: yellow;
@@ -246,7 +246,7 @@ hr{
 	display: block;
 }
 
-.footer-bar-prod {
+.footer-bar-Production {
 	background: none repeat scroll 0 0 darkblue;
     border-top: 3px solid orange;
 	color: yellow;

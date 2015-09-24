@@ -8,7 +8,7 @@
 		<version>10.4.1</version>
 	</parent>
 	<artifactId>pmarlen-caja</artifactId>
-	<version>10.4.1.25</version>
+	<version>10.4.1.29</version>
 	<name>Perfumeria Marlen 10.4.x - Caja</name>
 	
 	<properties>
@@ -131,6 +131,90 @@
 					</execution>							
 				</executions>	
 			</plugin>		  
+													
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>			
+					<execution>
+						<id>clean-my-dirty-space</id>
+						<phase>post-clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo message="======================= clean-my-dirty-space, in post-clean phase ==============>>>"/>
+								<!--
+								<delete>
+									<fileset dir="${basedir}" includes=""/>
+								</delete>
+								-->
+							</target>
+						</configuration>
+					</execution>
+							
+					<execution>
+						<id>create-staging-area</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+								
+						<configuration>
+							<target>
+								<echo message="======================= create-staging-area, in process-resources phase ==============>>>"/>
+								<copy todir="${staging.dir}">
+									<fileset dir="${basedir}/src/izpack" />
+								</copy>
+								<copy todir="${staging.dir}">
+									<fileset file="${project.build.directory}/classes/Readme.txt" />
+								</copy>
+								<!--
+								<copy todir="${staging.dir}/Productos">
+									<fileset dir="${basedir}/Productos" />
+								</copy>
+								-->
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>preprare-bins-installer</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo message="======================= preprare-bins-installer , in package phase, basedir=${basedir}, create ZIP for UPDATE ==============>>>"/>
+								<copy file="${project.build.directory}/${finalJar.filename}.jar" toFile="${project.build.directory}/${project.artifactId}.jar"/>
+								<zip destfile="${project.build.directory}/update.zip">
+									<zipfileset dir="${staging.dir}/dependency-jars"		prefix="dependency-jars/"	 includes="*.jar"/>
+									<zipfileset dir="${project.build.directory}/classes/"	includes="run*.*"/>
+									<zipfileset dir="${staging.dir}/../"					includes="${project.artifactId}.jar"/>											
+								</zip>
+										
+							</target>
+						</configuration>
+					</execution>
+
+				</executions>
+						
+				<dependencies>
+					<dependency>
+						<groupId>commons-net</groupId>
+						<artifactId>commons-net</artifactId>
+						<version>1.4.1</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-commons-net</artifactId>
+						<version>1.8.1</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+					
 		</plugins>
 	
 		<resources>
@@ -156,72 +240,12 @@
                 
 				<finalName>${finalJar.filename}</finalName>
 				<plugins>
-										
+				
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<version>1.7</version>
-						<executions>			
-							<execution>
-								<id>clean-my-dirty-space</id>
-								<phase>post-clean</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<echo message="======================= clean-my-dirty-space, in post-clean phase ==============>>>"/>
-										<!--
-										<delete>
-											<fileset dir="${basedir}" includes=""/>
-										</delete>
-										-->
-									</target>
-								</configuration>
-							</execution>
-							
-							<execution>
-								<id>create-staging-area</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								
-								<configuration>
-									<target>
-										<echo message="======================= create-staging-area, in process-resources phase ==============>>>"/>
-										<copy todir="${staging.dir}">
-											<fileset dir="${basedir}/src/izpack" />
-										</copy>
-										<copy todir="${staging.dir}">
-											<fileset file="${project.build.directory}/classes/Readme.txt" />
-										</copy>
-										<!--
-										<copy todir="${staging.dir}/Productos">
-											<fileset dir="${basedir}/Productos" />
-										</copy>
-										-->
-									</target>
-								</configuration>
-							</execution>
-							<execution>
-								<id>preprare-bins-installer</id>
-								<phase>package</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<echo message="======================= preprare-bins-installer , in package phase, basedir=${basedir}, create ZIP for UPDATE ==============>>>"/>
-										<zip destfile="${project.build.directory}/update.zip">
-											<zipfileset dir="${staging.dir}/dependency-jars"		prefix="dependency-jars/"	 includes="*.jar"/>
-											<zipfileset dir="${project.build.directory}/classes/"	includes="run*.*"/>
-											<zipfileset dir="${staging.dir}/../"					includes="${finalJar.filename}.jar"/>
-										</zip>
-									</target>
-								</configuration>
-							</execution>
-
+						<executions>
 							<execution>
 								<id>upload-files</id>
 								<phase>install</phase>
@@ -237,21 +261,7 @@
 								</configuration>
 							</execution>
 						</executions>
-						
-						<dependencies>
-							<dependency>
-								<groupId>commons-net</groupId>
-								<artifactId>commons-net</artifactId>
-								<version>1.4.1</version>
-							</dependency>
-							<dependency>
-								<groupId>org.apache.ant</groupId>
-								<artifactId>ant-commons-net</artifactId>
-								<version>1.8.1</version>
-							</dependency>
-						</dependencies>
 					</plugin>
-					
 					<plugin>
 						<groupId>org.codehaus.izpack</groupId>
 						<artifactId>izpack-maven-plugin</artifactId>

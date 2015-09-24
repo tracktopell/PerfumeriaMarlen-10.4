@@ -92,10 +92,15 @@
         
         <pack name="Application" required="yes">
             <description>The Application</description>
-            <file src="../${finalJar.filename}.jar"    targetdir="$INSTALL_PATH"/>
 			<!--
-			<executable targetfile="$INSTALL_PATH/${finalJar.filename}.jar" os="unix" type="bin"/>						
+            <file src="../${finalJar.filename}.jar"    targetdir="$INSTALL_PATH"/>
 			-->
+			<file src="../${project.artifactId}.jar"   targetdir="$INSTALL_PATH"/>
+			<!--
+			<executable targetfile="$INSTALL_PATH/${finalJar.filename}.jar"  os="unix" type="bin"/>
+			-->
+			<executable targetfile="$INSTALL_PATH/${project.artifactId}.jar" os="unix" type="bin"/>
+			
 			<file src="dependency-jars" targetdir="$INSTALL_PATH"/>
         </pack>
         

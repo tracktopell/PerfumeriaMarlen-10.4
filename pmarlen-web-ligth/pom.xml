@@ -7,7 +7,7 @@
 		<version>10.4.1</version>
 	</parent>
 	<artifactId>pmarlen-web-ligth</artifactId>
-	<version>10.4.1</version>
+	<version>${project.parent.version}</version>
 	<name>Perfumeria Marlen 10.4.x - Web - ligth (Primefaces 5)</name>
 	<packaging>war</packaging>
 
@@ -23,8 +23,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		
-		<environment.stage>deve</environment.stage>
-		<environment.webdescriptor.enviId>Development</environment.webdescriptor.enviId>
+		<environment.stage>Development</environment.stage>
+		<environment.log4j.rootLogger>DEBUG</environment.log4j.rootLogger>
+		<environment.webdescriptor.session-timeout>10</environment.webdescriptor.session-timeout>
 		<environment.jdbc.url>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
 		<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
 		<environment.jdbc.db>PMDB104_DEVE</environment.jdbc.db>
@@ -41,7 +42,7 @@
 		<dependency>
 			<groupId>com.pmarlen.erp</groupId>
 			<artifactId>pmarlen-commons</artifactId>
-			<version>10.4.1</version>
+			<version>${parent.version}</version>
 		</dependency>
 
 		<!-- ================= LIBRARY DEPENDENCIES ============ --> 
@@ -150,7 +151,7 @@
 
 	</dependencies>
 	<build>
-		<finalName>${artifactId}</finalName>
+		<finalName>l30</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -190,7 +191,7 @@
 				<configuration>
 					<url>http://localhost:8070/manager/text</url>
 					<server>tomcat7_test</server>
-					<path>/l30</path>
+					<path>/pmarlen-web-ligth</path>
 				</configuration>
 			</plugin>
 
@@ -237,7 +238,7 @@
 		<profile>
 			<id>local_dev</id>
 			<build>
-				<finalName>${artifactId}</finalName>
+				<finalName>l30</finalName>
 				<plugins>
 
 					<plugin>
@@ -247,7 +248,7 @@
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_dev</server>
-							<path>/l30</path>
+							<path>/pmarlen-web-ligth</path>
 						</configuration>
 					</plugin>
 					
@@ -255,8 +256,9 @@
 			</build>
 			
 			<properties>
-				<environment.stage>deve</environment.stage>
-				<environment.webdescriptor.enviId>Development</environment.webdescriptor.enviId>
+				<environment.stage>Development</environment.stage>
+				<environment.log4j.rootLogger>DEBUG</environment.log4j.rootLogger>
+				<environment.webdescriptor.session-timeout>10</environment.webdescriptor.session-timeout>
 				<environment.jdbc.url>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
 				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
 				<environment.jdbc.db>PMDB104_DEVE</environment.jdbc.db>
@@ -271,7 +273,7 @@
 		<profile>
 			<id>local_stage</id>
 			<build>
-				<finalName>${artifactId}</finalName>
+				<finalName>l30</finalName>
 				<plugins>
 
 					<plugin>
@@ -289,8 +291,9 @@
 			</build>
 			
 			<properties>
-				<environment.stage>prod</environment.stage>
-				<environment.webdescriptor.enviId>Development</environment.webdescriptor.enviId>
+				<environment.stage>Production</environment.stage>
+				<environment.log4j.rootLogger>INFO</environment.log4j.rootLogger>
+				<environment.webdescriptor.session-timeout>60</environment.webdescriptor.session-timeout>
 				<environment.jdbc.url>jdbc:mysql://localhost/PMDB104_PROD?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
 				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB104_PROD?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
 				<environment.jdbc.db>PMDB104_PROD</environment.jdbc.db>
@@ -305,7 +308,7 @@
 		<profile>
 			<id>cloud_prod</id>
 			<build>
-				<finalName>${artifactId}</finalName>
+				<finalName>l30</finalName>
 				<plugins>
 
 					<plugin>
@@ -315,7 +318,7 @@
 						<configuration>
 							<url>http://localhost:8080/manager/text</url>
 							<server>tomcat7</server>
-							<path>/l30</path>
+							<path>/pmarlen-web-ligth</path>
 						</configuration>
 					</plugin>
 					
@@ -323,8 +326,9 @@
 			</build>
 			
 			<properties>
-				<environment.stage>prod</environment.stage>
-				<environment.webdescriptor.enviId>Production</environment.webdescriptor.enviId>
+				<environment.stage>Production</environment.stage>
+				<environment.log4j.rootLogger>INFO</environment.log4j.rootLogger>
+				<environment.webdescriptor.session-timeout>60</environment.webdescriptor.session-timeout>
 				<environment.jdbc.url>jdbc:mysql://localhost/PMDB104_PROD?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
 				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB104_PROD?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
 				<environment.jdbc.db>PMDB104_PROD</environment.jdbc.db>
@@ -339,7 +343,7 @@
 		<profile>
 			<id>cloud_test</id>
 			<build>
-				<finalName>${artifactId}</finalName>
+				<finalName>l30</finalName>
 				<plugins>
 
 					<plugin>
@@ -349,7 +353,7 @@
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_test</server>
-							<path>/l30</path>
+							<path>/pmarlen-web-ligth</path>
 						</configuration>
 					</plugin>
 					
@@ -357,8 +361,9 @@
 			</build>
 			
 			<properties>
-				<environment.stage>test</environment.stage>
-				<environment.webdescriptor.enviId>Development</environment.webdescriptor.enviId>
+				<environment.stage>SystemTest</environment.stage>
+				<environment.log4j.rootLogger>DEBUG</environment.log4j.rootLogger>
+				<environment.webdescriptor.session-timeout>15</environment.webdescriptor.session-timeout>
 				<environment.jdbc.url>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
 				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
 				<environment.jdbc.db>PMDB104_DEVE</environment.jdbc.db>

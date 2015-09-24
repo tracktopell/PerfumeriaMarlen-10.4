@@ -19,22 +19,24 @@ import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaEstadoQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
+import com.pmarlen.backend.model.quickviews.PagerInfo;
 import com.pmarlen.digifactws.production.client.DigifactClient;
 import com.pmarlen.model.Constants;
 import com.tracktopell.jdbc.DataSourceFacade;
 import java.io.ByteArrayInputStream;
-
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Statement;	
 import java.sql.Timestamp;	
 import java.util.ArrayList;
 import java.util.HashSet;
-import org.apache.log4j.Logger;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.log4j.Logger;
 
 /**
  * Class for EntradaSalidaDAO of Table ENTRADA_SALIDA.
@@ -105,7 +107,7 @@ public class EntradaSalidaDAO {
 			}
 			codigosBuscar = sbCB.toString();
 
-			logger.info("pedidoVentaId=" + pedidoVentaId + ", codigosBuscar= ->" + codigosBuscar + "<-");
+			logger.info("->actualizaCantidadPendienteParaOtrosES:pedidoVentaId=" + pedidoVentaId + ", codigosBuscar= ->" + codigosBuscar + "<-");
 
 			ps = conn.prepareStatement(
 					"SELECT AP.CANTIDAD,ESD.PRODUCTO_CODIGO_BARRAS,ESD.ALMACEN_ID,SUM(ESD.CANTIDAD) TOT_CANTIDAD \n"
@@ -132,7 +134,7 @@ public class EntradaSalidaDAO {
 				int tcxi = rs.getInt("TOT_CANTIDAD");
 				int apcxi = rs.getInt("CANTIDAD");
 
-				logger.info("Iteration:\t" + axi + "," + cbxi + ", " + tcxi + ", " + apcxi);
+				logger.debug("->actualizaCantidadPendienteParaOtrosES:Iteration:\t" + axi + "," + cbxi + ", " + tcxi + ", " + apcxi);
 
 				for (EntradaSalidaDetalleQuickView pvd : pvdList) {
 					if (pvd.getProductoCodigoBarras().equals(cbxi) && pvd.getAlmacenId() == axi) {
@@ -142,10 +144,10 @@ public class EntradaSalidaDAO {
 					}
 				}
 			}
-			logger.info("->OK, actualizado");
+			logger.info("->actualizaCantidadPendienteParaOtrosES:OK, actualizado");
 
 		} catch (SQLException ex) {
-			logger.error("SQLException:", ex);
+			logger.error("->actualizaCantidadPendienteParaOtrosES:SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());
 		} finally {
 			if (rs != null) {
@@ -154,7 +156,7 @@ public class EntradaSalidaDAO {
 					ps.close();
 					conn.close();
 				} catch (SQLException ex) {
-					logger.error("findAll:clossing:", ex);
+					logger.error("->actualizaCantidadPendienteParaOtrosES::clossing:", ex);
 				}
 			}
 		}
@@ -170,8 +172,7 @@ public class EntradaSalidaDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement(
-					"SELECT	ES.ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,\n"
+			final String query = "SELECT	ES.ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -197,10 +198,11 @@ public class EntradaSalidaDAO {
 					+ "AND       ES.ID = ?\n"					
 					+ "AND       ES.ID        = ESD.ENTRADA_SALIDA_ID\n"
 					+ "GROUP BY  ESD.ENTRADA_SALIDA_ID\n"
-					+ "ORDER BY  ES.ID DESC");
+					+ "ORDER BY  ES.ID DESC";
+			ps = conn.prepareStatement(query);
 
 			ps.setInt(1, p.getId());
-
+			logger.info("->findBy("+p.getId()+"):query:"+query);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				x = new EntradaSalidaQuickView();
@@ -249,52 +251,52 @@ public class EntradaSalidaDAO {
 					x.setImporteTotal(x.getImporteBruto() );
 				}
 			}
+			if(x != null) {
+				ArrayList<EntradaSalidaEstadoQuickView> pveList = new ArrayList<EntradaSalidaEstadoQuickView>();
+				/*
+				 SELECT ESE.ID,ESE.ENTRADA_SALIDA_ID,ESE.ESTADO_ID,E.DESCRIPCION,ESE.FECHA,ESE.USUARIO_EMAIL,U.NOMBRE_COMPLETO,ESE.COMENTARIOS 
+				 FROM   ENTRADA_SALIDA_ESTADO ESE,ESTADO E,USUARIO U
+				 WHERE  1=1
+				 AND    ESE.ESTADO_ID=E.ID
+				 AND    ESE.USUARIO_EMAIL = U.EMAIL
+				 AND    ESE.ENTRADA_SALIDA_ID=2548
+				 ORDER BY ESE.FECHA;
+				 */
 
-			ArrayList<EntradaSalidaEstadoQuickView> pveList = new ArrayList<EntradaSalidaEstadoQuickView>();
-			/*
-			 SELECT ESE.ID,ESE.ENTRADA_SALIDA_ID,ESE.ESTADO_ID,E.DESCRIPCION,ESE.FECHA,ESE.USUARIO_EMAIL,U.NOMBRE_COMPLETO,ESE.COMENTARIOS 
-			 FROM   ENTRADA_SALIDA_ESTADO ESE,ESTADO E,USUARIO U
-			 WHERE  1=1
-			 AND    ESE.ESTADO_ID=E.ID
-			 AND    ESE.USUARIO_EMAIL = U.EMAIL
-			 AND    ESE.ENTRADA_SALIDA_ID=2548
-			 ORDER BY ESE.FECHA;
-			 */
+				psESE = conn.prepareStatement(
+						"SELECT ESE.ID,ESE.ENTRADA_SALIDA_ID,ESE.ESTADO_ID,E.DESCRIPCION,ESE.FECHA,ESE.USUARIO_EMAIL,U.NOMBRE_COMPLETO,ESE.COMENTARIOS \n"
+						+ "FROM   ENTRADA_SALIDA_ESTADO ESE,ESTADO E,USUARIO U\n"
+						+ "WHERE  1=1\n"
+						+ "AND    ESE.ESTADO_ID=E.ID\n"
+						+ "AND    ESE.USUARIO_EMAIL = U.EMAIL\n"
+						+ "AND    ESE.ENTRADA_SALIDA_ID=?\n"
+						+ "ORDER BY ESE.FECHA DESC");
+				psESE.setInt(1, p.getId());
 
-			psESE = conn.prepareStatement(
-					"SELECT ESE.ID,ESE.ENTRADA_SALIDA_ID,ESE.ESTADO_ID,E.DESCRIPCION,ESE.FECHA,ESE.USUARIO_EMAIL,U.NOMBRE_COMPLETO,ESE.COMENTARIOS \n"
-					+ "FROM   ENTRADA_SALIDA_ESTADO ESE,ESTADO E,USUARIO U\n"
-					+ "WHERE  1=1\n"
-					+ "AND    ESE.ESTADO_ID=E.ID\n"
-					+ "AND    ESE.USUARIO_EMAIL = U.EMAIL\n"
-					+ "AND    ESE.ENTRADA_SALIDA_ID=?\n"
-					+ "ORDER BY ESE.FECHA DESC");
-			psESE.setInt(1, p.getId());
+				rsESE = psESE.executeQuery();
+				EntradaSalidaEstadoQuickView z = null;
+				while (rsESE.next()) {
+					z = new EntradaSalidaEstadoQuickView();
 
-			rsESE = psESE.executeQuery();
-			EntradaSalidaEstadoQuickView z = null;
-			while (rsESE.next()) {
-				z = new EntradaSalidaEstadoQuickView();
+					z.setId(rsESE.getInt("ID"));
+					z.setEntradaSalidaId(rsESE.getInt("ENTRADA_SALIDA_ID"));
+					z.setEstadoId(rsESE.getInt("ESTADO_ID"));
+					z.setEstadoDescripcion(rsESE.getString("DESCRIPCION"));
+					z.setFecha(rsESE.getTimestamp("FECHA"));
+					z.setUsuarioEmail(rsESE.getString("USUARIO_EMAIL"));
+					z.setUsuarioNombreCompleto(rsESE.getString("NOMBRE_COMPLETO"));
+					z.setComentarios(rsESE.getString("COMENTARIOS"));
 
-				z.setId(rsESE.getInt("ID"));
-				z.setEntradaSalidaId(rsESE.getInt("ENTRADA_SALIDA_ID"));
-				z.setEstadoId(rsESE.getInt("ESTADO_ID"));
-				z.setEstadoDescripcion(rsESE.getString("DESCRIPCION"));
-				z.setFecha(rsESE.getTimestamp("FECHA"));
-				z.setUsuarioEmail(rsESE.getString("USUARIO_EMAIL"));
-				z.setUsuarioNombreCompleto(rsESE.getString("NOMBRE_COMPLETO"));
-				z.setComentarios(rsESE.getString("COMENTARIOS"));
+					pveList.add(z);
+				}
+				x.setPveList(pveList);
 
-				pveList.add(z);
+				if(z != null){
+					x.setEstadoActualFecha(z.getFecha());
+					x.setEstadoActualUsuarioEmail(z.getUsuarioEmail());
+					x.setEstadoActualUsuarioNombreCompleto(z.getUsuarioNombreCompleto());
+				}
 			}
-			x.setPveList(pveList);
-			
-			if(z != null){
-				x.setEstadoActualFecha(z.getFecha());
-				x.setEstadoActualUsuarioEmail(z.getUsuarioEmail());
-				x.setEstadoActualUsuarioNombreCompleto(z.getUsuarioNombreCompleto());
-			}
-
 		} catch (SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());
@@ -463,6 +465,177 @@ public class EntradaSalidaDAO {
 			int size = rs.getRow();
 			rs.beforeFirst();
 			logger.info("->rs.last(): rs.getRow()="+size);
+			
+			while (rs.next()) {
+				EntradaSalidaQuickView x = new EntradaSalidaQuickView();				
+				x.setId((Integer) rs.getObject("ES_ID"));
+				x.setTipoMov((Integer) rs.getObject("TIPO_MOV"));
+				x.setSucursalId((Integer) rs.getObject("SUCURSAL_ID"));
+				x.setEstadoId((Integer) rs.getObject("ESTADO_ID"));
+				x.setFechaCreo((Timestamp) rs.getObject("FECHA_CREO"));
+				x.setUsuarioEmailCreo((String) rs.getObject("USUARIO_EMAIL_CREO"));
+				x.setClienteId((Integer) rs.getObject("CLIENTE_ID"));
+				x.setFormaDePagoId((Integer) rs.getObject("FORMA_DE_PAGO_ID"));
+				x.setMetodoDePagoId((Integer) rs.getObject("METODO_DE_PAGO_ID"));
+				x.setFactorIva((Double) rs.getObject("FACTOR_IVA"));
+				x.setComentarios((String) rs.getObject("COMENTARIOS"));
+				x.setCfdId((Integer) rs.getObject("CFD_ID"));
+				x.setNumeroTicket((String) rs.getObject("NUMERO_TICKET"));
+				x.setCaja((Integer) rs.getObject("CAJA"));
+				x.setImporteRecibido((Double) rs.getObject("IMPORTE_RECIBIDO"));
+				x.setAprobacionVisaMastercard((String) rs.getObject("APROBACION_VISA_MASTERCARD"));
+				x.setPorcentajeDescuentoCalculado((Integer) rs.getObject("PORCENTAJE_DESCUENTO_CALCULADO"));
+				x.setPorcentajeDescuentoExtra((Integer) rs.getObject("PORCENTAJE_DESCUENTO_EXTRA"));
+				x.setCondicionesDePago((String) rs.getObject("CONDICIONES_DE_PAGO"));
+				x.setNumDeCuenta((String) rs.getObject("NUM_DE_CUENTA"));
+				x.setAutorizaDescuento((Integer) rs.getObject("AUTORIZA_DESCUENTO"));
+
+				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
+				x.setEstadoDescripcion((String) rs.getObject("E_DESCRIPCION"));
+				x.setUsuarioNombreCompleto((String) rs.getObject("U_NOMBRE_COMPLETO"));
+				x.setClienteRFC((String) rs.getObject("C_RFC"));
+				x.setClienteRazonSocial((String) rs.getObject("C_RAZON_SOCIAL"));
+				x.setClienteNombreEstablecimiento((String) rs.getObject("C_NOMBRE_ESTABLECIMIENTO"));
+				x.setMetodoDePagoDescripcion((String) rs.getObject("MP_DESCRIPCION"));
+				x.setFormaDePagoDescripcion((String) rs.getObject("FP_DESCRIPCION"));
+				x.setCdfNumCFD((String) rs.getObject("CFD_NUM_CFD"));
+
+				x.setNumElementos(rs.getInt("NUM_ELEMENTOS"));
+				x.setImporteBruto(rs.getDouble("IMPORTE_BRUTO"));
+
+				x.setImporteNoGravado(x.getImporteBruto() / (1.0 + x.getFactorIva()));	
+				//logger.info("========================");
+				//logger.info("PEDIDO ID:        :\t"+x.getId());
+				//logger.info("IMPORTE BRUTO     :\t"+x.getImporteBruto());
+				//logger.info("IMPORTE NO GRABADO:\t"+x.getImporteNoGravado());
+				if(x.getImporteBruto() !=null && x.getPorcentajeDescuentoCalculado()!=null && x.getPorcentajeDescuentoExtra()!=null){
+					x.setImporteDescuento((x.getImporteNoGravado()* (x.getPorcentajeDescuentoCalculado()+x.getPorcentajeDescuentoExtra()))/100.0);															
+				} else {
+					x.setImporteDescuento(0.0);					
+				}
+				x.setImporteIVA((x.getImporteNoGravado() - x.getImporteDescuento())*Constants.IVA);
+				x.setImporteTotal(x.getImporteNoGravado()- x.getImporteDescuento() + x.getImporteIVA());
+				//logger.info("% DESCUENTOS      :\t"+x.getPorcentajeDescuentoCalculado()+"% + "+x.getPorcentajeDescuentoExtra());
+				//logger.info("I.V.A.            :\t"+x.getImporteIVA());
+				//logger.info("    T O T A L     :\t"+x.getImporteTotal());
+				
+				x.setEstadoActualFecha((Timestamp) rs.getObject("FECHA_ACTUALIZO"));
+				x.setEstadoActualUsuarioEmail((String) rs.getObject("USUARIO_ACTUALIZO"));
+
+				r.add(x);
+			}
+			logger.info("------------------------------");
+			logger.info("->FOUND :"+r.size()+" RECORDS.");
+		} catch (SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+					ps.close();
+					conn.close();
+				} catch (SQLException ex) {
+					logger.error("findAll:clossing:", ex);
+				}
+			}
+		}
+		return r;
+	}
+		
+	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(int tipoMov,int sucursalId,boolean active,PagerInfo pagerInfo) throws DAOException {
+		logger.info("->findAllActiveByPage(tipoMov="+tipoMov+",sucursalId="+sucursalId+",active="+active+",pagerInfo.filters="+pagerInfo.getFilters()+")");
+		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			
+			String q="SELECT	ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,\n"
+					+ "CFD.ID AS CFD_ID,\n"
+					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
+					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
+					+ "U.NOMBRE_COMPLETO AS U_NOMBRE_COMPLETO,\n"
+					+ "C.RFC AS C_RFC,\n"
+					+ "C.RAZON_SOCIAL AS C_RAZON_SOCIAL,\n"
+					+ "C.NOMBRE_ESTABLECIMIENTO AS C_NOMBRE_ESTABLECIMIENTO,\n"
+					+ "FP.DESCRIPCION AS FP_DESCRIPCION,\n"
+					+ "MP.DESCRIPCION AS MP_DESCRIPCION,\n"
+					+ "CFD.NUM_CFD AS CFD_NUM_CFD,\n"
+					+ "COUNT(1) NUM_ELEMENTOS, \n"
+					+ "SUM(ESD.CANTIDAD * ESD.PRECIO_VENTA) AS IMPORTE_BRUTO, \n"
+					+ "ESE.FECHA AS FECHA_ACTUALIZO, \n"		
+					+ "ESE.USUARIO_EMAIL AS USUARIO_ACTUALIZO\n"
+					+ "FROM      ENTRADA_SALIDA_ESTADO  ESE,\n"
+					+ "          ENTRADA_SALIDA_DETALLE ESD,\n"		
+					+ "          ENTRADA_SALIDA         ES\n"
+					+ "LEFT JOIN CFD            CFD ON ES.CFD_ID      = CFD.ID\n"
+					+ "LEFT JOIN SUCURSAL       S   ON ES.SUCURSAL_ID       = S.ID\n"
+					+ "LEFT JOIN ESTADO         E   ON ES.ESTADO_ID         = E.ID\n"
+					+ "LEFT JOIN USUARIO        U   ON ES.USUARIO_EMAIL_CREO= U.EMAIL\n"
+					+ "LEFT JOIN CLIENTE        C   ON ES.CLIENTE_ID        = C.ID\n"
+					+ "LEFT JOIN FORMA_DE_PAGO  FP  ON ES.FORMA_DE_PAGO_ID  = FP.ID\n"
+					+ "LEFT JOIN METODO_DE_PAGO MP  ON ES.METODO_DE_PAGO_ID = MP.ID\n"
+					+ "WHERE     1=1\n"
+					+ (active ? "AND       ES.ESTADO_ID IN (1,2,4)\n":
+							    "AND       ES.ESTADO_ID >  4\n" )
+					+ "AND       ES.ID        = ESD.ENTRADA_SALIDA_ID\n"
+					+ "AND       ES.ID        = ESE.ENTRADA_SALIDA_ID\n"
+					+ "AND       ES.ESTADO_ID = ESE.ESTADO_ID\n"		
+					+ "AND       ES.TIPO_MOV  = ?\n"
+					+ "AND       ES.SUCURSAL_ID= ?\n";
+			
+			//+ "ORDER BY  ES.ID DESC";
+			Map<String, Object> filters = pagerInfo.getFilters();
+			if(filters != null) {
+				for(String k:filters.keySet()){
+					q += "AND     ES."+k.toUpperCase()+" = ? \n";
+				}
+			}
+			q += "GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
+			
+			if(pagerInfo.getSortField() != null) {
+				q += "ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
+			}
+			
+			logger.info("->QUERY COUNT(tipoMov="+tipoMov+",sucursalId="+sucursalId+"):"+q);
+			//------------------------------------------------------------------
+			ps = conn.prepareStatement(q);
+			ps.setInt(1, tipoMov);
+			ps.setInt(2, sucursalId);
+			Map<String, Object> filtersValues = pagerInfo.getFilters();
+			if(filters != null) {
+				int vs=3;
+				for(String k:filtersValues.keySet()){
+					ps.setObject(vs++, filtersValues.get(k));
+				}
+			}
+			rs = ps.executeQuery();
+			rs.last();
+			int size = rs.getRow();
+			rs.beforeFirst();
+			logger.info("->rs.last(): rs.getRow()="+size);
+			pagerInfo.setTotalRowCount(size);
+			rs.close();
+			ps.close();
+			
+			//------------------------------------------------------------------
+			q +=    "LIMIT "+pagerInfo.getFirst()+","+pagerInfo.getPageSize();
+			logger.info("->QUERY BY PAGE:"+q);
+			
+			ps = conn.prepareStatement(q);
+			ps.setInt(1, tipoMov);
+			ps.setInt(2, sucursalId);
+			Map<String, Object> filtersValuesT = pagerInfo.getFilters();
+			if(filters != null) {
+				int vs=3;
+				for(String k:filtersValuesT.keySet()){
+					ps.setObject(vs++, filtersValuesT.get(k));
+				}
+			}
+			
+			rs = ps.executeQuery();
 			
 			while (rs.next()) {
 				EntradaSalidaQuickView x = new EntradaSalidaQuickView();				
@@ -930,6 +1103,7 @@ public class EntradaSalidaDAO {
 	}
 
 	public void invocarInicioWSCFDI(EntradaSalidaQuickView pedidoVenta,ArrayList<EntradaSalidaDetalleQuickView> pvdList,Cliente c, Usuario u,Sucursal s) throws DAOException {
+		logger.info("->invocarInicioWSCFDI:");
 		PreparedStatement ps = null;
 		PreparedStatement psCFD = null;
 		PreparedStatement psESE = null;
@@ -937,12 +1111,14 @@ public class EntradaSalidaDAO {
 		
 		ResultSet rsCFD = null;
 		Cfd cfd = null;
+		cfd = new Cfd();
 		Connection conn = null;
 		String mensajeRefacturado="";
 		Timestamp now = new Timestamp(System.currentTimeMillis());
+		cfd.setUltimaActualizacion(now);
 		try {
 			conn = getConnectionCommiteable();
-			
+			logger.info("->invocarInicioWSCFDI:BEGIN TRANSACTION.");
 			if(pedidoVenta.getCfdId() != null){
 				mensajeRefacturado="REFACTRUADO, POR ULTIMO ERROR";
 				psCFD = conn.prepareStatement("SELECT ID,ULTIMA_ACTUALIZACION,CONTENIDO_ORIGINAL_XML,CALLING_ERROR_RESULT,NUM_CFD,TIPO FROM CFD "+
@@ -952,7 +1128,6 @@ public class EntradaSalidaDAO {
 
 				rsCFD = psCFD.executeQuery();
 				if(rsCFD.next()) {
-					cfd = new Cfd();
 					cfd.setId((Integer)rsCFD.getObject("ID"));
 					cfd.setUltimaActualizacion((Timestamp)rsCFD.getObject("ULTIMA_ACTUALIZACION"));
 					Blob bc=rsCFD.getBlob("CONTENIDO_ORIGINAL_XML");
@@ -964,20 +1139,17 @@ public class EntradaSalidaDAO {
 				psCFD.close();
 				rsCFD.close();
 			} else {
-				mensajeRefacturado="FACTURADO 1RA VEZ";
-				cfd = new Cfd();
-				cfd.setUltimaActualizacion(now);
+				mensajeRefacturado="FACTURADO 1RA VEZ";								
 			}
-			
-			DigifactClient.invokeWSFactura(cfd,pedidoVenta, pvdList, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
-			
-			logger.info("===================AFTER DigifactClient.invokeWSFactura================");			
+			logger.info("->invocarInicioWSCFDI:before WS invoke.");
+			DigifactClient.invokeWSFactura(cfd,pedidoVenta, pvdList, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());			
+			logger.info("->invocarInicioWSCFDI:WS invoked.");
 			try {
-				logger.info("-->> cfd ="+BeanUtils.describe(cfd));
+				logger.info("->invocarInicioWSCFDI:cfd ="+BeanUtils.describe(cfd));
 			} catch (Exception ex) {
-				logger.error ("Describe fails:", ex);
+				logger.error ("->invocarInicioWSCFDI:Describe fails:", ex);
 			}
-			logger.info("===================>> INSERTING OR UPDATING ================");
+			logger.info("->invocarInicioWSCFDI:INSERTING OR UPDATING");
 			if(cfd.getId() == null){
 				psCFD = conn.prepareStatement("INSERT INTO CFD(ULTIMA_ACTUALIZACION,CONTENIDO_ORIGINAL_XML,CALLING_ERROR_RESULT,NUM_CFD,TIPO) "+
 						" VALUES(?,?,?,?,?)"
@@ -1016,7 +1188,7 @@ public class EntradaSalidaDAO {
 				logger.info("updated");
 			}
 			psCFD.close();
-			logger.info("psCDF closed");
+			logger.info("->invocarInicioWSCFDI:psCDF closed");
 			ps = conn.prepareStatement("UPDATE ENTRADA_SALIDA SET ESTADO_ID=?,CFD_ID=? WHERE ID=?");
 
 			int ci = 1;
@@ -1025,7 +1197,7 @@ public class EntradaSalidaDAO {
 			ps.setInt(ci++, pedidoVenta.getId());
 			ps.executeUpdate();			
 			ps.close();
-			logger.info("psCDF closed");
+			logger.info("->invocarInicioWSCFDI:psCDF closed");
 			
 			psESE = conn.prepareStatement("SELECT ID,ENTRADA_SALIDA_ID,ESTADO_ID,FECHA,USUARIO_EMAIL,COMENTARIOS FROM ENTRADA_SALIDA_ESTADO "					
 					+ "WHERE ENTRADA_SALIDA_ID=? AND ESTADO_ID=?");
@@ -1053,7 +1225,7 @@ public class EntradaSalidaDAO {
 			}
 			rsESE.close();
 			psESE.close();			
-			logger.info("psESE closed");
+			logger.info("->invocarInicioWSCFDI:psESE closed");
 			if(eseX.getId() == null){
 				psESE = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_ESTADO(ENTRADA_SALIDA_ID,ESTADO_ID,FECHA,USUARIO_EMAIL,COMENTARIOS) "
 						+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -1067,7 +1239,7 @@ public class EntradaSalidaDAO {
 				psESE.setString(ciESE++, eseX.getComentarios());
 
 				psESE.executeUpdate();
-				logger.info("insert psESE executed");
+				logger.info("->invocarInicioWSCFDI:insert psESE executed");
 			} else {
 				psESE = conn.prepareStatement("UPDATE ENTRADA_SALIDA_ESTADO SET FECHA=?,USUARIO_EMAIL=?,COMENTARIOS=? WHERE ENTRADA_SALIDA_ID=? AND ESTADO_ID=?");
 				int ciESE = 1;
@@ -1080,25 +1252,25 @@ public class EntradaSalidaDAO {
 				psESE.setInt(ciESE++, eseX.getEstadoId());
 
 				psESE.executeUpdate();
-				logger.info("update psESE executed");
+				logger.info("->invocarInicioWSCFDI:update psESE executed");
 			}
 			psESE.close();
-			logger.info("update psESE closed");
+			logger.info("->invocarInicioWSCFDI:update psESE closed");
 			
 			
 			conn.commit();
-			logger.info("============== COMMIT =================");
+			logger.info("->invocarInicioWSCFDI:COMMIT");
 		} catch (SQLException ex) {
-			logger.error("SQLException:", ex);
+			logger.error("->invocarInicioWSCFDI:SQLException:", ex);
 			try {
 				conn.rollback();
-				logger.info("============== ROLLBACK =================");
+				logger.info("->invocarInicioWSCFDI:============== ROLLBACK =================");
 			} catch (SQLException exR) {
-				logger.error("RollBack failed:", ex);
+				logger.error("invocarInicioWSCFDI:RollBack failed:", ex);
 			}
 			throw new DAOException("InUpdate:" + ex.getMessage());
 		} finally {
-			logger.info("============== FIN METODO DAO =================");
+			logger.info("->invocarInicioWSCFDI:END");
 		}
 	}
 
