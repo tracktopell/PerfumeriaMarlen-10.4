@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class DialogConfiguracionSistema extends javax.swing.JDialog {
 

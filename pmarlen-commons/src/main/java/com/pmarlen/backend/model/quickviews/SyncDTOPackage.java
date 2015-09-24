@@ -6,6 +6,7 @@
 
 package com.pmarlen.backend.model.quickviews;
 
+import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
@@ -25,7 +26,8 @@ public class SyncDTOPackage {
 	private List<ClienteQuickView> clienteList;
 	private List<MetodoDePago> metodoDePagoList;
 	private List<FormaDePago> formaDePagoList;
-	private Sucursal sucursal;	
+	private Sucursal sucursal;
+	private List<Almacen> almacenList;
 
 	/**
 	 * @return the inventarioSucursalQVList
@@ -110,6 +112,22 @@ public class SyncDTOPackage {
 	public void setSucursal(Sucursal sucursal) {
 		this.sucursal = sucursal;
 	} 
+
+	/**
+	 * @return the almacenList
+	 */
+	public List<Almacen> getAlmacenList() {
+		return almacenList;
+	}
+	
+	/**
+	 * @param almacenList the almacenList to set 
+	 */
+	public void setAlmacenList(List<Almacen> almacenList) {
+		this.almacenList = almacenList;
+	}
+	
+	
 
 	@Override
 	public String toString() {

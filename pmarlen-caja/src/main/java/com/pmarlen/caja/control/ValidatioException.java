@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 class ValidatioException extends Exception {
 	JComponent source;

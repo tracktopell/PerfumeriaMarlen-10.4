@@ -23,7 +23,7 @@ import javax.swing.event.ListSelectionListener;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class DialogConfiguracionBTImpresoraControl implements ActionListener, ListSelectionListener {
 	

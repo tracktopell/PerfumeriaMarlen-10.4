@@ -26,6 +26,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 /**
@@ -37,24 +39,44 @@ public class Main {
 	private static boolean singleInstanceRunning = false;
 	private static Logger logger = Logger.getLogger(Main.class.getName());
 	//public static final String INTELBTH = "intelbth";
-
+	private static boolean dinamicDebug=false;
 	/**
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
 		FramePrincipalControl framePrincipalControl = null;
 		DialogLoginControl dialogLoginControl = null;
-
+		
+		System.out.println("Main args[]={");
+		dinamicDebug=false;
+		int na=0;
+		for(String a: args){
+			if(na>0){
+				System.out.print(", ");
+			}
+			System.out.print("\t\""+a+"\"");
+			if(a.equals("-debug=true")){
+				dinamicDebug = true;
+			}
+			na++;
+		}
+		System.out.println("}");
+		
+		if(dinamicDebug){
+			System.out.println("->Activating Log4J DEBUG Level.");
+			LogManager.getRootLogger().setLevel(Level.DEBUG);
+		}
+		
 		isSingleInstanceRunning();
 
-		logger.info("==========================================================>>>");
+		logger.debug("==========================================================>>>");
 
 		MemoryDAO.loadProperties();
 
-		logger.info("<<<==========================================================");
+		logger.debug("<<<==========================================================");
 
 		try {
-			logger.info("L&Fs:" + Arrays.asList(UIManager.getInstalledLookAndFeels()));
+			logger.debug("L&Fs:" + Arrays.asList(UIManager.getInstalledLookAndFeels()));
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 			//UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
@@ -66,17 +88,18 @@ public class Main {
 		}
 
 		if (!MemoryDAO.isExsistFile()) {
-			logger.info("==========================================================>>> 1 Time");
+			logger.debug("==========================================================>>> 1 Time");
 			FirstRunParamsConfigDialogControl.getInstance().estadoInicial();
 
 			while (FirstRunParamsConfigDialogControl.isConfiguring()) {
 				try {
-					logger.info("==>> configuring");
+					logger.trace("==>> configuring");
 					Thread.sleep(500);
 				} catch (InterruptedException ie) {
+					logger.trace("==>> InterruptedException");
 				}
 			}
-			logger.info("==>> is configuring:" + FirstRunParamsConfigDialogControl.isConfiguring());
+			logger.debug("==>> is configuring:" + FirstRunParamsConfigDialogControl.isConfiguring());
 			if (!FirstRunParamsConfigDialogControl.getParamatersConfigured()) {
 				System.exit(2);
 			}
@@ -96,7 +119,7 @@ public class Main {
 				
 				while(uafc.isActualizando()){
 					try {
-						logger.info("==>> updating");
+						logger.debug("==>> updating");
 						Thread.sleep(500);
 					} catch (InterruptedException ie) {
 					}
@@ -104,7 +127,7 @@ public class Main {
 			}
 		}
 		
-		logger.info("======================= INICIANDO =======================");
+		logger.debug("======================= INICIANDO =======================");
 
 		MemoryDAO.startPaqueteSyncService();
 
@@ -117,7 +140,7 @@ public class Main {
 			framePrincipalControl.estadoInicial();
 			framePrincipalControl.iniciaReloj();
 
-			logger.info("-------->> Frame Principal, esperando antes de login");
+			logger.debug("-------->> Frame Principal, esperando antes de login");
 			dialogLoginControl.setFontBigest();
 			dialogLoginControl.getDialogLogin().pack();
 			dialogLoginControl.getDialogLogin().setLocationRelativeTo(null);
@@ -126,13 +149,13 @@ public class Main {
 			if (!dialogLoginControl.isLoggedIn()) {
 				throw new IllegalAccessException("NO SE ACCESO ");
 			} else {
-				logger.info("->OK logedin, GO !");
+				logger.debug("->OK logedin, GO !");
 				
 				framePrincipalControl.enableAndDisableAdminControls();
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			logger.error("EN acceso:", e);
 			System.exit(1);
 		}
 
@@ -144,7 +167,7 @@ public class Main {
 			public void run() {
 				try {
 					ServerSocket serverSocket = new ServerSocket(5690);
-					System.out.println("OK, is single instance !");
+					logger.debug("OK, is single instance !");
 					singleInstanceRunning = true;
 					Socket s = serverSocket.accept();
 				} catch (IOException ioe) {
@@ -158,7 +181,7 @@ public class Main {
 		try {
 			while (!singleInstanceRunning) {
 				Thread.sleep(1000L);
-				logger.info("-->> close ?");
+				logger.debug("-->> close ?");
 				timeOut++;
 				if (timeOut >= 10) {
 					break;
@@ -168,7 +191,7 @@ public class Main {
 
 		} finally {
 			if (!singleInstanceRunning) {
-				logger.info("-->> close !!");
+				logger.debug("-->> close !!");
 				System.exit(1);
 			}
 		}

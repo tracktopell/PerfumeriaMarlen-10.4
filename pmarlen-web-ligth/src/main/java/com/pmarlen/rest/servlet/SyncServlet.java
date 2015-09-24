@@ -6,6 +6,7 @@
 
 package com.pmarlen.rest.servlet;
 
+import com.pmarlen.backend.dao.AlmacenDAO;
 import com.pmarlen.backend.dao.AlmacenProductoDAO;
 import com.pmarlen.backend.dao.ClienteDAO;
 import com.pmarlen.backend.dao.DAOException;
@@ -117,6 +118,7 @@ public class SyncServlet extends HttpServlet {
 				s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
 				s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
 				s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
+				s.setAlmacenList(AlmacenDAO.getInstance().findBySucursal(sucId));
 
 				ObjectMapper mapper = new ObjectMapper();
 				ByteArrayOutputStream baos=new ByteArrayOutputStream();

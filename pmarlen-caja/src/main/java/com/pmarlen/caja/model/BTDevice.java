@@ -6,7 +6,7 @@ package com.pmarlen.caja.model;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class BTDevice {
 	private String blueToothAddress;

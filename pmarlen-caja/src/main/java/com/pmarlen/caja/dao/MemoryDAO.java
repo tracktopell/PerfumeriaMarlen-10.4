@@ -63,9 +63,9 @@ public class MemoryDAO {
 		
 		if(fileProperties.exists() && fileProperties.canRead()){
 			try {
-				logger.info("->Properties local File found, reading File Properties:"+fileProperties+"");
+				logger.debug("->Properties local File found, reading File Properties:"+fileProperties+"");
 				properties.load(new FileInputStream(fileProperties));
-				logger.info("->ok, Properties read:"+properties);
+				logger.debug("->ok, Properties read:"+properties);
 				exsistFile = true;
 			}catch(IOException ioe){				
 				logger.error( "Can`t read File for properties", ioe);
@@ -75,9 +75,9 @@ public class MemoryDAO {
 
 	public static void persistPRoperties() {
 		try {
-			logger.info("->Properties Doesn't exsist, wrinting File Properties.");
+			logger.debug("->Properties Doesn't exsist, wrinting File Properties.");
 			properties.store(new FileOutputStream(propertiesFileNAme), "Persisted");
-			logger.info("->ok, writing.");
+			logger.debug("->ok, writing.");
 		}catch(IOException ioe){
 			logger.error( "Can`t create File for properties", ioe);
 		}
@@ -132,16 +132,16 @@ public class MemoryDAO {
 	
 	
 	public static void getPaqueteSyncPoll(){
-		logger.info("----------------->>BEFORE while ");
+		logger.debug("----------------->>BEFORE while ");
 		syncPollState = SYNC_STATE_BEFORE_RUNNING;
 		while(runnigPool){
-			logger.info("\t----------------->> while running, download");
+			logger.debug("\t----------------->> while running, download");
 			if(xt%6==0){
 				try {
 					syncPollState = SYNC_STATE_BEFORE_CONNECTING;
 					download();
 					syncPollState = SYNC_STATE_BEFORE_DOWNLOADED;
-					logger.info("\t----------------->> OK, downloded, read locally");
+					logger.debug("\t----------------->> OK, downloded, read locally");
 					readLocally();
 					syncPollState = SYNC_STATE_READ;
 				}catch(MalformedURLException e){
@@ -170,7 +170,7 @@ public class MemoryDAO {
 			}
 			
 			try {
-				logger.info("\t----------------->> while running, sleep,.....");
+				logger.debug("\t----------------->> while running, sleep,.....");
 				Thread.sleep(10000L);
 			}catch(Exception e){
 				logger.error("downoload",e);
@@ -185,7 +185,7 @@ public class MemoryDAO {
 	}
 	
 	public static void startPaqueteSyncService(){
-		logger.info("----------------->> startPaqueteSyncService");
+		logger.debug("----------------->> startPaqueteSyncService");
 		new Thread(){
 			@Override
 			public void run() {
@@ -232,7 +232,7 @@ public class MemoryDAO {
 				append(getLoggedIn());
 		
 		url = new URL(sbURL.toString());
-		logger.info(">> Downloading url:"+url);
+		logger.debug(">> Downloading url:"+url);
 		
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		connection.setRequestProperty("User-Agent",getUserAgentExpression());
@@ -245,14 +245,14 @@ public class MemoryDAO {
 
 		byte buffer[] = new byte[1024];
 		int r;
-		logger.info(">> reading");
+		logger.debug(">> reading");
 		while ((r = is.read(buffer)) != -1) {
 			fos.write(buffer, 0, r);
 			fos.flush();
 		}
 		fos.close();
 		is.close();
-		logger.info(">> saving");
+		logger.debug(">> saving");
 	}
 	
 	private static void iamalive() throws IOException{
@@ -273,7 +273,7 @@ public class MemoryDAO {
 				append(getLoggedIn());
 		
 		url = new URL(sbURL.toString());
-		logger.info(">> I'm Alive URL:"+url);
+		logger.debug(">> I'm Alive URL:"+url);
 		
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		
@@ -284,7 +284,7 @@ public class MemoryDAO {
 
 		int code = connection.getResponseCode();
 
-		logger.info(">> code:"+code);
+		logger.debug(">> code:"+code);
 	}
 
 	private static void readLocally() {
@@ -293,7 +293,7 @@ public class MemoryDAO {
 		String jsonContent=null;
 
 		try {
-			logger.info(">> open ZIP");
+			logger.debug(">> open ZIP");
 			zf = new ZipFile(fileName);
 
 			Enumeration<? extends ZipEntry> entries = zf.entries();
@@ -305,7 +305,7 @@ public class MemoryDAO {
 				byte buffer[] =new byte[1024];
 				ByteArrayOutputStream baos= new ByteArrayOutputStream();
 				if(ze.getName().endsWith(".json")){
-					logger.info(">> Reading from:"+ze.getName()+", "+ze.getSize()+" bytes");
+					logger.debug(">> Reading from:"+ze.getName()+", "+ze.getSize()+" bytes");
 					InputStream is = zf.getInputStream(ze);
 					int r=0;
 					while((r=is.read(buffer))!=-1){
@@ -314,29 +314,33 @@ public class MemoryDAO {
 					}
 					baos.close();
 					is.close();
-					logger.info(">> OK read.");
+					logger.debug(">> OK read.");
 					
 					content = baos.toByteArray();
-					logger.info(">> content.length="+content.length);
+					logger.debug(">> content.length="+content.length);
 					
 					jsonContent=new String(content);					
 					
-					logger.info(">> jsonContent.size="+jsonContent.length());
-					//logger.info(">> jsonContent="+jsonContent);
+					logger.debug(">> jsonContent.size="+jsonContent.length());
+					//logger.debug(">> jsonContent="+jsonContent);
 				}
 			}
 			zf.close();
-			logger.info(">> After read zip");
+			logger.debug(">> After read zip");
 			if(jsonContent != null) {
-				logger.info(">> parse:");
+				logger.debug(">> parse:");
 				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
-				logger.info(">> paqueteSinc:"+paqueteSinc);
+				logger.debug(">> paqueteSinc:"+paqueteSinc);
 				List<P> lp=paqueteSinc.getInventarioSucursalQVList();
 				productosParaBuscar = new HashMap<String,P>();
+				logger.debug(">> productosParaBuscar, begin");
+				long t0=System.currentTimeMillis();
 				for(P p: lp){
 					productosParaBuscar.put(p.getCb(), p);
 				}
-				logger.info(">> productosParaBuscar, ok ready !");
+				long t=t0-System.currentTimeMillis();
+				logger.debug(">> productosParaBuscar, ready T="+t);
+				ApplicationLogic.getInstance().setTipoAlmacen(paqueteSinc.getAlmacenList());
 			}
 			
 		} catch (Exception ex) {

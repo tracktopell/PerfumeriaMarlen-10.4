@@ -15,14 +15,18 @@ import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class PanelVenta extends javax.swing.JPanel {
+	private static Logger logger = Logger.getLogger(PanelVenta.class.getName());
+
 	private static DecimalFormat df = new DecimalFormat("$ ###,###,##0.00");
 	private static String imagesDir = null;
 	/**
@@ -209,6 +213,13 @@ public class PanelVenta extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
 	/**
+	 * @return the chechar
+	 */
+	public JButton getChechar() {
+		return chechar;
+	}
+
+	/**
 	 * @return the cancelar
 	 */
 	public javax.swing.JButton getCancelar() {
@@ -298,27 +309,27 @@ public class PanelVenta extends javax.swing.JPanel {
 	String imagePath = "/PM_MULTIMEDIO_MIN_JPG/";
 	
 	private ImageIcon getProductoImageIcon(P p){
-		System.err.println("=>getProductoImageIcon(" + p +")");
+		logger.debug("=>getProductoImageIcon(" + p +")");
 		ImageIcon productoImageIcon = null;
 		File fileImage=null;
 		try{
 			//fileImage = new File(imagePath+"/MED_PRODUCTO_MULTIMEDIO_"+p.getCb()+"_1.jpg");
 			fileImage = new File(getImagesDir()+imagePath+"/MIN_PRODUCTO_MULTIMEDIO_"+p.getCb()+"_1.jpg");
 			if(fileImage.exists() && fileImage.canRead()) {
-				System.err.println("=>getProductoImageIcon: fileImage:" + fileImage);
+				logger.trace("=>getProductoImageIcon: fileImage:" + fileImage+", size:"+fileImage.length()+" bytes");
 				productoImageIcon = new ImageIcon(ImageIO.read(new FileInputStream(fileImage)));
 			} else {
-				throw new Exception("Image not found for :"+p.getCb());				
+				throw new Exception("Image not found for :"+p.getCb()+", fileImage:"+fileImage);
 			}
 		} catch(Exception e){
-			e.printStackTrace(System.err);
+			logger.debug(e.getMessage());
 			productoImageIcon = getDefaultProductoImageIcon();
 		}
 		return productoImageIcon;	
 	}
 	
 	public void resetInfoForProducto(final P p){
-		System.err.println("=>resetInfoForProducto=" + p);
+		logger.debug("p=" + p);
 		if(p!=null){
 			labelNombre.setText(p.getN());		
 			labelPresentacion.setText(p.getP());

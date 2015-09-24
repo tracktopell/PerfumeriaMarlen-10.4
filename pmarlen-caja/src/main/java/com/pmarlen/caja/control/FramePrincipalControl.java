@@ -19,17 +19,18 @@ import java.awt.event.ComponentListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class FramePrincipalControl implements ActionListener{
-
-	FramePrincipal    framePrincipal;
-	PanelVentaControl panelVentaControl;
-	PanelProductosControl panelProductosControl;
-	PanelVentasControl panelVentasControl;
+	private static Logger logger = Logger.getLogger(FramePrincipalControl.class.getName());
+	private FramePrincipal    framePrincipal;
+	private PanelVentaControl panelVentaControl;
+	private PanelProductosControl panelProductosControl;
+	private PanelVentasControl panelVentasControl;
 	
 	private static FramePrincipalControl instance;
 	/**
@@ -81,7 +82,7 @@ public class FramePrincipalControl implements ActionListener{
 		//---------------------------------------------------
 		framePrincipal.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
-				//System.err.println("-->>new Size:"+framePrincipal.getSize());
+				//logger.debug("-->>new Size:"+framePrincipal.getSize());
 				int  w=(int)framePrincipal.getSize().getWidth();
 				int sw=(70*w)/100;
 				framePrincipal.getPanelVenta().getSplitPanel().setDividerLocation(sw);
@@ -225,10 +226,8 @@ public class FramePrincipalControl implements ActionListener{
 
 	public void enableAndDisableAdminControls() {
 		framePrincipal.updateStatusWest();
-		final PanelProductos pp = (PanelProductos)framePrincipal.getPanelProductos();
-		System.err.println("--->> ADMIN HABILITANDO");
+		final PanelProductos pp = (PanelProductos)framePrincipal.getPanelProductos();		
 		framePrincipal.getConfigMenu().setEnabled(true);
-
 		pp.getEditar().setEnabled(true);
 		pp.getEliminar().setEnabled(true);
 		pp.getNuevo().setEnabled(true);

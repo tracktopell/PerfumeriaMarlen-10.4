@@ -10,7 +10,7 @@ import javax.swing.JTable;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class JTableColumnAutoResizeHelper extends ComponentAdapter {
 

@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class DialogConfiguracionPasswordControl implements ActionListener {
 

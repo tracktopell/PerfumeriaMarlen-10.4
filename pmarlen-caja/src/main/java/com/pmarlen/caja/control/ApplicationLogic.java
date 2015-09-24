@@ -4,8 +4,10 @@
  */
 package com.pmarlen.caja.control;
 
+import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.ConfiguracionSistema;
 import com.pmarlen.caja.dao.MemoryDAO;
+import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.U;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -23,6 +25,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -34,7 +37,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class ApplicationLogic {
 	private static Logger logger = Logger.getLogger(ApplicationLogic.class.getName());
@@ -50,7 +53,9 @@ public class ApplicationLogic {
 	private boolean adminLogedIn = false;
 	private String versionRead;
 	private static ApplicationLogic instance;
-	U logged;
+	private U logged;
+	private Almacen almacen;
+	private HashMap<Integer,Almacen> tipoAlmacen;
 
 	private ApplicationLogic(){	
 	}
@@ -93,7 +98,7 @@ public class ApplicationLogic {
 		BufferedReader br = null;
 		try{
 			url = new URL(MemoryDAO.getServerContext()+URI_VERSION_FILE);
-			logger.info("url="+url);
+			logger.debug("url="+url);
 			URLConnection conn = url.openConnection();
 			conn.setConnectTimeout(5000);
 			is = conn.getInputStream();
@@ -110,8 +115,8 @@ public class ApplicationLogic {
 					String[] propValue = lineRead.split("=");
 					versionRead = propValue[1]; 
 					
-					logger.info("lineRead="+lineRead+", versionReadOfLine="+versionRead);
-					logger.info("current version ="+getVersion());					
+					logger.debug("lineRead="+lineRead+", versionReadOfLine="+versionRead);
+					logger.debug("current version ="+getVersion());					
 					
 					String currentVersionParts[] = getVersion().split("\\.");
 					String versionReadParts[]    = versionRead.split("\\.");
@@ -119,7 +124,7 @@ public class ApplicationLogic {
 					logger.debug("comparing: "+Arrays.asList(currentVersionParts)+" < "+Arrays.asList(versionReadParts)+" : "+campareVersions(currentVersionParts,versionReadParts));
 					
 					if(campareVersions(currentVersionParts,versionReadParts)<0){
-						logger.info("\t->needsUpdateApplciation: Ok, update!");
+						logger.debug("\t->needsUpdateApplciation: Ok, update!");
 						return true;
 					}
 				}
@@ -189,12 +194,12 @@ public class ApplicationLogic {
 				fos.write(buffer, 0, (int)r);
 				fos.flush();
 				long advance = (100L * t) / length;
-				logger.debug("------->> Downloaded:\t [+ "+r+"]( "+t+"/"+length+") : "+advance+" %");
+				logger.trace("------->> Downloaded:\t [+ "+r+"]( "+t+"/"+length+") : "+advance+" %");
 				ual.updateProgress((int)advance);
 			}
 			ual.updateProgress(100);
-			logger.info("");
-			logger.info("finished: saved to"+FILE_APP_PACKAGE);
+			logger.debug("");
+			logger.debug("finished: saved to"+FILE_APP_PACKAGE);
 			is.close();
 			fos.close();
 			if(!keepDownlaod){
@@ -219,13 +224,13 @@ public class ApplicationLogic {
 		Enumeration zipFileEntries = zip.entries();
 
 		// Process each entry
-		logger.info("-> extracting :");
+		logger.debug("-> extracting :");
 		while (zipFileEntries.hasMoreElements()) {
 			// grab a zip file entry
 			ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
 			String currentEntry = entry.getName();
 			File destFile = new File(destPathToInflate, currentEntry);
-			logger.info("-> inflating :"+destFile.getPath());
+			logger.debug("-> inflating :"+destFile.getPath());
 			//destFile = new File(newPath, destFile.getName());
 			File destinationParent = destFile.getParentFile();
 
@@ -253,14 +258,14 @@ public class ApplicationLogic {
 				is.close();
 			}
 		}
-		logger.info("-> OK, finish extracting, versionRead="+versionRead);
+		logger.debug("-> OK, finish extracting, versionRead="+versionRead);
 		/*
-		logger.info("-> OK, finish extracting, update sym link for: versionRead="+versionRead);
+		logger.debug("-> OK, finish extracting, update sym link for: versionRead="+versionRead);
 		try {
 			String cmdToRelink = "ln -sf pmarlen-caja-"+versionRead+".jar pmarlen-caja.jar";
 			
 			int exitStatus = Runtime.getRuntime().exec(cmdToRelink).waitFor();
-			logger.info("-> exec: "+cmdToRelink+" ? "+exitStatus);
+			logger.debug("-> exec: "+cmdToRelink+" ? "+exitStatus);
 		}catch(InterruptedException ie){
 			logger.error("Relink:", ie);
 		}
@@ -330,4 +335,29 @@ public class ApplicationLogic {
 	boolean isPrintingEnabled() {
 		return printingEnabled;
 	}
+
+	public void setTipoAlmacen(List<Almacen> almacenList) {
+		if(this.tipoAlmacen == null) {			
+			this.tipoAlmacen = new HashMap<>();
+		}
+		for(Almacen a:almacenList){
+			this.tipoAlmacen.put(a.getTipoAlmacen(), a);
+			if(a.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+				this.almacen = a;
+			}
+		}
+	}
+
+	public HashMap<Integer, Almacen> getTipoAlmacen() {
+		return tipoAlmacen;
+	}
+
+	public void setAlmacen(int ta) {
+		this.almacen = this.tipoAlmacen.get(ta);
+	}
+
+	public Almacen getAlmacen() {
+		return almacen;
+	}
+	
 }

@@ -12,6 +12,7 @@ import com.pmarlen.caja.model.PedidoVentaDetalleTableItem;
 import com.pmarlen.caja.model.PedidoVentaDetalleTableModel;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.ProductoCellRender;
+import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.P;
 import com.pmarlen.ticket.TicketPrinteService;
 import com.pmarlen.ticket.bluetooth.TicketBlueToothPrinter;
@@ -32,13 +33,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class PanelVentaControl implements ActionListener, TableModelListener, MouseListener {
-
+	private static Logger logger = Logger.getLogger(PanelVentaControl.class.getName());
 	private PanelVenta panelVenta;
 	private ArrayList<PedidoVentaDetalleTableItem> detalleVentaTableItemList;
 	private DecimalFormat df;
@@ -49,7 +51,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		this.panelVenta = panelVenta;
 		PedidoVentaDetalleTableModel x = (PedidoVentaDetalleTableModel) this.panelVenta.getDetalleVentaJTable().getModel();
 		x.addTableModelListener(this);
-		System.err.println("->>table columns=" + panelVenta.getDetalleVentaJTable().getColumnCount());
+		logger.debug("->>table columns=" + panelVenta.getDetalleVentaJTable().getColumnCount());
 
 		Color bgc= panelVenta.getDetalleVentaJTable().getBackground();
 		Color fgc= panelVenta.getDetalleVentaJTable().getForeground();
@@ -75,7 +77,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				boolean valueIsAdjusting = e.getValueIsAdjusting();
-				//System.out.println("=>TableSelection:"+fi+"->"+li+", adj?"+valueIsAdjusting);
+				//logger.debug("=>TableSelection:"+fi+"->"+li+", adj?"+valueIsAdjusting);
 				if (!valueIsAdjusting) {
 					updateSelectedRow();
 				}
@@ -87,6 +89,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		this.panelVenta.getCodigoBuscar().addActionListener(this);
 		this.panelVenta.getTerminar().addActionListener(this);
 		this.panelVenta.getCancelar().addActionListener(this);
+		this.panelVenta.getChechar().addActionListener(this);
 
 		df = new DecimalFormat("$ ###,###,##0.00");
 		ticketPrinteService = TicketBlueToothPrinter.getInstance();
@@ -100,6 +103,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		panelVenta.getDetalleVentaJTable().updateUI();
 		panelVenta.resetInfoForProducto(null);
 		estadoChecando = false;
+		actualizarEstadoChecado();
 		renderTotal();
 	}
 
@@ -111,7 +115,9 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			terminar_ActionPerformed();
 		} else if (e.getSource() == this.panelVenta.getCancelar()) {
 			cancelar_ActionPerformed();
-		}
+		} else if (e.getSource() == this.panelVenta.getChechar()) {
+			checar_ActionPerformed();
+		} 
 
 	}
 	
@@ -120,34 +126,47 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	private void codigoBuscar_ActionPerformed() {
 		String codigoBuscar = panelVenta.getCodigoBuscar().getText().trim();
 		
-		System.err.println("=>codigoBuscar_ActionPerformed:codigoBuscar=" + codigoBuscar);
+		logger.info("[USER]->codigoBuscar_ActionPerformed:codigoBuscar=->" + codigoBuscar+"<-");
 		P productoEncontrado = null;
 		try{
 			productoEncontrado = MemoryDAO.fastSearchProducto(codigoBuscar);
 		}catch(Exception e){
 		
 		}
-		System.err.println("=>codigoBuscar_ActionPerformed:productoEncontrado=" + productoEncontrado);
+		logger.debug("=>codigoBuscar_ActionPerformed:productoEncontrado=" + productoEncontrado+", oferta?");
 
 		if (productoEncontrado != null) {
 			panelVenta.resetInfoForProducto(productoEncontrado);
-			EntradaSalidaDetalle pvd = new EntradaSalidaDetalle();
 			
-			pvd.setAlmacenId(1);
-			pvd.setCantidad(1);
-			pvd.setPrecioVenta(productoEncontrado.getA1p());
-			pvd.setProductoCodigoBarras(productoEncontrado.getCb());
-			
-			PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado, pvd);
-			int idx = 0;
-			
-			idx = detalleVentaTableItemList.size();
-			detalleVentaTableItemList.add(detalleVentaTableItemNuevo);
-			
-			panelVenta.getCodigoBuscar().setText("");
-			panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx, idx);
-			panelVenta.getDetalleVentaJTable().updateUI();
-			renderTotal();
+			if(!estadoChecando){
+				EntradaSalidaDetalle pvd = new EntradaSalidaDetalle();
+
+				pvd.setAlmacenId(ApplicationLogic.getInstance().getAlmacen().getId());
+				pvd.setCantidad(1);
+				int ta=ApplicationLogic.getInstance().getAlmacen().getTipoAlmacen();
+				if(ta == Constants.ALMACEN_PRINCIPAL) {
+					pvd.setPrecioVenta(productoEncontrado.getA1p());
+				} else if(ta == Constants.ALMACEN_REGALIAS) {
+					pvd.setPrecioVenta(productoEncontrado.getaRp());
+				} else if(ta == Constants.ALMACEN_OPORTUNIDAD) {
+					pvd.setPrecioVenta(productoEncontrado.getaOp());
+				} else {
+
+				}
+				pvd.setProductoCodigoBarras(productoEncontrado.getCb());
+				PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado, pvd, ta);
+				int idx = 0;
+
+				idx = detalleVentaTableItemList.size();
+				detalleVentaTableItemList.add(detalleVentaTableItemNuevo);
+
+				panelVenta.getCodigoBuscar().setText("");
+				panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx, idx);
+				panelVenta.getDetalleVentaJTable().updateUI();
+				renderTotal();
+			} else {
+				panelVenta.getCodigoBuscar().setText("");			
+			}
 		} else {
 			new Thread() {
 				@Override
@@ -155,11 +174,11 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					Color pc = panelVenta.getCodigoBuscar().getBackground();
 					panelVenta.getCodigoBuscar().setBackground(Color.red);
 					try {
-						for (int i = 0; i < 3; i++) {
+						for (int i = 0; i < 5; i++) {
 							panelVenta.getCodigoBuscar().setBackground(Color.red);
-							Thread.sleep(500);
+							Thread.sleep(350);
 							panelVenta.getCodigoBuscar().setBackground(pc);
-							Thread.sleep(100);
+							Thread.sleep(50);
 						}
 					} catch (InterruptedException ex) {
 					} finally {
@@ -172,7 +191,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 
 	private void terminar_ActionPerformed() {
-
+		logger.info("=>terminar_ActionPerformed()");
 		if (detalleVentaTableItemList.size() == 0) {
 			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(),
 					"Cuando termine de agregar más productos, podra terminar esta venta", "Terminar Venta",
@@ -218,10 +237,26 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 
 	private void cancelar_ActionPerformed() {
+		logger.info("=>cancelar_ActionPerformed()");
 		int r = JOptionPane.showConfirmDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "¿Cancelar la Venta Actual?", "Venta", JOptionPane.YES_NO_OPTION);
 		if (r == JOptionPane.YES_OPTION) {
 			estadoInicial();
 			panelVenta.getCodigoBuscar().requestFocus();
+		}
+	}
+	
+	private void checar_ActionPerformed(){
+		estadoChecando = ! estadoChecando;
+		actualizarEstadoChecado();
+	}
+
+	private void actualizarEstadoChecado() {
+		if(estadoChecando) {
+			panelVenta.getChechar().setText("AGREGAR [ F3 ]");
+			panelVenta.getCodigoBuscar().setForeground(Color.ORANGE);
+		} else {
+			panelVenta.getChechar().setText("CHECAR [ F3 ]");
+			panelVenta.getCodigoBuscar().setForeground(Color.BLUE);
 		}
 	}
 
@@ -253,16 +288,16 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == panelVenta.getDetalleVentaJTable()) {
-			//System.err.println("->>mouseClicked:"+e.getClickCount()+" "+panelVenta.getDetalleVentaJTable().getSelectedRow()+","+panelVenta.getDetalleVentaJTable().getSelectedColumn());
+			//logger.debug("->>mouseClicked:"+e.getClickCount()+" "+panelVenta.getDetalleVentaJTable().getSelectedRow()+","+panelVenta.getDetalleVentaJTable().getSelectedColumn());
 			if (e.getClickCount() == 2 && panelVenta.getDetalleVentaJTable().getSelectedColumn() == 0) {
 				editarCantidad(panelVenta.getDetalleVentaJTable().getSelectedRow());
 			}
 		}
 	}
 
-	void updateSelectedRow() {
+	private void updateSelectedRow() {
 		int sr = panelVenta.getDetalleVentaJTable().getSelectedRow();
-		System.out.println("=>Selected:sr=" + sr);
+		logger.debug("=>Selected:sr=" + sr);
 		if(sr != -1){
 			PedidoVentaDetalleTableItem prod = detalleVentaTableItemList.get(sr);
 			panelVenta.resetInfoForProducto(prod.getProducto());
@@ -288,13 +323,33 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 
 	private void editarCantidad(int selectedRow) {
-		int cantidad = detalleVentaTableItemList.get(selectedRow).getCantidad();
-		Object result = JOptionPane.showInputDialog(panelVenta, "Cambiar la Cantidad:", cantidad);
+		final PedidoVentaDetalleTableItem dvti = detalleVentaTableItemList.get(selectedRow);
+		int cantidad = dvti.getCantidad();		
+		EntradaSalidaDetalle pvd = dvti.getPvd();		
+		P p = dvti.getProducto();
+		int ta = dvti.getTipoAlmacen();		
+		int max = -1;
+		if(ta == Constants.ALMACEN_PRINCIPAL){
+			max = p.getA1c();
+		} else if(ta == Constants.ALMACEN_REGALIAS){
+			max = p.getaRc();
+		} else if(ta == Constants.ALMACEN_OPORTUNIDAD){
+			max = p.getaOc();
+		}
+		
+		Object result = JOptionPane.showInputDialog(panelVenta, "Cambiar la Cantidad [0, "+max+"]:", cantidad);
 		if (result != null) {
 			Integer nuevaCantidad = new Integer(result.toString().trim());
-
-			if (nuevaCantidad > 0) {
+			
+			if (nuevaCantidad > 0 && nuevaCantidad <= max) {
+				
 				detalleVentaTableItemList.get(selectedRow).setCantidad(nuevaCantidad);
+				panelVenta.getDetalleVentaJTable().updateUI();
+				renderTotal();
+			} else if (nuevaCantidad > max) {
+				JOptionPane.showMessageDialog(panelVenta, "No puede agregegar > "+max, "Modificar", JOptionPane.WARNING_MESSAGE);
+			} else if(nuevaCantidad == 0){
+				detalleVentaTableItemList.remove(selectedRow);
 				panelVenta.getDetalleVentaJTable().updateUI();
 				renderTotal();
 			}
@@ -334,9 +389,9 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			//ioe.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
 		} finally {
-			System.err.println("------------->>> DESPUES DE IMPRIMIR TICKET");
+			logger.debug("------------->>> DESPUES DE IMPRIMIR TICKET");
 			if (!printed) {
-				System.err.println("------------->>> ERROR AL IMPRIMIR");
+				logger.debug("------------->>> ERROR AL IMPRIMIR");
 				//t.printStackTrace(System.err);
 				JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error grave al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
 			}

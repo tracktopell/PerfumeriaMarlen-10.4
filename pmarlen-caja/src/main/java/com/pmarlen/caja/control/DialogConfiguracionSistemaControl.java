@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class DialogConfiguracionSistemaControl implements ActionListener {
 	DialogConfiguracionSistema dialogConfiguracionSistema;

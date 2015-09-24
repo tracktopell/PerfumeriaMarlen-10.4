@@ -14,11 +14,13 @@ import com.pmarlen.rest.dto.P;
 public class PedidoVentaDetalleTableItem {
 	private P producto;
 	private EntradaSalidaDetalle pvd;
+	private int tipoAlmacen;
 
-	public PedidoVentaDetalleTableItem(P producto, EntradaSalidaDetalle pvd) {
+	public PedidoVentaDetalleTableItem(P producto, EntradaSalidaDetalle pvd, int tipoAlmacen) {
 		this.producto = producto;
 		this.pvd = pvd;
 		this.pvd.setCantidad(1);
+		this.tipoAlmacen = tipoAlmacen;
 	}
 	
 	
@@ -54,4 +56,11 @@ public class PedidoVentaDetalleTableItem {
 		return pvd;
 	}
 
+	public void setTipoAlmacen(int tipoAlmacen) {
+		throw new IllegalStateException("No se debe de cambiar el almacen");
+	}
+
+	public int getTipoAlmacen() {
+		return tipoAlmacen;
+	}	
 }

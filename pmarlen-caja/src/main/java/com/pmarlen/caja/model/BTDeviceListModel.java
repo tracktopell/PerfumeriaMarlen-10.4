@@ -11,7 +11,7 @@ import javax.swing.event.ListDataListener;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class BTDeviceListModel implements ListModel {
 	private ArrayList<BTDevice> devicesList;

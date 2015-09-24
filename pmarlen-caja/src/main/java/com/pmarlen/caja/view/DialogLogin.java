@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class DialogLogin extends javax.swing.JDialog {
 	private static DialogLogin instance;

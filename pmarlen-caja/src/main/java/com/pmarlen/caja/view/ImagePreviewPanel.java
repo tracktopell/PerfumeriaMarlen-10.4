@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class ImagePreviewPanel extends JPanel
         implements PropertyChangeListener {

@@ -12,12 +12,14 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.FontUIResource;
+import org.apache.log4j.Logger;
 
 /**
  *
- * @author Softtek
+ * @author tracktopell
  */
 public class DialogLoginControl implements ActionListener , FocusListener{
+	private static Logger logger = Logger.getLogger(DialogLoginControl.class.getName());
 	DialogLogin dialogLogin;
 	private boolean leggedIn;
 	final int MAX_INTENTOS = 3;
@@ -33,8 +35,6 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		return instance;
 	}
 	
-	
-	
 	private DialogLoginControl(DialogLogin dialogLogin) {
 		this.dialogLogin = dialogLogin;
 		this.dialogLogin.getEmail()   .addFocusListener(this);
@@ -48,6 +48,7 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 	}
 	
 	public void estadoInicial(){
+		logger.debug("estadoInicial()");
 		dialogLogin.setVisible(true);
 	}
 
@@ -62,6 +63,7 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 	}
 	
 	private void aceptar_ActionPerformed(){
+		logger.info("[USER]->aceptar_ActionPerformed()");
 		if(!validate()){			
 			javax.swing.UIManager.put("OptionPane.font", new FontUIResource(new java.awt.Font("Tahoma", 0, 24))); 			
 			javax.swing.UIManager.put("JOptionPane.font", new FontUIResource(new java.awt.Font("Tahoma", 0, 24))); 			

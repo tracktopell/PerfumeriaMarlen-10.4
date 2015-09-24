@@ -24,13 +24,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class PanelVentasControl implements ActionListener,TableModelListener,MouseListener{
-
+	private static Logger logger = Logger.getLogger(PanelVentasControl.class.getName());
 	private PanelVentas panelVentas;
 	private EntradaSalidaDAO pedidoVentaDAO;
 	private DecimalFormat df;
@@ -43,7 +44,7 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 		ventasTM.addTableModelListener( this);
 		panelVentas.getVentasJTable().addMouseListener(this);
 		panelVentas.getVentasJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		System.err.println("->>table columns="+panelVentas.getVentasJTable().getColumnCount());
+		logger.debug("->>table columns="+panelVentas.getVentasJTable().getColumnCount());
 		
 		importeCellRender = new ImporteCellRender();
 		fechaCellRender = new FechaCellRender();
@@ -76,11 +77,11 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 		final int tw = panelVentas.getVentasJTable().getWidth();
 		int[] cws = new int[]{10,60,30};
 		int cw;
-		System.err.println("->panelVentas.getVentasJTable().getSize()="+tw);
+		logger.debug("->panelVentas.getVentasJTable().getSize()="+tw);
 		int i=0;
 		for(int cwi : cws) {
 			cw = (tw * cwi)/100;
-			System.err.println("->\tpanelVentas.getVentasJTable().column["+i+"] PreferredWidth:"+cw);
+			logger.trace("->\tpanelVentas.getVentasJTable().column["+i+"] PreferredWidth:"+cw);
 		
 			panelVentas.getVentasJTable().getColumnModel().getColumn(i++).setPreferredWidth(cw);
 		}

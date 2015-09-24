@@ -12,6 +12,7 @@ import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.ProductoQuickView;
 import com.pmarlen.caja.model.ImporteCellRender;
 import com.pmarlen.caja.view.PanelProductos;
+import com.pmarlen.caja.view.PanelVenta;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -22,13 +23,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class PanelProductosControl implements ActionListener,TableModelListener,MouseListener{
-
+	private static Logger logger = Logger.getLogger(PanelProductosControl.class.getName());
 	private PanelProductos panelProductos;
 	private List<Producto> detalleProductoList;
 	private ProductoDAO productoDAO;
@@ -40,7 +42,7 @@ public class PanelProductosControl implements ActionListener,TableModelListener,
 		x.addTableModelListener( this);
 		panelProductos.getDetalleProductoJTable().addMouseListener(this);
 		panelProductos.getDetalleProductoJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		//System.err.println("->>table columns="+panelProductos.getDetalleProductoJTable().getColumnCount());
+		logger.trace("->>table columns="+panelProductos.getDetalleProductoJTable().getColumnCount());
 		
 		final ImporteCellRender importeCellRender = new ImporteCellRender();
 		final CantidadCellRender cantidadCellRender = new CantidadCellRender();
@@ -82,7 +84,7 @@ public class PanelProductosControl implements ActionListener,TableModelListener,
 		}catch(DAOException e){
 			
 		}
-		System.err.println("==>>estadoInicial:productosList = "+productosList.size());
+		logger.debug("==>>estadoInicial:productosList = "+productosList.size());
 		detalleProductoList.addAll(productosList);		
 		panelProductos.getDetalleProductoJTable().updateUI();		
 		panelProductos.getDetalleProductoJTable().getSelectionModel().clearSelection();

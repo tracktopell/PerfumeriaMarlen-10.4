@@ -12,6 +12,7 @@
 	<name>Perfumeria Marlen 10.4.x - Caja</name>
 	
 	<properties>
+		<environment.log4j.rootLogger>INFO</environment.log4j.rootLogger>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.5.10</slf4j.version>
 		<logback.version>0.9.15</logback.version>
@@ -235,9 +236,10 @@
 		
 		<profile>
 			<id>installer</id>
-            
-			<build>
-                
+			<properties>
+				<environment.log4j.rootLogger>INFO</environment.log4j.rootLogger>
+			</properties>
+			<build>    
 				<finalName>${finalJar.filename}</finalName>
 				<plugins>
 				

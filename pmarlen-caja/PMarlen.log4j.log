@@ -3,3 +3,1184 @@
 2015-07-29 00:02:20 INFO  Main:54 - <<<==========================================================
 2015-07-29 00:02:23 INFO  Main:57 - L&Fs:[javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[CDE/Motif com.sun.java.swing.plaf.motif.MotifLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Mac OS X com.apple.laf.AquaLookAndFeel]]
 2015-07-29 00:02:23 INFO  Main:69 - ==========================================================>>> 1 Time
+2015-09-24 11:20:06 INFO  Main:161 - -->> close ?
+2015-09-24 11:20:06 INFO  Main:50 - ==========================================================>>>
+2015-09-24 11:20:06 INFO  MemoryDAO:66 - ->Properties local File found, reading File Properties:./system.properties
+2015-09-24 11:20:06 INFO  MemoryDAO:68 - ->ok, Properties read:{sucursal=2, caja=1, port=8070, context=/l30, host=localhost, dropboxdir=/home/alfredo/DropBox/}
+2015-09-24 11:20:06 INFO  Main:54 - <<<==========================================================
+2015-09-24 11:20:07 INFO  Main:57 - L&Fs:[javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[CDE/Motif com.sun.java.swing.plaf.motif.MotifLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[GTK+ com.sun.java.swing.plaf.gtk.GTKLookAndFeel]]
+2015-09-24 11:20:07 INFO  ApplicationLogic:96 - url=http://localhost:8070/l30/pmcajaupdate/version.properties
+2015-09-24 11:20:07 ERROR ApplicationLogic:101 - Can'nt connect:
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1301)
+	at com.pmarlen.caja.control.ApplicationLogic.needsUpdateApplciation(ApplicationLogic.java:99)
+	at com.pmarlen.caja.Main.main(Main.java:85)
+2015-09-24 11:20:07 INFO  Main:107 - ======================= INICIANDO =======================
+2015-09-24 11:20:07 INFO  MemoryDAO:188 - ----------------->> startPaqueteSyncService
+2015-09-24 11:20:07 INFO  MemoryDAO:135 - ----------------->>BEFORE while 
+2015-09-24 11:20:07 INFO  MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:20:07 INFO  MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=2FE6FAC225383D76A5FE4E8884A040E7&loggedIn=null
+2015-09-24 11:20:07 ERROR MemoryDAO:152 - X: downoload
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.download(MemoryDAO.java:241)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:142)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 11:20:07 INFO  MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:20:07 DEBUG EntradaSalidaDAO:60 - created EntradaSalidaDAO.
+2015-09-24 11:20:07 INFO  Main:120 - -------->> Frame Principal, esperando antes de login
+2015-09-24 11:21:39 INFO  Main:161 - -->> close ?
+2015-09-24 11:21:39 INFO  Main:50 - ==========================================================>>>
+2015-09-24 11:21:39 INFO  MemoryDAO:66 - ->Properties local File found, reading File Properties:./system.properties
+2015-09-24 11:21:39 INFO  MemoryDAO:68 - ->ok, Properties read:{sucursal=2, caja=1, port=8070, context=/l30, host=localhost, dropboxdir=/home/alfredo/DropBox/}
+2015-09-24 11:21:39 INFO  Main:54 - <<<==========================================================
+2015-09-24 11:21:39 INFO  Main:57 - L&Fs:[javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[CDE/Motif com.sun.java.swing.plaf.motif.MotifLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[GTK+ com.sun.java.swing.plaf.gtk.GTKLookAndFeel]]
+2015-09-24 11:21:40 INFO  ApplicationLogic:96 - url=http://localhost:8070/l30/pmcajaupdate/version.properties
+2015-09-24 11:21:40 INFO  ApplicationLogic:113 - lineRead=pmarlencaja.version=10.4.1.29, versionReadOfLine=10.4.1.29
+2015-09-24 11:21:40 INFO  ApplicationLogic:114 - current version =10.4.1.29
+2015-09-24 11:21:40 DEBUG ApplicationLogic:119 - comparing: [10, 4, 1, 29] < [10, 4, 1, 29] : 0
+2015-09-24 11:21:40 INFO  Main:107 - ======================= INICIANDO =======================
+2015-09-24 11:21:40 INFO  MemoryDAO:188 - ----------------->> startPaqueteSyncService
+2015-09-24 11:21:40 INFO  MemoryDAO:135 - ----------------->>BEFORE while 
+2015-09-24 11:21:40 INFO  MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:21:40 INFO  MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=F8D4FDBFA852E64BCBAA0C98E38DEB25&loggedIn=null
+2015-09-24 11:21:41 DEBUG EntradaSalidaDAO:60 - created EntradaSalidaDAO.
+2015-09-24 11:21:42 INFO  Main:120 - -------->> Frame Principal, esperando antes de login
+2015-09-24 11:21:42 INFO  MemoryDAO:248 - >> reading
+2015-09-24 11:21:42 INFO  MemoryDAO:255 - >> saving
+2015-09-24 11:21:42 INFO  MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 11:21:42 INFO  MemoryDAO:296 - >> open ZIP
+2015-09-24 11:21:42 INFO  MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 11:21:42 INFO  MemoryDAO:317 - >> OK read.
+2015-09-24 11:21:42 INFO  MemoryDAO:320 - >> content.length=817166
+2015-09-24 11:21:42 INFO  MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 11:21:42 INFO  MemoryDAO:329 - >> After read zip
+2015-09-24 11:21:42 INFO  MemoryDAO:331 - >> parse:
+2015-09-24 11:21:43 INFO  MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 11:21:43 INFO  MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 11:21:43 INFO  MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:21:53 INFO  MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:21:53 INFO  MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=F8D4FDBFA852E64BCBAA0C98E38DEB25&loggedIn=null
+2015-09-24 11:21:53 INFO  MemoryDAO:287 - >> code:200
+2015-09-24 11:21:53 INFO  MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:22:03 INFO  MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:22:03 INFO  MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=F8D4FDBFA852E64BCBAA0C98E38DEB25&loggedIn=null
+2015-09-24 11:22:03 INFO  MemoryDAO:287 - >> code:200
+2015-09-24 11:22:03 INFO  MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:22:09 INFO  Main:129 - ->OK logedin, GO !
+2015-09-24 11:22:13 INFO  MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:22:13 INFO  MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=F8D4FDBFA852E64BCBAA0C98E38DEB25&loggedIn=root@perfumeriamarlen.com.mx
+2015-09-24 11:22:13 INFO  MemoryDAO:287 - >> code:200
+2015-09-24 11:22:13 INFO  MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:22:23 INFO  MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:22:23 INFO  MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=F8D4FDBFA852E64BCBAA0C98E38DEB25&loggedIn=root@perfumeriamarlen.com.mx
+2015-09-24 11:22:23 INFO  MemoryDAO:287 - >> code:200
+2015-09-24 11:22:23 INFO  MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:22:33 INFO  MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:22:33 INFO  MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=F8D4FDBFA852E64BCBAA0C98E38DEB25&loggedIn=root@perfumeriamarlen.com.mx
+2015-09-24 11:22:33 INFO  MemoryDAO:287 - >> code:200
+2015-09-24 11:22:33 INFO  MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:22:43 INFO  MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:22:43 INFO  MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=F8D4FDBFA852E64BCBAA0C98E38DEB25&loggedIn=root@perfumeriamarlen.com.mx
+2015-09-24 11:22:43 INFO  MemoryDAO:248 - >> reading
+2015-09-24 11:22:43 INFO  MemoryDAO:255 - >> saving
+2015-09-24 11:22:43 INFO  MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 11:22:43 INFO  MemoryDAO:296 - >> open ZIP
+2015-09-24 11:22:43 INFO  MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 11:22:43 INFO  MemoryDAO:317 - >> OK read.
+2015-09-24 11:22:43 INFO  MemoryDAO:320 - >> content.length=817166
+2015-09-24 11:22:43 INFO  MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 11:22:43 INFO  MemoryDAO:329 - >> After read zip
+2015-09-24 11:22:43 INFO  MemoryDAO:331 - >> parse:
+2015-09-24 11:22:43 INFO  MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 11:22:43 INFO  MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 11:22:43 INFO  MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:59:20 INFO  Main:161 - -->> close ?
+2015-09-24 11:59:20 INFO  Main:50 - ==========================================================>>>
+2015-09-24 11:59:20 DEBUG MemoryDAO:66 - ->Properties local File found, reading File Properties:./system.properties
+2015-09-24 11:59:20 DEBUG MemoryDAO:68 - ->ok, Properties read:{sucursal=2, caja=1, port=8070, context=/l30, host=localhost, dropboxdir=/home/alfredo/DropBox/}
+2015-09-24 11:59:20 INFO  Main:54 - <<<==========================================================
+2015-09-24 11:59:24 INFO  Main:57 - L&Fs:[javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[CDE/Motif com.sun.java.swing.plaf.motif.MotifLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[GTK+ com.sun.java.swing.plaf.gtk.GTKLookAndFeel]]
+2015-09-24 11:59:24 INFO  ApplicationLogic:96 - url=http://localhost:8070/l30/pmcajaupdate/version.properties
+2015-09-24 11:59:24 ERROR ApplicationLogic:101 - Can'nt connect:
+java.io.FileNotFoundException: http://localhost:8070/l30/pmcajaupdate/version.properties
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1625)
+	at com.pmarlen.caja.control.ApplicationLogic.needsUpdateApplciation(ApplicationLogic.java:99)
+	at com.pmarlen.caja.Main.main(Main.java:85)
+2015-09-24 11:59:24 INFO  Main:107 - ======================= INICIANDO =======================
+2015-09-24 11:59:24 DEBUG MemoryDAO:188 - ----------------->> startPaqueteSyncService
+2015-09-24 11:59:24 DEBUG MemoryDAO:135 - ----------------->>BEFORE while 
+2015-09-24 11:59:24 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:59:24 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 11:59:24 ERROR MemoryDAO:152 - X: downoload
+java.io.FileNotFoundException: http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1625)
+	at com.pmarlen.caja.dao.MemoryDAO.download(MemoryDAO.java:243)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:142)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 11:59:24 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:59:27 DEBUG EntradaSalidaDAO:60 - created EntradaSalidaDAO.
+2015-09-24 11:59:29 INFO  Main:120 - -------->> Frame Principal, esperando antes de login
+2015-09-24 11:59:34 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:59:34 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 11:59:34 DEBUG MemoryDAO:287 - >> code:404
+2015-09-24 11:59:34 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:59:44 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:59:44 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 11:59:44 DEBUG MemoryDAO:287 - >> code:404
+2015-09-24 11:59:44 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 11:59:54 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 11:59:54 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 11:59:54 DEBUG MemoryDAO:287 - >> code:404
+2015-09-24 11:59:54 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:00:04 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:00:04 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:00:04 DEBUG MemoryDAO:287 - >> code:404
+2015-09-24 12:00:04 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:00:14 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:00:14 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:00:14 DEBUG MemoryDAO:287 - >> code:404
+2015-09-24 12:00:14 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:00:24 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:00:24 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:00:24 ERROR MemoryDAO:152 - X: downoload
+java.io.FileNotFoundException: http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1625)
+	at com.pmarlen.caja.dao.MemoryDAO.download(MemoryDAO.java:243)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:142)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:00:24 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:00:34 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:00:34 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:00:34 DEBUG MemoryDAO:287 - >> code:404
+2015-09-24 12:00:34 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:00:44 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:00:44 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:00:44 DEBUG MemoryDAO:287 - >> code:404
+2015-09-24 12:00:44 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:00:54 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:00:54 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:00:54 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:00:54 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:01:04 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:01:04 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:01:04 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:01:04 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:01:14 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:01:14 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:01:14 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:01:14 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:01:24 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:01:24 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:01:24 ERROR MemoryDAO:152 - X: downoload
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.download(MemoryDAO.java:241)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:142)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:01:24 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:01:34 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:01:34 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:01:34 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:01:34 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:01:44 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:01:44 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:01:44 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:01:44 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:01:54 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:01:54 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:01:54 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:01:54 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:02:04 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:02:04 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:02:04 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:02:04 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:02:14 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:02:14 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:02:14 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:02:14 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:02:24 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:02:24 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:02:24 ERROR MemoryDAO:152 - X: downoload
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.download(MemoryDAO.java:241)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:142)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:02:24 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:02:34 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:02:34 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:02:34 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:02:34 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:02:44 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:02:44 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=D1C5AA563A85C78B074D7369FBF13D8A&loggedIn=null
+2015-09-24 12:02:44 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:02:44 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:17:56 INFO  Main:161 - -->> close ?
+2015-09-24 12:17:56 INFO  Main:50 - ==========================================================>>>
+2015-09-24 12:17:56 DEBUG MemoryDAO:66 - ->Properties local File found, reading File Properties:./system.properties
+2015-09-24 12:17:56 DEBUG MemoryDAO:68 - ->ok, Properties read:{sucursal=2, caja=1, port=8070, context=/l30, host=localhost, dropboxdir=/home/alfredo/DropBox/}
+2015-09-24 12:17:56 INFO  Main:54 - <<<==========================================================
+2015-09-24 12:17:57 INFO  Main:57 - L&Fs:[javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[CDE/Motif com.sun.java.swing.plaf.motif.MotifLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[GTK+ com.sun.java.swing.plaf.gtk.GTKLookAndFeel]]
+2015-09-24 12:17:57 INFO  ApplicationLogic:96 - url=http://localhost:8070/l30/pmcajaupdate/version.properties
+2015-09-24 12:17:57 INFO  ApplicationLogic:113 - lineRead=pmarlencaja.version=10.4.1.29, versionReadOfLine=10.4.1.29
+2015-09-24 12:17:57 INFO  ApplicationLogic:114 - current version =10.4.1.29
+2015-09-24 12:17:57 DEBUG ApplicationLogic:119 - comparing: [10, 4, 1, 29] < [10, 4, 1, 29] : 0
+2015-09-24 12:17:57 INFO  Main:107 - ======================= INICIANDO =======================
+2015-09-24 12:17:57 DEBUG MemoryDAO:188 - ----------------->> startPaqueteSyncService
+2015-09-24 12:17:58 DEBUG MemoryDAO:135 - ----------------->>BEFORE while 
+2015-09-24 12:17:58 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:17:58 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:18:01 DEBUG EntradaSalidaDAO:60 - created EntradaSalidaDAO.
+2015-09-24 12:18:01 DEBUG MemoryDAO:248 - >> reading
+2015-09-24 12:18:01 DEBUG MemoryDAO:255 - >> saving
+2015-09-24 12:18:01 DEBUG MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 12:18:02 DEBUG MemoryDAO:296 - >> open ZIP
+2015-09-24 12:18:02 DEBUG MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 12:18:02 DEBUG MemoryDAO:317 - >> OK read.
+2015-09-24 12:18:02 DEBUG MemoryDAO:320 - >> content.length=817166
+2015-09-24 12:18:02 DEBUG MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 12:18:02 DEBUG MemoryDAO:329 - >> After read zip
+2015-09-24 12:18:02 DEBUG MemoryDAO:331 - >> parse:
+2015-09-24 12:18:02 INFO  Main:120 - -------->> Frame Principal, esperando antes de login
+2015-09-24 12:18:02 DEBUG MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 12:18:02 DEBUG MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 12:18:02 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:18:12 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:18:12 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:18:12 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:18:12 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:18:22 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:18:22 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:18:22 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:18:22 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:18:32 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:18:32 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:18:32 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:18:32 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:18:42 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:18:42 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:18:42 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:18:42 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:18:52 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:18:52 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:18:52 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:18:52 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:19:02 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:19:02 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:19:03 DEBUG MemoryDAO:248 - >> reading
+2015-09-24 12:19:03 DEBUG MemoryDAO:255 - >> saving
+2015-09-24 12:19:03 DEBUG MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 12:19:03 DEBUG MemoryDAO:296 - >> open ZIP
+2015-09-24 12:19:03 DEBUG MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 12:19:03 DEBUG MemoryDAO:317 - >> OK read.
+2015-09-24 12:19:03 DEBUG MemoryDAO:320 - >> content.length=817166
+2015-09-24 12:19:03 DEBUG MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 12:19:03 DEBUG MemoryDAO:329 - >> After read zip
+2015-09-24 12:19:03 DEBUG MemoryDAO:331 - >> parse:
+2015-09-24 12:19:03 DEBUG MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 12:19:03 DEBUG MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 12:19:03 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:19:13 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:19:13 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:19:13 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:19:13 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:19:23 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:19:23 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:19:23 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:19:23 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:19:33 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:19:33 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:19:33 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:19:33 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:19:43 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:19:43 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:19:43 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:19:43 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:19:53 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:19:53 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:19:53 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:19:53 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:20:03 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:20:03 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:20:03 DEBUG MemoryDAO:248 - >> reading
+2015-09-24 12:20:03 DEBUG MemoryDAO:255 - >> saving
+2015-09-24 12:20:03 DEBUG MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 12:20:03 DEBUG MemoryDAO:296 - >> open ZIP
+2015-09-24 12:20:03 DEBUG MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 12:20:03 DEBUG MemoryDAO:317 - >> OK read.
+2015-09-24 12:20:03 DEBUG MemoryDAO:320 - >> content.length=817166
+2015-09-24 12:20:03 DEBUG MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 12:20:03 DEBUG MemoryDAO:329 - >> After read zip
+2015-09-24 12:20:03 DEBUG MemoryDAO:331 - >> parse:
+2015-09-24 12:20:03 DEBUG MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 12:20:03 DEBUG MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 12:20:03 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:20:13 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:20:13 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:20:13 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:20:13 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:20:23 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:20:23 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:20:23 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:20:23 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:20:33 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:20:33 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:20:33 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:20:33 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:20:43 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:20:43 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:20:43 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:20:43 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:20:53 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:20:53 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:20:53 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:20:53 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:21:03 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:21:03 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:21:03 DEBUG MemoryDAO:248 - >> reading
+2015-09-24 12:21:03 DEBUG MemoryDAO:255 - >> saving
+2015-09-24 12:21:03 DEBUG MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 12:21:03 DEBUG MemoryDAO:296 - >> open ZIP
+2015-09-24 12:21:03 DEBUG MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 12:21:03 DEBUG MemoryDAO:317 - >> OK read.
+2015-09-24 12:21:03 DEBUG MemoryDAO:320 - >> content.length=817166
+2015-09-24 12:21:03 DEBUG MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 12:21:03 DEBUG MemoryDAO:329 - >> After read zip
+2015-09-24 12:21:03 DEBUG MemoryDAO:331 - >> parse:
+2015-09-24 12:21:03 DEBUG MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 12:21:03 DEBUG MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 12:21:03 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:21:13 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:21:13 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:21:13 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:21:13 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:21:23 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:21:23 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:21:23 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:21:23 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:21:33 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:21:33 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:21:33 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:21:33 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:21:43 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:21:43 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:21:43 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:21:43 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:21:53 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:21:53 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:21:53 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:21:53 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:22:03 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:22:03 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:22:03 DEBUG MemoryDAO:248 - >> reading
+2015-09-24 12:22:03 DEBUG MemoryDAO:255 - >> saving
+2015-09-24 12:22:03 DEBUG MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 12:22:03 DEBUG MemoryDAO:296 - >> open ZIP
+2015-09-24 12:22:03 DEBUG MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 12:22:03 DEBUG MemoryDAO:317 - >> OK read.
+2015-09-24 12:22:03 DEBUG MemoryDAO:320 - >> content.length=817166
+2015-09-24 12:22:03 DEBUG MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 12:22:03 DEBUG MemoryDAO:329 - >> After read zip
+2015-09-24 12:22:03 DEBUG MemoryDAO:331 - >> parse:
+2015-09-24 12:22:03 DEBUG MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 12:22:03 DEBUG MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 12:22:03 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:22:13 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:22:13 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:22:13 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:22:13 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:22:23 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:22:23 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:22:23 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:22:23 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:22:33 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:22:33 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:22:33 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:22:33 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:22:43 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:22:43 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:22:43 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:22:43 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:22:53 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:22:53 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:22:53 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:22:53 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:23:03 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:23:03 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:23:04 DEBUG MemoryDAO:248 - >> reading
+2015-09-24 12:23:04 DEBUG MemoryDAO:255 - >> saving
+2015-09-24 12:23:04 DEBUG MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 12:23:04 DEBUG MemoryDAO:296 - >> open ZIP
+2015-09-24 12:23:04 DEBUG MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 12:23:04 DEBUG MemoryDAO:317 - >> OK read.
+2015-09-24 12:23:04 DEBUG MemoryDAO:320 - >> content.length=817166
+2015-09-24 12:23:04 DEBUG MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 12:23:04 DEBUG MemoryDAO:329 - >> After read zip
+2015-09-24 12:23:04 DEBUG MemoryDAO:331 - >> parse:
+2015-09-24 12:23:04 DEBUG MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 12:23:04 DEBUG MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 12:23:04 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:23:14 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:23:14 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:23:14 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:23:14 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:23:24 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:23:24 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:23:24 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:23:24 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:23:34 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:23:34 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:23:34 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:23:34 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:23:44 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:23:44 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:23:44 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:23:44 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:23:54 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:23:54 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:23:54 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:23:54 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:24:04 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:24:04 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:24:04 DEBUG MemoryDAO:248 - >> reading
+2015-09-24 12:24:04 DEBUG MemoryDAO:255 - >> saving
+2015-09-24 12:24:04 DEBUG MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 12:24:04 DEBUG MemoryDAO:296 - >> open ZIP
+2015-09-24 12:24:04 DEBUG MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 12:24:04 DEBUG MemoryDAO:317 - >> OK read.
+2015-09-24 12:24:04 DEBUG MemoryDAO:320 - >> content.length=817166
+2015-09-24 12:24:04 DEBUG MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 12:24:04 DEBUG MemoryDAO:329 - >> After read zip
+2015-09-24 12:24:04 DEBUG MemoryDAO:331 - >> parse:
+2015-09-24 12:24:04 DEBUG MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 12:24:04 DEBUG MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 12:24:04 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:24:14 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:24:14 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:24:14 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:24:14 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:24:24 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:24:24 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:24:24 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:24:24 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:24:34 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:24:34 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:24:34 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:24:34 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:24:44 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:24:44 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:24:44 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:24:44 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:24:54 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:24:54 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:24:54 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:24:54 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:25:04 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:25:04 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:25:04 DEBUG MemoryDAO:248 - >> reading
+2015-09-24 12:25:04 DEBUG MemoryDAO:255 - >> saving
+2015-09-24 12:25:04 DEBUG MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 12:25:04 DEBUG MemoryDAO:296 - >> open ZIP
+2015-09-24 12:25:04 DEBUG MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 12:25:04 DEBUG MemoryDAO:317 - >> OK read.
+2015-09-24 12:25:04 DEBUG MemoryDAO:320 - >> content.length=817166
+2015-09-24 12:25:04 DEBUG MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 12:25:04 DEBUG MemoryDAO:329 - >> After read zip
+2015-09-24 12:25:04 DEBUG MemoryDAO:331 - >> parse:
+2015-09-24 12:25:04 DEBUG MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 12:25:04 DEBUG MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 12:25:04 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:25:14 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:25:14 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:25:14 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:25:14 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:25:24 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:25:24 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:25:24 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:25:24 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:25:34 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:25:34 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:25:34 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:25:34 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:25:44 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:25:44 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:25:44 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:25:44 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:25:54 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:25:54 DEBUG MemoryDAO:276 - >> I'm Alive URL:http://localhost:8070/l30/sync/data?format=iamalive&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:25:54 DEBUG MemoryDAO:287 - >> code:200
+2015-09-24 12:25:54 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:26:04 DEBUG MemoryDAO:138 - 	----------------->> while running, download
+2015-09-24 12:26:04 DEBUG MemoryDAO:235 - >> Downloading url:http://localhost:8070/l30/sync/data?format=zip&sucursalId=2&caja=1&sessionId=C44DD9632259747D8603D025CA04BD0A&loggedIn=null
+2015-09-24 12:26:04 DEBUG MemoryDAO:248 - >> reading
+2015-09-24 12:26:04 DEBUG MemoryDAO:255 - >> saving
+2015-09-24 12:26:04 DEBUG MemoryDAO:144 - 	----------------->> OK, downloded, read locally
+2015-09-24 12:26:04 DEBUG MemoryDAO:296 - >> open ZIP
+2015-09-24 12:26:04 DEBUG MemoryDAO:308 - >> Reading from:data.json, 817166 bytes
+2015-09-24 12:26:04 DEBUG MemoryDAO:317 - >> OK read.
+2015-09-24 12:26:04 DEBUG MemoryDAO:320 - >> content.length=817166
+2015-09-24 12:26:04 DEBUG MemoryDAO:324 - >> jsonContent.size=816061
+2015-09-24 12:26:04 DEBUG MemoryDAO:329 - >> After read zip
+2015-09-24 12:26:04 DEBUG MemoryDAO:331 - >> parse:
+2015-09-24 12:26:04 DEBUG MemoryDAO:333 - >> paqueteSinc:inventarioSucursalQVList.length=2445,usuarioList.length=10,clienteList=301,metodoDePagoList.length=7,formaDePagoList=4,sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-09-24 12:26:04 DEBUG MemoryDAO:339 - >> productosParaBuscar, ok ready !
+2015-09-24 12:26:04 DEBUG MemoryDAO:173 - 	----------------->> while running, sleep,.....
+2015-09-24 12:50:05 INFO  Main:161 - -->> close ?
+2015-09-24 12:50:05 INFO  Main:50 - ==========================================================>>>
+2015-09-24 12:50:05 INFO  Main:54 - <<<==========================================================
+2015-09-24 12:50:06 INFO  Main:57 - L&Fs:[javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[CDE/Motif com.sun.java.swing.plaf.motif.MotifLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[GTK+ com.sun.java.swing.plaf.gtk.GTKLookAndFeel]]
+2015-09-24 12:50:06 INFO  ApplicationLogic:96 - url=http://localhost:8070/l30/pmcajaupdate/version.properties
+2015-09-24 12:50:06 ERROR ApplicationLogic:101 - Can'nt connect:
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1301)
+	at com.pmarlen.caja.control.ApplicationLogic.needsUpdateApplciation(ApplicationLogic.java:99)
+	at com.pmarlen.caja.Main.main(Main.java:85)
+2015-09-24 12:50:06 INFO  Main:107 - ======================= INICIANDO =======================
+2015-09-24 12:50:06 ERROR MemoryDAO:152 - X: downoload
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.download(MemoryDAO.java:241)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:142)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:50:07 INFO  Main:120 - -------->> Frame Principal, esperando antes de login
+2015-09-24 12:50:16 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:50:26 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:50:36 ERROR MemoryDAO:166 - X: exception
+java.net.ConnectException: Conexión rehusada
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:175)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:997)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:933)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:851)
+	at com.pmarlen.caja.dao.MemoryDAO.iamalive(MemoryDAO.java:283)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:159)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 12:54:54 INFO  Main:129 - ->OK logedin, GO !
+2015-09-24 13:44:47 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:45:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:46:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:47:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:48:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:49:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:50:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:51:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:52:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:53:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:54:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:55:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:56:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:57:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:58:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 13:59:48 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:00:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:01:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:02:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:03:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:04:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:05:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:06:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:07:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:08:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:09:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:10:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:11:49 ERROR MemoryDAO:343 - 
+java.util.zip.ZipException: zip file is empty
+	at java.util.zip.ZipFile.open(Native Method)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:145)
+	at java.util.zip.ZipFile.<init>(ZipFile.java:116)
+	at com.pmarlen.caja.dao.MemoryDAO.readLocally(MemoryDAO.java:297)
+	at com.pmarlen.caja.dao.MemoryDAO.getPaqueteSyncPoll(MemoryDAO.java:145)
+	at com.pmarlen.caja.dao.MemoryDAO$1.run(MemoryDAO.java:192)
+2015-09-24 14:50:16 INFO  Main:161 - -->> close ?
+2015-09-24 14:50:16 INFO  Main:50 - ==========================================================>>>
+2015-09-24 14:50:16 INFO  Main:54 - <<<==========================================================
+2015-09-24 14:50:17 INFO  Main:57 - L&Fs:[javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[CDE/Motif com.sun.java.swing.plaf.motif.MotifLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[GTK+ com.sun.java.swing.plaf.gtk.GTKLookAndFeel]]
+2015-09-24 14:50:17 INFO  ApplicationLogic:101 - url=http://localhost:8070/l30/pmcajaupdate/version.properties
+2015-09-24 14:50:17 INFO  ApplicationLogic:118 - lineRead=pmarlencaja.version=10.4.1.29, versionReadOfLine=10.4.1.29
+2015-09-24 14:50:17 INFO  ApplicationLogic:119 - current version =10.4.1.29
+2015-09-24 14:50:17 INFO  Main:107 - ======================= INICIANDO =======================
+2015-09-24 14:50:20 INFO  Main:120 - -------->> Frame Principal, esperando antes de login
+2015-09-24 14:50:48 INFO  Main:129 - ->OK logedin, GO !
+2015-09-24 14:51:16 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=42195474
+2015-09-24 14:51:34 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=42195474
+2015-09-24 14:51:41 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=75001162
+2015-09-24 14:52:46 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=75001162
+2015-09-24 14:52:52 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=75001162
+2015-09-24 14:52:58 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=75001872
+2015-09-24 14:53:08 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=75016739
+2015-09-24 15:06:42 INFO  Main:161 - -->> close ?
+2015-09-24 15:06:42 INFO  Main:50 - ==========================================================>>>
+2015-09-24 15:06:42 INFO  Main:54 - <<<==========================================================
+2015-09-24 15:06:42 INFO  Main:57 - L&Fs:[javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[CDE/Motif com.sun.java.swing.plaf.motif.MotifLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[GTK+ com.sun.java.swing.plaf.gtk.GTKLookAndFeel]]
+2015-09-24 15:06:43 INFO  ApplicationLogic:101 - url=http://localhost:8070/l30/pmcajaupdate/version.properties
+2015-09-24 15:06:43 INFO  ApplicationLogic:118 - lineRead=pmarlencaja.version=10.4.1.29, versionReadOfLine=10.4.1.29
+2015-09-24 15:06:43 INFO  ApplicationLogic:119 - current version =10.4.1.29
+2015-09-24 15:06:43 INFO  Main:107 - ======================= INICIANDO =======================
+2015-09-24 15:06:44 INFO  Main:120 - -------->> Frame Principal, esperando antes de login
+2015-09-24 15:20:36 INFO  ApplicationLogic:101 - url=http://localhost:8070/l30/pmcajaupdate/version.properties
+2015-09-24 15:20:36 INFO  ApplicationLogic:118 - lineRead=pmarlencaja.version=10.4.1.29, versionReadOfLine=10.4.1.29
+2015-09-24 15:20:36 INFO  ApplicationLogic:119 - current version =10.4.1.29
+2015-09-24 15:23:48 INFO  DialogLoginControl:52 - estadoInicial()
+2015-09-24 15:23:48 ERROR Main:136 - EN acceso:
+java.lang.IllegalAccessException: NO SE ACCESO 
+	at com.pmarlen.caja.Main.main(Main.java:128)
+2015-09-24 15:24:13 INFO  DialogLoginControl:66 - [USER]->aceptar_ActionPerformed()
+2015-09-24 15:24:15 INFO  DialogLoginControl:52 - estadoInicial()
+2015-09-24 15:34:25 INFO  DialogLoginControl:66 - [USER]->aceptar_ActionPerformed()
+2015-09-24 15:34:43 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=->42126560<-
+2015-09-24 15:38:47 ERROR Main:158 - EN acceso:
+java.lang.IllegalAccessException: NO SE ACCESO 
+	at com.pmarlen.caja.Main.main(Main.java:150)
+2015-09-24 15:39:11 INFO  DialogLoginControl:66 - [USER]->aceptar_ActionPerformed()
+2015-09-24 15:39:32 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=->42126560<-
+2015-09-24 15:39:52 INFO  PanelVentaControl:129 - =>codigoBuscar_ActionPerformed:codigoBuscar=->42179160 42185123 42185369 42194880 42195474 42211051<-
+2015-09-24 15:45:42 INFO  DialogLoginControl:66 - [USER]->aceptar_ActionPerformed()
+2015-09-24 15:45:57 INFO  PanelVentaControl:129 - [USER]->codigoBuscar_ActionPerformed:codigoBuscar=->42195474<-
+2015-09-24 15:46:12 INFO  PanelVentaControl:129 - [USER]->codigoBuscar_ActionPerformed:codigoBuscar=->42195474 42211051 42213727 75001131 75001148 75001162<-
+2015-09-24 15:47:02 INFO  PanelVentaControl:129 - [USER]->codigoBuscar_ActionPerformed:codigoBuscar=->42213727<-
+2015-09-24 15:47:09 INFO  PanelVentaControl:129 - [USER]->codigoBuscar_ActionPerformed:codigoBuscar=->75001148<-
+2015-09-24 15:47:23 INFO  PanelVentaControl:129 - [USER]->codigoBuscar_ActionPerformed:codigoBuscar=->75001186<-
+2015-09-24 15:47:32 INFO  PanelVentaControl:129 - [USER]->codigoBuscar_ActionPerformed:codigoBuscar=->75002794<-
+2015-09-24 15:47:47 INFO  PanelVentaControl:129 - [USER]->codigoBuscar_ActionPerformed:codigoBuscar=->42185369<-
