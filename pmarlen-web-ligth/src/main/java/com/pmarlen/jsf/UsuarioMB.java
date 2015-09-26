@@ -34,14 +34,14 @@ public class UsuarioMB  {
 	
 	@PostConstruct
     public void init() {
-		logger.info("->UsuarioMB: init.");
+		logger.trace("UsuarioMB: init.");
         try{
 			entityList = UsuarioDAO.getInstance().findAll();
 		}catch(DAOException de){
 			logger.error(de.getMessage());
 			entityList = new ArrayList<UsuarioQuickView>();
 		}
-		logger.info("->UsuarioMB: init:entityList size="+entityList.size());
+		logger.trace("UsuarioMB: init:entityList size="+entityList.size());
 		viewRows = 10;
 		dialogTitle ="USUARIO";
 		saveMode=0;
@@ -49,7 +49,7 @@ public class UsuarioMB  {
     }
 	
 	public String reset() {
-		logger.info("->UsuarioMB: rest.");
+		logger.trace("UsuarioMB: rest.");
         init();
 		return "/pages/usuario";
     }
@@ -59,15 +59,15 @@ public class UsuarioMB  {
 	}
 	
 	public void selectEntity(ActionEvent event){
-		logger.info("->UsuarioMB: selectUsuario.");
+		logger.trace("UsuarioMB: selectUsuario.");
 	}
 	
 	public void actionX(ActionEvent event){
-		logger.info("->UsuarioMB: actionX.");
+		logger.trace("UsuarioMB: actionX.");
 	}
 	
 	public void prepareForNew() {
-		logger.info("->UsuarioMB prepareForNew");
+		logger.trace("UsuarioMB prepareForNew");
 		dialogTitle ="AGREGAR NUEVO USUARIO";
 		this.selectedEntity = new UsuarioQuickView();
 		checkSameEmailPassword=false;
@@ -80,7 +80,7 @@ public class UsuarioMB  {
 	}
 	
 	public void setSelectedEntity(UsuarioQuickView selectedUsuario) {
-		logger.info("->UsuarioMB setSelectedUsuario.email="+selectedUsuario.getEmail());
+		logger.trace("UsuarioMB setSelectedUsuario.email="+selectedUsuario.getEmail());
 		dialogTitle ="EDITAR USUARIO:"+selectedUsuario.getEmail();
 		this.selectedEntity = selectedUsuario;
 		checkSameEmailPassword=false;
@@ -98,16 +98,16 @@ public class UsuarioMB  {
 	
 	public void checkPassword(){
 		checkSameEmailPasswordState=1;
-		logger.info("->checkPassword="+this.selectedEntity.getEmail()+", password->"+this.selectedEntity.getPassword()+"<-");
+		logger.trace("checkPassword="+this.selectedEntity.getEmail()+", password->"+this.selectedEntity.getPassword()+"<-");
 		checkSameEmailPassword = EmailChecker.isSameEmailPassword(this.selectedEntity.getEmail(), this.selectedEntity.getPassword());
-		logger.info("->checkSameEmailPassword="+checkSameEmailPassword);
+		logger.trace("checkSameEmailPassword="+checkSameEmailPassword);
 		if(checkSameEmailPassword){
 			checkSameEmailPasswordState=2;
 		}
 	}
 	
 	public void save(){
-		logger.info("->UsuarioMB: save selectedEntity:email:"+selectedEntity.getEmail()+", roles:"+selectedEntity.getRoleList());
+		logger.trace("UsuarioMB: save selectedEntity:email:"+selectedEntity.getEmail()+", roles:"+selectedEntity.getRoleList());
 		
 		try{
 			
@@ -115,11 +115,11 @@ public class UsuarioMB  {
 			
 			int u=-1;			
 			if(saveMode == 1){
-				logger.info("->UsuarioMB:insert");
+				logger.trace("UsuarioMB:insert");
 				u=UsuarioDAO.getInstance().insert(selectedEntity);			
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, dialogTitle, "SE CREÓ CORRECTAMENTE NUEVO CLIENTE"));			
 			} else if(saveMode == 2){
-				logger.info("->UsuarioMB:update");
+				logger.trace("UsuarioMB:update");
 				u=UsuarioDAO.getInstance().update(selectedEntity);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, dialogTitle, "SE ACTUALIZARÓN CORRECTAMENTE LOS DATOS DEL CLIENTE"));			
 			}
@@ -142,11 +142,11 @@ public class UsuarioMB  {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 	public List<UsuarioQuickView> getEntityList() {
-//		logger.info("just return:---------->>");
+//		logger.trace("just return:---------->>");
 //		for(UsuarioQuickView uqv: entityList){
-//			logger.info("->:"+uqv.getEmail()+","+uqv.getNombreCompleto()+","+uqv.getAbilitado());
+//			logger.trace(":"+uqv.getEmail()+","+uqv.getNombreCompleto()+","+uqv.getAbilitado());
 //		}
-//		logger.info("<<----------");
+//		logger.trace("<<----------");
 		return entityList;
 	}
 	

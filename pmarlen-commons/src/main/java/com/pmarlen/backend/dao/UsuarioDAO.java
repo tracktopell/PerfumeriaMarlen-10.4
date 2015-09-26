@@ -85,14 +85,14 @@ public class UsuarioDAO {
 			String nombreCompleto=null;
 			String password=null;
 			Integer abilitado = null;
-			logger.info("============================================>");
+			logger.trace("============================================>");
 			while(rs.next()) {
 				email			= (String)rs.getObject("EMAIL");
 				perfil			= (String)rs.getObject("PERFIL");
 				nombreCompleto	= (String)rs.getObject("NOMBRE_COMPLETO");
 				password		= (String)rs.getObject("PASSWORD");
 				abilitado		= (Integer)rs.getObject("ABILITADO");
-				logger.info("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado);
+				logger.trace("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado);
 				if(x == null){
 					// NUEVO
 					x = new UsuarioQuickView();					
@@ -110,7 +110,7 @@ public class UsuarioDAO {
 				
 				x.addPerfil(perfil);
 			}
-			logger.info("<============================================");
+			logger.trace("<============================================");
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());

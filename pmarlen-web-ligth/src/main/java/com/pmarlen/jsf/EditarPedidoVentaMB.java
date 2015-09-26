@@ -109,27 +109,27 @@ public class EditarPedidoVentaMB{
 		tableDraggableEnabled = false;
 		ultimoESId=0;
 		digifactWSState=0;
-		logger.info("OK init");
+		logger.trace("OK init");
 	}
 
 	public String editar(int pedidoVentaID){
-		logger.info("--------------------------------<<<<<< inicio Editar");
+		logger.trace("--------------------------------<<<<<< inicio Editar");
 		validarSiEstabaEditandoOtro("PEDIDO");
-		logger.info("->editar:pedidoVentaID="+pedidoVentaID);		
+		logger.trace("editar:pedidoVentaID="+pedidoVentaID);		
 		try {
 			EntradaSalida es4Edit = new EntradaSalida(pedidoVentaID);
 			entradaSalida = EntradaSalidaDAO.getInstance().findBy(es4Edit);
-			logger.info("->editar:vvpedidoVenta="+entradaSalida);
+			logger.trace("editar:vvpedidoVenta="+entradaSalida);
 			entityList = EntradaSalidaDAO.getInstance().findAllESDByEntradaSalida(pedidoVentaID);
 			EntradaSalidaDAO.getInstance().actualizaCantidadPendienteParaOtrosES(entityList);
 
-			logger.info("->editar:entityList:--------->>>");
+			logger.trace("editar:entityList:--------->>>");
 			for(EntradaSalidaDetalleQuickView pv:entityList){
-				logger.info("\t->editar:editar: rowId="+pv.getRowId()+": "+pv.getCantidad()+" X ["+pv.getProductoCodigoBarras()+"]@"+pv.getAlmacenId());
+				logger.trace("\t->editar:editar: rowId="+pv.getRowId()+": "+pv.getCantidad()+" X ["+pv.getProductoCodigoBarras()+"]@"+pv.getAlmacenId());
 			}
-			logger.info("->editar:entityList:<<<---------");
+			logger.trace("editar:entityList:<<<---------");
 		}catch(DAOException de){
-			logger.error("->editar:",de);
+			logger.error("editar:",de);
 			entradaSalida = new EntradaSalidaQuickView();
 			entradaSalida.setId(0);
 			entradaSalidaFooter= new EntradaSalidaFooter();
@@ -159,7 +159,7 @@ public class EditarPedidoVentaMB{
 		
 		actualizarTotales();
 		hayCambios = false;
-		logger.info("fin Editar");
+		logger.trace("fin Editar");
 		ultimoESId=pedidoVentaID;
 		return "/pages/editarPedidoVenta";
 	}
@@ -184,7 +184,7 @@ public class EditarPedidoVentaMB{
 	}
 
 	public String reset() {
-		logger.info("->EntradaSalidaDetalleMB: rest.");
+		logger.trace("EntradaSalidaDetalleMB: rest.");
 		hayCambios=false;
 		editar(this.entradaSalida.getId());
 		prepareDownload();
@@ -238,14 +238,14 @@ public class EditarPedidoVentaMB{
 	}
 
 	public void cadenaBusquedaChanged(ValueChangeEvent e) {
-		logger.debug("->cadenaBusquedaChanged: e:"+e.getNewValue());
+		logger.trace("cadenaBusquedaChanged: e:"+e.getNewValue());
 	}
 	public void codigoChanged(ValueChangeEvent e) {
-		logger.debug("->codigoChanged: e:"+e.getNewValue()+", cantidadAgregarCodigo="+cantidadAgregarCodigo);
+		logger.trace("codigoChanged: e:"+e.getNewValue()+", cantidadAgregarCodigo="+cantidadAgregarCodigo);
 	}
 	
 	public void buscarXCadena() {
-		logger.debug("->buscarXCadena:tipoAlmacen="+tipoAlmacen+", cadenaBusqueda="+cadenaBusqueda);
+		logger.trace("buscarXCadena:tipoAlmacen="+tipoAlmacen+", cadenaBusqueda="+cadenaBusqueda);
 		if(cadenaBusqueda.trim().length()>3) {	
 			try {
 				boolean modoExclusivo = false;
@@ -260,7 +260,7 @@ public class EditarPedidoVentaMB{
 					FacesContext context = FacesContext.getCurrentInstance();         
 					context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"BUSCAR PRODUCTOS",  "SE ENCONTRARÓN "+resultadoBusqueda.size()+" PRODUCTO"+(resultadoBusqueda.size()>1?"S":"") ));
 
-					logger.debug("->buscar:findAllExclusiveByDesc:OK, resultadoBusqueda.size()="+resultadoBusqueda.size());
+					logger.trace("buscar:findAllExclusiveByDesc:OK, resultadoBusqueda.size()="+resultadoBusqueda.size());
 					resultadoBusquedaSI = resultadoBusqueda.get(0);
 				} else {
 					FacesContext context = FacesContext.getCurrentInstance();         
@@ -279,16 +279,16 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void buscarXCodigo() {
-		logger.debug("->buscarXCodigo:cantidadAgregarCodigo="+cantidadAgregarCodigo+", codigo="+codigo);
+		logger.trace("buscarXCodigo:cantidadAgregarCodigo="+cantidadAgregarCodigo+", codigo="+codigo);
 		EntradaSalidaDetalleQuickView dvpAdd = null;
 		try {
 			dvpAdd = ProductoDAO.getInstance().findByCodigo(tipoAlmacen,codigo);
 
-			logger.debug("->buscarXCodigo:dvpAdd="+dvpAdd);
+			logger.trace("buscarXCodigo:dvpAdd="+dvpAdd);
 
 			if(dvpAdd != null) {
 				dvpAdd.setCantidad(cantidadAgregarCodigo);
-				logger.debug("->buscarXCodigo:OK +"+cantidadAgregarCodigo+" x "+dvpAdd);
+				logger.trace("buscarXCodigo:OK +"+cantidadAgregarCodigo+" x "+dvpAdd);
 				entityList.add(dvpAdd);
 
 				FacesContext context = FacesContext.getCurrentInstance();         
@@ -323,24 +323,24 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void cantidadDetalleCambio(long cambioRowId){
-		logger.debug("->cantidadDetalleCambio:cambioRowId="+cambioRowId);
+		logger.trace("cantidadDetalleCambio:cambioRowId="+cambioRowId);
 		actualizarTotales();
 	}
 	
 	public void cantidadDetalleChanged(ValueChangeEvent event) {
 		int cantidadChanged = (Integer) event.getNewValue();
-		logger.debug("->updateCantidad:cantidadChanged="+cantidadChanged);
+		logger.trace("updateCantidad:cantidadChanged="+cantidadChanged);
 		actualizarTotales();
 	}
 	
 	public void deleteRow(long deleteRowId){
-		logger.debug("->deleteRow:deleteRowId="+deleteRowId);
+		logger.trace("deleteRow:deleteRowId="+deleteRowId);
 		int i=0;
 		int indexDelete=-1;
 		int cantidadEliminada=0;
 		String codigoEliminado="";
 		for(EntradaSalidaDetalleQuickView pv:entityList){
-			logger.info("->deleteRow:\tdelete? "+pv.getRowId()+"=="+deleteRowId);
+			logger.trace("deleteRow:\tdelete? "+pv.getRowId()+"=="+deleteRowId);
 			if(pv.getRowId()==deleteRowId){
 				cantidadEliminada= pv.getCantidad();
 				codigoEliminado = pv.getProductoCodigoBarras();
@@ -351,7 +351,7 @@ public class EditarPedidoVentaMB{
 		}
 		if(indexDelete >=0) {
 			entityList.remove(indexDelete);
-			logger.debug("->deleteRow:delete index:"+indexDelete);
+			logger.trace("deleteRow:delete index:"+indexDelete);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"ELIMINAR PRODUCTO",  "SE ELIMINÓ CORRECTAMENTE "+cantidadEliminada+" x ["+codigoEliminado+"].") );
 		
@@ -373,7 +373,7 @@ public class EditarPedidoVentaMB{
 		
 
 	public void setResultadoBusquedaSelected(String resultadoBusquedaSelected) {
-		logger.debug("->setResultadoBusquedaSelected("+resultadoBusquedaSelected+")");
+		logger.trace("setResultadoBusquedaSelected("+resultadoBusquedaSelected+")");
 		this.resultadoBusquedaSelected = resultadoBusquedaSelected;
 		
 		for(EntradaSalidaDetalleQuickView x:resultadoBusqueda){
@@ -406,14 +406,14 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void conservarBusquedaChanged(){
-		logger.debug("->conservarBusquedaChanged:conservarBusqueda="+conservarBusqueda);
+		logger.trace("conservarBusquedaChanged:conservarBusqueda="+conservarBusqueda);
 	}
 	
 	public void onRowReorder(ReorderEvent event) {
-		logger.debug("->onRowReorder:From: " + event.getFromIndex() + ", To:" + event.getToIndex());
+		logger.trace("onRowReorder:From: " + event.getFromIndex() + ", To:" + event.getToIndex());
 		int i=0;
 		for(EntradaSalidaDetalleQuickView d:entityList){
-			logger.debug("->onRowReorder["+(i++)+"]:\t + "+d.getCantidad()+" ["+d.getProductoCodigoBarras()+"]@"+d.getAlmacenId());
+			logger.trace("onRowReorder["+(i++)+"]:\t + "+d.getCantidad()+" ["+d.getProductoCodigoBarras()+"]@"+d.getAlmacenId());
 		}
 		hayCambios = true;
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "RENGLÓN MOVIDO EN DETALLE", "DE " + (event.getFromIndex()+1) + " A " + (event.getToIndex()+1));
@@ -460,7 +460,7 @@ public class EditarPedidoVentaMB{
 	}
 
 	public void setCantidadAgregarCodigo(int cantidadAgregarCodigo) {
-		logger.debug("->setCantidadAgregarCodigo:cantidadAgregarCodigo("+this.cantidadAgregarCodigo+")="+cantidadAgregarCodigo);
+		logger.trace("setCantidadAgregarCodigo:cantidadAgregarCodigo("+this.cantidadAgregarCodigo+")="+cantidadAgregarCodigo);
 		this.cantidadAgregarCodigo = cantidadAgregarCodigo;
 	}
 	
@@ -473,15 +473,15 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void agregarCodigo() {
-		logger.debug("->agregarCodigo:cantidadAgregarCodigo="+cantidadAgregarCodigo+", codigo="+codigo);
+		logger.trace("agregarCodigo:cantidadAgregarCodigo="+cantidadAgregarCodigo+", codigo="+codigo);
 		
 		EntradaSalidaDetalleQuickView dvpAdd = null;
 		try {
 			dvpAdd = ProductoDAO.getInstance().findByCodigo(tipoAlmacen,codigo);
 			if(dvpAdd != null){
-				logger.info("->agregarCodigo:dvpAdd="+dvpAdd);
+				logger.trace("agregarCodigo:dvpAdd="+dvpAdd);
 
-				logger.info("->agregarCodigo:OK +"+cantidadAgregarCodigo+" x "+dvpAdd);
+				logger.trace("agregarCodigo:OK +"+cantidadAgregarCodigo+" x "+dvpAdd);
 
 				dvpAdd.setCantidad(cantidadAgregarCodigo);
 
@@ -526,20 +526,20 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void actualizarTotales(){
-		logger.debug("actualizarTotales, forzar hay cambio");
+		logger.trace("actualizarTotales, forzar hay cambio");
 		hayCambios=true;
 		entradaSalidaFooter.calculaParaFacturaTotalesDesde(entradaSalida, entityList);
 	}
 	
 	public void actualizarTabla(){
-		logger.debug("actualizarTabla");
+		logger.trace("actualizarTabla");
 		actualizarCantidadesStockTiempoReal();
 		hayCambios=true;
 		entradaSalidaFooter.calculaParaFacturaTotalesDesde(entradaSalida, entityList);
 	}
 
 	public void onClienteListChange() {
-		logger.debug("->onClienteListChange:clienteId="+entradaSalida.getClienteId());
+		logger.trace("onClienteListChange:clienteId="+entradaSalida.getClienteId());
 		clienteSeleccionado = null;
 		for(Cliente c:getClientes()){
 			if(c.getId().equals(entradaSalida.getClienteId())){
@@ -551,7 +551,7 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void seleccionaCliente(int clienteIdChoiced){
-		logger.debug("->seleccionaCliente:clienteIdChoiced="+clienteIdChoiced);
+		logger.trace("seleccionaCliente:clienteIdChoiced="+clienteIdChoiced);
 		for(Cliente c:getClientes()){
 			if(c.getId().equals(clienteIdChoiced)){
 				entradaSalida.setClienteId(c.getId());
@@ -581,7 +581,7 @@ public class EditarPedidoVentaMB{
 	}
 
 	public void onFormaDePagoListChange() {
-		logger.debug("->onFormaDePagoListChange:entradaSalida.getFormaDePagoId()="+entradaSalida.getFormaDePagoId());
+		logger.trace("onFormaDePagoListChange:entradaSalida.getFormaDePagoId()="+entradaSalida.getFormaDePagoId());
 		hayCambios = true;
 	}
 	
@@ -603,7 +603,7 @@ public class EditarPedidoVentaMB{
 	}
 
 	public void onMetodoDePagoListChange() {
-		logger.debug("->onMetodoDePagoListChange:entradaSalida.getMetodoDePagoId()="+entradaSalida.getMetodoDePagoId());
+		logger.trace("onMetodoDePagoListChange:entradaSalida.getMetodoDePagoId()="+entradaSalida.getMetodoDePagoId());
 		hayCambios = true;
 	}
 	
@@ -621,7 +621,7 @@ public class EditarPedidoVentaMB{
 	}
 
 	public void onDescuentoEspecialListChange() {
-		logger.debug("->onDescuentoEspecialListChange:PorcentajeDescuentoExtra="+entradaSalida.getPorcentajeDescuentoExtra());
+		logger.trace("onDescuentoEspecialListChange:PorcentajeDescuentoExtra="+entradaSalida.getPorcentajeDescuentoExtra());
 		actualizarTotales();
 	}
 
@@ -658,16 +658,16 @@ public class EditarPedidoVentaMB{
 	}
 
 	public void comentariosChanged() {
-		logger.debug("->comentariosChanged:comentarios="+entradaSalida.getComentarios());		
+		logger.trace("comentariosChanged:comentarios="+entradaSalida.getComentarios());		
 		hayCambios = true;
 	}
 
 	public void onResultadoBusquedaChange() {
-		logger.debug("->onResultadoBusquedaChange:resultadoBusquedaSelected="+resultadoBusquedaSelected);
+		logger.trace("onResultadoBusquedaChange:resultadoBusquedaSelected="+resultadoBusquedaSelected);
 	}
 	
 	public void agregarSeleccionadoDeBusqueda() {
-		logger.debug("->agregarSeleccionadoDeBusqueda:"+cantidadAgregarBusqueda+" x resultadoBusquedaSelected="+resultadoBusquedaSelected);
+		logger.trace("agregarSeleccionadoDeBusqueda:"+cantidadAgregarBusqueda+" x resultadoBusquedaSelected="+resultadoBusquedaSelected);
 		EntradaSalidaDetalleQuickView dvpAdd=null;
 		for(EntradaSalidaDetalleQuickView pv:resultadoBusqueda){
 			if(pv.getProductoCodigoBarras().equals(resultadoBusquedaSelected)){
@@ -683,7 +683,7 @@ public class EditarPedidoVentaMB{
 			}
 		}
 		if(dvpAdd != null) {
-			logger.debug("->agregarSeleccionadoDeBusqueda:OK +"+cantidadAgregarBusqueda+" x "+dvpAdd);
+			logger.trace("agregarSeleccionadoDeBusqueda:OK +"+cantidadAgregarBusqueda+" x "+dvpAdd);
 			entityList.add(dvpAdd);
 			
 			FacesContext context = FacesContext.getCurrentInstance();         
@@ -702,13 +702,13 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void setTipoAlmacen(int tipoAlmacen) {
-		logger.debug("->setTipoAlmacen:tipoAlmacen="+tipoAlmacen);
+		logger.trace("setTipoAlmacen:tipoAlmacen="+tipoAlmacen);
 		this.tipoAlmacen = tipoAlmacen;
 	}
 
 	
 	public void onTipoAlmacenChange() {
-		logger.debug("->onTipoAlmacenChange:tipoAlmacen="+tipoAlmacen);
+		logger.trace("onTipoAlmacenChange:tipoAlmacen="+tipoAlmacen);
 		cantidadAgregarBusqueda = 1;
 		cantidadAgregarCodigo   = 1;
 		cadenaBusqueda ="";
@@ -749,22 +749,22 @@ public class EditarPedidoVentaMB{
 	}
 	
 	protected void validacion(){
-		logger.debug("->validacion");
+		logger.trace("validacion");
 		
 	}
 	
 	public void guardar() {
 		try{						
-			logger.info("->guardar:pedidoVenta.id:"+entradaSalida.getId());
-			logger.info("->guardar:pedidoVenta.cfdVentaId:"+entradaSalida.getCfdId());
+			logger.trace("guardar:pedidoVenta.id:"+entradaSalida.getId());
+			logger.trace("guardar:pedidoVenta.cfdVentaId:"+entradaSalida.getCfdId());
 			EntradaSalidaDAO.getInstance().update(entradaSalida,entityList,sessionUserMB.getUsuarioAuthenticated());
-			logger.info("->guardar:OK Guardar.");
+			logger.trace("guardar:OK Guardar.");
 			
 			reset();
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"GUARDAR",  "SE ACTUALIZÓ CORRECTAMENTE EL PEDIDO #"+entradaSalida.getId()+".") );
 		}catch(Exception e){
-			logger.error("->guardar: Exception", e);
+			logger.error("guardar: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"GUARDAR",  "HUBO UN ERROR AL GUARDAR.") );
 		}
@@ -773,15 +773,15 @@ public class EditarPedidoVentaMB{
 	
 	public void verificar() {
 		try{			
-			logger.info("->verificar:pedidoVenta.id:"+entradaSalida.getId());
+			logger.trace("verificar:pedidoVenta.id:"+entradaSalida.getId());
 			EntradaSalidaDAO.getInstance().verificar(entradaSalida,sessionUserMB.getUsuarioAuthenticated());
-			logger.info("->verificar:OK Verificar.");
+			logger.trace("verificar:OK Verificar.");
 			
 			reset();
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"VERIFICAR",  "SE VERIFICÓ CORRECTAMENTE EL PEDIDO #"+entradaSalida.getId()+".") );
 		}catch(Exception e){
-			logger.error("->verificar: Exception", e);
+			logger.error("verificar: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"VERFICAR",  "HUBO UN ERROR AL VERIFICAR.") );
 		}		
@@ -789,15 +789,15 @@ public class EditarPedidoVentaMB{
 	
 	public void surtir() {
 		try{			
-			logger.info("->verificar:pedidoVenta.id:"+entradaSalida.getId());
+			logger.trace("verificar:pedidoVenta.id:"+entradaSalida.getId());
 			EntradaSalidaDAO.getInstance().surtir(entradaSalida,entityList,sessionUserMB.getUsuarioAuthenticated());
-			logger.info("->verificar:OK Surtir.");
+			logger.trace("verificar:OK Surtir.");
 
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"SURTIR",  "SE SURTIÓ CORRECTAMENTE EL PEDIDO #"+entradaSalida.getId()+".") );			
 			reset();
 		}catch(Exception e){
-			logger.error("->surtir: Exception", e);
+			logger.error("surtir: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"SURTIR",  "HUBO UN ERROR AL SURTIR.") );
 		}		
@@ -805,14 +805,14 @@ public class EditarPedidoVentaMB{
 	
 	public void cancelar() {
 		try{			
-			logger.info("->cancelar:pedidoVenta.id:"+entradaSalida.getId());
+			logger.trace("cancelar:pedidoVenta.id:"+entradaSalida.getId());
 			//EntradaSalidaDAO.getInstance().surtir(pedidoVenta,entityList,sessionUserMB.getUsuarioAuthenticated());
-			logger.info("->cancelar:CANCELAR NO IMPLEMENTADO, solo resetea");
+			logger.trace("cancelar:CANCELAR NO IMPLEMENTADO, solo resetea");
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"CANCELAR",  "CANCELAR PENDIENTE PEDIDO #"+entradaSalida.getId()+".") );			
 			reset();
 		}catch(Exception e){
-			logger.error("->cancelar: Exception", e);
+			logger.error("cancelar: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"SURTIR",  "HUBO UN ERROR AL CANCELAR.") );
 		}		
@@ -820,12 +820,12 @@ public class EditarPedidoVentaMB{
 	
 	public void cancelarCambios() {
 		try{			
-			logger.info("->cancelarCambios:pedidoVenta.id:"+entradaSalida.getId());
+			logger.trace("cancelarCambios:pedidoVenta.id:"+entradaSalida.getId());
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"CANCELAR CAMBIOS",  "SE CANCELARON LOS CAMBIOS Y RECARGÓ EL PEDIDO #"+entradaSalida.getId()+".") );
 			reset();
 		}catch(Exception e){
-			logger.error("->cancelarCambios: Exception", e);
+			logger.error("cancelarCambios: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"CANCELAR CAMBIOS",  "HUBO UN ERROR AL CANCELAR CAMBIOS.") );
 		}		
@@ -833,7 +833,7 @@ public class EditarPedidoVentaMB{
 
 	
 	public void cerrar() {
-		logger.debug("->cerrar");
+		logger.trace("cerrar");
 		reset();
 	}
 
@@ -842,11 +842,11 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void onComentariosChange() {
-		logger.debug("->onComentariosChange:comentarios="+entradaSalida.getComentarios());
+		logger.trace("onComentariosChange:comentarios="+entradaSalida.getComentarios());
 	}
 	
 	public void onCondicionesChange() {
-		logger.debug("->onCondicionesChange:CondicionesDePago="+entradaSalida.getCondicionesDePago());
+		logger.trace("onCondicionesChange:CondicionesDePago="+entradaSalida.getCondicionesDePago());
 	}
 	
 	public String getImporteDesglosado(double f){
@@ -866,7 +866,7 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void onAutorizaDescuentoChange(){
-		logger.debug("autorizaDescuento="+this.autorizaDescuento);
+		logger.trace("autorizaDescuento="+this.autorizaDescuento);
 		if(this.autorizaDescuento){
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"DESCUENTO",  " SE AUTORIZÓ LA POLITICA DE DESCUENTO") );
@@ -913,12 +913,12 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public int getAlturaExtraTabla() {
-		logger.debug("->getAlturaExtraTabla: isVerificable()="+isVerificable()+", isSurtible()="+isSurtible());
+		logger.trace("getAlturaExtraTabla: isVerificable()="+isVerificable()+", isSurtible()="+isSurtible());
 		if(isVerificable() || isSurtible()){
-			logger.debug("->getAlturaExtraTabla: 0");
+			logger.trace("getAlturaExtraTabla: 0");
 			return 0;
 		} else {
-			logger.debug("->getAlturaExtraTabla: 180");
+			logger.trace("getAlturaExtraTabla: 180");
 			return 180;
 		}
 	}
@@ -949,7 +949,7 @@ public class EditarPedidoVentaMB{
 	protected long tWS=0;
 
 	public boolean isActualizarEstadoPorResultadoWS() {
-		logger.info("->actualizarEstadoPorResultadoWS?"+actualizarEstadoPorResultadoWS);
+		logger.trace("actualizarEstadoPorResultadoWS?"+actualizarEstadoPorResultadoWS);
 		return actualizarEstadoPorResultadoWS;
 	}
 	
@@ -959,37 +959,37 @@ public class EditarPedidoVentaMB{
 	
 	
 	public void verifyDigifactWSState(){
-		logger.debug("--->> digifactWSState="+digifactWSState);
+		logger.trace("--->> digifactWSState="+digifactWSState);
 	}
 
 	public void updateEstadoCFD(){
 		tiempoTrasncurridoInvocarCFD = (int)(( System.currentTimeMillis()/1000)-tWS);		
-		logger.debug("->tiempoTrasncurridoInvocarCFD="+tiempoTrasncurridoInvocarCFD+", actualizarEstadoPorResultadoWS:"+actualizarEstadoPorResultadoWS+", pedidoVenta.getCfdId()="+entradaSalida.getCfdId());
+		logger.trace("tiempoTrasncurridoInvocarCFD="+tiempoTrasncurridoInvocarCFD+", actualizarEstadoPorResultadoWS:"+actualizarEstadoPorResultadoWS+", pedidoVenta.getCfdId()="+entradaSalida.getCfdId());
 	}
 	
 	public void generaCFDReal(){
 		try{			
 			digifactWSState=1;
-			logger.info("->generaCFDReal:pedidoVenta.id:"+entradaSalida.getId());
+			logger.trace("generaCFDReal:pedidoVenta.id:"+entradaSalida.getId());
 			actualizarEstadoPorResultadoWS = true;
 			tiempoTrasncurridoInvocarCFD=0;
 			
 			Cliente  c = ClienteDAO.getInstance().findBy(new Cliente(entradaSalida.getClienteId()));
 			Sucursal s = SucursalDAO.getInstance().findBy(new Sucursal(1));
 			tWS = System.currentTimeMillis();
-			logger.info("->generaCFDReal:invocando DAO para WS, estaod="+entradaSalida.getEstadoId());
+			logger.trace("generaCFDReal:invocando DAO para WS, estaod="+entradaSalida.getEstadoId());
 			digifactWSState=2;
 			EntradaSalidaDAO.getInstance().invocarInicioWSCFDI(entradaSalida,entityList,c,sessionUserMB.getUsuarioAuthenticated(),s);			
-			logger.info("->generaCFDReal:OK DAO y WS Digifact, invodocado: estado="+entradaSalida.getEstadoId());
+			logger.trace("generaCFDReal:OK DAO y WS Digifact, invodocado: estado="+entradaSalida.getEstadoId());
 			
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"GENERAR C.F.D.",  "SE GENERÓ EL C.F.D.I.") );
 			digifactWSState=3;
 			
 			reset();
-			logger.info("->generaCFDReal:END.");
+			logger.trace("generaCFDReal:END.");
 		} catch(Exception e){
-			logger.error("->generaCFDReal: Exception", e);
+			logger.error("generaCFDReal: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"GENERAR C.F.D.",  "HUBO UN ERROR AL INVOCAR WS.") );
 			digifactWSState=4;

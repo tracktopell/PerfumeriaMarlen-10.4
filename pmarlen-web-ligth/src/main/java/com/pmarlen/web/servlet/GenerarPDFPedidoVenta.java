@@ -21,13 +21,14 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class GenerarPDFPedidoVenta extends HttpServlet {
-
+	private final Logger logger = Logger.getLogger(GenerarPDFPedidoVenta.class.getSimpleName());
 	/**
 	 * Processes requests for both HTTP
 	 * <code>GET</code> and
@@ -40,7 +41,7 @@ public class GenerarPDFPedidoVenta extends HttpServlet {
 	 */
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.err.println("-->>GenerarPDFPedidoVenta servlet: RequestURI="+request.getRequestURI());
+		logger.trace("GenerarPDFPedidoVenta servlet: RequestURI="+request.getRequestURI());
 		
 		ServletOutputStream outputStream = null;
 		Integer pedidoVentaId = null;
@@ -59,7 +60,7 @@ public class GenerarPDFPedidoVenta extends HttpServlet {
 			int pedidoIdIndex     = requestURI.lastIndexOf("No_")+3;
 			int paraImprimirIndex = requestURI.lastIndexOf("_paraImprimir");
 			int pdfIndex          = requestURI.lastIndexOf(".pdf");
-			System.err.println("-->>GenerarPDFPedidoVenta servlet: pedidoIdIndex="+pedidoIdIndex+", paraImprimirIndex="+paraImprimirIndex+", pdfIndex="+pdfIndex);
+			logger.trace("GenerarPDFPedidoVenta servlet: pedidoIdIndex="+pedidoIdIndex+", paraImprimirIndex="+paraImprimirIndex+", pdfIndex="+pdfIndex);
 			
 			if(internaIndex > 0){
 				interna=true;
@@ -85,7 +86,7 @@ public class GenerarPDFPedidoVenta extends HttpServlet {
 			Usuario ui= UsuarioDAO.getInstance().findBy(uemail);			
 			byte[] bytesPdf = GeneradorImpresionPedidoVenta.generaPdfPedidoVenta(pv,entityList,clienteVenta,fullPrint,interna,ui.getNombreCompleto().toUpperCase());
 			
-			System.err.println("-->>OK writing PDF bytes");
+			logger.trace("OK writing PDF bytes");
 			
 			response.setContentType("application/pdf");
 			

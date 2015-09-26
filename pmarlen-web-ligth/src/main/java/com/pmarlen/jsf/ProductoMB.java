@@ -31,7 +31,7 @@ public class ProductoMB  {
 	boolean nuevoProducto=false;
 	@PostConstruct
     public void init() {
-		logger.info("->ProductoMB: init.");
+		logger.trace("ProductoMB: init.");
 		nuevoProducto=false;
         try{
 			entityList = ProductoDAO.getInstance().findAll();
@@ -39,13 +39,13 @@ public class ProductoMB  {
 			logger.error(de.getMessage());
 			entityList = new ArrayList<ProductoQuickView>();
 		}
-		//logger.info("->ProductoMB: init:entityList="+entityList);
+		//logger.trace("ProductoMB: init:entityList="+entityList);
 		viewRows = 10;
 		dialogTitle ="PRODUCTO";
     }
 	
 	public String reset() {
-		logger.info("->ProductoMB: rest.");
+		logger.trace("ProductoMB: rest.");
         init();
 		return "/pages/producto";
     }
@@ -55,16 +55,16 @@ public class ProductoMB  {
 	}
 	
 	public void selectEntity(ActionEvent event){
-		logger.info("->ProductoMB: selectProducto.");
+		logger.trace("ProductoMB: selectProducto.");
 	}
 	
 	public void actionX(ActionEvent event){
-		logger.info("->ProductoMB: actionX.");
+		logger.trace("ProductoMB: actionX.");
 	}
 	
 	public void prepareForNew() {
 		nuevoProducto=true;
-		logger.info("->ProductoMB prepareForNew");
+		logger.trace("ProductoMB prepareForNew");
 		dialogTitle ="DATOS DEL PRODUCTO";
 		this.selectedEntity = new ProductoQuickView();
 		this.selectedEntity.setUnidadEmpaque("PZ");
@@ -73,13 +73,13 @@ public class ProductoMB  {
 	
 	public void setSelectedEntity(ProductoQuickView selectedProducto) {
 		nuevoProducto=false;
-		logger.info("->ProductoMB setSelectedProducto.id="+selectedProducto.getCodigoBarras());
+		logger.trace("ProductoMB setSelectedProducto.id="+selectedProducto.getCodigoBarras());
 		dialogTitle ="EDITAR PRODUCTO ID #"+selectedProducto.getCodigoBarras();
 		this.selectedEntity = selectedProducto;
 	}
 	
 	public void save(){
-		logger.info("->ProductoMB: saveSelectedProducto:codigoBarras:"+selectedEntity.getCodigoBarras());
+		logger.trace("ProductoMB: saveSelectedProducto:codigoBarras:"+selectedEntity.getCodigoBarras());
 		
 		try{
 			int u=-1;			

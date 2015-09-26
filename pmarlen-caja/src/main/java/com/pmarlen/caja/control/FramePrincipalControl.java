@@ -59,6 +59,8 @@ public class FramePrincipalControl implements ActionListener{
 		
 		framePrincipal.getVentasMenu().addActionListener(this);
 		
+		framePrincipal.getVentaModoMenu().addActionListener(this);
+		
 		framePrincipal.getSalirMenu().addActionListener(this);
 		
 		//---------------------------------------------------
@@ -153,6 +155,8 @@ public class FramePrincipalControl implements ActionListener{
 			salirMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getVentaActualMenu()){
 			ventaActualMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getVentaModoMenu()){
+			ventaModoMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getVentaTerminarMenu()){
 			ventaTerminar_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getVentaeliminarProdMenu()){
@@ -176,10 +180,7 @@ public class FramePrincipalControl implements ActionListener{
 	}
 
 	private void ventaCancelarMenu_actionPerformed() {
-		int r = JOptionPane.showConfirmDialog(framePrincipal, "¿Realmente desea Cancelar la Venta ?", "Venta",JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if(r == JOptionPane.OK_OPTION){
-			panelVentaControl.estadoInicial();
-		}
+		panelVentaControl.cancelar_ActionPerformed();
 	}
 
 	private void productosMenu_actionPerformed() {
@@ -201,10 +202,15 @@ public class FramePrincipalControl implements ActionListener{
 		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelVenta");
 		panelVentaControl.verVentaActual();
 	}
+	
+	private void ventaModoMenu_actionPerformed() {
+		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelVenta");
+		panelVentaControl.checar_ActionPerformed();
+	}
 
 	private void ventaTerminar_actionPerformed() {
 		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelVenta");
-	}	
+	}
 	
 	private void negocioConfigMenu_actionPerformed() {
 		DialogConfiguracionSistemaControl.getInstance(framePrincipal).estadoInicial();

@@ -3,7 +3,7 @@
 <%@ page pageEncoding="UTF-8" %>
 <%
 	long to = request.getSession().getMaxInactiveInterval() * 1000 + 3000;
-	System.out.println("login.jsp->[" + request.getSession().getId() + "]: timeOut=" + (to / 1000) + " secs. =" + ((to / 1000 / 60.0)) + " mins.");
+	//System.out.println("login.jsp->[" + request.getSession().getId() + "]: timeOut=" + (to / 1000) + " secs. =" + ((to / 1000 / 60.0)) + " mins.");
 %>
 <head>
 	<title>PMARLEN:ENTRADA</title>

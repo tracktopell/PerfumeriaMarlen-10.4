@@ -42,13 +42,13 @@ public class PedidosVentaMB implements Serializable {
 	
 	@PostConstruct
 	public void init(){
-		logger.info("->init:");
+		logger.trace("init:");
 		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,1,true);
 		viewRows = 25;
 	}
 	
 	public void refrescar(){
-		logger.info("->refrescar:");
+		logger.trace("refrescar:");
 		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,1,true);
 	}
 
@@ -57,26 +57,26 @@ public class PedidosVentaMB implements Serializable {
 	}
 	
 	public void editar(int id){
-		logger.info("->editar:id="+id);
+		logger.trace("editar:id="+id);
 		editarPedidoVentaMB.editar(id);
 	}
 	public String editarPedidoAction(int pedidoVentaId){
-		logger.info("->editarPedidoAction:pedidoVentaId="+pedidoVentaId);
+		logger.trace("editarPedidoAction:pedidoVentaId="+pedidoVentaId);
 		return editarPedidoVentaMB.editar(pedidoVentaId);
 	}
 		
 	public int getSizeList(){
-		logger.debug("->getSizeList()");
+		logger.trace("getSizeList()");
 		return lazyModel.getRowCount();
 	}
 
 	public int getViewRows() {
-		logger.debug("->getViewRows()");
+		logger.trace("getViewRows()");
 		return viewRows;
 	}
 
 	public void setViewRows(int viewRows) {
-		logger.debug("->setViewRows("+viewRows+")");
+		logger.trace("setViewRows("+viewRows+")");
 		this.viewRows = viewRows;
 	}
 

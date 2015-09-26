@@ -58,7 +58,7 @@ public class EditarDevolucionMB extends EditarPedidoVentaMB{
 	@PostConstruct
 	public void init() {
 		super.init();
-		logger.info("OK init");
+		logger.trace("OK init");
 	}
 
 	
@@ -75,21 +75,21 @@ public class EditarDevolucionMB extends EditarPedidoVentaMB{
 	
 	@Override
 	public String editar(int devolucionID){
-		logger.info("--------------------------------<<<<<< inicio Editar");
+		logger.trace("--------------------------------<<<<<< inicio Editar");
 		validarSiEstabaEditandoOtro("PEDIDO");
-		logger.info("devolucionID="+devolucionID);		
+		logger.trace("devolucionID="+devolucionID);		
 		try {
 			EntradaSalida es4Edit = new EntradaSalida(devolucionID);
 			entradaSalida = EntradaSalidaDAO.getInstance().findBy(es4Edit);
-			logger.info("devolucion="+entradaSalida);
+			logger.trace("devolucion="+entradaSalida);
 			entityList = EntradaSalidaDAO.getInstance().findAllESDByEntradaSalida(devolucionID);
 			EntradaSalidaDAO.getInstance().actualizaCantidadPendienteParaOtrosES(entityList);
 
-			logger.info("entityList:--------->>>");
+			logger.trace("entityList:--------->>>");
 			for(EntradaSalidaDetalleQuickView pv:entityList){
-				logger.info("\teditar: rowId="+pv.getRowId()+": "+pv.getCantidad()+" X ["+pv.getProductoCodigoBarras()+"]@"+pv.getAlmacenId());
+				logger.trace("\teditar: rowId="+pv.getRowId()+": "+pv.getCantidad()+" X ["+pv.getProductoCodigoBarras()+"]@"+pv.getAlmacenId());
 			}
-			logger.info("entityList:<<<---------");
+			logger.trace("entityList:<<<---------");
 		}catch(DAOException de){
 			logger.error(de.getMessage());
 			entradaSalida = new EntradaSalidaQuickView();
@@ -120,8 +120,8 @@ public class EditarDevolucionMB extends EditarPedidoVentaMB{
 		
 		actualizarTotales();
 		hayCambios = false;
-		logger.info("fin Editar");
-		logger.info("-------------------------------->>>>>>> fin Editar");
+		logger.trace("fin Editar");
+		logger.trace("-------------------------------->>>>>>> fin Editar");
 		return "/pages/editarDevolucion";
 	}
 
@@ -131,16 +131,16 @@ public class EditarDevolucionMB extends EditarPedidoVentaMB{
 	
 	public void guardar() {
 		try{						
-			logger.info("entradaSalida.id:"+entradaSalida.getId());
-			logger.info("entradaSalida.cfdVentaId:"+entradaSalida.getCfdId());
+			logger.trace("entradaSalida.id:"+entradaSalida.getId());
+			logger.trace("entradaSalida.cfdVentaId:"+entradaSalida.getCfdId());
 			EntradaSalidaDAO.getInstance().update(entradaSalida,entityList,sessionUserMB.getUsuarioAuthenticated());
-			logger.info("OK Guardar.");
+			logger.trace("OK Guardar.");
 			
 			reset();
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"GUARDAR",  "SE ACTUALIZÓ CORRECTAMENTE LA DEVOLUCIÓN #"+entradaSalida.getId()+".") );
 		}catch(Exception e){
-			logger.error("->guardar: Exception", e);
+			logger.error("guardar: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"GUARDAR",  "HUBO UN ERROR AL GUARDAR.") );
 		}
@@ -149,15 +149,15 @@ public class EditarDevolucionMB extends EditarPedidoVentaMB{
 	
 	public void verificar() {
 		try{			
-			logger.info("entradaSalida.id:"+entradaSalida.getId());
+			logger.trace("entradaSalida.id:"+entradaSalida.getId());
 			EntradaSalidaDAO.getInstance().verificar(entradaSalida,sessionUserMB.getUsuarioAuthenticated());
-			logger.info("OK Verificar.");
+			logger.trace("OK Verificar.");
 			
 			reset();
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"VERIFICAR",  "SE VERIFICÓ CORRECTAMENTE LA DEVOLUCIÓN #"+entradaSalida.getId()+".") );
 		}catch(Exception e){
-			logger.error("->verificar: Exception", e);
+			logger.error("verificar: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"VERFICAR",  "HUBO UN ERROR AL VERIFICAR.") );
 		}		
@@ -165,15 +165,15 @@ public class EditarDevolucionMB extends EditarPedidoVentaMB{
 	
 	public void surtir() {
 		try{			
-			logger.info("entradaSalida.id:"+entradaSalida.getId());
+			logger.trace("entradaSalida.id:"+entradaSalida.getId());
 			EntradaSalidaDAO.getInstance().surtir(entradaSalida,entityList,sessionUserMB.getUsuarioAuthenticated());
-			logger.info("OK Surtir.");
+			logger.trace("OK Surtir.");
 
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"SURTIR",  "SE SURTIÓ CORRECTAMENTE LA DEVOLUCIÓN #"+entradaSalida.getId()+".") );			
 			reset();
 		}catch(Exception e){
-			logger.error("->verificar: Exception", e);
+			logger.error("verificar: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"SURTIR",  "HUBO UN ERROR AL SURTIR.") );
 		}		
@@ -181,14 +181,14 @@ public class EditarDevolucionMB extends EditarPedidoVentaMB{
 	
 	public void cancelar() {
 		try{			
-			logger.info("entradaSalida.id:"+entradaSalida.getId());
+			logger.trace("entradaSalida.id:"+entradaSalida.getId());
 			//EntradaSalidaDAO.getInstance().surtir(entradaSalida,entityList,sessionUserMB.getUsuarioAuthenticated());
-			logger.info("CANCELAR NO IMPLEMENTADO, solo resetea");
+			logger.trace("CANCELAR NO IMPLEMENTADO, solo resetea");
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"CANCELAR",  "CANCELAR PENDIENTE DEVOLUCIÓN #"+entradaSalida.getId()+".") );			
 			reset();
 		}catch(Exception e){
-			logger.error("->verificar: Exception", e);
+			logger.error("verificar: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"SURTIR",  "HUBO UN ERROR AL CANCELAR.") );
 		}		
@@ -196,12 +196,12 @@ public class EditarDevolucionMB extends EditarPedidoVentaMB{
 	
 	public void cancelarCambios() {
 		try{			
-			logger.info("entradaSalida.id:"+entradaSalida.getId());
+			logger.trace("entradaSalida.id:"+entradaSalida.getId());
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"CANCELAR CAMBIOS",  "SE CANCELARON LOS CAMBIOS Y RECARGÓ LA DEVOLUCIÓN #"+entradaSalida.getId()+".") );
 			reset();
 		}catch(Exception e){
-			logger.error("->verificar: Exception", e);
+			logger.error("verificar: Exception", e);
 			FacesContext context = FacesContext.getCurrentInstance();         
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"CANCELAR CAMBIOS",  "HUBO UN ERROR AL CANCELAR CAMBIOS.") );
 		}		

@@ -36,21 +36,21 @@ public class ContextAndSessionListener implements ServletContextListener, HttpSe
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         Date dateSystem = new Date();
-		logger.info("================++++++++++++++++++++++++++++++++++++++=============>>contextInitialized");
-		logger.info("-->>contextInitialized: serverVersion="+Constants.getServerVersion());
+		logger.trace("================++++++++++++++++++++++++++++++++++++++=============>>contextInitialized");
+		logger.trace("contextInitialized: serverVersion="+Constants.getServerVersion());
 		TimeZone defaultTZ = TimeZone.getDefault();		
-        logger.info("-->>contextInitialized: TimeZone.getDefault()="+defaultTZ.getDisplayName()+", Time=defaultformat:"+sdfDefault.format(dateSystem)+", ExtendedFormat:"+sdfExtended.format(dateSystem));  
-		logger.info("-->>contextInitialized: WEBDataSourceFacade.registerStrategy:");
+        logger.trace("contextInitialized: TimeZone.getDefault()="+defaultTZ.getDisplayName()+", Time=defaultformat:"+sdfDefault.format(dateSystem)+", ExtendedFormat:"+sdfExtended.format(dateSystem));  
+		logger.trace("contextInitialized: WEBDataSourceFacade.registerStrategy:");
         WEBDataSourceFacade.registerStrategy();		
-		logger.info("-->>contextInitialized: ConnectionPoolKeepAliveService.getInstance().start:");
+		logger.trace("contextInitialized: ConnectionPoolKeepAliveService.getInstance().start:");
 		ConnectionPoolKeepAliveService.getInstance().start();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-		logger.info("-->>contextDestroyed: ConnectionPoolKeepAliveService.getInstance().stopRunning:");
+		logger.trace("contextDestroyed: ConnectionPoolKeepAliveService.getInstance().stopRunning:");
 		ConnectionPoolKeepAliveService.getInstance().stopRunning();
-        logger.info("contextDestroyed<<================++++++++++++++++++++++++++++++++++++++=============");		
+        logger.trace("contextDestroyed<<================++++++++++++++++++++++++++++++++++++++=============");		
     }
 
     @Override
@@ -58,20 +58,20 @@ public class ContextAndSessionListener implements ServletContextListener, HttpSe
 		final HttpSession session = hse.getSession();
 		//SessionInfo asi=new SessionInfo(session,"-");
 		//sessionInfoHT.put(session.getId(),asi);
-		logger.info("-->>sessionCreated["+session.getId()+"] ==============================================>>");
-		logger.info("-->>sessionCreated["+session.getId()+"] CreationTime          :"+sdfDefault.format(session.getCreationTime()));
-		logger.info("-->>sessionCreated["+session.getId()+"] LastAccessedTime      :"+sdfDefault.format(session.getLastAccessedTime()));
-		logger.info("-->>sessionCreated["+session.getId()+"] MaxInactiveInterval   :"+session.getMaxInactiveInterval()+" secs.");		
-		logger.info("-->>sessionCreated["+session.getId()+"] new                   ?"+session.isNew());
-		logger.info("-->>contextInitialized: =========================================================>>End of initialization");
+		logger.trace("sessionCreated["+session.getId()+"] ==============================================>>");
+		logger.trace("sessionCreated["+session.getId()+"] CreationTime          :"+sdfDefault.format(session.getCreationTime()));
+		logger.trace("sessionCreated["+session.getId()+"] LastAccessedTime      :"+sdfDefault.format(session.getLastAccessedTime()));
+		logger.trace("sessionCreated["+session.getId()+"] MaxInactiveInterval   :"+session.getMaxInactiveInterval()+" secs.");		
+		logger.trace("sessionCreated["+session.getId()+"] new                   ?"+session.isNew());
+		logger.trace("contextInitialized: =========================================================>>End of initialization");
 	}
 
     @Override
     public void sessionDestroyed(HttpSessionEvent hse) {
 		final HttpSession session = hse.getSession();
-        logger.info ("<<--["+session.getId()+"] sessionDestroyed");
-		logger.info("<<--["+session.getId()+"] was new ? "+session.isNew());
-		logger.info("<<--------------------------------------------------------------------------------");
+        logger.trace ("<<--["+session.getId()+"] sessionDestroyed");
+		logger.trace("<<--["+session.getId()+"] was new ? "+session.isNew());
+		logger.trace("<<--------------------------------------------------------------------------------");
 		sessionInfoHT.remove(session.getId());
     }
 }

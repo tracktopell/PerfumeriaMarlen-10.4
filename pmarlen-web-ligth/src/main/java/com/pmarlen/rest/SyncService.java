@@ -87,7 +87,7 @@ public class SyncService {
 			s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
 			s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
 			
-			logger.info("-->> ok, get data, return SyncDTOPackage{"+s+"} for JSON prsing.");
+			logger.trace(" ok, get data, return SyncDTOPackage{"+s+"} for JSON prsing.");
 		} catch (Exception ex) {
 			logger.error (null, ex);
 			throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);

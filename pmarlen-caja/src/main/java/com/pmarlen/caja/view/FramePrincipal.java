@@ -10,6 +10,7 @@ import com.pmarlen.rest.dto.U;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -52,6 +53,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         ventaMenu = new javax.swing.JMenu();
         ventaActualMenu = new javax.swing.JMenuItem();
         ventaTerminarMenu = new javax.swing.JMenuItem();
+        ventaModoMenu = new javax.swing.JMenuItem();
         ventaCancelarMenu = new javax.swing.JMenuItem();
         ventaeliminarProdMenu = new javax.swing.JMenuItem();
         configMenu = new javax.swing.JMenu();
@@ -116,6 +118,10 @@ public class FramePrincipal extends javax.swing.JFrame {
         ventaTerminarMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         ventaTerminarMenu.setText("Terminar");
         ventaMenu.add(ventaTerminarMenu);
+
+        ventaModoMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
+        ventaModoMenu.setText("Agregar/Checar");
+        ventaMenu.add(ventaModoMenu);
 
         ventaCancelarMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12, 0));
         ventaCancelarMenu.setText("Cancelar");
@@ -205,6 +211,7 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem ventaActualMenu;
     private javax.swing.JMenuItem ventaCancelarMenu;
     private javax.swing.JMenu ventaMenu;
+    private javax.swing.JMenuItem ventaModoMenu;
     private javax.swing.JMenuItem ventaTerminarMenu;
     private javax.swing.JMenuItem ventaeliminarProdMenu;
     private javax.swing.JMenuItem ventasMenu;
@@ -353,6 +360,10 @@ public class FramePrincipal extends javax.swing.JFrame {
 
 	public JTextField getStatusCenter() {
 		return statusCenter;
+	}
+
+	public JMenuItem getVentaModoMenu() {
+		return ventaModoMenu;
 	}
 	
 	public void updateStatus(){

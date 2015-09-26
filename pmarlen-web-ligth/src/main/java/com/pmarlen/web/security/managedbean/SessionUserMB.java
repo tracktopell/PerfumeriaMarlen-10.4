@@ -37,7 +37,7 @@ public class SessionUserMB implements Serializable{
 	@PostConstruct
     public void init() {
 		usuarioAuthenticated = getUsuarioAuthenticated();
-		logger.info("------------->usuarioAuthenticated="+usuarioAuthenticated);
+		logger.trace("------------->usuarioAuthenticated="+usuarioAuthenticated);
     }
 
 	public UsuarioQuickView getUsuarioAuthenticated() {
@@ -50,14 +50,14 @@ public class SessionUserMB implements Serializable{
 			String remoteUser      = externalContext.getRemoteUser();
 			String userPrincipal   = externalContext.getUserPrincipal().getName();
 			
-			logger.info("==>> getUsuarioAuthenticated : Session[" + sessionId + "] first enter: remoteUser=" + remoteUser+", userPrincipal=" + userPrincipal);
+			logger.trace("==>> getUsuarioAuthenticated : Session[" + sessionId + "] first enter: remoteUser=" + remoteUser+", userPrincipal=" + userPrincipal);
 				
 			if (remoteUser != null) {
 				
 				Date creationTime = new Date(session.getCreationTime());
 
-				logger.info("==>> UsuarioAuthenticated : Session[" + sessionId + "] created            :" + sdf.format(creationTime));
-				logger.info("==>> UsuarioAuthenticated : Session[" + sessionId + "] new                ?" + session.isNew());
+				logger.trace("==>> UsuarioAuthenticated : Session[" + sessionId + "] created            :" + sdf.format(creationTime));
+				logger.trace("==>> UsuarioAuthenticated : Session[" + sessionId + "] new                ?" + session.isNew());
 				
 				timeOutSession = session.getMaxInactiveInterval()*1000 - 5000;
 				realTimeOutSessionInSeconds = session.getMaxInactiveInterval();
@@ -65,14 +65,14 @@ public class SessionUserMB implements Serializable{
 				try {
 					usuarioAuthenticated = UsuarioDAO.getInstance().findBy(remoteUser);
 					if (!session.isNew()) {
-						logger.info("\t==>> usuarioAuthenticated : Session[" + sessionId + "] True enter :" + usuarioAuthenticated);
+						logger.trace("\t==>> usuarioAuthenticated : Session[" + sessionId + "] True enter :" + usuarioAuthenticated);
 						SessionInfo si = ContextAndSessionListener.sessionInfoHT.get(sessionId);
 						if (si != null) {
-							logger.info("\t==>> found, setUserName");
+							logger.trace("\t==>> found, setUserName");
 							si.setUserName(remoteUser);
 						} else {
 							si = new SessionInfo(session, usuarioAuthenticated.getNombreCompleto());
-							logger.info("\t==>> NOT Fucking found("+sessionId+"), add new ? really ? {"+ContextAndSessionListener.sessionInfoHT.keySet()+"}");
+							logger.trace("\t==>> NOT Fucking found("+sessionId+"), add new ? really ? {"+ContextAndSessionListener.sessionInfoHT.keySet()+"}");
 							ContextAndSessionListener.sessionInfoHT.put(sessionId, si);
 						}
 					}
@@ -86,7 +86,7 @@ public class SessionUserMB implements Serializable{
 	}
 	
 	public void onIdle() {
-		logger.info("onIdle, timeOutSession="+(timeOutSession/1000)+" secs., then Logout !");
+		logger.trace("onIdle, timeOutSession="+(timeOutSession/1000)+" secs., then Logout !");
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, 
                                         "No activity.", "What are you doing over there?"));
     }
@@ -129,7 +129,7 @@ public class SessionUserMB implements Serializable{
 		String sessionId = session.getId();
 		String userAgent = request.getHeader("User-Agent");
 		String remoteAdrrInfo = request.getRemoteAddr() + "(" + request.getRemoteHost() + ")";
-		logger.info("==>> updateLastVisitedPage : page"+page+" from : "+ remoteAdrrInfo +" using:"+userAgent);
+		logger.trace("==>> updateLastVisitedPage : page"+page+" from : "+ remoteAdrrInfo +" using:"+userAgent);
 		SessionInfo si = ContextAndSessionListener.sessionInfoHT.get(sessionId);
 		if(si != null) {
 			si.setLastVisitedPage(page);

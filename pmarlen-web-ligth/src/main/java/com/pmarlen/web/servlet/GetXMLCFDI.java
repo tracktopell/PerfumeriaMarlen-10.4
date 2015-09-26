@@ -24,13 +24,14 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class GetXMLCFDI extends HttpServlet {
-
+	private final Logger logger = Logger.getLogger(GetXMLCFDI.class.getSimpleName());
 	/**
 	 * Processes requests for both HTTP
 	 * <code>GET</code> and
@@ -43,7 +44,7 @@ public class GetXMLCFDI extends HttpServlet {
 	 */
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.err.println("-->>GetXMLCFDI servlet: RequestURI="+request.getRequestURI());
+		logger.trace("GetXMLCFDI servlet: RequestURI="+request.getRequestURI());
 		
 		ServletOutputStream outputStream = null;
 		Integer pedidoVentaId = null;
@@ -58,7 +59,7 @@ public class GetXMLCFDI extends HttpServlet {
 			//String requestURIByPaths[] = requestURI.split("/");
 			int pedidoIdIndex     = requestURI.lastIndexOf("No_")+3;			
 			int xmlIndex          = requestURI.lastIndexOf(".xml");
-			System.err.println("-->>GenerarPDFFactura servlet: pedidoIdIndex="+pedidoIdIndex+", xmlIndex="+xmlIndex);
+			logger.trace("GenerarPDFFactura servlet: pedidoIdIndex="+pedidoIdIndex+", xmlIndex="+xmlIndex);
 			
 			if(xmlIndex > pedidoIdIndex) {
 				pedidoId = requestURI.substring(pedidoIdIndex,xmlIndex);
@@ -76,7 +77,7 @@ public class GetXMLCFDI extends HttpServlet {
 			
 			byte[] bytesPdf = cfd.getContenidoOriginalXml();
 			
-			System.err.println("-->>OK writing PDF bytes");
+			logger.trace("OK writing PDF bytes");
 			
 			response.setContentType("application/xml");
 			

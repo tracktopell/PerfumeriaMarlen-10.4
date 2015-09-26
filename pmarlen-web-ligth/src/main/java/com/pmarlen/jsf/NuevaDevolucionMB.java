@@ -64,7 +64,7 @@ public class NuevaDevolucionMB extends PedidoVentaMB{
 
 	@Override
 	public String reset() {
-		logger.debug("->EntradaSalidaDetalleMB: rest.");
+		logger.trace("EntradaSalidaDetalleMB: rest.");
 		init();
 		return "/pages/nuevaDevolucion";
 	}
@@ -90,7 +90,7 @@ public class NuevaDevolucionMB extends PedidoVentaMB{
 	
 	@Override
 	public void guardar() {
-		logger.info("->guardar:");
+		logger.trace("guardar:");
 		try{
 			entradaSalida.setCaja(1);
 			entradaSalida.setFactorIva(Constants.IVA);
@@ -101,7 +101,7 @@ public class NuevaDevolucionMB extends PedidoVentaMB{
 			entradaSalida.setAutorizaDescuento(autorizaDescuento?1:0);
 						
 			EntradaSalidaDAO.getInstance().insertDevolucionVenta(entradaSalida,entityList);
-			logger.info("->guardar:entradaSalida.id:"+entradaSalida.getId());
+			logger.trace("guardar:entradaSalida.id:"+entradaSalida.getId());
 			
 			esFinalizado = true;
 			cadenaBusqueda = null;

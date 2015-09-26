@@ -42,13 +42,13 @@ public class HistoricoComprasMB  {
 	
 	@PostConstruct
 	public void init(){
-		logger.info("->init:");
+		logger.trace("init:");
 		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_ENTRADA_ALMACEN_COMPRA,1,false);
 		viewRows = 25;
 	}
 	
 	public void refrescar(){
-		logger.info("->refrescar:");
+		logger.trace("refrescar:");
 		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_ENTRADA_ALMACEN_COMPRA,1,false);
 	}
 
@@ -57,22 +57,22 @@ public class HistoricoComprasMB  {
 	}
 	
 	public void editarCompra(int devolucionId){
-		logger.debug("->editar:devolucionId="+devolucionId);
+		logger.trace("editar:devolucionId="+devolucionId);
 		editarComprasMB.editar(devolucionId);
 	}
 
 	public int getSizeList(){
-		logger.debug("->getSizeList()");
+		logger.trace("getSizeList()");
 		return lazyModel.getRowCount();
 	}
 
 	public int getViewRows() {
-		logger.debug("->getViewRows()");
+		logger.trace("getViewRows()");
 		return viewRows;
 	}
 
 	public void setViewRows(int viewRows) {
-		logger.debug("->setViewRows("+viewRows+")");
+		logger.trace("setViewRows("+viewRows+")");
 		this.viewRows = viewRows;
 	}
 	public String getImporteMoneda(double f){

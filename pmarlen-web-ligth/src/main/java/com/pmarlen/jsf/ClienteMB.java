@@ -30,20 +30,20 @@ public class ClienteMB  {
 	
 	@PostConstruct
     public void init() {
-		logger.info("->ClienteMB: init.");
+		logger.trace("ClienteMB: init.");
         try{
 			entityList = ClienteDAO.getInstance().findAll();
 		}catch(DAOException de){
 			logger.error(de.getMessage());
 			entityList = new ArrayList<ClienteQuickView>();
 		}
-		logger.info("->ClienteMB: init:entityList="+entityList);
+		logger.trace("ClienteMB: init:entityList="+entityList);
 		viewRows = 10;
 		dialogTitle ="DATOS DEL CLIENTE";
     }
 	
 	public String reset() {
-		logger.info("->ClienteMB: rest.");
+		logger.trace("ClienteMB: rest.");
         init();
 		return "/pages/cliente";
     }
@@ -55,21 +55,21 @@ public class ClienteMB  {
 	
 	
 	public void selectEntity(ActionEvent event){
-		logger.info("->ClienteMB: selectCliente.");
+		logger.trace("ClienteMB: selectCliente.");
 	}
 	
 	public void actionX(ActionEvent event){
-		logger.info("->ClienteMB: actionX.");
+		logger.trace("ClienteMB: actionX.");
 	}
 	
 	public void prepareForNew() {
-		logger.info("->ClienteMB prepareForNew");
+		logger.trace("ClienteMB prepareForNew");
 		//dialogTitle ="AGREGAR NUEVO CLIETE";
 		this.selectedEntity = new ClienteQuickView();
 	}
 	
 	public void setSelectedEntity(ClienteQuickView selectedCliente) {
-		logger.info("->ClienteMB setSelectedCliente.id="+selectedCliente.getId());
+		logger.trace("ClienteMB setSelectedCliente.id="+selectedCliente.getId());
 		//dialogTitle ="INFORMACIÓN DEL CLEINTE";
 		this.selectedEntity = selectedCliente;
 		if(this.selectedEntity.getDireccionFacturacion()== null){
@@ -78,7 +78,7 @@ public class ClienteMB  {
 	}
 	
 	public void save(){
-		logger.info("->ClienteMB: saveSelectedCliente:id:"+selectedEntity.getId());
+		logger.trace("ClienteMB: saveSelectedCliente:id:"+selectedEntity.getId());
 		
 		try{
 //			if(selectedEntity.getTelefonos().contains("0000")){

@@ -32,6 +32,10 @@ public class AppSessionInfo {
 	public String getUserAgent() {
 		return userAgent;
 	}
+	
+	public String[] getUserAgentFormatted() {
+		return userAgent.split("\\|");
+	}
 
 	public void setUserAgent(String userAgent) {
 		this.userAgent = userAgent;

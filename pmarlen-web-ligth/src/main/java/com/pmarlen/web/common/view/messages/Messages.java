@@ -19,7 +19,7 @@ public class Messages {
 
     public static FacesMessage getMessage(String bundleName, String resourceId, Object[] params) {
     	
-        //logger.debug("->getMessage:bundleName=" + bundleName + ", resourceId=" + resourceId);
+        //logger.trace("getMessage:bundleName=" + bundleName + ", resourceId=" + resourceId);
 
         FacesContext context = FacesContext.getCurrentInstance();               
         
@@ -27,7 +27,7 @@ public class Messages {
         String appBundle = app.getMessageBundle();
         Locale locale = getLocale(context);
         
-        //logger.debug("\t->appBundle=" + appBundle + ", locale=" + locale);
+        //logger.trace("\t->appBundle=" + appBundle + ", locale=" + locale);
 
         ClassLoader loader = getClassLoader();
         String summary = getString(appBundle, bundleName, resourceId,
@@ -44,14 +44,14 @@ public class Messages {
 
     public static FacesMessage getSimpleMessage(String resourceId) {
     	
-        //logger.debug("->getMessage: resourceId=" + resourceId);
+        //logger.trace("getMessage: resourceId=" + resourceId);
 
         FacesContext context = FacesContext.getCurrentInstance();
         Application app = context.getApplication();
         String appBundle = app.getMessageBundle();
         Locale locale = getLocale(context);
         
-        //logger.debug("\t->appBundle=" + appBundle + ", locale=" + locale);
+        //logger.trace("\t->appBundle=" + appBundle + ", locale=" + locale);
 
         ClassLoader loader = getClassLoader();
         String resourceMessage = null;
@@ -63,7 +63,7 @@ public class Messages {
 			try {
 				resourceMessage = rb.getString(resourceId);
 			} catch( MissingResourceException mre){
-				//logger.debug("\t->:"+mre);
+				//logger.trace("\t->:"+mre);
 				resourceMessage = "<" + resourceId + ">";
 			}			
         } else {
@@ -75,14 +75,14 @@ public class Messages {
 
     public static String getLocalizedString(String resourceId) {
     	
-    	//logger.debug("->getMessage: resourceId=" + resourceId);
+    	//logger.trace("getMessage: resourceId=" + resourceId);
 
         FacesContext context = FacesContext.getCurrentInstance();
         Application app = context.getApplication();
         String appBundle = app.getMessageBundle();
         Locale locale = getLocale(context);
         
-        //logger.debug("\t->appBundle=" + appBundle + ", locale=" + locale);
+        //logger.trace("\t->appBundle=" + appBundle + ", locale=" + locale);
 
         ClassLoader loader = getClassLoader();
         String resourceMessage = null;
@@ -93,7 +93,7 @@ public class Messages {
 			try {
 				resourceMessage = rb.getString(resourceId);				
 			} catch( MissingResourceException mre){
-				//logger.debug("\t->:"+mre);
+				//logger.trace("\t->:"+mre);
 				resourceMessage = "|" + resourceId + "|";
 			}
             
@@ -106,11 +106,11 @@ public class Messages {
 	
 	public String getLocalizedServletString(String resourceId) {
     	
-    	//logger.debug("->getMessage: resourceId=" + resourceId);
+    	//logger.trace("getMessage: resourceId=" + resourceId);
 
         Locale locale = Locale.getDefault();
         
-        //logger.debug("\t->bundleBase=" + bundleBase + ", locale=" + locale);
+        //logger.trace("\t->bundleBase=" + bundleBase + ", locale=" + locale);
 
         ClassLoader loader = getClassLoader();
         String resourceMessage = null;
@@ -121,7 +121,7 @@ public class Messages {
 			try {
 				resourceMessage = rb.getString(resourceId);				
 			} catch( MissingResourceException mre){
-				//logger.debug("\t->:"+mre);
+				//logger.trace("\t->:"+mre);
 				resourceMessage = "|" + resourceId + "|";
 			}
             
@@ -152,12 +152,12 @@ public class Messages {
                     resource = bundle.getString(resourceId);
                 } catch (MissingResourceException ex) {
                 	
-                    //logger.debug( "Damm it 1 :searching:" + resourceId);
+                    //logger.trace( "Damm it 1 :searching:" + resourceId);
                 	
                     Enumeration<String> bke = bundle.getKeys();
                     for (int ik = 0; bke.hasMoreElements(); ik++) {
                     	
-                        //logger.debug( "\t->bundle[" + ik + "]=" + bke.nextElement());
+                        //logger.trace( "\t->bundle[" + ik + "]=" + bke.nextElement());
                         
                     }
                 }
@@ -171,12 +171,12 @@ public class Messages {
                     resource = bundle.getString(resourceId);
                 } catch (MissingResourceException ex) {
                 	
-                    //logger.debug( "Damm it 2 : searching:" + resourceId);
+                    //logger.trace( "Damm it 2 : searching:" + resourceId);
                 	
                     Enumeration<String> bke = bundle.getKeys();
                     for (int ik = 0; bke.hasMoreElements(); ik++) {
                     	
-                        //logger.debug( "\t->bundle[" + ik + "]=" + bke.nextElement());                    	
+                        //logger.trace( "\t->bundle[" + ik + "]=" + bke.nextElement());                    	
                     }
                 }
             }
@@ -394,16 +394,16 @@ public class Messages {
 	
 	String bundleBase;
 	public Messages(String bundleBase){
-		//logger.debug("Created: with bundleBase="+bundleBase);
+		//logger.trace("Created: with bundleBase="+bundleBase);
 		this.bundleBase = bundleBase;
 	}
 	
     public String getHTMLString(String resourceId) {
-		//logger.debug("-->> getHTMLString("+resourceId+")");
+		//logger.trace(" getHTMLString("+resourceId+")");
 		String localizedString = getLocalizedServletString(resourceId);
-		//logger.debug("\tlocalizedString="+localizedString);
+		//logger.trace("\tlocalizedString="+localizedString);
 		String localizedHTMLString = stringToHTMLString(localizedString);
-		//logger.debug("\tlocalizedHTMLString="+localizedHTMLString);
+		//logger.trace("\tlocalizedHTMLString="+localizedHTMLString);
 		return localizedHTMLString;
 	}
 }

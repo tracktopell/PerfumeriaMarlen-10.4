@@ -22,13 +22,14 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class RespaldarDB extends HttpServlet {
-
+	private final Logger logger = Logger.getLogger(RespaldarDB.class.getSimpleName());
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
 	 * methods.
@@ -57,7 +58,7 @@ public class RespaldarDB extends HttpServlet {
 			os.close();
 			is.close();
 		} catch(Exception e){
-			e.printStackTrace(System.err);
+			logger.error(e);
 		}
 	}
 	
@@ -69,7 +70,7 @@ public class RespaldarDB extends HttpServlet {
 		String user     = "root"; //SystemInfoMB.getUser();
 		String password = "root"; //SystemInfoMB.getPassword();
 		String db       = SystemInfoMB.getDB();
-		System.err.println("->RespaldarDB servlet: user="+user+", password="+password+", db="+db);
+		logger.trace("RespaldarDB servlet: user="+user+", password="+password+", db="+db);
 		
 		//p = r.exec("ls -l /usr/local/pmarlen_mysqldump/");
 		p = r.exec("/usr/local/pmarlen_mysqldump/backupPM103.sh "+user+" "+password+" "+db);

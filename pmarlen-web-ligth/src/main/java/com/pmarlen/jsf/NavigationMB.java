@@ -49,41 +49,41 @@ public class NavigationMB {
 	NuevaDevolucionMB nuevaDevolucionMB;
 	
 	public NavigationMB() {
-		logger.debug("->Cosntructor");
+		logger.trace("Cosntructor");
 	}
 	
 	public String pedidosVenta() {
-		logger.debug("->pedidosVenta");
+		logger.trace("pedidosVenta");
 		pedidosVentaMB.refrescar();
 		return "pedidosVenta";
 	}
 	
 	public String historicoPedidosVenta() {
-		logger.debug("->historicoPedidosVenta");
+		logger.trace("historicoPedidosVenta");
 		historicoPedidosVentaMB.refrescar();
 		return "historicoPedidosVenta";
 	}
 	
 	public String pedidoVenta() {
-		logger.debug("->pedidoVenta");
+		logger.trace("pedidoVenta");
 		return "pedidoVenta";
 	}
 	
 	
 	public String compras() {
-		logger.debug("->compras");
+		logger.trace("compras");
 		pedidosVentaMB.refrescar();
 		return "pedidosVenta";
 	}
 	
 	public String historicoCompras() {
-		logger.debug("->historicoCompras");
+		logger.trace("historicoCompras");
 		historicoPedidosVentaMB.refrescar();
 		return "historicoCompras";
 	}
 	
 	public String nuevaCompra() {
-		logger.debug("->nuevaCompra");
+		logger.trace("nuevaCompra");
 		return "nuevaCompra";
 	}	
 	

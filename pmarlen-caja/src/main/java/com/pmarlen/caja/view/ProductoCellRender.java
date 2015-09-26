@@ -53,6 +53,7 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
         nombreLabel = new javax.swing.JLabel();
         descripcionLabel = new javax.swing.JLabel();
         precioLabel = new javax.swing.JLabel();
+        codigoBarrasLabel = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -66,10 +67,15 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
 
         precioLabel.setText("CONTENIDO");
         add(precioLabel, java.awt.BorderLayout.EAST);
+
+        codigoBarrasLabel.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        codigoBarrasLabel.setText("|| || | | ||| | |||| ||||| || |");
+        add(codigoBarrasLabel, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel codigoBarrasLabel;
     private javax.swing.JLabel descripcionLabel;
     private javax.swing.JLabel nombreLabel;
     private javax.swing.JLabel precioLabel;
@@ -81,7 +87,8 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
 		
 		P p=(P)value;
 		
-		pcr.nombreLabel.setText(p.getN().toUpperCase());
+		pcr.codigoBarrasLabel.setText(p.getCb().toUpperCase());
+		pcr.nombreLabel.setText(p.getN().toUpperCase());		
 		pcr.descripcionLabel.setText(p.getP().toUpperCase());
 		//pcr.precioLabel.setText(df.format(p.getA1p()));
 		pcr.precioLabel.setText(p.getC()+p.getUm());

@@ -16,12 +16,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class PMCajaUpdateServlet extends HttpServlet {
+	private final Logger logger = Logger.getLogger(PMCajaUpdateServlet.class.getSimpleName());
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,7 +47,7 @@ public class PMCajaUpdateServlet extends HttpServlet {
 		OutputStream os = null;
 		InputStream is = null;
 		try {			
-			System.out.println("->PMCajaUpdateServlet: request.getRequestURI():"+request.getRequestURI());
+			logger.trace("PMCajaUpdateServlet: request.getRequestURI():"+request.getRequestURI());
 			File fileForDownload=null;
 			if(uri.endsWith(URI_VERSION)  || uri.endsWith(URI_FILE)||uri.endsWith(URI_INSTALLER)){
 				if(uri.endsWith(URI_VERSION) ){
@@ -70,7 +72,7 @@ public class PMCajaUpdateServlet extends HttpServlet {
 					throw new IllegalStateException("NO SE PUEDE LEER ARCHIVO PARA:"+uri);
 				}
 				
-				System.out.println("OK, found, wrinting: "+fileForDownload.length()+" bytes.");
+				logger.trace("OK, found, wrinting: "+fileForDownload.length()+" bytes.");
 				response.setContentLength((int)fileForDownload.length());
 				
 				os = response.getOutputStream();
@@ -91,13 +93,13 @@ public class PMCajaUpdateServlet extends HttpServlet {
 			}
 		} catch(IllegalStateException ise){
 			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-			ise.printStackTrace(System.err);
+			logger.error(ise);
 		} catch(IllegalArgumentException iae){
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			iae.printStackTrace(System.err);
+			logger.error(iae);
 		} catch(Exception e){
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			e.printStackTrace(System.err);			
+			logger.error(e);			
 		} finally {
 			if(is != null){
 				is.close();

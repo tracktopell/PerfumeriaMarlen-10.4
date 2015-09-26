@@ -26,7 +26,7 @@ public class EmailChecker {
 	
 	public static boolean isSameEmailPassword(String username, String password){
 		
-		logger.info("----->>username="+username+", password="+password+", port:"+port);
+		logger.trace("----->>username="+username+", password="+password+", port:"+port);
 		// Get system properties
 		Properties properties = System.getProperties();
 
@@ -41,19 +41,19 @@ public class EmailChecker {
 			if(port == null){
 				properties.setProperty("mail.smtp.port", port_1);
 				session = Session.getDefaultInstance(properties);
-				logger.info("Session created, trying:"+port_1);
+				logger.trace("Session created, trying:"+port_1);
 				Transport tr = session.getTransport("smtp");
 				tr.connect(host, username, password);	
-				logger.info("OK, Connected....");
+				logger.trace("OK, Connected....");
 				port = port_1;
 				return true;
 			} else {
 				properties.setProperty("mail.smtp.port", port);
 				session = Session.getDefaultInstance(properties);
-				logger.info("Session created, trying the definnitive port:"+port);
+				logger.trace("Session created, trying the definnitive port:"+port);
 				Transport tr = session.getTransport("smtp");
 				tr.connect(host, username, password);			
-				logger.info("OK, Connected....");
+				logger.trace("OK, Connected....");
 				return true;
 			}			
 		} catch (MessagingException me1) {			
@@ -61,10 +61,10 @@ public class EmailChecker {
 				try {
 					properties.setProperty("mail.smtp.port", port_2);
 					session = Session.getDefaultInstance(properties);
-					logger.info("Session can't create, trying with :"+port_2);
+					logger.trace("Session can't create, trying with :"+port_2);
 					Transport tr = session.getTransport("smtp");
 					tr.connect(host, username, password);	
-					logger.info("OK, Connected....");
+					logger.trace("OK, Connected....");
 					port = port_2;
 					return true;
 				} catch (MessagingException me2) {
@@ -84,9 +84,9 @@ public class EmailChecker {
 	
 	public static void main(String[] args) {
 		if(args.length==2){
-			System.out.println(isSameEmailPassword(args[0],args[1]));
+			logger.trace(isSameEmailPassword(args[0],args[1]));
 		} else {
-			System.out.println(isSameEmailPassword("aestrada@perfumeriamarlen.com.mx","dh3rku61c"));
+			logger.trace(isSameEmailPassword("aestrada@perfumeriamarlen.com.mx","dh3rku61c"));
 		}
 	}
 

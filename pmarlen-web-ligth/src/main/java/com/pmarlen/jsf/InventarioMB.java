@@ -121,11 +121,11 @@ public class InventarioMB  {
 		return almacenList;
 	}
 	public void updateMovsHisProductoX(){
-		logger.info("--XX--");
+		logger.trace("--XX--");
 	}
 	
 	public void updateMovsHisProducto(AlmacenProductoQuickView apSelected){
-		logger.info("int almacenId="+apSelected.getAlmacenId()+"codigoBarras="+apSelected.getProductoCodigoBarras());
+		logger.trace("int almacenId="+apSelected.getAlmacenId()+"codigoBarras="+apSelected.getProductoCodigoBarras());
 //		movsHisProducto = new ArrayList<MovimientoHistoricoProductoQuickView>(); 
 		try {
 			movsHisProducto = MovimientoHistoricoProductoDAO.getInstance().findAllByAlmacenAndProducto(apSelected.getAlmacenId(), apSelected.getProductoCodigoBarras());
@@ -169,16 +169,16 @@ public class InventarioMB  {
 	}
 	
 	public void onIndustriasChanged(){
-		logger.info("selectedIndustrias={"+Arrays.asList(selectedIndustrias+"}"));
+		logger.trace("selectedIndustrias={"+Arrays.asList(selectedIndustrias+"}"));
 	}
 	
 	public ArrayList<MovimientoHistoricoProductoQuickView> getMovsHisProducto() {
-		logger.info("->movsHisProducto.size"+movsHisProducto.size());
+		logger.trace("movsHisProducto.size"+movsHisProducto.size());
 		return movsHisProducto;
 	}
 	
 	public void onTipoAlmacenChange() {
-		logger.info("almacenId="+almacenId);
+		logger.trace("almacenId="+almacenId);
 		entityList = null;
 	}
 	
@@ -202,7 +202,7 @@ public class InventarioMB  {
 		selected = selectedAP;
 		ubucacionEditar = selected.getUbicacion()!=null?selected.getUbicacion():"";
 		
-		logger.info("selected:"+selected.getProductoCodigoBarras()+" ["+selected.getAlmacenId()+"]: rowId="+selected.getRowId());
+		logger.trace("selected:"+selected.getProductoCodigoBarras()+" ["+selected.getAlmacenId()+"]: rowId="+selected.getRowId());
 	}
 	
 	private String ubucacionEditar;
@@ -220,7 +220,7 @@ public class InventarioMB  {
 		try {
 			AlmacenProductoDAO.getInstance().update(selected);
 
-			logger.info("selected:"+selected.getProductoCodigoBarras()+" ["+selected.getAlmacenId()+"]: rowId="+selected.getRowId()+", selected.ubicacion="+selected.getUbicacion());
+			logger.trace("selected:"+selected.getProductoCodigoBarras()+" ["+selected.getAlmacenId()+"]: rowId="+selected.getRowId()+", selected.ubicacion="+selected.getUbicacion());
 			selected = null;
 			this.ubucacionEditar = null;
 			FacesContext context = FacesContext.getCurrentInstance();         
@@ -232,13 +232,13 @@ public class InventarioMB  {
 	}
 	
 	public void cancelarEdicionUbicacion(){
-		logger.info("cancelar");
+		logger.trace("cancelar");
 		selected = null;
 		ubucacionEditar = null;
 	}
 	
 	public void edicionDirectaUbicacion(ValueChangeEvent e){
-		logger.info("->selectedAP.ubicacion:"+e.getNewValue()+", source class="+e.getSource().getClass()+", component class"+e.getComponent().getClass());
+		logger.trace("selectedAP.ubicacion:"+e.getNewValue()+", source class="+e.getSource().getClass()+", component class"+e.getComponent().getClass());
 	}
 
 	
@@ -268,7 +268,7 @@ public class InventarioMB  {
 		nuevoPrecio = selected.getPrecio();
 		comentarioNuevoPrecio = null;
 		
-		logger.info("selected:"+selected.getProductoCodigoBarras()+" ["+selected.getAlmacenId()+"]: nuevoPrecio="+nuevoPrecio);
+		logger.trace("selected:"+selected.getProductoCodigoBarras()+" ["+selected.getAlmacenId()+"]: nuevoPrecio="+nuevoPrecio);
 	}
 	
 	public void aceptarCambioDePrecio(){	
@@ -277,7 +277,7 @@ public class InventarioMB  {
 			try {
 				AlmacenProductoDAO.getInstance().update(selected);
 
-				logger.info("selected:"+selected.getProductoCodigoBarras()+" ["+selected.getAlmacenId()+"]: rowId="+selected.getRowId()+", selected.precio="+selected.getPrecio());
+				logger.trace("selected:"+selected.getProductoCodigoBarras()+" ["+selected.getAlmacenId()+"]: rowId="+selected.getRowId()+", selected.precio="+selected.getPrecio());
 				selected = null;
 				this.ubucacionEditar = null;
 				FacesContext context = FacesContext.getCurrentInstance();         
@@ -294,7 +294,7 @@ public class InventarioMB  {
 	}
 	
 	public void cancelarCambioDePrecio(){
-		logger.info("cancelar");
+		logger.trace("cancelar");
 		selected = null;
 		ubucacionEditar = null;
 	}	
@@ -308,7 +308,7 @@ public class InventarioMB  {
 	}
 
 	public void setViewRows(int viewRows) {
-		logger.debug("->setViewRows("+viewRows+")");
+		logger.trace("setViewRows("+viewRows+")");
 		this.viewRows = viewRows;
 	}
 	

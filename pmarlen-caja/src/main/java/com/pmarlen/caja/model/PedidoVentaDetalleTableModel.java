@@ -67,7 +67,7 @@ public class PedidoVentaDetalleTableModel implements TableModel{
 		else if(columnIndex == 2)
 			return dvti.getPrecioVenta();
 		else if(columnIndex == 3)
-			return dvti.getImporete();
+			return dvti.getI();
 		else 
 			throw new IndexOutOfBoundsException("for column:"+columnIndex);
 	}

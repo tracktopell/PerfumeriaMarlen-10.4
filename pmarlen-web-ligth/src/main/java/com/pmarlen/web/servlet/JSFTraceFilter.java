@@ -108,7 +108,7 @@ public class JSFTraceFilter implements Filter {
 		HttpServletRequest sr = (HttpServletRequest)request;
 		HttpSession hs = sr.getSession();
 		String sid=hs.getId();		
-		logger.info("["+sid+"]JSF just visitted:"+sr.getRequestURI());
+		logger.trace("["+sid+"]JSF just visitted:"+sr.getRequestURI());
 		Throwable problem = null;
 		try {
 			chain.doFilter(request, response);
@@ -229,7 +229,7 @@ public class JSFTraceFilter implements Filter {
 	
 	public void log(String msg) {
 		filterConfig.getServletContext().log(msg);		
-		logger.info("=>"+msg);
+		logger.trace("=>"+msg);
 	}
 	
 }

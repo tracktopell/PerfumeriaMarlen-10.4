@@ -26,7 +26,7 @@ public class ConnectionPoolKeepAliveService extends Thread implements Runnable{
 	static ConnectionPoolKeepAliveService instance;
 	
 	private ConnectionPoolKeepAliveService() {
-		logger.info("-> init.");
+		logger.trace(" init.");
 	}
 
 	public static ConnectionPoolKeepAliveService getInstance() {
@@ -37,7 +37,7 @@ public class ConnectionPoolKeepAliveService extends Thread implements Runnable{
 	}
 	
 	public void stopRunning(){
-		logger.info("-> stopRunning:");
+		logger.trace(" stopRunning:");
 		running = false;
 		if(this.isAlive()){
 			this.interrupt();
@@ -47,24 +47,24 @@ public class ConnectionPoolKeepAliveService extends Thread implements Runnable{
 	@Override
 	public void run() {
 		running = true;
-		logger.debug("-> run: running?"+running);
+		logger.trace(" run: running?"+running);
 		
 		while(running){			
 			try {
 				ArrayList<Estado> estados = EstadoDAO.getInstance().findAll();
 				
-				logger.debug("\t-> while ("+running+"): getting estados:"+(estados!=null?estados.size()+" elements.":null));				
+				logger.trace("\t-> while ("+running+"): getting estados:"+(estados!=null?estados.size()+" elements.":null));				
 				Thread.sleep(60000);
 			} catch(Exception e){
 				if(!running){
-					logger.info("OK, Controled STOP. bye !");
+					logger.trace("OK, Controled STOP. bye !");
 				} else {
 					logger.error("while running:", e);
 				}
 				break;
 			}
 		}
-		logger.info("->end run.");
+		logger.trace("end run.");
 	}
 	
 }

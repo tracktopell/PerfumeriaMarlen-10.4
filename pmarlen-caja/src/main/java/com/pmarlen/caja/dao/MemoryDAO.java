@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -216,7 +217,8 @@ public class MemoryDAO {
 
 	private static void download() throws IOException{
 		URL url = null;
-
+		final String content = "1234567890";		
+		boolean contentToSend = true;
 		StringBuilder sbURL = new StringBuilder("http://");
 		sbURL.append(properties.get("host")).
 				append(":").
@@ -229,16 +231,28 @@ public class MemoryDAO {
 				append("&sessionId=").
 				append(getSessionID()).
 				append("&loggedIn=").
-				append(getLoggedIn());
+				append(getLoggedIn()).
+				append("&sending=").
+				append(contentToSend);
 		
 		url = new URL(sbURL.toString());
 		logger.debug(">> Downloading url:"+url);
 		
 		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 		connection.setRequestProperty("User-Agent",getUserAgentExpression());
+		connection.setRequestProperty("Content-Length",String.valueOf(content.length()));		
 		connection.setConnectTimeout(2000);
-		connection.setRequestMethod("GET");		
+		connection.setRequestMethod("POST");		
+		connection.setDoOutput(true);
+		connection.setDoInput(true);
+		
 		connection.connect();
+		
+		OutputStream os = connection.getOutputStream();
+		
+		os.write(content.getBytes());
+		os.flush();
+		os.close();
 		
 		InputStream is = connection.getInputStream();
 		FileOutputStream fos = new FileOutputStream(fileName);
@@ -353,6 +367,14 @@ public class MemoryDAO {
 		return properties.getProperty(p);
 	}
 	
+	public static int getSucursalId(){
+		return Integer.parseInt(properties.getProperty("sucursal"));
+	}
+
+	public static int getNumCaja(){
+		return Integer.parseInt(properties.getProperty("caja"));
+	}
+	
 	public static String getCajaGlobalInfo() {
 		return "pms"+properties.getProperty("sucursal")+"c"+properties.getProperty("caja");
 	}
@@ -376,12 +398,48 @@ public class MemoryDAO {
 		if(userAgentExpression == null){			
 			String os = System.getProperty("os.name")+"_"+System.getProperty("os.version")+"("+System.getProperty("os.arch")+")";
 /*
-{java.runtime.name=Java(TM) SE Runtime Environment, sun.boot.library.path=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib, java.vm.version=24.51-b03, user.country.format=MX, gopherProxySet=false, java.vm.vendor=Oracle Corporation, java.vendor.url=http://java.oracle.com/, path.separator=:, java.vm.name=Java HotSpot(TM) 64-Bit Server VM, file.encoding.pkg=sun.io, user.country=ES, sun.java.launcher=SUN_STANDARD, sun.os.patch.level=unknown, java.vm.specification.name=Java Virtual Machine Specification, user.dir=/Users/alfredo/tmp/pmarlen-caja, java.runtime.version=1.7.0_51-b13, java.awt.graphicsenv=sun.awt.CGraphicsEnvironment, java.endorsed.dirs=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/endorsed, os.arch=x86_64, java.io.tmpdir=/var/folders/r0/x48m0drs5jjb972jf25km_pw0000gp/T/, line.separator=
-, java.vm.specification.vendor=Oracle Corporation, os.name=Mac OS X, sun.jnu.encoding=UTF-8, java.library.path=/Users/alfredo/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:., sun.awt.enableExtraMouseButtons=true, java.specification.name=Java Platform API Specification, java.class.version=51.0, sun.management.compiler=HotSpot 64-Bit Tiered Compilers, os.version=10.9.5, http.nonProxyHosts=local|*.local|169.254/16|*.169.254/16, user.home=/Users/alfredo, user.timezone=America/Mexico_City, java.awt.printerjob=sun.lwawt.macosx.CPrinterJob, file.encoding=UTF-8, java.specification.version=1.7, java.class.path=pmarlen-caja.jar, user.name=alfredo, java.vm.specification.version=1.7, sun.java.command=pmarlen-caja.jar, java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre, sun.arch.data.model=64, user.language=es, java.specification.vendor=Oracle Corporation, awt.toolkit=sun.lwawt.macosx.LWCToolkit, java.vm.info=mixed mode, java.version=1.7.0_51, java.ext.dirs=/Users/alfredo/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java, sun.boot.class.path=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/classes, java.vendor=Oracle Corporation, file.separator=/, java.vendor.url.bug=http://bugreport.sun.com/bugreport/, sun.font.fontmanager=sun.font.CFontManager, sun.io.unicode.encoding=UnicodeBig, sun.cpu.endian=little, socksNonProxyHosts=local|*.local|169.254/16|*.169.254/16, ftp.nonProxyHosts=local|*.local|169.254/16|*.169.254/16, sun.cpu.isalist=}			
+{
+			java.runtime.name=Java(TM) SE Runtime Environment, 
+			sun.boot.library.path=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib, java.vm.version=24.51-b03, 
+			user.country.format=MX, 
+			gopherProxySet=false, 
+			java.vm.vendor=Oracle Corporation, 
+			java.vendor.url=http://java.oracle.com/, path.separator=:, 
+			java.vm.name=Java HotSpot(TM) 64-Bit Server VM, file.encoding.pkg=sun.io, user.country=ES, 
+			sun.java.launcher=SUN_STANDARD, sun.os.patch.level=unknown, java.vm.specification.name=Java Virtual Machine Specification, 
+			user.dir=/Users/alfredo/tmp/pmarlen-caja, java.runtime.version=1.7.0_51-b13, 
+			java.awt.graphicsenv=sun.awt.CGraphicsEnvironment, java.endorsed.dirs=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/endorsed, 
+			os.arch=x86_64, java.io.tmpdir=/var/folders/r0/x48m0drs5jjb972jf25km_pw0000gp/T/, 
+			line.separator=, 
+			java.vm.specification.vendor=Oracle Corporation, os.name=Mac OS X, 
+			sun.jnu.encoding=UTF-8, 
+			java.library.path=/Users/alfredo/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:., 
+			sun.awt.enableExtraMouseButtons=true, java.specification.name=Java Platform API Specification, 
+			java.class.version=51.0, sun.management.compiler=HotSpot 64-Bit Tiered Compilers, 
+			os.version=10.9.5, http.nonProxyHosts=local|*.local|169.254/16|*.169.254/16, 
+			user.home=/Users/alfredo, user.timezone=America/Mexico_City, 
+			java.awt.printerjob=sun.lwawt.macosx.CPrinterJob, file.encoding=UTF-8, java.specification.version=1.7, 
+			java.class.path=pmarlen-caja.jar, user.name=alfredo, java.vm.specification.version=1.7, 
+			sun.java.command=pmarlen-caja.jar, java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre, 
+			sun.arch.data.model=64, user.language=es, 
+			java.specification.vendor=Oracle Corporation, 
+			awt.toolkit=sun.lwawt.macosx.LWCToolkit, 
+			java.vm.info=mixed mode, java.version=1.7.0_51, 
+			java.ext.dirs=/Users/alfredo/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java, 
+			sun.boot.class.path=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/classes, 
+			java.vendor=Oracle Corporation, 
+			file.separator=/, 
+			java.vendor.url.bug=http://bugreport.sun.com/bugreport/, 
+			sun.font.fontmanager=sun.font.CFontManager, 
+			sun.io.unicode.encoding=UnicodeBig, 
+			sun.cpu.endian=little, 
+			socksNonProxyHosts=local|*.local|169.254/16|*.169.254/16, 
+			ftp.nonProxyHosts=local|*.local|169.254/16|*.169.254/16, 
+			sun.cpu.isalist=}			
 			
 			
 			*/
-			userAgentExpression =	"pmarlen-caja_"+ApplicationLogic.getInstance().getVersion()+
+			userAgentExpression =	"ver="+ApplicationLogic.getInstance().getVersion()+
 									"|os="+os+
 									"|java-version="+System.getProperty("java.version")+
 									"|user-working="+System.getProperty("user.name")+"@"+System.getProperty("user.dir");

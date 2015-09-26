@@ -40,13 +40,13 @@ public class ComprasMB  {
 	
 	@PostConstruct
 	public void init(){
-		logger.info("->init:");
+		logger.trace("init:");
 		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_ENTRADA_ALMACEN_COMPRA,1,true);
 		viewRows = 25;
 	}
 	
 	public void refrescar(){
-		logger.info("->refrescar:");
+		logger.trace("refrescar:");
 		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_ENTRADA_ALMACEN_COMPRA,1,true);
 	}
 
@@ -55,26 +55,26 @@ public class ComprasMB  {
 	}
 	
 	public void editar(int id){
-		logger.info("->editar:id="+id);
+		logger.trace("editar:id="+id);
 		editarCompraMB.editar(id);
 	}
 	public String editarPedidoAction(int pedidoVentaId){
-		logger.info("->editarPedidoAction:pedidoVentaId="+pedidoVentaId);
+		logger.trace("editarPedidoAction:pedidoVentaId="+pedidoVentaId);
 		return editarCompraMB.editar(pedidoVentaId);
 	}
 		
 	public int getSizeList(){
-		logger.debug("->getSizeList()");
+		logger.trace("getSizeList()");
 		return lazyModel.getRowCount();
 	}
 
 	public int getViewRows() {
-		logger.debug("->getViewRows()");
+		logger.trace("getViewRows()");
 		return viewRows;
 	}
 
 	public void setViewRows(int viewRows) {
-		logger.debug("->setViewRows("+viewRows+")");
+		logger.trace("setViewRows("+viewRows+")");
 		this.viewRows = viewRows;
 	}
 

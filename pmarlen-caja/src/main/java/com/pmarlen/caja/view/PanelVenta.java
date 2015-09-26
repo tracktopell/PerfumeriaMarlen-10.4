@@ -62,6 +62,8 @@ public class PanelVenta extends javax.swing.JPanel {
         jPanel5 = new javax.swing.JPanel();
         imgProducto = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
+        jPanel11 = new javax.swing.JPanel();
+        labelCodigoBarras = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         labelNombre = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
@@ -142,7 +144,17 @@ public class PanelVenta extends javax.swing.JPanel {
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.Y_AXIS));
 
+        jPanel11.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
+
+        labelCodigoBarras.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
+        labelCodigoBarras.setText("||CODIGO BARRAS ||");
+        jPanel11.add(labelCodigoBarras);
+
+        jPanel6.add(jPanel11);
+
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
 
         labelNombre.setFont(new java.awt.Font("Lucida Grande", 0, 15)); // NOI18N
         labelNombre.setText("NOMBRE PRODUCTO");
@@ -151,6 +163,7 @@ public class PanelVenta extends javax.swing.JPanel {
         jPanel6.add(jPanel7);
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
 
         labelPresentacion.setFont(new java.awt.Font("Lucida Grande", 2, 13)); // NOI18N
         labelPresentacion.setText("PRESENTACIÓN");
@@ -159,6 +172,7 @@ public class PanelVenta extends javax.swing.JPanel {
         jPanel6.add(jPanel8);
 
         jPanel9.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
 
         labelContenido.setText("CONTENIDO");
         jPanel9.add(labelContenido);
@@ -166,6 +180,7 @@ public class PanelVenta extends javax.swing.JPanel {
         jPanel6.add(jPanel9);
 
         jPanel10.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
 
         labelPrecio.setFont(new java.awt.Font("Lucida Grande", 1, 48)); // NOI18N
         labelPrecio.setText("$ PRECIO");
@@ -193,6 +208,7 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -202,6 +218,7 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel labelCodigoBarras;
     private javax.swing.JLabel labelContenido;
     private javax.swing.JLabel labelNombre;
     private javax.swing.JLabel labelPrecio;
@@ -329,8 +346,9 @@ public class PanelVenta extends javax.swing.JPanel {
 	}
 	
 	public void resetInfoForProducto(final P p){
-		logger.debug("p=" + p);
+		logger.trace("p=" + p);
 		if(p!=null){
+			labelCodigoBarras.setText(p.getCb());
 			labelNombre.setText(p.getN());		
 			labelPresentacion.setText(p.getP());
 			labelContenido.setText(p.getC()+" "+p.getUm());
@@ -342,6 +360,7 @@ public class PanelVenta extends javax.swing.JPanel {
 				}
 			}.start();
 		} else {
+			labelCodigoBarras.setText("|| CODIGO BARRAS ||");
 			labelNombre.setText("NOMBRE PRODUCTO");		
 			labelPresentacion.setText("PRESENTACIÓN");
 			labelContenido.setText("CONTENIDO");

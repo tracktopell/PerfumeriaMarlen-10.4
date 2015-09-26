@@ -15,6 +15,7 @@ import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.businesslogic.reports.GeneradorImpresionPedidoVenta;
+import com.pmarlen.jsf.ClienteMB;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,13 +24,14 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class GenerarPDFFactura extends HttpServlet {
-
+	private final Logger logger = Logger.getLogger(GenerarPDFFactura.class.getSimpleName());
 	/**
 	 * Processes requests for both HTTP
 	 * <code>GET</code> and
@@ -42,7 +44,7 @@ public class GenerarPDFFactura extends HttpServlet {
 	 */
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.err.println("-->>GenerarPDFFactura servlet: RequestURI="+request.getRequestURI());
+		logger.trace("GenerarPDFFactura servlet: RequestURI="+request.getRequestURI());
 		
 		ServletOutputStream outputStream = null;
 		Integer pedidoVentaId = null;
@@ -59,7 +61,7 @@ public class GenerarPDFFactura extends HttpServlet {
 			int pedidoIdIndex     = requestURI.lastIndexOf("No_")+3;
 			int paraImprimirIndex = requestURI.lastIndexOf("_paraImprimir");
 			int pdfIndex          = requestURI.lastIndexOf(".pdf");
-			System.err.println("-->>GenerarPDFFactura servlet: pedidoIdIndex="+pedidoIdIndex+", paraImprimirIndex="+paraImprimirIndex+", pdfIndex="+pdfIndex);
+			logger.trace("GenerarPDFFactura servlet: pedidoIdIndex="+pedidoIdIndex+", paraImprimirIndex="+paraImprimirIndex+", pdfIndex="+pdfIndex);
 			
 			if(paraImprimirIndex > pedidoIdIndex) {
 				pedidoId = requestURI.substring(pedidoIdIndex,paraImprimirIndex);
@@ -82,7 +84,7 @@ public class GenerarPDFFactura extends HttpServlet {
 			Usuario ui= UsuarioDAO.getInstance().findBy(uemail);
 			byte[] bytesPdf = GeneradorImpresionPedidoVenta.generaPdfPfacturaPedidoVenta(pv,cfdFactura,entityList,clienteVenta,fullPrint,ui.getNombreCompleto().toUpperCase());
 			
-			System.err.println("-->>OK writing PDF bytes");
+			logger.trace("OK writing PDF bytes");
 			
 			response.setContentType("application/pdf");
 			

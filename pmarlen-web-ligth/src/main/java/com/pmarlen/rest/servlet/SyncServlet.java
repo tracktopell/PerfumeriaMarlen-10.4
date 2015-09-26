@@ -38,6 +38,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.pmarlen.web.servlet.CajaSessionInfo;
 import com.pmarlen.web.servlet.ContextAndSessionListener;
+import java.io.BufferedReader;
+import java.io.InputStream;
 
 /**
  *
@@ -59,19 +61,21 @@ public class SyncServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		
-		logger.info("-->>processRequest: uri:"+request.getRequestURI()+", queryString:"+request.getQueryString());
-				
-		OutputStream os=response.getOutputStream();
+		logger.trace("processRequest: uri:"+request.getRequestURI()+", queryString:"+request.getQueryString());
+		InputStream is = null;		
+		OutputStream os=null;
+		
 		String sucursalId=request.getParameter("sucursalId");
 		String cajaId=request.getParameter("caja");
 		String sessionId=request.getParameter("sessionId");
 		String format=request.getParameter("format");
 		String loggedIn=request.getParameter("loggedIn");
 		String userAgent = request.getHeader("User-Agent");
+		String sending = request.getParameter("sending");
 		
 		if(request.getQueryString()==null || sucursalId==null|| cajaId==null){					
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			logger.info("-->>processRequest: :( BAD REQUEST !");
+			logger.trace("processRequest: :( BAD REQUEST !");
 			return;
 		}
 
@@ -82,14 +86,14 @@ public class SyncServlet extends HttpServlet {
 			loggedIn="null";
 		}
 		
-		logger.info("-->>sucursalId="+sucursalId+", caja="+cajaId+", format="+format+", sessionId="+sessionId+",loggedIn="+loggedIn+", userAgent="+userAgent);
+		logger.debug("sucursalId="+sucursalId+", caja="+cajaId+", format="+format+", sessionId="+sessionId+",loggedIn="+loggedIn+", userAgent="+userAgent+", sending="+sending);
 		
 		CajaSessionInfo cajaSessionInfo = null;
 		if(sessionId != null) {
 			cajaSessionInfo = ContextAndSessionListener.cajaSessionInfoHT.get(sessionId);
-			logger.info("-->> cajaSessionInfo="+cajaSessionInfo);
+			logger.trace(" cajaSessionInfo="+cajaSessionInfo);
 			if(cajaSessionInfo == null) {
-				logger.info("-->> add new cajaSessionInfo, loggedIn="+loggedIn);
+				logger.trace(" add new cajaSessionInfo, loggedIn="+loggedIn);
 				cajaSessionInfo = new CajaSessionInfo();
 				cajaSessionInfo.setSessionId(sessionId);
 				cajaSessionInfo.setCaja(cajaId);
@@ -104,6 +108,26 @@ public class SyncServlet extends HttpServlet {
 			cajaSessionInfo.setLastAccesedTime(System.currentTimeMillis());
 		}
 		try {
+			if(sending != null && sending.equals("true")){
+				int    contentLength       = request.getContentLength();
+				String contentLengthHeader = request.getHeader("Content-Length");
+				logger.debug("contentLength="+contentLength+", contentLengthHeader="+contentLengthHeader);
+				
+//				is = request.getInputStream();
+//				if(contentLength> 0 && contentLength < 100) {
+//					byte[] bytesSent = new byte[contentLength];
+//					is.read(bytesSent, 0, contentLength);
+//					is.close();
+//					logger.debug("bytesSent=->"+new String(bytesSent)+"<-");
+//				}
+				final BufferedReader reader = request.getReader();
+				String line=null;
+				logger.debug("bytesSent:");
+				while((line = reader.readLine()) != null){
+					logger.debug("\tline=->"+reader.readLine()+"<-");
+				}
+			}
+			
 			if(format.equals("zip") || format.equals("json")){
 				int sucId=new Integer(sucursalId);
 				SyncDTOPackage s= new SyncDTOPackage();
@@ -123,7 +147,9 @@ public class SyncServlet extends HttpServlet {
 				ObjectMapper mapper = new ObjectMapper();
 				ByteArrayOutputStream baos=new ByteArrayOutputStream();
 				byte[] data=null;
-
+				
+				os=response.getOutputStream();
+				
 				if(format.equals("zip")){
 					ZipOutputStream zos = new ZipOutputStream(baos);
 					zos.putNextEntry(new ZipEntry("data.json"));				
@@ -138,7 +164,7 @@ public class SyncServlet extends HttpServlet {
 					response.setContentType("application/zip");		
 					response.addHeader("Content-Disposition", "attachment; filename=data.zip");
 					response.setContentLength(data.length);
-					logger.info("-->>zip:ContentLength="+data.length+" bytes, jsonData.length="+jsonData.length);
+					logger.trace("zip:ContentLength="+data.length+" bytes, jsonData.length="+jsonData.length);
 					os.write(data);
 					os.flush();
 				} else if(format.equals("json")){
@@ -149,16 +175,16 @@ public class SyncServlet extends HttpServlet {
 					response.setContentType("application/json");		
 					response.addHeader("Content-Disposition", "attachment; filename=data.json");
 					response.setContentLength(data.length);
-					logger.info("-->>json:ContentLength="+data.length+" bytes");
+					logger.trace("json:ContentLength="+data.length+" bytes");
 					os.write(data);
 					os.flush();				
 				}
 			} else if(format.equals("iamalive")){
 				response.setStatus(HttpServletResponse.SC_OK);
 			}
-			logger.info("OK, finish !");
+			logger.trace("OK, finish !");
 		} catch (Exception ex) {
-			logger.error("-->>error:", ex);
+			logger.error("error:", ex);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		} finally {
 			os.close();
