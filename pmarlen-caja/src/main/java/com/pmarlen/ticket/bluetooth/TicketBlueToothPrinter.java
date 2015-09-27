@@ -4,7 +4,6 @@
  */
 package com.pmarlen.ticket.bluetooth;
 
-import com.pmarlen.backend.dao.ProductoDAO;
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Producto;
@@ -63,7 +62,6 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
     public Object generateTicket(EntradaSalida pv,ArrayList<EntradaSalidaDetalle> pvdList,HashMap<String,String> extraInformation) throws IOException {
         String tiketPrinted = null;
         PrintStream psPrintTicket = null;
-        ProductoDAO productoDAO=null;
         
         InputStream is = TicketBlueToothPrinter.class.getResourceAsStream(TICKET_LAYOUT_FILE);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -73,7 +71,6 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
             Date fecha = new Date();
             tiketPrinted = "";//"TICKET_"+pedidoVenta.getId()+"_"+sdf_fecha_full.format(fecha)+".TXT";
             psPrintTicket = new PrintStream(new File(tiketPrinted),"ISO-8859-1");
-			productoDAO = null;
             HashMap<String, String> staticVars = new HashMap();
             staticVars.put("${FECHA}", sdf_fecha.format(fecha));
             staticVars.put("${HORA}", sdf_hora.format(fecha));
@@ -248,7 +245,6 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
     public Object generateTicket(ES pv,ArrayList<DES> pvdList,HashMap<String,String> extraInformation) throws IOException {
         String tiketPrinted = null;
         PrintStream psPrintTicket = null;
-        ProductoDAO productoDAO=null;
         
         InputStream is = TicketBlueToothPrinter.class.getResourceAsStream(TICKET_LAYOUT_FILE);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -258,7 +254,6 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
             Date fecha = new Date();
             tiketPrinted = "";//"TICKET_"+pedidoVenta.getId()+"_"+sdf_fecha_full.format(fecha)+".TXT";
             psPrintTicket = new PrintStream(new File(tiketPrinted),"ISO-8859-1");
-			productoDAO = null;
             HashMap<String, String> staticVars = new HashMap();
             staticVars.put("${FECHA}", sdf_fecha.format(fecha));
             staticVars.put("${HORA}", sdf_hora.format(fecha));

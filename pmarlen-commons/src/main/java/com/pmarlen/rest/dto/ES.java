@@ -22,6 +22,8 @@ public class ES implements Serializable{
 	private String ticket;
 	private List<DES> d;	
 	private int tm;
+	private String u;
+	
 	/**
 	 * @return the sId
 	 */
@@ -146,5 +148,19 @@ public class ES implements Serializable{
 	 */
 	public void setTm(int tm) {
 		this.tm = tm;
+	}
+
+	/**
+	 * @return the u
+	 */
+	public String getU() {
+		return u;
+	}
+
+	/**
+	 * @param u the u to set
+	 */
+	public void setU(String u) {
+		this.u = u;
 	}
 }

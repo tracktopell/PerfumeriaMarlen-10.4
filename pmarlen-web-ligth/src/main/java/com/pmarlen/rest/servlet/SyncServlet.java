@@ -16,7 +16,7 @@ import com.pmarlen.backend.dao.SucursalDAO;
 import com.pmarlen.backend.dao.UsuarioDAO;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
-import com.pmarlen.backend.model.quickviews.SyncDTOPackage;
+import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.P;
 
 import java.io.BufferedOutputStream;

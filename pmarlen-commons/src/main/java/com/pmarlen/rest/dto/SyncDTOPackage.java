@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.pmarlen.backend.model.quickviews;
+package com.pmarlen.rest.dto;
 
 import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.Cliente;
@@ -12,6 +12,7 @@ import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.Usuario;
+import com.pmarlen.backend.model.quickviews.ClienteQuickView;
 import com.pmarlen.rest.dto.P;
 import com.pmarlen.rest.dto.U;
 import java.util.List;

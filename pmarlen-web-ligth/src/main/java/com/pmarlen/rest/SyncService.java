@@ -17,14 +17,16 @@ import com.pmarlen.backend.dao.UsuarioDAO;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.backend.model.quickviews.ProductoQuickView;
-import com.pmarlen.backend.model.quickviews.SyncDTOPackage;
 import com.pmarlen.rest.dto.P;
+import com.pmarlen.rest.dto.SyncDTOPackage;
+import com.pmarlen.rest.dto.SyncDTORequest;
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.log4j.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -35,6 +37,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  *
@@ -45,26 +49,6 @@ public class SyncService {
     private static final String encodingUTF8  = "UTF-8";
     
     private final static Logger logger = Logger.getLogger(SyncService.class.getName());
-
-	@GET
-	@Path("/productos/{sucursalId}")
-	@Produces(MediaType.APPLICATION_JSON  + ";charset=" + encodingUTF8)
-	public List<P> getAllProducto(@PathParam(value = "sucursalId")String sucursalId) throws WebApplicationException {
-        List<P> l = null;
-		
-		try {
-			l = new ArrayList<P>();
-			int sucId=new Integer(sucursalId);
-			ArrayList<InventarioSucursalQuickView> p = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
-			for(InventarioSucursalQuickView is: p){
-				l.add(is.generateFaccadeForREST());
-			}
-		} catch (DAOException ex) {
-			logger.error (null, ex);
-			throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
-		}
-		return l;
-	}
 
 	@GET
 	@Path("/syncdtopackage/{sucursalId}")
@@ -95,6 +79,50 @@ public class SyncService {
 		return s;
 	}
 	
+	@POST
+	@Path("/json/syncdtopackage/zip")
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=" + encodingUTF8)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public byte[] getSyncDTOPackageZipped(SyncDTORequest syncDTORequest) throws WebApplicationException {
+		logger.debug("getSyncDTOPackageZipped: syncDTORequest="+syncDTORequest);
+		byte zipData[]=null;
+        SyncDTOPackage s=null;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			s= new SyncDTOPackage();
+			int sucId=new Integer(syncDTORequest.getSucursalId());
+			ArrayList<InventarioSucursalQuickView> xa = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
+			ArrayList<P> xb = new ArrayList<P>();
+			for(InventarioSucursalQuickView xia: xa){
+				xb.add(xia.generateFaccadeForREST());
+			}
+			s.setInventarioSucursalQVList(xb);
+			s.setUsuarioList(UsuarioDAO.getInstance().findAllForRest());
+			s.setClienteList(ClienteDAO.getInstance().findAll());
+			s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
+			s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
+			s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
+			
+			//logger.trace(" ok, get data, return SyncDTOPackage{"+s+"} for JSON prsing.");
+			ObjectMapper mapper = new ObjectMapper();
+			ZipOutputStream zos = new ZipOutputStream(baos);
+			zos.putNextEntry(new ZipEntry("data.json"));				
+			byte[] jsonData=mapper.writeValueAsBytes(s);
+			zos.write(jsonData);
+			zos.closeEntry();
+			zos.finish();				
+
+			baos.close();
+			zipData=baos.toByteArray();
+
+			logger.debug("getSyncDTOPackageZipped: zip ContentLength="+zipData.length+" bytes, jsonData.length="+jsonData.length);
+			
+		} catch (Exception ex) {
+			logger.error (null, ex);
+			throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		return zipData;
+	}
 	
 	
 }

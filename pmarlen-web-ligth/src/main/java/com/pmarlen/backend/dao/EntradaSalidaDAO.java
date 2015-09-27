@@ -729,6 +729,10 @@ public class EntradaSalidaDAO {
 	private ArrayList<EntradaSalidaQuickView> findAllHistorico(int tipoMov,int sucursalId) throws DAOException {
 		return findAllActive(tipoMov,sucursalId,false);
 	}
+
+	public int insertPedidoVentaSucursal(Connection conn, EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
+		return 0;
+	}
     
 	public int insertPedidoVenta(EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
 		return insert(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,x,pvdList);

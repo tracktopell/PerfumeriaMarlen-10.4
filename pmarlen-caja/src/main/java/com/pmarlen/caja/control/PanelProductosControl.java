@@ -4,8 +4,6 @@
  */
 package com.pmarlen.caja.control;
 
-import com.pmarlen.backend.dao.DAOException;
-import com.pmarlen.backend.dao.ProductoDAO;
 import com.pmarlen.caja.model.CantidadCellRender;
 import com.pmarlen.caja.model.DetalleProductoTableModel;
 import com.pmarlen.backend.model.Producto;
@@ -33,7 +31,6 @@ public class PanelProductosControl implements ActionListener,TableModelListener,
 	private static Logger logger = Logger.getLogger(PanelProductosControl.class.getName());
 	private PanelProductos panelProductos;
 	private List<Producto> detalleProductoList;
-	private ProductoDAO productoDAO;
 	private DecimalFormat df;
 	
 	public PanelProductosControl(PanelProductos panelProductos) {
@@ -72,20 +69,6 @@ public class PanelProductosControl implements ActionListener,TableModelListener,
 	}
 	
 	public void estadoInicial(){
-		if(productoDAO == null) {
-			productoDAO = ProductoDAO.getInstance();
-		} else if(detalleProductoList.size()>0){
-			detalleProductoList.clear();
-		}
-		
-		List<ProductoQuickView> productosList = null;
-		try {
-			productosList = productoDAO.findAll();
-		}catch(DAOException e){
-			
-		}
-		logger.debug("==>>estadoInicial:productosList = "+productosList.size());
-		detalleProductoList.addAll(productosList);		
 		panelProductos.getDetalleProductoJTable().updateUI();		
 		panelProductos.getDetalleProductoJTable().getSelectionModel().clearSelection();
 	}

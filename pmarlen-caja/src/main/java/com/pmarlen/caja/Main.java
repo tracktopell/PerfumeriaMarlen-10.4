@@ -4,7 +4,7 @@
  */
 package com.pmarlen.caja;
 
-import com.pmarlen.backend.model.quickviews.SyncDTOPackage;
+import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.control.DialogLoginControl;
 import com.pmarlen.caja.control.FirstRunParamsConfigDialogControl;

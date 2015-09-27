@@ -6,7 +6,7 @@
 package com.pmarlen.caja.dao;
 
 import com.google.gson.Gson;
-import com.pmarlen.backend.model.quickviews.SyncDTOPackage;
+import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.control.FramePrincipalControl;
 import com.pmarlen.rest.dto.P;

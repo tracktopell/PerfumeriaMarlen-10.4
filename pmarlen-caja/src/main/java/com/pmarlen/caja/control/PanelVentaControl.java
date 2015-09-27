@@ -224,7 +224,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			venta.setIr(1.0);
 			venta.setsId(MemoryDAO.getSucursalId());
 			venta.setD(detalleVentaList);
-			
+			venta.setU(ApplicationLogic.getInstance().getLogged().getE());
 			ESFileSystemJsonDAO.commit(venta);
 			
 			//pedidoVentaDAO.insert(venta,detalleVentaList);

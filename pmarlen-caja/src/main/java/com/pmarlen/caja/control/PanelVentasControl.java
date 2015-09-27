@@ -4,8 +4,6 @@
  */
 package com.pmarlen.caja.control;
 
-import com.pmarlen.backend.dao.DAOException;
-import com.pmarlen.backend.dao.EntradaSalidaDAO;
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
@@ -33,7 +31,6 @@ import org.apache.log4j.Logger;
 public class PanelVentasControl implements ActionListener,TableModelListener,MouseListener{
 	private static Logger logger = Logger.getLogger(PanelVentasControl.class.getName());
 	private PanelVentas panelVentas;
-	private EntradaSalidaDAO pedidoVentaDAO;
 	private DecimalFormat df;
 	private VentaTableModel ventasTM;
 	private ImporteCellRender importeCellRender;
@@ -49,30 +46,11 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 		importeCellRender = new ImporteCellRender();
 		fechaCellRender = new FechaCellRender();
 		
-		importeCellRender.setHorizontalAlignment(SwingConstants.RIGHT);
-		
-		pedidoVentaDAO = EntradaSalidaDAO.getInstance();
+		importeCellRender.setHorizontalAlignment(SwingConstants.RIGHT);		
 	}
 	
 	public void refrescar() {
 		
-		List<EntradaSalidaQuickView> ventaList  = null;
-		try{
-			ventaList  = (List<EntradaSalidaQuickView>)pedidoVentaDAO.findAllActivePendidos();
-		}catch(DAOException e){
-		
-		}
-		Hashtable<Integer,Double> ventaImporteList = new Hashtable<Integer,Double>();
-		for(EntradaSalida v: ventaList){
-			double t=0.0;
-			List<EntradaSalidaDetalle> detalleVenta = null;//pedidoVentaDetelleDAO.findBy(v);
-			for(EntradaSalidaDetalle dv: detalleVenta){
-				t += dv.getPrecioVenta() * dv.getCantidad();
-			}
-			
-			ventaImporteList.put(v.getId(), t);
-		}
-		ventasTM = new VentaTableModel(ventaList, ventaImporteList);
 		panelVentas.getVentasJTable().setModel(ventasTM);
 		final int tw = panelVentas.getVentasJTable().getWidth();
 		int[] cws = new int[]{10,60,30};
