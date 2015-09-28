@@ -6,10 +6,12 @@
 package com.pmarlen.caja.dao;
 
 import com.google.gson.Gson;
+import com.pmarlen.backend.model.EntradaSalida;
+import com.pmarlen.backend.model.EntradaSalidaDetalle;
+import com.pmarlen.backend.model.Producto;
+import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.model.Constants;
-import com.pmarlen.rest.dto.DES;
-import com.pmarlen.rest.dto.ES;
-import com.pmarlen.rest.dto.P;
+import com.pmarlen.rest.dto.EntradaSalidaConDetalle;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,12 +24,12 @@ import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
  */
 public class ESFileSystemJsonDAO {
 	private static Logger logger = Logger.getLogger(ESFileSystemJsonDAO.class.getName());
-	private static final String fileName = "ES.json";
-	private static final ArrayList<ES> esList = new ArrayList<ES>();
+	private static final String fileName = "EntradaSalida.json";
+	private static final ArrayList<EntradaSalidaConDetalle> esList = new ArrayList<EntradaSalidaConDetalle>();
 	
-	public static void commit(ES es){
+	public static void commit(EntradaSalidaConDetalle escd){
 		
-		int tm = es.getTm();
+		int tm = escd.getEs().getTipoMov();
 		int add = 0;
 		
 		if(			tm>=Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA &&
@@ -38,18 +40,20 @@ public class ESFileSystemJsonDAO {
 			add = 1;
 		}
 		
-		for(DES d:es.getD()){
-			P p = MemoryDAO.fastSearchProducto(d.getCb());
-			if(d.getaId() == Constants.ALMACEN_PRINCIPAL){
-				p.setA1c(p.getA1c() * d.getC() * add);
+		for(EntradaSalidaDetalle d:escd.getEsd()){
+			InventarioSucursalQuickView p = MemoryDAO.fastSearchProducto(d.getProductoCodigoBarras());
+			/*
+			if(d.getAlmacenId() == Constants.ALMACEN_PRINCIPAL){
+			p.setA1c(p.getA1c() * d.getC() * add);
 			} else if(d.getaId() == Constants.ALMACEN_REGALIAS){
-				p.setaRc(p.getA1c() * d.getC() * add);
+			p.setaRc(p.getA1c() * d.getC() * add);
 			} else if(d.getaId() == Constants.ALMACEN_OPORTUNIDAD){
-				p.setaOc(p.getA1c() * d.getC() * add);
+			p.setaOc(p.getA1c() * d.getC() * add);
 			}
+			 */
 		}
 		
-		esList.add(es);
+		esList.add(escd);
 		
 		persist();
 	}
@@ -76,7 +80,7 @@ public class ESFileSystemJsonDAO {
 	
 	}
 
-	public static ArrayList<ES> getEsList() {
+	public static ArrayList<EntradaSalidaConDetalle> getEsList() {
 		return esList;
 	}
 	

@@ -11,7 +11,6 @@ package com.pmarlen.backend.dao;
 
 import com.pmarlen.backend.model.*;
 import com.pmarlen.backend.model.quickviews.UsuarioQuickView;
-import com.pmarlen.rest.dto.U;
 import com.tracktopell.jdbc.DataSourceFacade;
 
 import java.io.ByteArrayInputStream;
@@ -179,72 +178,6 @@ public class UsuarioDAO {
 				r.add(x);
 			}
 			logger.info("<============================================");
-		}catch(SQLException ex) {
-			logger.error("SQLException:", ex);
-			throw new DAOException("InQuery:" + ex.getMessage());
-		} finally {
-			if(rs != null) {
-				try{
-					rs.close();
-					ps.close();
-					conn.close();
-				}catch(SQLException ex) {
-					logger.error("clossing, SQLException:" + ex.getMessage());
-					throw new DAOException("Closing:"+ex.getMessage());
-				}
-			}
-		}
-		return r;		
-	};
-
-    public ArrayList<U> findAllForRest() throws DAOException {
-		ArrayList<U> r = new ArrayList<U>();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			ps = conn.prepareStatement(
-					"SELECT   U.EMAIL,U.ABILITADO,U.NOMBRE_COMPLETO,U.PASSWORD,UP.PERFIL\n" +
-					"FROM     USUARIO_PERFIL UP,USUARIO U\n" +
-					"WHERE    U.EMAIL = UP.EMAIL\n" +
-					"ORDER BY U.NOMBRE_COMPLETO");
-			
-			rs = ps.executeQuery();
-			U x = null;
-			String email = null;
-			String perfil=null;
-			String nombreCompleto=null;
-			String password=null;
-			Integer abilitado = null;
-			while(rs.next()) {
-				email			= (String)rs.getObject("EMAIL");
-				perfil			= (String)rs.getObject("PERFIL");
-				nombreCompleto	= (String)rs.getObject("NOMBRE_COMPLETO");
-				password		= (String)rs.getObject("PASSWORD");
-				abilitado		= (Integer)rs.getObject("ABILITADO");
-				//logger.info("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado);
-				if(x == null){
-					// NUEVO
-					x = new U();					
-				} else if(x.getE().equalsIgnoreCase(email)){
-					// EL MISMO EMAIL
-				} else {
-					// CAMBIO EMAIL
-					r.add(x);
-					x = new U();					
-				}
-				
-				x.setE(email);
-				x.setA(abilitado);
-				x.setNc(nombreCompleto);
-				x.setP(password);
-				
-				x.addRole(perfil);
-			}
-			if(x != null){
-				r.add(x);
-			}
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());

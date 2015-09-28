@@ -20,13 +20,13 @@ import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 
-public class ZipSyncDTOPackageClient {
+public class IAmAliveServiceClient {
 	
 	private static String hostService = "http://localhost:8070";
 	
-	private static String uriService =                       "/l30/rest/syncservice/sync";
+	private static String uriService =                       "/l30/rest/iamaliveservice/hello";
 	
-	private static Logger logger = Logger.getLogger(ZipSyncDTOPackageClient.class.getName());
+	private static Logger logger = Logger.getLogger(IAmAliveServiceClient.class.getName());
 	
 	private static SyncDTOPackage getAllOfSucursal(String hostPort){
 		SyncDTOPackage paqueteSinc=null;
@@ -36,11 +36,9 @@ public class ZipSyncDTOPackageClient {
 			long t0=System.currentTimeMillis();
 			Client client = Client.create();
 			System.out.println("...creating WebResource for ZIP");
-			WebResource webResource = client.resource(hostPort+uriService);
-			
+			WebResource webResource = client.resource(hostPort+uriService);			
 			
 			String jsonInput = null;
-			SyncDTORequest syncDTORequest = new SyncDTORequest();
 			IAmAliveDTORequest iAmAliveDTORequest = new IAmAliveDTORequest();
 			
 			iAmAliveDTORequest.setCajaId(1);
@@ -52,14 +50,11 @@ public class ZipSyncDTOPackageClient {
 					"Java-7", 
 					"alfredo", 
 					"./"));			
-
-			syncDTORequest.setiAmAliveDTORequest(iAmAliveDTORequest);
-			
-			System.out.println("-->> building: SyncDTORequest="+syncDTORequest+", before send.");
+			System.out.println("-->> building: SyncDTORequest="+iAmAliveDTORequest+", before send.");
 			
 			long t1=System.currentTimeMillis();
 			
-			jsonInput = gson.toJson(syncDTORequest);
+			jsonInput = gson.toJson(iAmAliveDTORequest);
 			
 			System.out.println("...invoking with:syncDTORequest="+jsonInput);
 			ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,jsonInput);
@@ -125,7 +120,7 @@ public class ZipSyncDTOPackageClient {
 	}
 	
 	public static void main(String[] args) {
-		SyncDTOPackage paqueteSinc = ZipSyncDTOPackageClient.getAllOfSucursal(args.length==0?"http://localhost:8070":args[0]);
+		SyncDTOPackage paqueteSinc = IAmAliveServiceClient.getAllOfSucursal(args.length==0?"http://localhost:8070":args[0]);
 		System.out.println("-->> paqueteSinc{"+paqueteSinc+"}");
 	}
 /*

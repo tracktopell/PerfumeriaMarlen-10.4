@@ -10,9 +10,7 @@ import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
-import com.pmarlen.rest.dto.DES;
-import com.pmarlen.rest.dto.ES;
-import com.pmarlen.rest.dto.P;
+import com.pmarlen.rest.dto.EntradaSalidaConDetalle;
 import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
 import com.tracktopell.jdbc.DataSourceFacade;
@@ -30,9 +28,9 @@ public class SyncDAO {
 	
 	private final static Logger logger = Logger.getLogger(SyncDAO.class.getName());
 
-	private SyncDAO instance;
+	private static SyncDAO instance;
 
-	public SyncDAO getInstance() {
+	public static SyncDAO getInstance() {
 		if(instance == null) {
 			instance = new SyncDAO();
 		}
@@ -49,42 +47,17 @@ public class SyncDAO {
 	
 	public SyncDTOPackage syncTransaction(SyncDTORequest syncDTORequest) throws DAOException{
 		SyncDTOPackage s= new SyncDTOPackage();
-		if(syncDTORequest.isSending()) {
+		List<EntradaSalidaConDetalle> escdList = syncDTORequest.getEscdList();
+		if(escdList!=null && escdList.size()>0) {
 			Connection conn = null;
 			
 			try {
 				conn = getConnectionCommiteable();
-			
-				List<ES> esList = syncDTORequest.getEsList();
-				for(ES es: esList){
-					EntradaSalida esEntity = new EntradaSalida();
-					esEntity.setCaja(es.getNumC());
-					esEntity.setClienteId(es.getIdCte());
-					esEntity.setFactorIva(0.16);
-					esEntity.setFechaCreo(new Timestamp(es.getT()));
-					esEntity.setFormaDePagoId(1);
-					esEntity.setFormaDePagoId(1);
-					esEntity.setImporteRecibido(es.getIr());
-					esEntity.setMetodoDePagoId(1);
-					esEntity.setPorcentajeDescuentoCalculado(0);
-					esEntity.setPorcentajeDescuentoExtra(0);
-					esEntity.setSucursalId(es.getsId());
-					esEntity.setTipoMov(es.getTm());
-					esEntity.setUsuarioEmailCreo(es.getU());
-					
-					List<DES> dList = es.getD();
-					ArrayList<EntradaSalidaDetalle> pvdList = new ArrayList<EntradaSalidaDetalle>();					
-					for(DES d: dList){
-						EntradaSalidaDetalle esd=new EntradaSalidaDetalle();
 						
-						esd.setAlmacenId(d.getaId());
-						esd.setCantidad(d.getC());
-						esd.setPrecioVenta(d.getP());
-						esd.setProductoCodigoBarras(d.getCb());
-						
-						pvdList.add(esd);
-					}
-					EntradaSalidaDAO.getInstance().insertPedidoVentaSucursal(conn,esEntity, pvdList);					
+				for(EntradaSalidaConDetalle escd: escdList){
+					EntradaSalida es = escd.getEs();
+					List<EntradaSalidaDetalle> esList = escd.getEsd();
+					EntradaSalidaDAO.getInstance().insertPedidoVentaSucursal(conn,es,esList);
 				}
 				
 				conn.commit();
@@ -92,17 +65,15 @@ public class SyncDAO {
 				try {
 					conn.rollback();
 				}catch(Exception et){
-			}
+				}
 			}
 		}
-		int sucId=new Integer(syncDTORequest.getSucursalId());
+		
+		int sucId=syncDTORequest.getiAmAliveDTORequest().getSucursalId();
+		
 		ArrayList<InventarioSucursalQuickView> xa = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
-		ArrayList<P> xb = new ArrayList<P>();
-		for(InventarioSucursalQuickView xia: xa){
-			xb.add(xia.generateFaccadeForREST());
-		}
-		s.setInventarioSucursalQVList(xb);
-		s.setUsuarioList(UsuarioDAO.getInstance().findAllForRest());
+		s.setInventarioSucursalQVList(xa);
+		s.setUsuarioList(UsuarioDAO.getInstance().findAllSimple());
 		s.setClienteList(ClienteDAO.getInstance().findAll());
 		s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
 		s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());

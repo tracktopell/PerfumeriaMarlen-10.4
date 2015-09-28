@@ -6,11 +6,12 @@
 package com.pmarlen.caja.dao;
 
 import com.google.gson.Gson;
-import com.pmarlen.rest.dto.SyncDTOPackage;
+import com.pmarlen.backend.model.Producto;
+import com.pmarlen.backend.model.Usuario;
+import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.control.FramePrincipalControl;
-import com.pmarlen.rest.dto.P;
-import com.pmarlen.rest.dto.U;
+import com.pmarlen.rest.dto.SyncDTOPackage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,7 +55,7 @@ public class MemoryDAO {
 	//static String hostDownload = "localhost:8070"; //"pmarlencloudsrv2.dyndns.org:8070";
 	private static String urlDownload = null;//"http://"+hostDownload+"/pmarlen-web-ligth/sync/data?sucursalId=1&format=zip";
 	
-	private static HashMap<String,P> productosParaBuscar;
+	private static HashMap<String,InventarioSucursalQuickView> productosParaBuscar;
 	private static String propertiesFileNAme="./system.properties";
 	private static boolean exsistFile = false;	
 	
@@ -345,12 +346,12 @@ public class MemoryDAO {
 				logger.debug(">> parse:");
 				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
 				logger.debug(">> paqueteSinc:"+paqueteSinc);
-				List<P> lp=paqueteSinc.getInventarioSucursalQVList();
-				productosParaBuscar = new HashMap<String,P>();
+				List<InventarioSucursalQuickView> lp = paqueteSinc.getInventarioSucursalQVList();
+				productosParaBuscar = new HashMap<String,InventarioSucursalQuickView>();
 				logger.debug(">> productosParaBuscar, begin");
 				long t0=System.currentTimeMillis();
-				for(P p: lp){
-					productosParaBuscar.put(p.getCb(), p);
+				for(InventarioSucursalQuickView p: lp){
+					productosParaBuscar.put(p.getCodigoBarras(),p);
 				}
 				long t=t0-System.currentTimeMillis();
 				logger.debug(">> productosParaBuscar, ready T="+t);
@@ -379,16 +380,16 @@ public class MemoryDAO {
 		return "pms"+properties.getProperty("sucursal")+"c"+properties.getProperty("caja");
 	}
 
-	public static P fastSearchProducto(String codigoBuscar) {
+	public static InventarioSucursalQuickView fastSearchProducto(String codigoBuscar) {
 		return productosParaBuscar.get(codigoBuscar);
 	}
 
 	private static Object getLoggedIn() {
-		U logged = ApplicationLogic.getInstance().getLogged();
+		Usuario logged = ApplicationLogic.getInstance().getLogged();
 		if(logged == null){
-			return "null";
+			return null;
 		} else {
-			return logged.getE();
+			return logged.getEmail();
 		}
 	}
 	

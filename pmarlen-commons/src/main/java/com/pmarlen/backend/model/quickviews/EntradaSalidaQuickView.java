@@ -1,4 +1,3 @@
-
 package com.pmarlen.backend.model.quickviews;
 
 import com.pmarlen.backend.model.*;

@@ -4,6 +4,7 @@
  */
 package com.pmarlen.web.servlet;
 
+import com.pmarlen.rest.dto.UserAgent;
 import java.util.Date;
 import javax.servlet.http.HttpSession;
 
@@ -14,11 +15,11 @@ import javax.servlet.http.HttpSession;
 public class AppSessionInfo {
 	protected long applicationContextCreationTime;
 	protected String remoteAddr;
-	protected String userAgent;
+	protected UserAgent userAgent;
 	public AppSessionInfo(String remoteAddr) {
 		this.applicationContextCreationTime = System.currentTimeMillis();
 		this.remoteAddr		 = remoteAddr;
-		this.userAgent		 = "-";		
+		this.userAgent		 = null;		
 	}
 	
 	public void setRemoteAddr(String remoteAddr) {
@@ -29,15 +30,11 @@ public class AppSessionInfo {
 		return remoteAddr;
 	}
 	
-	public String getUserAgent() {
+	public UserAgent getUserAgent() {
 		return userAgent;
 	}
 	
-	public String[] getUserAgentFormatted() {
-		return userAgent.split("\\|");
-	}
-
-	public void setUserAgent(String userAgent) {
+	public void setUserAgent(UserAgent userAgent) {
 		this.userAgent = userAgent;
 	}
 

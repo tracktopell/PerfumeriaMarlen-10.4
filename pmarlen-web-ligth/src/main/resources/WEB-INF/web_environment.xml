@@ -92,10 +92,7 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>SyncServlet</servlet-name>
-        <servlet-class>com.pmarlen.rest.servlet.SyncServlet</servlet-class>
-    </servlet>
+    
 	<servlet>
         <servlet-name>PMCajaUpdateServlet</servlet-name>
         <servlet-class>com.pmarlen.web.servlet.PMCajaUpdateServlet</servlet-class>
@@ -154,10 +151,6 @@
         <servlet-name>jersey-serlvet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-	<servlet-mapping>
-        <servlet-name>SyncServlet</servlet-name>
-        <url-pattern>/sync/data</url-pattern>
-    </servlet-mapping>    
 	<servlet-mapping>
         <servlet-name>PMCajaUpdateServlet</servlet-name>
         <url-pattern>/pmcajaupdate/*</url-pattern>

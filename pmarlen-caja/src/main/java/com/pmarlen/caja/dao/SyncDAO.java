@@ -11,5 +11,4 @@ package com.pmarlen.caja.dao;
  * @author alfredo
  */
 public class SyncDAO {
-	
 }

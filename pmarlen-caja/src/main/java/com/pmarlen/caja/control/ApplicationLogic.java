@@ -6,9 +6,9 @@ package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.ConfiguracionSistema;
+import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.model.Constants;
-import com.pmarlen.rest.dto.U;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -28,12 +28,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-
-import org.apache.log4j.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import javax.swing.JOptionPane;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -53,18 +52,18 @@ public class ApplicationLogic {
 	private boolean adminLogedIn = false;
 	private String versionRead;
 	private static ApplicationLogic instance;
-	private U logged;
+	private Usuario logged;
 	private Almacen almacen;
 	private HashMap<Integer,Almacen> tipoAlmacen;
 
 	private ApplicationLogic(){	
 	}
 
-	public void setLogged(U logged) {
+	public void setLogged(Usuario logged) {
 		this.logged = logged;
 	}
 
-	public U getLogged() {
+	public Usuario getLogged() {
 		return logged;
 	}
 	
@@ -288,12 +287,12 @@ public class ApplicationLogic {
 		}
 	}
 	
-	U checkForUser(String usuarioEmail,String plainPassword) {
-		U logged=null;
-		List<U> usuarioList = MemoryDAO.getPaqueteSinc().getUsuarioList();
-		for(U u: usuarioList){
-			if(u.getE().equals(usuarioEmail)){
-				if(u.getP().equals(getMD5Encrypted(plainPassword))){
+	Usuario checkForUser(String usuarioEmail,String plainPassword) {
+		Usuario logged=null;
+		List<Usuario> usuarioList = MemoryDAO.getPaqueteSinc().getUsuarioList();
+		for(Usuario u: usuarioList){
+			if(u.getEmail().equals(usuarioEmail)){
+				if(u.getPassword().equals(getMD5Encrypted(plainPassword))){
 					logged=u;
 					break;
 				}

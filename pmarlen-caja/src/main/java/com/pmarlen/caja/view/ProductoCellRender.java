@@ -1,16 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.pmarlen.caja.view;
 
-import com.pmarlen.rest.dto.P;
+import com.pmarlen.backend.model.Producto;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.DecimalFormat;
-import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellRenderer;
@@ -85,13 +78,12 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		ProductoCellRender pcr= new ProductoCellRender();
 		
-		P p=(P)value;
+		Producto p=(Producto)value;
 		
-		pcr.codigoBarrasLabel.setText(p.getCb().toUpperCase());
-		pcr.nombreLabel.setText(p.getN().toUpperCase());		
-		pcr.descripcionLabel.setText(p.getP().toUpperCase());
-		//pcr.precioLabel.setText(df.format(p.getA1p()));
-		pcr.precioLabel.setText(p.getC()+p.getUm());
+		pcr.codigoBarrasLabel.setText(p.getCodigoBarras().toUpperCase());
+		pcr.nombreLabel.setText(p.getNombre().toUpperCase());		
+		pcr.descripcionLabel.setText(p.getPresentacion().toUpperCase());
+		pcr.precioLabel.setText(p.getContenido()+p.getUnidadMedida());
 		
 		if(isSelected){			
 			pcr.setBackground(sbgc!=null?sbgc:Color.MAGENTA);

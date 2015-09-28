@@ -33,6 +33,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;	
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.beanutils.BeanUtils;
@@ -730,7 +731,7 @@ public class EntradaSalidaDAO {
 		return findAllActive(tipoMov,sucursalId,false);
 	}
 
-	public int insertPedidoVentaSucursal(Connection conn, EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
+	public int insertPedidoVentaSucursal(Connection conn, EntradaSalida x, List<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
 		return 0;
 	}
     

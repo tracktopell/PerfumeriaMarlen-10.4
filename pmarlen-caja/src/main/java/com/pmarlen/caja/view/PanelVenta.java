@@ -4,9 +4,11 @@
  */
 package com.pmarlen.caja.view;
 
+import com.pmarlen.backend.model.Producto;
+import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.PedidoVentaDetalleTableModel;
-import com.pmarlen.rest.dto.P;
+import com.pmarlen.model.Constants;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
@@ -325,18 +327,18 @@ public class PanelVenta extends javax.swing.JPanel {
 	
 	String imagePath = "/PM_MULTIMEDIO_MIN_JPG/";
 	
-	private ImageIcon getProductoImageIcon(P p){
+	private ImageIcon getProductoImageIcon(Producto p){
 		logger.debug("=>getProductoImageIcon(" + p +")");
 		ImageIcon productoImageIcon = null;
 		File fileImage=null;
 		try{
-			//fileImage = new File(imagePath+"/MED_PRODUCTO_MULTIMEDIO_"+p.getCb()+"_1.jpg");
-			fileImage = new File(getImagesDir()+imagePath+"/MIN_PRODUCTO_MULTIMEDIO_"+p.getCb()+"_1.jpg");
+			//fileImage = new File(imagePath+"/MED_PRODUCTO_MULTIMEDIO_"+p.getCodigoBarras()+"_1.jpg");
+			fileImage = new File(getImagesDir()+imagePath+"/MIN_PRODUCTO_MULTIMEDIO_"+p.getCodigoBarras()+"_1.jpg");
 			if(fileImage.exists() && fileImage.canRead()) {
 				logger.trace("=>getProductoImageIcon: fileImage:" + fileImage+", size:"+fileImage.length()+" bytes");
 				productoImageIcon = new ImageIcon(ImageIO.read(new FileInputStream(fileImage)));
 			} else {
-				throw new Exception("Image not found for :"+p.getCb()+", fileImage:"+fileImage);
+				throw new Exception("Image not found for :"+p.getCodigoBarras()+", fileImage:"+fileImage);
 			}
 		} catch(Exception e){
 			logger.debug(e.getMessage());
@@ -345,14 +347,21 @@ public class PanelVenta extends javax.swing.JPanel {
 		return productoImageIcon;	
 	}
 	
-	public void resetInfoForProducto(final P p){
+	public void resetInfoForProducto(final InventarioSucursalQuickView p,int tipoAlmacen){
 		logger.trace("p=" + p);
 		if(p!=null){
-			labelCodigoBarras.setText(p.getCb());
-			labelNombre.setText(p.getN());		
-			labelPresentacion.setText(p.getP());
-			labelContenido.setText(p.getC()+" "+p.getUm());
-			labelPrecio.setText(df.format(p.getA1p()));
+			labelCodigoBarras.setText(p.getCodigoBarras());
+			labelNombre.setText(p.getNombre());		
+			labelPresentacion.setText(p.getPresentacion());
+			labelContenido.setText(p.getContenido()+" "+p.getUnidadMedida());
+			
+			if(tipoAlmacen == Constants.ALMACEN_PRINCIPAL)
+				labelPrecio.setText(df.format(p.getA1p()));
+			else if(tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD)
+				labelPrecio.setText(df.format(p.getaOp()));
+			else if(tipoAlmacen == Constants.ALMACEN_REGALIAS)
+				labelPrecio.setText(df.format(p.getaRp()));
+			
 			new Thread(){
 				@Override
 				public void run() {

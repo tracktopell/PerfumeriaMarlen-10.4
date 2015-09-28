@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pmarlen.caja.model;
 
 import java.util.ArrayList;
@@ -61,9 +57,9 @@ public class PedidoVentaDetalleTableModel implements TableModel{
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		final PedidoVentaDetalleTableItem dvti = detalleVentaTableItemList.get(rowIndex);
 		if(columnIndex == 0)
-			return dvti.getCantidad();
+			return dvti.getPvd().getCantidad();
 		else if(columnIndex == 1)
-			return dvti.getProducto();
+			return dvti.getShortDesc();
 		else if(columnIndex == 2)
 			return dvti.getPrecioVenta();
 		else if(columnIndex == 3)

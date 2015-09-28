@@ -1,14 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.pmarlen.backend.model.quickviews;
 
 import com.pmarlen.backend.model.Multimedio;
 import com.pmarlen.backend.model.Producto;
-import com.pmarlen.rest.dto.P;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,31 +44,6 @@ public class InventarioSucursalQuickView extends Producto {
     private double aRp;
 	
 	//==========================================================================
-	
-	public P generateFaccadeForREST(){
-		P p=new P();
-		
-		p.setA(getAbrebiatura());
-		p.setC(getContenido());
-		p.setCb(getCodigoBarras());
-		p.setI(getIndustria());
-		p.setL(getLinea());
-		p.setM(getMarca());
-		p.setN(getNombre());
-		p.setP(getPresentacion());
-		p.setUc(getUnidadesXCaja());
-		p.setUe(getUnidadEmpaque());
-		p.setUm(getUnidadMedida());
-		
-		p.setA1c(a1c);
-		p.setA1p(a1p);
-		p.setaOc(aOc);
-		p.setaOp(aOp);
-		p.setaRc(aRc);
-		p.setaRp(aRp);
-		
-		return p;
-	}
 
 	/**
 	 * @return the a1c

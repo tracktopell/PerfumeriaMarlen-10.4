@@ -1,42 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.pmarlen.rest;
 
-import com.pmarlen.backend.dao.AlmacenProductoDAO;
-import com.pmarlen.backend.dao.ClienteDAO;
-import com.pmarlen.backend.dao.DAOException;
-import com.pmarlen.backend.dao.FormaDePagoDAO;
-import com.pmarlen.backend.dao.MetodoDePagoDAO;
-import com.pmarlen.backend.dao.ProductoDAO;
-import com.pmarlen.backend.dao.SucursalDAO;
-import com.pmarlen.backend.dao.UsuarioDAO;
-import com.pmarlen.backend.model.Sucursal;
-import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
-import com.pmarlen.backend.model.quickviews.ProductoQuickView;
-import com.pmarlen.rest.dto.P;
+import com.pmarlen.backend.dao.SyncDAO;
 import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
 import java.io.ByteArrayOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -46,64 +27,35 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 @Path("/syncservice/")
 public class SyncService {
-    private static final String encodingUTF8  = "UTF-8";
+	@Context 
+	HttpServletRequest httpRequest;
+
+	private static final String encodingUTF8 = "UTF-8";
     
     private final static Logger logger = Logger.getLogger(SyncService.class.getName());
-
-	@GET
-	@Path("/syncdtopackage/{sucursalId}")
-	@Produces(MediaType.APPLICATION_JSON  + ";charset=" + encodingUTF8)
-	public SyncDTOPackage getSyncDTOPackage(@PathParam(value = "sucursalId")String sucursalId) throws WebApplicationException {
-        SyncDTOPackage s=null;
-		
-		try {
-			s= new SyncDTOPackage();
-			int sucId=new Integer(sucursalId);
-			ArrayList<InventarioSucursalQuickView> xa = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
-			ArrayList<P> xb=new ArrayList<P>();
-			for(InventarioSucursalQuickView xia: xa){
-				xb.add(xia.generateFaccadeForREST());
-			}
-			s.setInventarioSucursalQVList(xb);
-			s.setUsuarioList(UsuarioDAO.getInstance().findAllForRest());
-			s.setClienteList(ClienteDAO.getInstance().findAll());
-			s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
-			s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
-			s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
-			
-			logger.trace(" ok, get data, return SyncDTOPackage{"+s+"} for JSON prsing.");
-		} catch (Exception ex) {
-			logger.error (null, ex);
-			throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
-		}
-		return s;
-	}
 	
 	@POST
-	@Path("/json/syncdtopackage/zip")
+	@Path("/sync")
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=" + encodingUTF8)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public byte[] getSyncDTOPackageZipped(SyncDTORequest syncDTORequest) throws WebApplicationException {
+	public byte[] sync(SyncDTORequest syncDTORequest) throws WebApplicationException {
 		logger.debug("getSyncDTOPackageZipped: syncDTORequest="+syncDTORequest);
 		byte zipData[]=null;
         SyncDTOPackage s=null;
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		String callerIpAddress = "?.?.?.?";
+		if(httpRequest != null) {
+			callerIpAddress = httpRequest.getRemoteAddr();
+			logger.debug("httpRequest) Caller IP = " + callerIpAddress);
+		}
+		
+		ByteArrayOutputStream baos = null;
 		try {
-			s= new SyncDTOPackage();
-			int sucId=new Integer(syncDTORequest.getSucursalId());
-			ArrayList<InventarioSucursalQuickView> xa = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
-			ArrayList<P> xb = new ArrayList<P>();
-			for(InventarioSucursalQuickView xia: xa){
-				xb.add(xia.generateFaccadeForREST());
-			}
-			s.setInventarioSucursalQVList(xb);
-			s.setUsuarioList(UsuarioDAO.getInstance().findAllForRest());
-			s.setClienteList(ClienteDAO.getInstance().findAll());
-			s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
-			s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
-			s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
+			baos = new ByteArrayOutputStream();
+			s = SyncDAO.getInstance().syncTransaction(syncDTORequest);
 			
-			//logger.trace(" ok, get data, return SyncDTOPackage{"+s+"} for JSON prsing.");
+			IAmAliveService.registerHello(syncDTORequest.getiAmAliveDTORequest(), callerIpAddress);
+			
 			ObjectMapper mapper = new ObjectMapper();
 			ZipOutputStream zos = new ZipOutputStream(baos);
 			zos.putNextEntry(new ZipEntry("data.json"));				
@@ -118,11 +70,14 @@ public class SyncService {
 			logger.debug("getSyncDTOPackageZipped: zip ContentLength="+zipData.length+" bytes, jsonData.length="+jsonData.length);
 			
 		} catch (Exception ex) {
-			logger.error (null, ex);
+			logger.error ("getSyncDTOPackageZipped", ex);
 			throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
 		}
 		return zipData;
 	}
-	
+
+	public void setHttpRequest(HttpServletRequest httpRequest) {
+		this.httpRequest = httpRequest;
+	}
 	
 }

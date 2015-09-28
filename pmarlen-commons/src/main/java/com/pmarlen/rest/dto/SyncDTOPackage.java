@@ -10,11 +10,11 @@ import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
+import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.ClienteQuickView;
-import com.pmarlen.rest.dto.P;
-import com.pmarlen.rest.dto.U;
+import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import java.util.List;
 
 /**
@@ -22,39 +22,47 @@ import java.util.List;
  * @author alfredo
  */
 public class SyncDTOPackage {
-	private List<P> inventarioSucursalQVList;
-	private List<U> usuarioList;
+	private List<InventarioSucursalQuickView> inventarioSucursalQVList;
+	private List<Usuario> usuarioList;
 	private List<ClienteQuickView> clienteList;
 	private List<MetodoDePago> metodoDePagoList;
 	private List<FormaDePago> formaDePagoList;
 	private Sucursal sucursal;
 	private List<Almacen> almacenList;
+	
+
+	@Override
+	public String toString() {
+		return "inventarioSucursalQVList.length="+inventarioSucursalQVList.size()+",usuarioList.length="+usuarioList.size()+
+				",clienteList="+clienteList.size()+",metodoDePagoList.length="+metodoDePagoList.size()+
+				",formaDePagoList="+formaDePagoList.size()+",sucursal="+sucursal;
+	}
 
 	/**
 	 * @return the inventarioSucursalQVList
 	 */
-	public List<P> getInventarioSucursalQVList() {
+	public List<InventarioSucursalQuickView> getInventarioSucursalQVList() {
 		return inventarioSucursalQVList;
 	}
 
 	/**
 	 * @param inventarioSucursalQVList the inventarioSucursalQVList to set
 	 */
-	public void setInventarioSucursalQVList(List<P> inventarioSucursalQVList) {
+	public void setInventarioSucursalQVList(List<InventarioSucursalQuickView> inventarioSucursalQVList) {
 		this.inventarioSucursalQVList = inventarioSucursalQVList;
 	}
 
 	/**
 	 * @return the usuarioList
 	 */
-	public List<U> getUsuarioList() {
+	public List<Usuario> getUsuarioList() {
 		return usuarioList;
 	}
 
 	/**
 	 * @param usuarioList the usuarioList to set
 	 */
-	public void setUsuarioList(List<U> usuarioList) {
+	public void setUsuarioList(List<Usuario> usuarioList) {
 		this.usuarioList = usuarioList;
 	}
 
@@ -112,7 +120,7 @@ public class SyncDTOPackage {
 	 */
 	public void setSucursal(Sucursal sucursal) {
 		this.sucursal = sucursal;
-	} 
+	}
 
 	/**
 	 * @return the almacenList
@@ -120,20 +128,11 @@ public class SyncDTOPackage {
 	public List<Almacen> getAlmacenList() {
 		return almacenList;
 	}
-	
+
 	/**
-	 * @param almacenList the almacenList to set 
+	 * @param almacenList the almacenList to set
 	 */
 	public void setAlmacenList(List<Almacen> almacenList) {
 		this.almacenList = almacenList;
-	}
-	
-	
-
-	@Override
-	public String toString() {
-		return "inventarioSucursalQVList.length="+inventarioSucursalQVList.size()+",usuarioList.length="+usuarioList.size()+
-				",clienteList="+clienteList.size()+",metodoDePagoList.length="+metodoDePagoList.size()+
-				",formaDePagoList="+formaDePagoList.size()+",sucursal="+sucursal;
 	}
 }
