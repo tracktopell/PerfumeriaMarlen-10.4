@@ -12,7 +12,9 @@ import com.sun.jersey.api.client.WebResource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -42,10 +44,10 @@ public class ZipSyncDTOPackageClient {
 			String jsonInput = null;
 			SyncDTORequest syncDTORequest = new SyncDTORequest();
 			IAmAliveDTORequest iAmAliveDTORequest = new IAmAliveDTORequest();
-			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 			iAmAliveDTORequest.setCajaId(1);
 			iAmAliveDTORequest.setLoggedIn("tracktopell");
-			iAmAliveDTORequest.setSessionId("-");
+			iAmAliveDTORequest.setSessionId("S-"+sdf.format(new Date()));
 			iAmAliveDTORequest.setSucursalId(1);
 			iAmAliveDTORequest.setUserAgent(new UserAgent("", 
 					"Mac", 

@@ -46,16 +46,16 @@ public class SyncService {
 		String callerIpAddress = "?.?.?.?";
 		if(httpRequest != null) {
 			callerIpAddress = httpRequest.getRemoteAddr();
-			logger.debug("httpRequest) Caller IP = " + callerIpAddress);
+			logger.debug("* httpRequest) Caller IP = " + callerIpAddress);
 		}
 		
 		ByteArrayOutputStream baos = null;
 		try {
 			baos = new ByteArrayOutputStream();
 			s = SyncDAO.getInstance().syncTransaction(syncDTORequest);
-			
+			logger.debug("->registerHello"); 
 			IAmAliveService.registerHello(syncDTORequest.getiAmAliveDTORequest(), callerIpAddress);
-			
+			logger.debug("<- dto ?");
 			ObjectMapper mapper = new ObjectMapper();
 			ZipOutputStream zos = new ZipOutputStream(baos);
 			zos.putNextEntry(new ZipEntry("data.json"));				

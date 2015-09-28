@@ -3,7 +3,7 @@ package com.pmarlen.rest.client;
 
 import com.google.gson.*;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
-import com.pmarlen.rest.dto.SyncDTOPackage;
+import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
 import com.pmarlen.rest.dto.UserAgent;
 import com.sun.jersey.api.client.Client;
@@ -28,8 +28,8 @@ public class IAmAliveServiceClient {
 	
 	private static Logger logger = Logger.getLogger(IAmAliveServiceClient.class.getName());
 	
-	private static SyncDTOPackage getAllOfSucursal(String hostPort){
-		SyncDTOPackage paqueteSinc=null;
+	private static IAmAliveDTOPackage getHello(String hostPort){
+		IAmAliveDTOPackage iAmAliveDTOPackage=null;
 		Gson gson=new Gson();
 
 		try {
@@ -50,13 +50,13 @@ public class IAmAliveServiceClient {
 					"Java-7", 
 					"alfredo", 
 					"./"));			
-			System.out.println("-->> building: SyncDTORequest="+iAmAliveDTORequest+", before send.");
+			System.out.println("-->> building: IAmAliveDTORequest="+iAmAliveDTORequest+", before send.");
 			
 			long t1=System.currentTimeMillis();
 			
 			jsonInput = gson.toJson(iAmAliveDTORequest);
 			
-			System.out.println("...invoking with:syncDTORequest="+jsonInput);
+			System.out.println("...invoking with:IAmAliveDTORequest="+jsonInput);
 			ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,jsonInput);
 			System.out.println("...get response");
 			long t2=System.currentTimeMillis();
@@ -69,39 +69,11 @@ public class IAmAliveServiceClient {
 			byte[] output = response.getEntity(byteArr.getClass());
 			long t3=System.currentTimeMillis();
 			System.out.println("Output from Server:output.length="+output.length);
-			
-			String jsonContent=null;
-			ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(output));
-			ZipEntry ze = null;
-			while ((ze = zis.getNextEntry()) != null) {
-				
-				byte content[]=null;
-				byte buffer[] =new byte[1024];
-				ByteArrayOutputStream baos= new ByteArrayOutputStream();
-				if(ze.getName().endsWith(".json")){
-					System.out.println(">> Reading from:"+ze.getName()+", "+ze.getSize()+" bytes");					
-					int r=0;
-					while((r=zis.read(buffer))!=-1){
-						baos.write(buffer, 0, r);
-						baos.flush();
-					}
-					baos.close();
-					zis.closeEntry();
-					System.out.println(">> OK read.");
-					
-					content = baos.toByteArray();
-					System.out.println(">> content.length="+content.length);
-					
-					jsonContent=new String(content);					
-					
-					System.out.println(">> jsonContent.size="+jsonContent.length());
-					
-				}
-			}
-			zis.close();
-			System.out.println(">> After read zip");
-			if(jsonContent != null) {			
-				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
+			String content = new String(output);			
+			String jsonContent=new String(content);					
+			System.out.println("jsonContent:"+jsonContent);
+			if(jsonContent != null) {
+				iAmAliveDTOPackage = gson.fromJson(jsonContent, IAmAliveDTOPackage.class);			
 				long t4=System.currentTimeMillis();
 
 				long t5=System.currentTimeMillis();
@@ -115,13 +87,13 @@ public class IAmAliveServiceClient {
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 		} finally {
-			return paqueteSinc;
+			return iAmAliveDTOPackage;
 		}
 	}
 	
 	public static void main(String[] args) {
-		SyncDTOPackage paqueteSinc = IAmAliveServiceClient.getAllOfSucursal(args.length==0?"http://localhost:8070":args[0]);
-		System.out.println("-->> paqueteSinc{"+paqueteSinc+"}");
+		IAmAliveDTOPackage paqueteSinc = IAmAliveServiceClient.getHello(args.length==0?"http://localhost:8070":args[0]);
+		System.out.println("-->> IAmAliveDTOPackage: StatusCode="+paqueteSinc.getStatusCode());
 	}
 /*
 ...creating WebResource for ZIP

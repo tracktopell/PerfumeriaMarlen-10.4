@@ -22,6 +22,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.web.context>l30</project.web.context>
 		
 		<environment.stage>Development</environment.stage>
 		<environment.log4j.rootLogger>DEBUG</environment.log4j.rootLogger>
@@ -191,7 +192,7 @@
 				<configuration>
 					<url>http://localhost:8070/manager/text</url>
 					<server>tomcat7_test</server>
-					<path>/pmarlen-web-ligth</path>
+					<path>${project.web.context}</path>
 				</configuration>
 			</plugin>
 
@@ -248,7 +249,7 @@
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_dev</server>
-							<path>/pmarlen-web-ligth</path>
+							<path>${project.web.context}</path>
 						</configuration>
 					</plugin>
 					
@@ -283,7 +284,7 @@
 						<configuration>
 							<url>http://localhost:8080/manager/text</url>
 							<server>tomcat7_stage</server>
-							<path>/pmarlen-web-ligth</path>
+							<path>${project.web.context}</path>
 						</configuration>
 					</plugin>
 					
@@ -318,7 +319,7 @@
 						<configuration>
 							<url>http://localhost:8080/manager/text</url>
 							<server>tomcat7</server>
-							<path>/pmarlen-web-ligth</path>
+							<path>${project.web.context}</path>
 						</configuration>
 					</plugin>
 					
@@ -353,7 +354,7 @@
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_test</server>
-							<path>/pmarlen-web-ligth</path>
+							<path>${project.web.context}</path>
 						</configuration>
 					</plugin>
 					

@@ -40,7 +40,7 @@ public class IAmAliveService {
 		String callerIpAddress = "?.?.?.?";
 		if(httpRequest != null) {
 			callerIpAddress = httpRequest.getRemoteAddr();
-			logger.debug("httpRequest) Caller IP = " + callerIpAddress);
+			logger.debug("** httpRequest) Caller IP = " + callerIpAddress);
 		}
 		
 		IAmAliveDTOPackage r = registerHello(iamAliveDTOREquest, callerIpAddress);
@@ -52,9 +52,9 @@ public class IAmAliveService {
 		CajaSessionInfo cajaSessionInfo = null;
 		if (syncDTORequest.getSessionId() != null) {
 			cajaSessionInfo = ContextAndSessionListener.cajaSessionInfoHT.get(syncDTORequest.getSessionId());
-			logger.trace("cajaSessionInfo=" + cajaSessionInfo);
+			logger.debug("cajaSessionInfo=" + cajaSessionInfo);
 			if (cajaSessionInfo == null) {
-				logger.trace(" add new cajaSessionInfo, loggedIn=" + syncDTORequest.getLoggedIn());
+				logger.debug(" add new cajaSessionInfo, loggedIn=" + syncDTORequest.getLoggedIn());
 				cajaSessionInfo = new CajaSessionInfo();
 				cajaSessionInfo.setSessionId(syncDTORequest.getSessionId());
 				cajaSessionInfo.setCaja(String.valueOf(syncDTORequest.getCajaId()));
