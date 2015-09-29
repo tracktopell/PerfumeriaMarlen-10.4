@@ -26,7 +26,7 @@ public class ZipSyncDTOPackageClient {
 	
 	private static String hostService = "http://localhost:8070";
 	
-	private static String uriService =                       "/l30/rest/syncservice/sync";
+	private static String uriServiceZipSync =                       "/l30/rest/syncservice/sync";
 	
 	private static Logger logger = Logger.getLogger(ZipSyncDTOPackageClient.class.getName());
 	
@@ -38,7 +38,7 @@ public class ZipSyncDTOPackageClient {
 			long t0=System.currentTimeMillis();
 			Client client = Client.create();
 			System.out.println("...creating WebResource for ZIP");
-			WebResource webResource = client.resource(hostPort+uriService);
+			WebResource webResource = client.resource(hostPort+uriServiceZipSync);
 			
 			
 			String jsonInput = null;

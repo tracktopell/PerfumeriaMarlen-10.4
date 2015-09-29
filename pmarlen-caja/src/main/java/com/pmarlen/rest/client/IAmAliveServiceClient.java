@@ -24,7 +24,7 @@ public class IAmAliveServiceClient {
 	
 	private static String hostService = "http://localhost:8070";
 	
-	private static String uriService =                       "/l30/rest/iamaliveservice/hello";
+	private static String uriServiceIAmAlive =                       "/l30/rest/iamaliveservice/hello";
 	
 	private static Logger logger = Logger.getLogger(IAmAliveServiceClient.class.getName());
 	
@@ -36,7 +36,7 @@ public class IAmAliveServiceClient {
 			long t0=System.currentTimeMillis();
 			Client client = Client.create();
 			System.out.println("...creating WebResource for ZIP");
-			WebResource webResource = client.resource(hostPort+uriService);			
+			WebResource webResource = client.resource(hostPort+uriServiceIAmAlive);			
 			
 			String jsonInput = null;
 			IAmAliveDTORequest iAmAliveDTORequest = new IAmAliveDTORequest();
