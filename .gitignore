@@ -10,3 +10,8 @@ buildNumber.properties
 */.DS_Store
 pmarlen-web-ligth/src/main/webapp/WEB-INF/web.xml
 pmarlen-web-ligth/src/main/webapp/META-INF/context.xml
+/pmarlen-caja/EntradaSalida.json
+/pmarlen-caja/fileModel.zip
+/pmarlen-caja/system.properties
+/pmarlen-caja/nbactions-installer.xml
+/pmarlen-caja/PMarlen.log4j.log
