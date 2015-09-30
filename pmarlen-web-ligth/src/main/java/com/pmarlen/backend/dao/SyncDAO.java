@@ -78,7 +78,7 @@ public class SyncDAO {
 		s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
 		s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
 		s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
-		
+		s.setAlmacenList(AlmacenDAO.getInstance().findBySucursal(sucId));
 
 		return s;
 				

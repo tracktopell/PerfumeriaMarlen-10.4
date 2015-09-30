@@ -33,9 +33,14 @@ public class SyncDTOPackage {
 
 	@Override
 	public String toString() {
-		return "inventarioSucursalQVList.length="+inventarioSucursalQVList.size()+",usuarioList.length="+usuarioList.size()+
-				",clienteList="+clienteList.size()+",metodoDePagoList.length="+metodoDePagoList.size()+
-				",formaDePagoList="+formaDePagoList.size()+",sucursal="+sucursal;
+		return "SyncDTOPackage{ inventarioSucursalQVList.length="+inventarioSucursalQVList.size()+
+				",usuarioList.length="+usuarioList+
+				",clienteList="+clienteList+
+				",metodoDePagoList="+metodoDePagoList+
+				",formaDePagoList="+formaDePagoList+
+				",sucursal="+sucursal+
+				", almacenList.size="+almacenList+
+				" }";
 	}
 
 	/**

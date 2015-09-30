@@ -6,11 +6,14 @@
 package com.pmarlen.caja.dao;
 
 import com.google.gson.Gson;
-import com.pmarlen.backend.model.Producto;
+import com.pmarlen.backend.model.Almacen;
+import com.pmarlen.backend.model.FormaDePago;
+import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.backend.model.Usuario;
+import com.pmarlen.backend.model.quickviews.ClienteQuickView;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.caja.control.ApplicationLogic;
-import com.pmarlen.caja.control.FramePrincipalControl;
+import com.pmarlen.caja.model.Sucursal;
 import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
 import com.pmarlen.rest.dto.SyncDTOPackage;
@@ -19,7 +22,6 @@ import com.pmarlen.rest.dto.UserAgent;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,19 +29,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 /**
@@ -71,7 +68,13 @@ public class MemoryDAO {
 	private static HashMap<String,InventarioSucursalQuickView> productosParaBuscar;
 	private static String propertiesFileNAme="./system.properties";
 	private static boolean exsistFile = false;	
-	
+	private static List<Usuario> usuarioList;
+	private static List<ClienteQuickView> clienteList;
+	private static List<MetodoDePago> metodoDePagoList;
+	private static List<FormaDePago> formaDePagoList;
+	private static Sucursal sucursal;
+	private static List<Almacen> almacenList;
+
 	public static void loadProperties() {
 		
 		File fileProperties = new File(propertiesFileNAme);
@@ -260,35 +263,20 @@ public class MemoryDAO {
 				throw new RuntimeException("Failed HTTP error code :"
 						+ response.getStatus());
 			}
-			logger.debug("OK, not error, trying get JSON response");
-			byte byteArr[]=new byte[0];
-			byte[] output = response.getEntity(byteArr.getClass());
 			long t3=System.currentTimeMillis();
-			logger.debug("Output from Server:output.length="+output.length);
-			
-			String jsonContent=null;
-			ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(output));
-			ZipEntry ze = null;
-			while ((ze = zis.getNextEntry()) != null) {
-				byte buffer[] =new byte[1024];
-				//ByteArrayOutputStream os= new ByteArrayOutputStream();
-				FileOutputStream os= new FileOutputStream(fileName);
-				if(ze.getName().endsWith(".json")){
-					logger.debug(">> Reading from:"+ze.getName()+", "+ze.getSize()+" bytes");					
-					int r=0;
-					while((r=zis.read(buffer))!=-1){
-						os.write(buffer, 0, r);
-						os.flush();
-					}
-					os.close();
-					zis.closeEntry();
-					logger.debug(">> OK read.");
-					
-					logger.debug(">> content.length="+r);					
-				}
+			InputStream is = response.getEntityInputStream();
+			OutputStream os = new FileOutputStream(fileName);
+			byte buffer[]=new byte[1024];
+			int r;
+			while((r = is.read(buffer, 0, buffer.length))!= -1){
+				os.write(buffer, 0, r);
+				os.flush();
 			}
-			zis.close();
-			logger.debug(">> After read zip");
+			is.close();
+			os.close();
+			File fileZip =  new File(fileName);
+			logger.debug("  fileZip = "+fileZip.length()+" bytes.");			
+			
 			long t4=System.currentTimeMillis();
 			logger.debug("  T = "+(t4-t0));
 			logger.debug("+T1 = "+(t1-t0));
@@ -352,7 +340,12 @@ public class MemoryDAO {
 		
 		String operatingSystem = System.getProperty("os.name")+"_"+System.getProperty("os.version")+"("+System.getProperty("os.arch")+")";
 		iAmAliveDTOPackage.setCajaId(1);
-		iAmAliveDTOPackage.setLoggedIn(ApplicationLogic.getInstance().getLogged().getEmail());
+		Usuario ul = ApplicationLogic.getInstance().getLogged();
+		if(ul != null) {
+			iAmAliveDTOPackage.setLoggedIn(ul.getEmail());
+		} else {
+			iAmAliveDTOPackage.setLoggedIn(null);
+		}
 		iAmAliveDTOPackage.setSessionId(getSessionID());
 		iAmAliveDTOPackage.setSucursalId(getSucursalId());
 		iAmAliveDTOPackage.setUserAgent(
@@ -423,11 +416,25 @@ public class MemoryDAO {
 		ZipFile zf=null;
 		Gson gson=new Gson();
 		String jsonContent=null;
-
+		File fileZip = null;
+		boolean deleted=false;
 		try {
-			logger.debug(">> open ZIP");
-			zf = new ZipFile(fileName);
-
+			fileZip = new File(fileName);
+			logger.debug("open ZIP:"+fileZip.getAbsolutePath());
+			zf = new ZipFile(fileZip);
+		} catch(ZipException ze){
+			logger.error("ZIP corrupto:"+fileZip,ze);
+			deleted=fileZip.delete();
+			logger.debug("1)Deleteed  ZIP:"+fileZip.getAbsolutePath()+" ? "+deleted);
+			return;
+		} catch(IOException ioe) {
+			logger.error("ZIP error al leer:"+fileZip,ioe);
+			deleted=fileZip.delete();
+			logger.debug("2)Deleteed  ZIP:"+fileZip.getAbsolutePath()+" ? "+deleted);
+			return;
+		}
+		
+		try {
 			Enumeration<? extends ZipEntry> entries = zf.entries();
 
 			while(entries.hasMoreElements()){
@@ -437,7 +444,7 @@ public class MemoryDAO {
 				byte buffer[] =new byte[1024];
 				ByteArrayOutputStream baos= new ByteArrayOutputStream();
 				if(ze.getName().endsWith(".json")){
-					logger.debug(">> Reading from:"+ze.getName()+", "+ze.getSize()+" bytes");
+					logger.debug("Reading from:"+ze.getName()+", "+ze.getSize()+" bytes");
 					InputStream is = zf.getInputStream(ze);
 					int r=0;
 					while((r=is.read(buffer))!=-1){
@@ -446,37 +453,48 @@ public class MemoryDAO {
 					}
 					baos.close();
 					is.close();
-					logger.debug(">> OK read.");
+					logger.debug("OK read.");
 					
 					content = baos.toByteArray();
-					logger.debug(">> content.length="+content.length);
+					logger.debug("content.length="+content.length);
 					
 					jsonContent=new String(content);					
 					
-					logger.debug(">> jsonContent.size="+jsonContent.length());
-					//logger.debug(">> jsonContent="+jsonContent);
+					logger.debug("jsonContent.size="+jsonContent.length());
+					//logger.debug("jsonContent="+jsonContent);
 				}
 			}
 			zf.close();
-			logger.debug(">> After read zip");
+			logger.debug("After read zip");
 			if(jsonContent != null) {
-				logger.debug(">> parse:");
+				logger.debug("...OK, JSon parse:");
 				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
-				logger.debug(">> paqueteSinc:"+paqueteSinc);
+				logger.debug("paqueteSinc:->"+paqueteSinc+"<-");
+				
 				List<InventarioSucursalQuickView> lp = paqueteSinc.getInventarioSucursalQVList();
 				productosParaBuscar = new HashMap<String,InventarioSucursalQuickView>();
-				logger.debug(">> productosParaBuscar, begin");
+				logger.debug("productosParaBuscar, begin");
 				long t0=System.currentTimeMillis();
 				for(InventarioSucursalQuickView p: lp){
 					productosParaBuscar.put(p.getCodigoBarras(),p);
 				}
 				long t=t0-System.currentTimeMillis();
-				logger.debug(">> productosParaBuscar, ready T="+t);
-				ApplicationLogic.getInstance().setTipoAlmacen(paqueteSinc.getAlmacenList());
+				logger.debug("productosParaBuscar, ready T="+t);
+				
+				almacenList = paqueteSinc.getAlmacenList();
+				usuarioList = paqueteSinc.getUsuarioList();
+				clienteList = paqueteSinc.getClienteList();
+				metodoDePagoList = paqueteSinc.getMetodoDePagoList();
+				formaDePagoList = paqueteSinc.getFormaDePagoList();
+				sucursal = new Sucursal();
+				sucursal.setId(paqueteSinc.getSucursal().getId());
+				sucursal.setNombre(paqueteSinc.getSucursal().getNombre().toUpperCase());				
+				
+				ApplicationLogic.getInstance().setTipoAlmacen(almacenList);
 			}
 			
 		} catch (Exception ex) {
-			logger.error(null, ex);
+			logger.error("Reading ZIP:", ex);
 		}
 
 	}
