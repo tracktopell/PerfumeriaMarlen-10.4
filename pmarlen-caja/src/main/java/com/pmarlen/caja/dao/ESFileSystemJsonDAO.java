@@ -11,7 +11,7 @@ import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.model.Constants;
-import com.pmarlen.rest.dto.EntradaSalidaConDetalle;
+import com.pmarlen.rest.dto.ES_ESD;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,9 +25,9 @@ import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 public class ESFileSystemJsonDAO {
 	private static Logger logger = Logger.getLogger(ESFileSystemJsonDAO.class.getName());
 	private static final String fileName = "EntradaSalida.json";
-	private static final ArrayList<EntradaSalidaConDetalle> esList = new ArrayList<EntradaSalidaConDetalle>();
+	private static final ArrayList<ES_ESD> esList = new ArrayList<ES_ESD>();
 	
-	public static void commit(EntradaSalidaConDetalle escd){
+	public static void commit(ES_ESD escd){
 		
 		int tm = escd.getEs().getTipoMov();
 		int add = 0;
@@ -40,7 +40,7 @@ public class ESFileSystemJsonDAO {
 			add = 1;
 		}
 		
-		for(EntradaSalidaDetalle d:escd.getEsd()){
+		for(EntradaSalidaDetalle d:escd.getEsdList()){
 			InventarioSucursalQuickView p = MemoryDAO.fastSearchProducto(d.getProductoCodigoBarras());
 			/*
 			if(d.getAlmacenId() == Constants.ALMACEN_PRINCIPAL){
@@ -80,7 +80,7 @@ public class ESFileSystemJsonDAO {
 	
 	}
 
-	public static ArrayList<EntradaSalidaConDetalle> getEsList() {
+	public static ArrayList<ES_ESD> getEsList() {
 		return esList;
 	}
 	

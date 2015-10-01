@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class SyncDTORequest implements Serializable{
 	private IAmAliveDTORequest iAmAliveDTORequest;
-	private List<EntradaSalidaConDetalle> escdList;
+	private List<ES_ESD> escdList;
 
 	public SyncDTORequest() {
 	}
@@ -33,14 +33,14 @@ public class SyncDTORequest implements Serializable{
 	/**
 	 * @return the escdList
 	 */
-	public List<EntradaSalidaConDetalle> getEscdList() {
+	public List<ES_ESD> getEscdList() {
 		return escdList;
 	}
 
 	/**
 	 * @param escdList the escdList to set
 	 */
-	public void setEscdList(List<EntradaSalidaConDetalle> escdList) {
+	public void setEscdList(List<ES_ESD> escdList) {
 		this.escdList = escdList;
 	}
 }

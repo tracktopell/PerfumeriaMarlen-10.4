@@ -13,7 +13,7 @@ import com.pmarlen.caja.model.PedidoVentaDetalleTableModel;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.ProductoCellRender;
 import com.pmarlen.model.Constants;
-import com.pmarlen.rest.dto.EntradaSalidaConDetalle;
+import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.ticket.TicketPrinteService;
 import com.pmarlen.ticket.bluetooth.TicketBlueToothPrinter;
 import java.awt.Color;
@@ -205,7 +205,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		}
 
 		try {
-			final EntradaSalidaConDetalle venta = new EntradaSalidaConDetalle();
+			final ES_ESD venta = new ES_ESD();
 			final ArrayList<EntradaSalidaDetalle> detalleVentaList = new ArrayList<EntradaSalidaDetalle>();
 
 			for (PedidoVentaDetalleTableItem dvil : detalleVentaTableItemList) {				
@@ -219,7 +219,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			venta.getEs().setFormaDePagoId(1);
 			venta.getEs().setImporteRecibido(-1.0);
 			venta.getEs().setSucursalId(MemoryDAO.getSucursalId());
-			venta.getEsd().addAll(detalleVentaList);
+			venta.getEsdList().addAll(detalleVentaList);
 			venta.getEs().setUsuarioEmailCreo(ApplicationLogic.getInstance().getLogged().getEmail());
 			
 			ESFileSystemJsonDAO.commit(venta);

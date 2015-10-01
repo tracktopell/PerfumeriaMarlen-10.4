@@ -9,18 +9,18 @@ import java.util.List;
  *
  * @author alfredo
  */
-public class EntradaSalidaConDetalle {
+public class ES_ESD {
 	private EntradaSalida es;
-	private List<EntradaSalidaDetalle> esd;
+	private List<EntradaSalidaDetalle> esdList;
 
-	public EntradaSalidaConDetalle() {
+	public ES_ESD() {
 		this.es = new EntradaSalida();
-		this.esd = new ArrayList<EntradaSalidaDetalle>();
+		this.esdList = new ArrayList<EntradaSalidaDetalle>();
 	}
 
-	public EntradaSalidaConDetalle(EntradaSalida es, List<EntradaSalidaDetalle> esd) {
+	public ES_ESD(EntradaSalida es, List<EntradaSalidaDetalle> esd) {
 		this.es = es;
-		this.esd = esd;
+		this.esdList = esd;
 	}
 	
 
@@ -41,15 +41,15 @@ public class EntradaSalidaConDetalle {
 	/**
 	 * @return the esd
 	 */
-	public List<EntradaSalidaDetalle> getEsd() {
-		return esd;
+	public List<EntradaSalidaDetalle> getEsdList() {
+		return esdList;
 	}
 
 	/**
 	 * @param esd the esd to set
 	 */
-	public void setEsd(List<EntradaSalidaDetalle> esd) {
-		this.esd = esd;
+	public void setEsdList(List<EntradaSalidaDetalle> esd) {
+		this.esdList = esd;
 	}
 	
 }

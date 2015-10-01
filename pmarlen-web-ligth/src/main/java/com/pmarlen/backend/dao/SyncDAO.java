@@ -10,7 +10,7 @@ import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
-import com.pmarlen.rest.dto.EntradaSalidaConDetalle;
+import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
 import com.tracktopell.jdbc.DataSourceFacade;
@@ -47,16 +47,20 @@ public class SyncDAO {
 	
 	public SyncDTOPackage syncTransaction(SyncDTORequest syncDTORequest) throws DAOException{
 		SyncDTOPackage s= new SyncDTOPackage();
-		List<EntradaSalidaConDetalle> escdList = syncDTORequest.getEscdList();
+		int sucId=syncDTORequest.getiAmAliveDTORequest().getSucursalId();
+		List<ES_ESD> escdList = syncDTORequest.getEscdList();
+		
+		logger.debug("syncTransaction:sucId="+sucId+", escdList.size="+(escdList!=null?escdList.size():null));
+		
 		if(escdList!=null && escdList.size()>0) {
 			Connection conn = null;
 			
 			try {
 				conn = getConnectionCommiteable();
 						
-				for(EntradaSalidaConDetalle escd: escdList){
+				for(ES_ESD escd: escdList){
 					EntradaSalida es = escd.getEs();
-					List<EntradaSalidaDetalle> esList = escd.getEsd();
+					List<EntradaSalidaDetalle> esList = escd.getEsdList();
 					EntradaSalidaDAO.getInstance().insertPedidoVentaSucursal(conn,es,esList);
 				}
 				
@@ -69,9 +73,8 @@ public class SyncDAO {
 			}
 		}
 		
-		int sucId=syncDTORequest.getiAmAliveDTORequest().getSucursalId();
-		
 		ArrayList<InventarioSucursalQuickView> xa = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
+		
 		s.setInventarioSucursalQVList(xa);
 		s.setUsuarioList(UsuarioDAO.getInstance().findAllSimple());
 		s.setClienteList(ClienteDAO.getInstance().findAll());
