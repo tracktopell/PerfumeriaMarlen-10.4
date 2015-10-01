@@ -56,6 +56,10 @@ public class ESFileSystemJsonDAO {
 		persist();
 	}
 	
+	void reset(){		
+		esList.clear();
+	}
+	
 	public void laod(){
 		
 	}

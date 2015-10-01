@@ -7,12 +7,10 @@ LOCAL building.
 
 	mvn clean package -Pinstaller
 
-RUN from here:
-
-	mvn clean exec:java -Dexec.mainClass=com.xpressosystems.xpresscashdrawer.Main
-
-Update & Upload the installer int the website
-
 	mvn clean install -Pinstaller
 
-mvn exec:java -Dexec.mainClass=com.pmarlen.caja.Main
+Run Main
+
+	mvn exec:java -Dexec.mainClass=com.pmarlen.caja.Main
+
+	mvn exec:java -Dexec.mainClass=com.pmarlen.caja.Main -Dexec.args="-debug=true"

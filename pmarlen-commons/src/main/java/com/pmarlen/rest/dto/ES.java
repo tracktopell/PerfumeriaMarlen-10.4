@@ -21,6 +21,7 @@ public class ES {
 	private int fp;
 	private int j;
 	private double i;
+	private String nt;
 	
 	public EntradaSalida reverse(){
 		EntradaSalida es = new EntradaSalida();
@@ -32,6 +33,7 @@ public class ES {
 		es.setFormaDePagoId(fp);
 		es.setCaja(j);
 		es.setFactorIva(i);
+		es.setNumeroTicket(nt);
 		return es;
 	}
 
@@ -149,5 +151,19 @@ public class ES {
 	 */
 	public void setI(double i) {
 		this.i = i;
+	}
+
+	/**
+	 * @return the nt
+	 */
+	public String getNt() {
+		return nt;
+	}
+
+	/**
+	 * @param nt the nt to set
+	 */
+	public void setNt(String nt) {
+		this.nt = nt;
 	}
 }

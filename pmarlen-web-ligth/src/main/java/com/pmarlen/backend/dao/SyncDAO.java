@@ -54,39 +54,51 @@ public class SyncDAO {
 		int sucId=syncDTORequest.getiAmAliveDTORequest().getSucursalId();
 		List<ES_ESD> escdList = syncDTORequest.getEscdList();
 		
-		logger.debug("syncTransaction:sucId="+sucId+", escdList.size="+(escdList!=null?escdList.size():null));
+		logger.debug("syncTransaction:sucId="+sucId);
 		
 		if(escdList!=null && escdList.size()>0) {
 			Connection conn = null;
-			
+			logger.debug("syncTransaction:---------------- PROCESSING Sent : List<ES_ESD> escdList.size="+escdList.size());
 			try {
 				conn = getConnectionCommiteable();
-						
+				logger.debug("syncTransaction:BEGIN TRANSACTION");
+				int indexProccessing=0;
 				for(ES_ESD escd: escdList){
 					EntradaSalida es = escd.getEs().reverse();
 					List<EntradaSalidaDetalle> esdList = new ArrayList<EntradaSalidaDetalle>();
 					List<ESD> esdl = escd.getEsdList();
+					logger.debug("syncTransaction:\tprepare esdList:");
 					for(ESD esd: esdl){
 						esdList.add(esd.reverse());
 					}
+					logger.debug("syncTransaction:\tprepare for insertPedidoVentaSucursal:");
+					s.processingES(indexProccessing++);
 					EntradaSalidaDAO.getInstance().insertPedidoVentaSucursal(conn,es,esdList);
+					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:");
 				}
-				
+				logger.debug("syncTransaction:END");
+				logger.debug("syncTransaction:COMMIT TRANSACTION");
 				conn.commit();
-				
+				s.setSyncDBStatus(SyncDTOPackage.SYNC_OK);
 			}catch(Exception e){
+				s.setSyncDBStatus(SyncDTOPackage.SYNC_FAIL);
+				logger.error("syncTransaction: fail ?",e);
 				try {
+					logger.debug("syncTransaction:ROLLBACK TRANSACTION");
 					conn.rollback();
 				}catch(Exception et){
+					logger.debug("syncTransaction:fail at rollback :(",et);
 				}
 			} finally {
 				try{
 					conn.close();
-				}catch(Exception e){
-				
+				}catch(Exception e2){
+					logger.debug("syncTransaction:fail at close :(",e2);
 				}
 			}
 		}
+		
+		logger.debug("syncTransaction:----------------REGULAR DataGet -----------------");
 		
 		ArrayList<InventarioSucursalQuickView> inventarioBigList = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
 		List<I> inventarioSucursalList = new ArrayList<I>();

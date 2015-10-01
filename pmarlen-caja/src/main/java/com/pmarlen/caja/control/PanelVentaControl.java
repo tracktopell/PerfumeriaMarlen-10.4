@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
+import com.pmarlen.businesslogic.GeneradorNumTicket;
 import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.ImporteCellRender;
@@ -131,6 +132,14 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		String codigoBuscar = panelVenta.getCodigoBuscar().getText().trim();
 		
 		logger.info("[USER]->codigoBuscar_ActionPerformed:codigoBuscar=->" + codigoBuscar+"<-");
+//		String[] linesCBArr = codigoBuscar.split("(\\r?\\n)|([ ]+)");
+//		for(String lineCB: linesCBArr){
+//			logger.debug("\tcodigoBuscar_ActionPerformed:line->"+lineCB+"<-");
+//			String[] codesCB = lineCB.split("\\t");
+//			for(String cdLineCB: codesCB){
+//				logger.debug("\t\tcodigoBuscar_ActionPerformed:code->"+cdLineCB+"<-");
+//			}
+//		}		
 		I productoEncontrado = null;
 		try{
 			productoEncontrado = MemoryDAO.fastSearchProducto(codigoBuscar);
@@ -213,14 +222,18 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			for (PedidoVentaDetalleTableItem dvil : detalleVentaTableItemList) {				
 				detalleVentaList.add(dvil.getPvd());
 			}
+			int cteId=1;			
+			int formaPagoId=1;
+			String numTicket = GeneradorNumTicket.getNumTicket(MemoryDAO.getSucursalId(), MemoryDAO.getNumCaja(), cteId, total);
 			
 			venta.getEs().setTm(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
 			venta.getEs().setJ(MemoryDAO.getNumCaja());
-			venta.getEs().setC(1);
+			venta.getEs().setC(cteId);
 			venta.getEs().setFc(System.currentTimeMillis());
-			venta.getEs().setFp(1);
+			venta.getEs().setFp(formaPagoId);
 			venta.getEs().setI(Constants.IVA);
-			venta.getEs().setS(MemoryDAO.getSucursalId());
+			venta.getEs().setS(MemoryDAO.getSucursalId());			
+			venta.getEs().setNt(numTicket);
 			venta.getEsdList().addAll(detalleVentaList);
 			venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getEmail());
 			
@@ -277,9 +290,10 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		panelVenta.getDetalleVentaJTable().updateUI();
 		renderTotal();
 	}
-
+	
+	double total = 0.0;
 	private void renderTotal() {
-		double total = 0.0;
+		
 		if (detalleVentaTableItemList.size() > 0) {
 			FramePrincipalControl.getInstance().setEnabledVentasMenus(true);
 

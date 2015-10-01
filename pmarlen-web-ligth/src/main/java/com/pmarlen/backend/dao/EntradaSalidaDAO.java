@@ -732,8 +732,142 @@ public class EntradaSalidaDAO {
 	}
 
 	public int insertPedidoVentaSucursal(Connection conn, EntradaSalida x, List<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
-		logger.debug("insertPedidoVentaSucursal:To-DO: EntradaSalida="+x+", pvdList.size="+pvdList.size());
-		return 0;
+		
+		logger.debug("insertPedidoVentaSucursal:TESTING: EntradaSalida: INSERT FECHA:"+x.getFechaCreo());
+		for(EntradaSalidaDetalle esd: pvdList){
+			logger.debug("insertPedidoVentaSucursal:\tTESTING: INSERT & COMMIT, DISCOUNT="+esd.getCantidad()+" x "+esd.getProductoCodigoBarras()+"["+esd.getAlmacenId()+"]");
+		}
+		
+		int r=-1;
+		int tipoMov = x.getTipoMov();
+		PreparedStatement ps = null;
+		PreparedStatement psESE = null;
+		PreparedStatement psESD = null;
+		PreparedStatement psMHP = null;
+		
+		try {
+			//Timestamp now = new Timestamp(System.currentTimeMillis());
+			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,METODO_DE_PAGO_ID,FACTOR_IVA,COMENTARIOS,CFD_ID,NUMERO_TICKET,CAJA,IMPORTE_RECIBIDO,APROBACION_VISA_MASTERCARD,PORCENTAJE_DESCUENTO_CALCULADO,PORCENTAJE_DESCUENTO_EXTRA,CONDICIONES_DE_PAGO,NUM_DE_CUENTA,AUTORIZA_DESCUENTO) "
+					+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			int ci = 1;
+			ps.setObject(ci++, tipoMov);
+			ps.setObject(ci++, x.getSucursalId());
+			ps.setObject(ci++, Constants.ESTADO_VENDIDO_SUCURSAL);
+			ps.setObject(ci++, x.getFechaCreo());
+			ps.setObject(ci++, x.getUsuarioEmailCreo());
+			ps.setObject(ci++, x.getClienteId());
+			ps.setObject(ci++, x.getFormaDePagoId());
+			ps.setObject(ci++, x.getMetodoDePagoId());
+			ps.setObject(ci++, x.getFactorIva());
+			ps.setObject(ci++, x.getComentarios());
+			ps.setObject(ci++, x.getCfdId());
+			ps.setObject(ci++, x.getNumeroTicket());
+			ps.setObject(ci++, x.getCaja());
+			ps.setObject(ci++, x.getImporteRecibido());
+			ps.setObject(ci++, x.getAprobacionVisaMastercard());
+			ps.setObject(ci++, x.getPorcentajeDescuentoCalculado());
+			ps.setObject(ci++, x.getPorcentajeDescuentoExtra());
+			ps.setObject(ci++, x.getCondicionesDePago());
+			ps.setObject(ci++, x.getNumDeCuenta());
+			ps.setObject(ci++, x.getAutorizaDescuento());
+			logger.info("->EntradaSalida before Insert:"+x.getId());
+			r = ps.executeUpdate();					
+			
+			ResultSet rsk = ps.getGeneratedKeys();
+			if (rsk != null) {
+				while (rsk.next()) {
+					x.setId(rsk.getInt(1));
+				}
+			}
+			ps.close();
+			logger.info("->EntradaSalida after Insert:"+x.getId());
+			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA) "
+					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			int rESD = 0;
+			for (EntradaSalidaDetalle pvd : pvdList) {
+				int ciESD = 1;
+
+				psESD.clearParameters();
+				psESD.clearWarnings();
+
+				psESD.setInt(ciESD++, x.getId());
+				if (pvd.getProductoCodigoBarras() == null) {
+					psESD.setObject(ciESD++, null);
+				} else {
+					psESD.setString(ciESD++, pvd.getProductoCodigoBarras());
+				}
+				psESD.setInt(ciESD++, pvd.getAlmacenId());
+				psESD.setInt(ciESD++, pvd.getCantidad());
+				psESD.setDouble(ciESD++, pvd.getPrecioVenta());
+
+				rESD += psESD.executeUpdate();
+			}
+			psESD.close();
+
+			psESE = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_ESTADO(ENTRADA_SALIDA_ID,ESTADO_ID,FECHA,USUARIO_EMAIL,COMENTARIOS) "
+					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			int[] estados = new int[]{Constants.ESTADO_CAPTURADO, Constants.ESTADO_VENDIDO_SUCURSAL};
+			int ciESE = 1;
+			int rESE = -1;
+			for (int j = 0; j < 2; j++) {
+				psESE.clearParameters();
+				ciESE = 1;
+
+				psESE.setInt(ciESE++, x.getId());
+				psESE.setInt(ciESE++, estados[j]);
+				psESE.setTimestamp(ciESE++, x.getFechaCreo());
+				psESE.setString(ciESE++, x.getUsuarioEmailCreo());
+				psESE.setString(ciESE++, "--NORMAL--");
+
+				rESE += psESE.executeUpdate();
+			}
+			psESE.close();
+			
+			psESD = conn.prepareStatement("UPDATE ALMACEN_PRODUCTO SET CANTIDAD = CANTIDAD + ? "
+					+ " WHERE PRODUCTO_CODIGO_BARRAS=? AND ALMACEN_ID=?");
+
+			psMHP = conn.prepareStatement("INSERT INTO MOVIMIENTO_HISTORICO_PRODUCTO(ALMACEN_ID,FECHA,TIPO_MOVIMIENTO,CANTIDAD,COSTO,PRECIO,USUARIO_EMAIL,PRODUCTO_CODIGO_BARRAS,ENTRADA_SALIDA_ID) "
+					+ " VALUES(?,?,?,?,?,?,?,?,?)");
+			
+			int cant=0;
+			for (EntradaSalidaDetalle pvd : pvdList) {
+				psESD.clearParameters();
+				cant=0;
+				if(x.getTipoMov() >= Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA && x.getTipoMov() < Constants.TIPO_MOV_OTRO){
+					cant = -1 * pvd.getCantidad();
+					psESD.setInt(1, cant);
+				} else if(x.getTipoMov() >= Constants.TIPO_MOV_ENTRADA_ALMACEN_COMPRA &&  x.getTipoMov() < Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA){				
+					cant = pvd.getCantidad();
+					psESD.setInt(1, cant);
+				}
+				logger.info("->tipomov="+x.getTipoMov()+", cant="+cant);
+				psESD.setString(2, pvd.getProductoCodigoBarras());
+				psESD.setInt(3, pvd.getAlmacenId());
+
+				psESD.executeUpdate();
+
+				psMHP.clearParameters();
+				ci=1;
+				psMHP.setInt(ci++, pvd.getAlmacenId());
+				psMHP.setTimestamp(ci++, x.getFechaCreo());
+				psMHP.setInt(ci++, x.getTipoMov());
+				psMHP.setInt(ci++, pvd.getCantidad());
+				psMHP.setObject(ci++, null);
+				psMHP.setObject(ci++, null);
+				psMHP.setString(ci++, x.getUsuarioEmailCreo());
+				psMHP.setString(ci++, pvd.getProductoCodigoBarras());
+				psMHP.setInt   (ci++, x.getId());
+
+				r = psMHP.executeUpdate();
+			}
+			psESD.close();
+			psMHP.close();
+		} catch (SQLException ex) {
+			logger.error("En lo mas dificil de sucursales:", ex);
+			throw new DAOException("InUpdate:" + ex.getMessage());
+		}
+		
+		return r;
 	}
     
 	public int insertPedidoVenta(EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList) throws DAOException {

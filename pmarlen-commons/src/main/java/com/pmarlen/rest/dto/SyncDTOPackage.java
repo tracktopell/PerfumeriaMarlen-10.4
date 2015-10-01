@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.pmarlen.rest.dto;
 
 import com.pmarlen.backend.model.Almacen;
@@ -12,6 +6,7 @@ import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.Usuario;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +14,11 @@ import java.util.List;
  * @author alfredo
  */
 public class SyncDTOPackage {
+	public static final int SYNC_OK   = 0;
+	public static final int SYNC_FAIL = 1;
+	
+	private int     syncDBStatus;
+	private List<Integer> listIndexProccessed;
 	private List<I> inventarioSucursalList;
 	private List<Usuario> usuarioList;
 	private List<Cliente> clienteList;
@@ -26,19 +26,43 @@ public class SyncDTOPackage {
 	private List<FormaDePago> formaDePagoList;
 	private Sucursal sucursal;
 	private List<Almacen> almacenList;
+
+	public SyncDTOPackage() {
+		listIndexProccessed =  new ArrayList<Integer>();
+	}
+	
+	public void processingES(int i){
+		listIndexProccessed.add(i);
+	}
+
+	public List<Integer> getListIndexProccessed() {
+		return listIndexProccessed;
+	}
 	
 
 	@Override
 	public String toString() {
-		return "SyncDTOPackage{ inventarioSucursalList.length="+inventarioSucursalList.size()+
-				",usuarioList.length="+usuarioList+
-				",clienteList="+clienteList+
-				",metodoDePagoList="+metodoDePagoList+
-				",formaDePagoList="+formaDePagoList+
-				",sucursal="+sucursal+
-				", almacenList.size="+almacenList+
+		return "SyncDTOPackage{ synsDBStatus=" + syncDBStatus+
+				", listIndexProccessed="+listIndexProccessed+
+				", inventarioSucursalList.length="+inventarioSucursalList.size()+
+				", usuarioList.size="+usuarioList.size()+
+				", clienteList.size="+clienteList.size()+
+				", metodoDePagoList.size="+metodoDePagoList.size()+
+				", formaDePagoList.size="+formaDePagoList.size()+
+				", sucursal="+sucursal+
+				", almacenList.size="+almacenList.size()+
 				" }";
 	}
+
+	public int getSyncDBStatus() {
+		return syncDBStatus;
+	}
+
+	public void setSyncDBStatus(int syncDBStatus) {
+		this.syncDBStatus = syncDBStatus;
+	}
+	
+	
 
 	/**
 	 * @return the inventarioSucursalList

@@ -259,6 +259,7 @@ public class MemoryDAO {
 				throw new RuntimeException("Failed HTTP error code :"
 						+ response.getStatus());
 			}
+			int rl=response.getLength();
 			long t3=System.currentTimeMillis();
 			InputStream is = response.getEntityInputStream();
 			OutputStream os = new FileOutputStream(fileName);
@@ -270,10 +271,9 @@ public class MemoryDAO {
 			}
 			is.close();
 			os.close();
-			File fileZip =  new File(fileName);
-			logger.debug("  fileZip = "+fileZip.length()+" bytes.");			
-			
 			long t4=System.currentTimeMillis();
+			File fileZip =  new File(fileName);
+			logger.debug("  fileZip = "+fileZip.length()+" bytes. == "+rl);						
 			logger.debug("  T = "+(t4-t0));
 			logger.debug("+T1 = "+(t1-t0));
 			logger.debug("+T2 = "+(t2-t1));
@@ -402,7 +402,7 @@ public class MemoryDAO {
 				logger.debug("+T4 = "+(t4-t3));
 			}
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			logger.error("iamalive: Exception",e);
 		} finally {
 			return ;
 		}
@@ -466,6 +466,10 @@ public class MemoryDAO {
 				logger.debug("...OK, JSon parse:");
 				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
 				logger.debug("paqueteSinc:->"+paqueteSinc+"<-");
+				
+				if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_OK) {
+					
+				}
 				
 				List<I> lp = paqueteSinc.getInventarioSucursalList();
 				productosParaBuscar = new HashMap<String,I>();
