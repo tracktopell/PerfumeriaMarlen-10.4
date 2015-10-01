@@ -1,7 +1,6 @@
 package com.pmarlen.caja.control;
 
 import com.google.gson.Gson;
-import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
@@ -13,7 +12,10 @@ import com.pmarlen.caja.model.PedidoVentaDetalleTableModel;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.ProductoCellRender;
 import com.pmarlen.model.Constants;
+import com.pmarlen.rest.dto.ES;
+import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
+import com.pmarlen.rest.dto.I;
 import com.pmarlen.ticket.TicketPrinteService;
 import com.pmarlen.ticket.bluetooth.TicketBlueToothPrinter;
 import java.awt.Color;
@@ -129,7 +131,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		String codigoBuscar = panelVenta.getCodigoBuscar().getText().trim();
 		
 		logger.info("[USER]->codigoBuscar_ActionPerformed:codigoBuscar=->" + codigoBuscar+"<-");
-		InventarioSucursalQuickView productoEncontrado = null;
+		I productoEncontrado = null;
 		try{
 			productoEncontrado = MemoryDAO.fastSearchProducto(codigoBuscar);
 		}catch(Exception e){
@@ -138,25 +140,25 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		logger.debug("=>codigoBuscar_ActionPerformed:productoEncontrado=" + productoEncontrado+", oferta?");
 
 		if (productoEncontrado != null) {
-			panelVenta.resetInfoForProducto(productoEncontrado,1);
+			panelVenta.resetInfoForProducto(productoEncontrado.reverse(),1);
 			
 			if(!estadoChecando){
 				int ta=ApplicationLogic.getInstance().getAlmacen().getTipoAlmacen();
-				EntradaSalidaDetalle pvd = new EntradaSalidaDetalle();
+				ESD esd = new ESD();
 
-				pvd.setAlmacenId(ApplicationLogic.getInstance().getAlmacen().getId());
-				pvd.setCantidad(ta);				
+				esd.setA(ApplicationLogic.getInstance().getAlmacen().getId());
+				esd.setC(ta);				
 				if(ta == Constants.ALMACEN_PRINCIPAL) {
-					pvd.setPrecioVenta(productoEncontrado.getA1p());
+					esd.setP(productoEncontrado.getA1p());
 				} else if(ta == Constants.ALMACEN_REGALIAS) {
-					pvd.setPrecioVenta(productoEncontrado.getaRp());
+					esd.setP(productoEncontrado.getaRp());
 				} else if(ta == Constants.ALMACEN_OPORTUNIDAD) {
-					pvd.setPrecioVenta(productoEncontrado.getaOp());
+					esd.setP(productoEncontrado.getaOp());
 				} else {
 
 				}
-				pvd.setProductoCodigoBarras(productoEncontrado.getCodigoBarras());
-				PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado, pvd, ta);
+				esd.setCb(productoEncontrado.getCb());
+				PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, ta);
 				int idx = 0;
 
 				idx = detalleVentaTableItemList.size();
@@ -206,26 +208,26 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 
 		try {
 			final ES_ESD venta = new ES_ESD();
-			final ArrayList<EntradaSalidaDetalle> detalleVentaList = new ArrayList<EntradaSalidaDetalle>();
+			final ArrayList<ESD> detalleVentaList = new ArrayList<ESD>();
 
 			for (PedidoVentaDetalleTableItem dvil : detalleVentaTableItemList) {				
 				detalleVentaList.add(dvil.getPvd());
 			}
 			
-			venta.getEs().setTipoMov(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
-			venta.getEs().setCaja(MemoryDAO.getNumCaja());
-			venta.getEs().setClienteId(1);
-			venta.getEs().setFechaCreo(new Timestamp(System.currentTimeMillis()));
-			venta.getEs().setFormaDePagoId(1);
-			venta.getEs().setImporteRecibido(-1.0);
-			venta.getEs().setSucursalId(MemoryDAO.getSucursalId());
+			venta.getEs().setTm(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
+			venta.getEs().setJ(MemoryDAO.getNumCaja());
+			venta.getEs().setC(1);
+			venta.getEs().setFc(System.currentTimeMillis());
+			venta.getEs().setFp(1);
+			venta.getEs().setI(Constants.IVA);
+			venta.getEs().setS(MemoryDAO.getSucursalId());
 			venta.getEsdList().addAll(detalleVentaList);
-			venta.getEs().setUsuarioEmailCreo(ApplicationLogic.getInstance().getLogged().getEmail());
+			venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getEmail());
+			
+			logger.debug("terminar_ActionPerformed:before commit, venta="+venta);
 			
 			ESFileSystemJsonDAO.commit(venta);
 			
-			//pedidoVentaDAO.insert(venta,detalleVentaList);
-
 			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Se guardo Correctamente, ...Imprimiendo ticket", "Venta", JOptionPane.INFORMATION_MESSAGE);
 			if (ApplicationLogic.getInstance().isPrintingEnabled()) {
 				new Thread() {
@@ -334,8 +336,8 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 
 	private void editarCantidad(int selectedRow) {
 		final PedidoVentaDetalleTableItem dvti = detalleVentaTableItemList.get(selectedRow);
-		int cantidad = dvti.getPvd().getCantidad();		
-		EntradaSalidaDetalle pvd = dvti.getPvd();		
+		int cantidad = dvti.getPvd().getC();		
+		ESD pvd = dvti.getPvd();		
 		InventarioSucursalQuickView p = (InventarioSucursalQuickView)dvti.getProducto();
 		int ta = dvti.getTipoAlmacen();		
 		int max = -1;
@@ -353,7 +355,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			
 			if (nuevaCantidad > 0 && nuevaCantidad <= max) {
 				
-				dvti.getPvd().setCantidad(nuevaCantidad);
+				dvti.getPvd().setC(nuevaCantidad);
 				panelVenta.getDetalleVentaJTable().updateUI();
 				renderTotal();
 			} else if (nuevaCantidad > max) {
@@ -384,7 +386,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		panelVenta.getCodigoBuscar().requestFocus();
 	}
 
-	private void imprimirTicket(EntradaSalida venta, List<EntradaSalidaDetalle> detalleVentaList) {
+	private void imprimirTicket(ES venta, List<ESD> detalleVentaList) {
 		HashMap<String, String> extraInformation = new HashMap<String, String>();
 
 		extraInformation.put("recibimos", "100000.45");
@@ -392,7 +394,12 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 
 		boolean printed = false;
 		try {
-			Object ticketFile = ticketPrinteService.generateTicket(venta, (ArrayList<EntradaSalidaDetalle>) detalleVentaList, extraInformation);
+			
+			ArrayList<EntradaSalidaDetalle> pvdList = new ArrayList<EntradaSalidaDetalle>();
+			for(ESD esd: detalleVentaList){
+				pvdList.add(esd.reverse());
+			}
+			Object ticketFile = ticketPrinteService.generateTicket(venta.reverse(),pvdList , extraInformation);
 			ticketPrinteService.sendToPrinter(ticketFile);
 			printed = true;
 		} catch (IOException ioe) {

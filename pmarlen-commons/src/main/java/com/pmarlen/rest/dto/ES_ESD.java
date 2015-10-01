@@ -1,7 +1,5 @@
 package com.pmarlen.rest.dto;
 
-import com.pmarlen.backend.model.EntradaSalida;
-import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,15 +8,15 @@ import java.util.List;
  * @author alfredo
  */
 public class ES_ESD {
-	private EntradaSalida es;
-	private List<EntradaSalidaDetalle> esdList;
+	private ES es;
+	private List<ESD> esdList;
 
 	public ES_ESD() {
-		this.es = new EntradaSalida();
-		this.esdList = new ArrayList<EntradaSalidaDetalle>();
+		this.es = new ES();
+		this.esdList = new ArrayList<ESD>();
 	}
 
-	public ES_ESD(EntradaSalida es, List<EntradaSalidaDetalle> esd) {
+	public ES_ESD(ES es, List<ESD> esd) {
 		this.es = es;
 		this.esdList = esd;
 	}
@@ -27,28 +25,28 @@ public class ES_ESD {
 	/**
 	 * @return the es
 	 */
-	public EntradaSalida getEs() {
+	public ES getEs() {
 		return es;
 	}
 
 	/**
 	 * @param es the es to set
 	 */
-	public void setEs(EntradaSalida es) {
+	public void setEs(ES es) {
 		this.es = es;
 	}
 
 	/**
 	 * @return the esd
 	 */
-	public List<EntradaSalidaDetalle> getEsdList() {
+	public List<ESD> getEsdList() {
 		return esdList;
 	}
 
 	/**
 	 * @param esd the esd to set
 	 */
-	public void setEsdList(List<EntradaSalidaDetalle> esd) {
+	public void setEsdList(List<ESD> esd) {
 		this.esdList = esd;
 	}
 	

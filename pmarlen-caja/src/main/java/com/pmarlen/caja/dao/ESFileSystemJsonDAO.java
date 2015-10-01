@@ -6,17 +6,15 @@
 package com.pmarlen.caja.dao;
 
 import com.google.gson.Gson;
-import com.pmarlen.backend.model.EntradaSalida;
-import com.pmarlen.backend.model.EntradaSalidaDetalle;
-import com.pmarlen.backend.model.Producto;
-import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.model.Constants;
+import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
+import com.pmarlen.rest.dto.I;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
-import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 
 /**
  *
@@ -29,7 +27,7 @@ public class ESFileSystemJsonDAO {
 	
 	public static void commit(ES_ESD escd){
 		
-		int tm = escd.getEs().getTipoMov();
+		int tm = escd.getEs().getTm();
 		int add = 0;
 		
 		if(			tm>=Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA &&
@@ -40,17 +38,17 @@ public class ESFileSystemJsonDAO {
 			add = 1;
 		}
 		
-		for(EntradaSalidaDetalle d:escd.getEsdList()){
-			InventarioSucursalQuickView p = MemoryDAO.fastSearchProducto(d.getProductoCodigoBarras());
-			/*
-			if(d.getAlmacenId() == Constants.ALMACEN_PRINCIPAL){
-			p.setA1c(p.getA1c() * d.getC() * add);
-			} else if(d.getaId() == Constants.ALMACEN_REGALIAS){
-			p.setaRc(p.getA1c() * d.getC() * add);
-			} else if(d.getaId() == Constants.ALMACEN_OPORTUNIDAD){
-			p.setaOc(p.getA1c() * d.getC() * add);
+		for(ESD d:escd.getEsdList()){
+			I p = MemoryDAO.fastSearchProducto(d.getCb());
+			
+			if(d.getA()== Constants.ALMACEN_PRINCIPAL){
+				p.setA1c(p.getA1c() * d.getC() * add);
+			} else if(d.getA() == Constants.ALMACEN_REGALIAS){
+				p.setaRc(p.getaRc()* d.getC() * add);
+			} else if(d.getA() == Constants.ALMACEN_OPORTUNIDAD){
+				p.setaOc(p.getaOc()* d.getC() * add);
 			}
-			 */
+			
 		}
 		
 		esList.add(escd);
@@ -63,14 +61,22 @@ public class ESFileSystemJsonDAO {
 	}
 	
 	public static void persist(){
+		logger.debug("persist: esList.size="+esList.size());
 		Gson gson=new Gson();
 		String jsonAllES = gson.toJson(esList);
 		FileWriter fw = null;
 		try {
+			
 			fw = new FileWriter(fileName);
 			fw.write(jsonAllES);
 			fw.flush();
 			fw.close();
+			
+			File x=new File(fileName);
+			
+			logger.debug("persist: created file="+x.getAbsolutePath()+" ? "+x.exists()+", size="+x.length());
+			
+			
 		}catch(IOException ioe){
 			logger.error("Error to write",ioe);
 		}

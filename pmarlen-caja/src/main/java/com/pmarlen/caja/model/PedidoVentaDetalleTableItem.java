@@ -1,7 +1,7 @@
 package com.pmarlen.caja.model;
 
-import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Producto;
+import com.pmarlen.rest.dto.ESD;
 
 /**
  *
@@ -9,13 +9,13 @@ import com.pmarlen.backend.model.Producto;
  */
 public class PedidoVentaDetalleTableItem {
 	private Producto producto;
-	private EntradaSalidaDetalle pvd;
+	private ESD pvd;
 	private int tipoAlmacen;
 
-	public PedidoVentaDetalleTableItem(Producto producto, EntradaSalidaDetalle pvd, int tipoAlmacen) {
+	public PedidoVentaDetalleTableItem(Producto producto, ESD esd, int tipoAlmacen) {
 		this.producto = producto;
-		this.pvd = pvd;
-		this.pvd.setCantidad(1);
+		this.pvd = esd;
+		this.pvd.setC(1);
 		this.tipoAlmacen = tipoAlmacen;
 	}
 	
@@ -24,18 +24,18 @@ public class PedidoVentaDetalleTableItem {
 	}
 	
 	public Double getPrecioVenta() {
-		return pvd.getPrecioVenta();
+		return pvd.getP();
 	}
 	
 	public Double getI() {
-		return pvd.getCantidad()* pvd.getPrecioVenta();
+		return pvd.getC()* pvd.getP();
 	}
 
 	public Producto getProducto() {
 		return producto;
 	}
 
-	public EntradaSalidaDetalle getPvd() {
+	public ESD getPvd() {
 		return pvd;
 	}
 

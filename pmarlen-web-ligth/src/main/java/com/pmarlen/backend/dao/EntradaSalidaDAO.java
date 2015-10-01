@@ -732,6 +732,7 @@ public class EntradaSalidaDAO {
 	}
 
 	public int insertPedidoVentaSucursal(Connection conn, EntradaSalida x, List<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
+		logger.debug("insertPedidoVentaSucursal:To-DO: EntradaSalida="+x+", pvdList.size="+pvdList.size());
 		return 0;
 	}
     

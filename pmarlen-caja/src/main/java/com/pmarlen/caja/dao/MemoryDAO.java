@@ -1,19 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pmarlen.caja.dao;
 
 import com.google.gson.Gson;
 import com.pmarlen.backend.model.Almacen;
+import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.backend.model.Usuario;
-import com.pmarlen.backend.model.quickviews.ClienteQuickView;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.model.Sucursal;
+import com.pmarlen.rest.dto.I;
 import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
 import com.pmarlen.rest.dto.SyncDTOPackage;
@@ -65,11 +61,11 @@ public class MemoryDAO {
 	private static Logger logger = Logger.getLogger(MemoryDAO.class.getName());
 	private static final String fileName = "./fileModel.zip";
 	
-	private static HashMap<String,InventarioSucursalQuickView> productosParaBuscar;
+	private static HashMap<String,I> productosParaBuscar;
 	private static String propertiesFileNAme="./system.properties";
 	private static boolean exsistFile = false;	
 	private static List<Usuario> usuarioList;
-	private static List<ClienteQuickView> clienteList;
+	private static List<Cliente> clienteList;
 	private static List<MetodoDePago> metodoDePagoList;
 	private static List<FormaDePago> formaDePagoList;
 	private static Sucursal sucursal;
@@ -471,12 +467,12 @@ public class MemoryDAO {
 				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
 				logger.debug("paqueteSinc:->"+paqueteSinc+"<-");
 				
-				List<InventarioSucursalQuickView> lp = paqueteSinc.getInventarioSucursalQVList();
-				productosParaBuscar = new HashMap<String,InventarioSucursalQuickView>();
+				List<I> lp = paqueteSinc.getInventarioSucursalList();
+				productosParaBuscar = new HashMap<String,I>();
 				logger.debug("productosParaBuscar, begin");
 				long t0=System.currentTimeMillis();
-				for(InventarioSucursalQuickView p: lp){
-					productosParaBuscar.put(p.getCodigoBarras(),p);
+				for(I p: lp){
+					productosParaBuscar.put(p.getCb(),p);
 				}
 				long t=t0-System.currentTimeMillis();
 				logger.debug("productosParaBuscar, ready T="+t);
@@ -515,7 +511,7 @@ public class MemoryDAO {
 		return "pms"+properties.getProperty("sucursal")+"c"+properties.getProperty("caja");
 	}
 
-	public static InventarioSucursalQuickView fastSearchProducto(String codigoBuscar) {
+	public static I fastSearchProducto(String codigoBuscar) {
 		return productosParaBuscar.get(codigoBuscar);
 	}
 

@@ -10,11 +10,8 @@ import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
-import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.Usuario;
-import com.pmarlen.backend.model.quickviews.ClienteQuickView;
-import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import java.util.List;
 
 /**
@@ -22,9 +19,9 @@ import java.util.List;
  * @author alfredo
  */
 public class SyncDTOPackage {
-	private List<InventarioSucursalQuickView> inventarioSucursalQVList;
+	private List<I> inventarioSucursalList;
 	private List<Usuario> usuarioList;
-	private List<ClienteQuickView> clienteList;
+	private List<Cliente> clienteList;
 	private List<MetodoDePago> metodoDePagoList;
 	private List<FormaDePago> formaDePagoList;
 	private Sucursal sucursal;
@@ -33,7 +30,7 @@ public class SyncDTOPackage {
 
 	@Override
 	public String toString() {
-		return "SyncDTOPackage{ inventarioSucursalQVList.length="+inventarioSucursalQVList.size()+
+		return "SyncDTOPackage{ inventarioSucursalList.length="+inventarioSucursalList.size()+
 				",usuarioList.length="+usuarioList+
 				",clienteList="+clienteList+
 				",metodoDePagoList="+metodoDePagoList+
@@ -44,17 +41,17 @@ public class SyncDTOPackage {
 	}
 
 	/**
-	 * @return the inventarioSucursalQVList
+	 * @return the inventarioSucursalList
 	 */
-	public List<InventarioSucursalQuickView> getInventarioSucursalQVList() {
-		return inventarioSucursalQVList;
+	public List<I> getInventarioSucursalList() {
+		return inventarioSucursalList;
 	}
 
 	/**
-	 * @param inventarioSucursalQVList the inventarioSucursalQVList to set
+	 * @param inventarioSucursalList the inventarioSucursalList to set
 	 */
-	public void setInventarioSucursalQVList(List<InventarioSucursalQuickView> inventarioSucursalQVList) {
-		this.inventarioSucursalQVList = inventarioSucursalQVList;
+	public void setInventarioSucursalList(List<I> inventarioSucursalList) {
+		this.inventarioSucursalList = inventarioSucursalList;
 	}
 
 	/**
@@ -74,14 +71,14 @@ public class SyncDTOPackage {
 	/**
 	 * @return the clienteList
 	 */
-	public List<ClienteQuickView> getClienteList() {
+	public List<Cliente> getClienteList() {
 		return clienteList;
 	}
 
 	/**
 	 * @param clienteList the clienteList to set
 	 */
-	public void setClienteList(List<ClienteQuickView> clienteList) {
+	public void setClienteList(List<Cliente> clienteList) {
 		this.clienteList = clienteList;
 	}
 

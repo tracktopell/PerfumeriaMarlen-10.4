@@ -58,7 +58,7 @@ public class PedidoVentaDetalleTableModel implements TableModel{
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		final PedidoVentaDetalleTableItem dvti = detalleVentaTableItemList.get(rowIndex);
 		if(columnIndex == 0)
-			return dvti.getPvd().getCantidad();
+			return dvti.getPvd().getC();
 		else if(columnIndex == 1)
 			return dvti.getProducto();
 		else if(columnIndex == 2)

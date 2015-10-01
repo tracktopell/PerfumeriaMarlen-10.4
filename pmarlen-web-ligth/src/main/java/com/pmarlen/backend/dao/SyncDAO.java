@@ -6,11 +6,15 @@
 
 package com.pmarlen.backend.dao;
 
+import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Sucursal;
+import com.pmarlen.backend.model.quickviews.ClienteQuickView;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
+import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
+import com.pmarlen.rest.dto.I;
 import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
 import com.tracktopell.jdbc.DataSourceFacade;
@@ -59,25 +63,42 @@ public class SyncDAO {
 				conn = getConnectionCommiteable();
 						
 				for(ES_ESD escd: escdList){
-					EntradaSalida es = escd.getEs();
-					List<EntradaSalidaDetalle> esList = escd.getEsdList();
-					EntradaSalidaDAO.getInstance().insertPedidoVentaSucursal(conn,es,esList);
+					EntradaSalida es = escd.getEs().reverse();
+					List<EntradaSalidaDetalle> esdList = new ArrayList<EntradaSalidaDetalle>();
+					List<ESD> esdl = escd.getEsdList();
+					for(ESD esd: esdl){
+						esdList.add(esd.reverse());
+					}
+					EntradaSalidaDAO.getInstance().insertPedidoVentaSucursal(conn,es,esdList);
 				}
 				
 				conn.commit();
+				
 			}catch(Exception e){
 				try {
 					conn.rollback();
 				}catch(Exception et){
 				}
+			} finally {
+				try{
+					conn.close();
+				}catch(Exception e){
+				
+				}
 			}
 		}
 		
-		ArrayList<InventarioSucursalQuickView> xa = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
-		
-		s.setInventarioSucursalQVList(xa);
+		ArrayList<InventarioSucursalQuickView> inventarioBigList = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
+		List<I> inventarioSucursalList = new ArrayList<I>();
+		for(InventarioSucursalQuickView bigI: inventarioBigList){
+			inventarioSucursalList.add(new I(bigI));
+		}
+		s.setInventarioSucursalList(inventarioSucursalList);
 		s.setUsuarioList(UsuarioDAO.getInstance().findAllSimple());
-		s.setClienteList(ClienteDAO.getInstance().findAll());
+		ArrayList<ClienteQuickView> clientesQVList = ClienteDAO.getInstance().findAll();
+		ArrayList<Cliente> clientesList = new ArrayList<Cliente>();
+		clientesList.addAll(clientesQVList);
+		s.setClienteList(clientesList);
 		s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
 		s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
 		s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
