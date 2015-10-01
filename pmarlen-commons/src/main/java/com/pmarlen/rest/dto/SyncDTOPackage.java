@@ -42,7 +42,7 @@ public class SyncDTOPackage {
 
 	@Override
 	public String toString() {
-		return "SyncDTOPackage{ synsDBStatus=" + syncDBStatus+
+		return "SyncDTOPackage{ syncDBStatus=" + syncDBStatus+
 				", listIndexProccessed="+listIndexProccessed+
 				", inventarioSucursalList.length="+inventarioSucursalList.size()+
 				", usuarioList.size="+usuarioList.size()+
