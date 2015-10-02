@@ -10,10 +10,19 @@ import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.I;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import org.apache.log4j.Logger;
 
 /**
@@ -56,15 +65,38 @@ public class ESFileSystemJsonDAO {
 		persist();
 	}
 	
-	void reset(){		
+	static void reset(){
+		logger.debug("reset:");
+		Date now=new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
+		
+		File origFile   = new File(fileName);
+		File backupFile = new File(fileName.replace(".json", "_"+sdf.format(now)+".json"));
+		
+		boolean r = origFile.renameTo(backupFile);
+		
+		logger.debug("reset: backup file ?"+r);
+				
 		esList.clear();
 	}
 	
-	public void laod(){
-		
+	static void laod(){
+		File fileToLoad = new File(fileName);
+		if(fileToLoad.exists() && esList.isEmpty()){
+			logger.debug("load:File found:"+fileName);
+			Gson gson=new Gson();
+			try {
+				FileReader fr = new FileReader(fileToLoad);
+				logger.debug("\tReading");
+				esList.addAll(gson.fromJson(fr, esList.getClass()));
+				logger.debug("\tOK, esList.size="+esList.size());				
+			}catch(IOException ioe){
+				logger.error("load, fail:",ioe);
+			}
+		}
 	}
 	
-	public static void persist(){
+	static void persist(){
 		logger.debug("persist: esList.size="+esList.size());
 		Gson gson=new Gson();
 		String jsonAllES = gson.toJson(esList);

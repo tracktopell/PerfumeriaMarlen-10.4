@@ -63,7 +63,7 @@ public class PanelVenta extends javax.swing.JPanel {
         detalleVentaJTable = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         imgProducto = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
+        infoColsPanel = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         labelCodigoBarras = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
@@ -143,8 +143,8 @@ public class PanelVenta extends javax.swing.JPanel {
         imgProducto.setIcon(getDefaultProductoImageIcon());
         jPanel5.add(imgProducto, java.awt.BorderLayout.CENTER);
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.Y_AXIS));
+        infoColsPanel.setBackground(new java.awt.Color(255, 255, 255));
+        infoColsPanel.setLayout(new javax.swing.BoxLayout(infoColsPanel, javax.swing.BoxLayout.Y_AXIS));
 
         jPanel11.setBackground(new java.awt.Color(255, 255, 255));
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
@@ -153,7 +153,7 @@ public class PanelVenta extends javax.swing.JPanel {
         labelCodigoBarras.setText("||CODIGO BARRAS ||");
         jPanel11.add(labelCodigoBarras);
 
-        jPanel6.add(jPanel11);
+        infoColsPanel.add(jPanel11);
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
@@ -162,7 +162,7 @@ public class PanelVenta extends javax.swing.JPanel {
         labelNombre.setText("NOMBRE PRODUCTO");
         jPanel7.add(labelNombre);
 
-        jPanel6.add(jPanel7);
+        infoColsPanel.add(jPanel7);
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
@@ -171,7 +171,7 @@ public class PanelVenta extends javax.swing.JPanel {
         labelPresentacion.setText("PRESENTACIÓN");
         jPanel8.add(labelPresentacion);
 
-        jPanel6.add(jPanel8);
+        infoColsPanel.add(jPanel8);
 
         jPanel9.setBackground(new java.awt.Color(255, 255, 255));
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
@@ -179,7 +179,7 @@ public class PanelVenta extends javax.swing.JPanel {
         labelContenido.setText("CONTENIDO");
         jPanel9.add(labelContenido);
 
-        jPanel6.add(jPanel9);
+        infoColsPanel.add(jPanel9);
 
         jPanel10.setBackground(new java.awt.Color(255, 255, 255));
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
@@ -188,9 +188,9 @@ public class PanelVenta extends javax.swing.JPanel {
         labelPrecio.setText("$ PRECIO");
         jPanel10.add(labelPrecio);
 
-        jPanel6.add(jPanel10);
+        infoColsPanel.add(jPanel10);
 
-        jPanel5.add(jPanel6, java.awt.BorderLayout.NORTH);
+        jPanel5.add(infoColsPanel, java.awt.BorderLayout.NORTH);
 
         splitPanel.setRightComponent(jPanel5);
 
@@ -207,6 +207,7 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JTextField codigoBuscar;
     private javax.swing.JTable detalleVentaJTable;
     private javax.swing.JLabel imgProducto;
+    private javax.swing.JPanel infoColsPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
@@ -215,7 +216,6 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
@@ -354,7 +354,7 @@ public class PanelVenta extends javax.swing.JPanel {
 			labelNombre.setText(p.getNombre());		
 			labelPresentacion.setText(p.getPresentacion());
 			labelContenido.setText(p.getContenido()+" "+p.getUnidadMedida());
-			
+			infoColsPanel.setToolTipText("A1["+p.getA1c()+"] AO["+p.getaOc()+"] AR["+p.getaRc()+"]");
 			if(tipoAlmacen == Constants.ALMACEN_PRINCIPAL)
 				labelPrecio.setText(df.format(p.getA1p()));
 			else if(tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD)
@@ -369,6 +369,7 @@ public class PanelVenta extends javax.swing.JPanel {
 				}
 			}.start();
 		} else {
+			infoColsPanel.setToolTipText(null);
 			labelCodigoBarras.setText("|| CODIGO BARRAS ||");
 			labelNombre.setText("NOMBRE PRODUCTO");		
 			labelPresentacion.setText("PRESENTACIÓN");

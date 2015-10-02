@@ -19,6 +19,7 @@ import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
 import com.tracktopell.jdbc.DataSourceFacade;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +81,17 @@ public class SyncDAO {
 				logger.debug("syncTransaction:COMMIT TRANSACTION");
 				conn.commit();
 				s.setSyncDBStatus(SyncDTOPackage.SYNC_OK);
-			}catch(Exception e){
-				s.setSyncDBStatus(SyncDTOPackage.SYNC_FAIL);
+			} catch(SQLException e){
+				s.setSyncDBStatus(SyncDTOPackage.SYNC_FAIL | SyncDTOPackage.SYNC_FAIL_JDBC);
+				logger.error("syncTransaction: fail ?",e);
+				try {
+					logger.debug("syncTransaction:ROLLBACK TRANSACTION");
+					conn.rollback();
+				}catch(Exception et){
+					logger.debug("syncTransaction:fail at rollback :(",et);
+				}
+			} catch(Exception e){
+				s.setSyncDBStatus(SyncDTOPackage.SYNC_FAIL | SyncDTOPackage.SYNC_FAIL_INTEGRITY);
 				logger.error("syncTransaction: fail ?",e);
 				try {
 					logger.debug("syncTransaction:ROLLBACK TRANSACTION");
@@ -96,6 +106,8 @@ public class SyncDAO {
 					logger.debug("syncTransaction:fail at close :(",e2);
 				}
 			}
+		} else {
+			s.setSyncDBStatus(SyncDTOPackage.SYNC_EMPTY_TRANSACTION);
 		}
 		
 		logger.debug("syncTransaction:----------------REGULAR DataGet -----------------");
