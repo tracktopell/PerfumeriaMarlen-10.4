@@ -293,7 +293,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	
 	double total = 0.0;
 	private void renderTotal() {
-		
+		total = 0.0;
 		if (detalleVentaTableItemList.size() > 0) {
 			FramePrincipalControl.getInstance().setEnabledVentasMenus(true);
 

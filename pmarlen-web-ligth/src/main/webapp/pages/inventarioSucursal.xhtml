@@ -1,0 +1,275 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+        INVENTARIO PRINCIPAL
+    </ui:define>
+
+    <ui:define name="body-title">
+        INVENTARIO SUCURSAL
+    </ui:define>
+
+    <ui:define name="body">
+		<h:form id="form1">
+
+			<h:panelGrid columns="1" cellpadding="5" id="panel1" width="100%" columnClasses="leftAlign">				
+				<p:growl id="growl" showDetail="true" sticky="false" autoUpdate="true"  />
+
+				<h:panelGrid columns="2" cellpadding="0" width="100%" columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign,columnWidth20 rightAlign, columnWidth80 leftAlign">
+					<p:outputLabel for="sucursal" value="SUCURSAL :" />
+
+					<p:selectOneMenu id="sucursal" value="#{inventarioSucursalMB.almacenId}" >				
+						<f:selectItems  value="#{inventarioSucursalMB.sucursalesList}"/>					
+						<p:ajax listener="#{inventarioSucursalMB.onSucursalChange}" process=":form1:sucursal" update=":form1:"/>
+					</p:selectOneMenu>
+					
+					<p:outputLabel for="almacen" value="TIPO DE ALMACÉN :" />
+
+					<p:selectOneMenu id="almacen" value="#{inventarioSucursalMB.almacenId}" >				
+						<f:selectItems  value="#{inventarioSucursalMB.almacenList}"/>					
+						<p:ajax listener="#{inventarioSucursalMB.onTipoAlmacenChange}" process=":form1:almacen" update=":form1:"/>
+					</p:selectOneMenu>
+					
+				</h:panelGrid>
+
+				<p:dataTable		id="inventarioTable" var="ap" value="#{inventarioSucursalMB.entityList}"
+								rows="#{inventarioSucursalMB.viewRows}" paginator="true"
+								emptyMessage="-- SIN ELEMENTOS --"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{inventarioSucursalMB.sizeList}]"
+								rowsPerPageTemplate="10,50,200">
+					<f:facet name="header">							
+						
+						<h:outputText value="OPCIONES DE VER TABLA:" rendered="true"/>
+						<p:spacer width="10"/>
+						<p:commandButton	icon="ui-icon-arrowrefresh-1-s" value="ACTUALIZAR" update=":form1"  rendered="true"
+											actionListener="#{inventarioSucursalMB.refresh}"
+											title="ACTUALZIAR"/>
+						
+					</f:facet>
+					
+					<p:column headerText="ALMACEN" width="5%">
+						<h:outputText value="#{ap.almacenTipoDescripcion}" title="ALMACEN_ID=#{ap.almacenId}" />
+					</p:column>
+
+					<p:column headerText="CANTIDAD" sortBy="#{ap.cantidad}"  width="5%">
+						<p:commandButton    actionListener="#{inventarioSucursalMB.updateMovsHisProducto(ap)}"
+											update=":form1:panel1,:form2:dlg2table1,:form2:chart"
+											icon="ui-icon-clock" onsuccess="PF('dlg2').show();"
+											title="VER HISTORIAL DE MOVIMIENTOS"/>
+						<p:spacer width="10"/>
+						<h:outputText value="#{ap.cantidad}" />
+					</p:column>
+
+					<p:column headerText="PRECIO" sortBy="#{ap.precio}" width="7%">
+						<p:commandButton    actionListener="#{inventarioSucursalMB.prepararParaCambioDePrecio(ap)}"
+											update=":form1:panel1,:form2:dlg2table1,:form4:panel4_1"
+											icon="ui-icon-pencil" onsuccess="PF('dlg4').show();"
+											title="CAMBIO DE PRECIO"/>
+						<p:spacer width="10"/>
+						
+						<h:outputText value="#{ap.precio}">
+							<f:convertNumber integerOnly="false" pattern="$ ###,###,##0.00" locale="es-MX"/>
+						</h:outputText>
+						
+					</p:column>
+
+					<p:column headerText="CODIGO" filterBy="#{ap.productoCodigoBarras}" filterMatchMode="contains">
+						<h:outputText value="#{ap.productoCodigoBarras}" />
+					</p:column>
+					
+					<p:column headerText="NOMBRE" filterBy="#{ap.productoNombre}" filterMatchMode="contains">
+						<h:outputText value="#{ap.productoNombre}" />
+					</p:column>
+					
+					<p:column headerText="PRES." filterBy="#{ap.productoPresentacion}" filterMatchMode="contains">
+						<h:outputText value="#{ap.productoPresentacion}" />
+					</p:column>
+					
+					<p:column headerText="INDUSTRIA" filterBy="#{ap.productoIndustria}" filterMatchMode="contains">
+						<h:outputText value="#{ap.productoIndustria}" />
+					</p:column>
+					
+					<p:column headerText="LINEA" filterBy="#{ap.productoLinea}" filterMatchMode="contains">
+						<h:outputText value="#{ap.productoLinea}" />
+					</p:column>
+					
+					<p:column headerText="MARCA" filterBy="#{ap.productoMarca}" filterMatchMode="contains">
+						<h:outputText value="#{ap.productoMarca}" />
+					</p:column>
+					
+					<p:column headerText="CONT. [U/E]" sortBy="#{ap.productoContenido}">
+						<h:outputText value="#{ap.productoContenido} #{ap.productoUnidadMedida} [#{ap.productoUnidadEmpaque}]" />
+					</p:column>
+					
+					<p:column headerText="UBIC." sortBy="#{ap.ubicacion}" width="5%">						
+						<p:commandButton   actionListener="#{inventarioSucursalMB.updateUbicacionProducto(ap)}"
+											update=":form1:panel1,:form3:ubicacion"
+											icon="ui-icon-contact" onsuccess="PF('dlg3').show();"
+											title="VER MAPA DE UBICACION"/>
+						<p:spacer width="10"/>
+						
+						<h:outputText value="#{ap.ubicacion}" class="#{ap.ubicacionRenderedColor}"/>
+						
+						<h:outputText value="N/E" rendered="#{empty ap.ubicacion}"/>
+						
+						<p:inplace id="ubicacionEditor" editor="true" emptyLabel="-- N/E --" rendered ="false">
+							<p:inputText value="#{ap.ubicacion}" label="text" valueChangeListener="#{inventarioSucursalMB.edicionDirectaUbicacion}" size="10"
+										 />
+						</p:inplace>
+						
+					</p:column>
+				</p:dataTable>
+
+			</h:panelGrid>
+		</h:form>
+		
+		<h:form id="form2">
+		
+			<p:dialog header="HISTORICO DE MOVIMIENTOS " widgetVar="dlg2"  modal="true" width="750" height="360" >
+				<p:dataTable id="dlg2table1" value="#{inventarioSucursalMB.movsHisProducto}" var="mhp" scrollable="true" scrollHeight="290">
+					
+					<p:column headerText="#EVENTO">
+						<h:outputText value="#{mhp.rowId}" />
+					</p:column>
+					
+					<p:column headerText="FECHA">
+						<h:outputText value="#{mhp.fecha}" />
+					</p:column>
+
+					<p:column headerText="T.MOV.">
+						<h:outputText value="#{mhp.tipoMovDesc}" />
+					</p:column>
+					
+					<p:column headerText="ENTRADA">
+						<h:outputText value="#{mhp.cantidad}" rendered="#{mhp.entrada}"/>
+						<h:outputText value="" rendered="#{not mhp.entrada}"/>
+					</p:column>
+					
+					<p:column headerText="SALIDA">
+						<h:outputText value="#{mhp.cantidad}" rendered="#{mhp.salida}"/>
+						<h:outputText value="" rendered="#{not mhp.salida}"/>
+					</p:column>
+					
+					<p:column headerText="SALDO">
+						<h:outputText value="#{mhp.saldo}" />
+					</p:column>
+					
+
+				</p:dataTable>
+				<p:chart id="chart" type="line" model="#{inventarioSucursalMB.historicoMovsLCM}" style="height:300px;width: 880px;" rendered="false"/>
+			</p:dialog> 
+			
+		</h:form>
+
+		<h:form id="form3">
+			
+			<p:dialog header="UBICACION DE PRODUCTO" widgetVar="dlg3"  modal="true" width="950" height="610" closeOnEscape="true">
+				
+				<h:panelGrid columns="2" columnClasses="columnWidth90 centerAlign, columnWidth15 leftAlign">
+					<p:scrollPanel style="width:800px;height:600px">
+						<h:graphicImage value="/images/Acomodo_para_Claves_V1.png" class="imgUbicacion" usemap="#mapaUbicacion"/>
+						<map name="mapaUbicacion">
+							<area shape="rect" coords="15 ,126,233,174" title="Rack A1" href="#" class="areaRef1"/>
+							<area shape="rect" coords="15 ,175,61 ,648" title="Rack AA" href="#" class="areaRef1"/>
+							<area shape="rect" coords="62 ,617,106,648" title="Rack A2" href="#" class="areaRef1"/>
+							<area shape="rect" coords="107,224,144,648" title="Rack AB" href="#" class="areaRef1"/>
+							<area shape="rect" coords="145,224,181,648" title="Rack AC" href="#" class="areaRef1"/>
+							<area shape="rect" coords="182,625,245,648" title="Rack A3" href="#" class="areaRef1"/>
+							<area shape="rect" coords="246,208,294,648" title="Rack AD" href="#" class="areaRef1"/>
+
+							<area shape="rect" coords="300,204,349,648" title="Tarimas BA" href="#" class="areaRef1"/>
+
+
+							<area shape="rect" coords="500, 10,1012, 54" title="Tarimas C1" href="#" class="areaRef1"/>
+							<area shape="rect" coords="626,124, 668,538" title="Tarimas CA" href="#" class="areaRef1"/>
+						</map>
+					</p:scrollPanel>
+					
+					<h:panelGrid columns="1">
+						<h:outputLabel for="ubicacion" value="UBICACION :"/>
+
+						<h:inputText id="ubicacion" value="#{inventarioSucursalMB.ubucacionEditar}" class="ubicacion" title="SELECCIONE DEL MAPA DONDE SE ENCUENTRA" size="15"/>
+						
+						<p:commandButton	update=":form1:panel1" 
+											oncomplete="PF('dlg3').hide();" icon="ui-icon-check" value="ACEPTAR" title="ACEPTAR"
+											actionListener="#{inventarioSucursalMB.aceptarEdicionUbicacion}">
+
+						</p:commandButton>
+						<p:commandButton	update=":form1:panel1" 
+											oncomplete="PF('dlg3').hide();" icon="ui-icon-close" value="CANCELAR" title="CANCELAR"
+											actionListener="#{inventarioSucursalMB.cancelarEdicionUbicacion}">
+						</p:commandButton>
+
+					</h:panelGrid>
+				</h:panelGrid>
+				
+			</p:dialog>
+			<script type="text/javascript" src="#{request.contextPath}/js/jquery.maphilight.min.js"></script>
+			<script type="text/javascript">
+				$(function() {
+					$('.imgUbicacion').maphilight({fade: true});
+					$('.areaRef1').click(function() {					
+						$(".ubicacion").val($(this).prop("title"));			
+					});
+				});
+			</script>
+		</h:form>
+		
+		<h:form id="form4">
+			
+			<p:dialog header="CAMBIO DE PRECIO" widgetVar="dlg4"  modal="true" width="300" height="200" closable="false">
+				
+				<h:panelGrid id="panel4_1" columns="3"  cellpadding="5" columnClasses="columnWidth50 rightAlign,columnWidth50 leftAlign">
+					<p:outputLabel value="NUEVO PRECIO: $" for="nuevoPrecio"/>
+					<p:inputText id="nuevoPrecio" value="#{inventarioSucursalMB.nuevoPrecio}" required="true" size="5" maxlength="7">						
+						<f:convertNumber integerOnly="false" pattern="###,###,##0.00" locale="es-MX"/>
+						<f:validateDoubleRange minimum="0.0" maximum="100000"/>
+						<p:ajax update="msgNuevoPrecio" event="blur" />
+					</p:inputText>
+					<p:message for="nuevoPrecio" id="msgNuevoPrecio" display="icon"/>
+						
+					<p:outputLabel value="MOTIVO DE CAMBIO:" for="motivoCambio"/>
+					<p:inputText id="motivoCambio" value="#{inventarioSucursalMB.comentarioNuevoPrecio}" size="15" required="true" requiredMessage="DEBE LLENAR EL MOTIVO EXPLICITO DEL CAMBIO">
+						<f:validateLength minimum="5" maximum="64"/>
+						<p:ajax update="msgMotivoCambio" event="blur" />
+					</p:inputText>
+					<p:message for="motivoCambio" id="msgMotivoCambio" display="icon" />
+				</h:panelGrid>
+				<h:panelGroup id="updatedBeforeOnComplete">
+					<script language="JavaScript" type="text/javascript">
+						//
+						function executeAfterUpdate() {
+							//alert('facesContext.maximumSeverity=#{facesContext.maximumSeverity}, facesContext.messageList=#{facesContext.messageList}, facesContext.validationFailed=#{facesContext.validationFailed}');
+							if ( #{facesContext.maximumSeverity==null or facesContext.maximumSeverity.ordinal=='1' or not facesContext.validationFailed} ) {
+								//alert('ok, close dialog !');
+								PF('dlg4').hide();
+							}
+						}
+						//
+					</script>
+				</h:panelGroup>
+
+				<h:panelGroup>
+					<p:commandButton	update=":form1:inventarioTable,panel4_1, updatedBeforeOnComplete" 
+										oncomplete="executeAfterUpdate()" 
+										icon="ui-icon-check" value="ACEPTAR" title="ACEPTAR"
+										actionListener="#{inventarioSucursalMB.aceptarCambioDePrecio}">
+					</p:commandButton>
+					<p:spacer width="20"/>
+					<p:commandButton	ajax="true" process="@this" immediate="true"
+										oncomplete="PF('dlg4').hide();" icon="ui-icon-close" value="CANCELAR" title="CANCELAR"
+										actionListener="#{inventarioSucursalMB.cancelarCambioDePrecio}">
+						<p:resetInput target="panel4_1" />
+					</p:commandButton>
+					
+				</h:panelGroup>
+			</p:dialog>
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>

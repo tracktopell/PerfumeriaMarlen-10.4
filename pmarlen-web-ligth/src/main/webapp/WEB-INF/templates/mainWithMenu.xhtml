@@ -91,9 +91,9 @@
 							</p:submenu>
 
 							<p:submenu label="INVENTARIOS" icon="ui-icon-clipboard">					
-								<p:menuitem value="PRINCIPAL" url="/pages/inventarioPrincipal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}"/>
+								<p:menuitem value="PRINCIPAL"   url="/pages/inventarioPrincipal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}"/>
 								<p:menuitem value="CONTEO." url="/pages/pendiente.jsf" icon="ui-icon-shuffle"/>
-								<p:menuitem value="SUCURSALES " url="/pages/pendiente.jsf" icon="ui-icon-newwin"/>								
+								<p:menuitem value="SUCURSALES " url="/pages/inventarioSucursal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}" />
 							</p:submenu>
 
 						</p:submenu>

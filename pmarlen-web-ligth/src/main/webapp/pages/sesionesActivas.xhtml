@@ -87,11 +87,11 @@
 					</p:column>
 					
 					<p:column headerText="USER-AGENT" width="25%">						
-						<h:dataTable value="#{sessionCajaInfo.userAgentFormatted}" var="uaKV">
-							<p:column>
-								<h:outputText value="#{uaKV}" />
-							</p:column>
-						</h:dataTable>
+						<h:outputText value="java-ver:#{sessionCajaInfo.userAgent.javaVersion}" />
+						<h:outputText value="os:#{sessionCajaInfo.userAgent.os}" />
+						<h:outputText value="user:#{sessionCajaInfo.userAgent.userInSession}" />
+						<h:outputText value="ver:#{sessionCajaInfo.userAgent.version}" />
+						<h:outputText value="dir:#{sessionCajaInfo.userAgent.workingDirectory}" />
 					</p:column>
 
 				</p:dataTable>
