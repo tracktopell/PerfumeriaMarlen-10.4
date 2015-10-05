@@ -29,24 +29,31 @@ public class UsuarioMB  {
 	UsuarioQuickView selectedEntity;
 	String dialogTitle;
 	boolean checkSameEmailPassword;
+	boolean todos;
 	Integer checkSameEmailPasswordState;
 	int saveMode=0;
 	
 	@PostConstruct
     public void init() {
 		logger.trace("UsuarioMB: init.");
-        try{
-			entityList = UsuarioDAO.getInstance().findAll();
+		refreshList();
+		viewRows = 10;
+		dialogTitle ="USUARIO";
+		saveMode=0;
+		checkSameEmailPasswordState=null;
+		todos=false;
+    }
+
+	public void refreshList() {
+		
+		try{
+			entityList = UsuarioDAO.getInstance().findAll(todos);			
 		}catch(DAOException de){
 			logger.error(de.getMessage());
 			entityList = new ArrayList<UsuarioQuickView>();
 		}
 		logger.trace("UsuarioMB: init:entityList size="+entityList.size());
-		viewRows = 10;
-		dialogTitle ="USUARIO";
-		saveMode=0;
-		checkSameEmailPasswordState=null;
-    }
+	}
 	
 	public String reset() {
 		logger.trace("UsuarioMB: rest.");
@@ -161,4 +168,12 @@ public class UsuarioMB  {
 	public Integer getViewRows() {
 		return viewRows;
 	}
+
+	public void setTodos(boolean todos) {
+		this.todos = todos;
+	}
+
+	public boolean isTodos() {
+		return todos;
+	}	
 }

@@ -32,6 +32,12 @@
 											actionListener="#{usuarioMB.prepareForNew}" 
 											icon="ui-icon-circle-plus" onsuccess="PF('dlg1').show();"/>
 						<p:spacer width="20"/>
+						
+						<h:outputText value="VER : " />
+						<p:inputSwitch value="#{usuarioMB.todos}" onLabel="TODOS" offLabel="ACTIVOS">
+							<p:ajax listener="#{usuarioMB.refreshList}" update=":form1:panel1"/>
+						</p:inputSwitch>
+						<p:spacer width="20"/>
 						<p:commandButton	value="ACTUALIZAR" update=":form1:panel1" 
 											actionListener="#{usuarioMB.refresh}" 
 											icon="ui-icon-arrowrefresh-1-s" />
@@ -45,7 +51,7 @@
 							<p:column rowspan="2" headerText="" width="5%" />
 							<p:column rowspan="2" headerText="EMAIL"  width="25%"/>
 							<p:column rowspan="2" headerText="NOMBRE COMPLETO" width="25%" />
-							<p:column rowspan="2" headerText="HABILITADO"  width="10%"/>							
+							<p:column rowspan="2" headerText="ABILITADO"  width="10%"/>							
 							<p:column rowspan="1" colspan="6" headerText="PERFILES"  />
 						</p:row>
 						<p:row>							

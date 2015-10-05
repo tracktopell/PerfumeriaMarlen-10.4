@@ -128,7 +128,12 @@ public class UsuarioDAO {
 		return x;
 	}
 
-    public ArrayList<UsuarioQuickView> findAll() throws DAOException {
+	public ArrayList<UsuarioQuickView> findAll() throws DAOException {
+		return findAll(true);
+	
+	}
+    
+	public ArrayList<UsuarioQuickView> findAll(boolean todos) throws DAOException {
 		ArrayList<UsuarioQuickView> r = new ArrayList<UsuarioQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -138,7 +143,9 @@ public class UsuarioDAO {
 			ps = conn.prepareStatement(
 					"SELECT   U.EMAIL,U.ABILITADO,U.NOMBRE_COMPLETO,U.PASSWORD,UP.PERFIL\n" +
 					"FROM     USUARIO_PERFIL UP,USUARIO U\n" +
-					"WHERE    U.EMAIL = UP.EMAIL\n" +
+					"WHERE    1=1\n"+
+					"AND U.EMAIL = UP.EMAIL\n" +	
+					(todos?"":"AND U.ABILITADO=1\n")+
 					"ORDER BY U.NOMBRE_COMPLETO");
 			
 			rs = ps.executeQuery();

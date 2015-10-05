@@ -34,9 +34,15 @@ public class FramePrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tipoImpresion = new javax.swing.ButtonGroup();
         panels = new javax.swing.JPanel();
+        panelSesion = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jButton4 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
         panelVenta = new PanelVenta();
-        panelProductos = new PanelProductos();
         panelVentas = new PanelVentas();
         statusPanel = new javax.swing.JPanel();
         statusWest = new javax.swing.JTextField();
@@ -44,8 +50,9 @@ public class FramePrincipal extends javax.swing.JFrame {
         statusConeccion = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         archivoMenu = new javax.swing.JMenu();
-        productosMenu = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         ventasMenu = new javax.swing.JMenuItem();
+        productosMenu = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         salirMenu = new javax.swing.JMenuItem();
         ventaMenu = new javax.swing.JMenu();
@@ -54,22 +61,53 @@ public class FramePrincipal extends javax.swing.JFrame {
         ventaModoMenu = new javax.swing.JMenuItem();
         ventaCancelarMenu = new javax.swing.JMenuItem();
         ventaeliminarProdMenu = new javax.swing.JMenuItem();
+        devolMenu = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         configMenu = new javax.swing.JMenu();
-        negocioConfigMenu = new javax.swing.JMenuItem();
-        impresoraBTMenu = new javax.swing.JMenuItem();
-        usuarioAdminMenu = new javax.swing.JMenuItem();
-        usuarioCajaMenu = new javax.swing.JMenuItem();
+        coneccionMenu = new javax.swing.JMenuItem();
+        impresionMenu = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
+        jRadioButtonMenuItem2 = new javax.swing.JRadioButtonMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        helpMenu = new javax.swing.JMenu();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem11 = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem9 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Caja");
 
         panels.setLayout(new java.awt.CardLayout());
 
+        panelSesion.setBorder(javax.swing.BorderFactory.createTitledBorder("Sesión"));
+        panelSesion.setLayout(new java.awt.GridLayout(3, 1, 30, 1));
+        panelSesion.add(jPanel1);
+
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 50, 100));
+
+        jButton4.setBackground(java.awt.Color.green);
+        jButton4.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
+        jButton4.setText("ABRIR");
+        jPanel2.add(jButton4);
+
+        jButton1.setBackground(new java.awt.Color(255, 0, 0));
+        jButton1.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
+        jButton1.setText("CERRAR");
+        jPanel2.add(jButton1);
+
+        panelSesion.add(jPanel2);
+        panelSesion.add(jPanel3);
+
+        panels.add(panelSesion, "card4");
+
         panelVenta.setBorder(javax.swing.BorderFactory.createTitledBorder("Venta Actual"));
         panels.add(panelVenta, "panelVenta");
-
-        panelProductos.setBorder(javax.swing.BorderFactory.createTitledBorder("Productos"));
-        panels.add(panelProductos, "panelProductos");
 
         panelVentas.setBorder(javax.swing.BorderFactory.createTitledBorder("Ventas"));
         panels.add(panelVentas, "panelVentas");
@@ -95,11 +133,14 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         archivoMenu.setText("Archivo");
 
-        productosMenu.setText("Productos");
-        archivoMenu.add(productosMenu);
+        jMenuItem12.setText("Sesión");
+        archivoMenu.add(jMenuItem12);
 
-        ventasMenu.setText("Ventas");
+        ventasMenu.setText("H. Ventas");
         archivoMenu.add(ventasMenu);
+
+        productosMenu.setText("H. Devol");
+        archivoMenu.add(productosMenu);
         archivoMenu.add(jSeparator1);
 
         salirMenu.setText("Salir");
@@ -131,21 +172,62 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(ventaMenu);
 
+        devolMenu.setText("Devolución");
+
+        jMenuItem1.setText("Nueva");
+        devolMenu.add(jMenuItem1);
+
+        jMenuItem2.setText("Terminar");
+        devolMenu.add(jMenuItem2);
+
+        jMenuItem3.setText("Cancelar");
+        devolMenu.add(jMenuItem3);
+
+        jMenuBar1.add(devolMenu);
+
         configMenu.setText("Configuración");
 
-        negocioConfigMenu.setText("Datos de Negocio");
-        configMenu.add(negocioConfigMenu);
+        coneccionMenu.setText("Sesión de Caja");
+        configMenu.add(coneccionMenu);
 
-        impresoraBTMenu.setText("Impresora Bluetooth");
-        configMenu.add(impresoraBTMenu);
+        impresionMenu.setText("Impresión");
 
-        usuarioAdminMenu.setText("Contraseña Administrador");
-        configMenu.add(usuarioAdminMenu);
+        jMenuItem5.setText("Parametros");
+        impresionMenu.add(jMenuItem5);
 
-        usuarioCajaMenu.setText("Contraseña Usuario Caja");
-        configMenu.add(usuarioCajaMenu);
+        tipoImpresion.add(jRadioButtonMenuItem1);
+        jRadioButtonMenuItem1.setSelected(true);
+        jRadioButtonMenuItem1.setText("De Sistema");
+        impresionMenu.add(jRadioButtonMenuItem1);
+
+        tipoImpresion.add(jRadioButtonMenuItem2);
+        jRadioButtonMenuItem2.setText("Bluetooth");
+        impresionMenu.add(jRadioButtonMenuItem2);
+        impresionMenu.add(jSeparator2);
+
+        jMenuItem4.setText("Enviar prueba");
+        impresionMenu.add(jMenuItem4);
+
+        configMenu.add(impresionMenu);
 
         jMenuBar1.add(configMenu);
+
+        helpMenu.setText("Ayuda");
+
+        jMenuItem8.setText("Manual de Usuario");
+        helpMenu.add(jMenuItem8);
+
+        jMenuItem10.setText("Portal L30");
+        helpMenu.add(jMenuItem10);
+
+        jMenuItem11.setText("Email Soporte");
+        helpMenu.add(jMenuItem11);
+        helpMenu.add(jSeparator3);
+
+        jMenuItem9.setText("Acerca de");
+        helpMenu.add(jMenuItem9);
+
+        jMenuBar1.add(helpMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -189,12 +271,33 @@ public class FramePrincipal extends javax.swing.JFrame {
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu archivoMenu;
+    private javax.swing.JMenuItem coneccionMenu;
     private javax.swing.JMenu configMenu;
-    private javax.swing.JMenuItem impresoraBTMenu;
+    private javax.swing.JMenu devolMenu;
+    private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenu impresionMenu;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton4;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JMenuItem negocioConfigMenu;
-    private javax.swing.JPanel panelProductos;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPanel panelSesion;
     private javax.swing.JPanel panelVenta;
     private javax.swing.JPanel panelVentas;
     private javax.swing.JPanel panels;
@@ -204,8 +307,7 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JTextField statusConeccion;
     private javax.swing.JPanel statusPanel;
     private javax.swing.JTextField statusWest;
-    private javax.swing.JMenuItem usuarioAdminMenu;
-    private javax.swing.JMenuItem usuarioCajaMenu;
+    private javax.swing.ButtonGroup tipoImpresion;
     private javax.swing.JMenuItem ventaActualMenu;
     private javax.swing.JMenuItem ventaCancelarMenu;
     private javax.swing.JMenu ventaMenu;
@@ -293,52 +395,17 @@ public class FramePrincipal extends javax.swing.JFrame {
 	}
 
 	/**
-	 * @return the panelProductos
-	 */
-	public javax.swing.JPanel getPanelProductos() {
-		return panelProductos;
-	}
-
-	/**
 	 * @return the panelVentas
 	 */
 	public javax.swing.JPanel getPanelVentas() {
 		return panelVentas;
 	}
-
-	/**
-	 * @return the impresoraBTMenu
-	 */
-	public javax.swing.JMenuItem getImpresoraBTMenu() {
-		return impresoraBTMenu;
-	}
-
-	/**
-	 * @param impresoraBTMenu the impresoraBTMenu to set
-	 */
-	public void setImpresoraBTMenu(javax.swing.JMenuItem impresoraBTMenu) {
-		this.impresoraBTMenu = impresoraBTMenu;
-	}
-
+	
 	/**
 	 * @return the negocioConfigMenu
 	 */
 	public javax.swing.JMenuItem getNegocioConfigMenu() {
-		return negocioConfigMenu;
-	}
-
-	/**
-	 * @return the usuarioAdminMenu
-	 */
-	public javax.swing.JMenuItem getUsuarioAdminMenu() {
-		return usuarioAdminMenu;
-	}
-
-	/**
-	 * @return the usuarioCajaMenu
-	 */
-	public javax.swing.JMenuItem getUsuarioCajaMenu() {
-		return usuarioCajaMenu;
+		return coneccionMenu;
 	}
 
 	/**
@@ -411,7 +478,6 @@ public class FramePrincipal extends javax.swing.JFrame {
 	
 	public void setFont(Font font){
 		panelVenta.setFont(font);
-		panelProductos.setFont(font);
 		panelVentas.setFont(font);
 		statusPanel.setFont(font);
 		

@@ -6,7 +6,6 @@ package com.pmarlen.caja.control;
 
 import com.pmarlen.caja.view.DialogConfiguracionBTImpresora;
 import com.pmarlen.caja.view.FramePrincipal;
-import com.pmarlen.caja.view.PanelProductos;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.PanelVentas;
 import java.awt.CardLayout;
@@ -29,7 +28,6 @@ public class FramePrincipalControl implements ActionListener{
 	private static Logger logger = Logger.getLogger(FramePrincipalControl.class.getName());
 	private FramePrincipal    framePrincipal;
 	private PanelVentaControl panelVentaControl;
-	private PanelProductosControl panelProductosControl;
 	private PanelVentasControl panelVentasControl;
 	
 	private static FramePrincipalControl instance;
@@ -51,8 +49,6 @@ public class FramePrincipalControl implements ActionListener{
 		
 		panelVentaControl  = new PanelVentaControl ((PanelVenta)framePrincipal.getPanelVenta());
 		
-		panelProductosControl = new PanelProductosControl((PanelProductos)framePrincipal.getPanelProductos()) ;
-
 		panelVentasControl = new PanelVentasControl((PanelVentas)framePrincipal.getPanelVentas()) ;
 
 		framePrincipal.getProductosMenu().addActionListener(this);
@@ -75,12 +71,7 @@ public class FramePrincipalControl implements ActionListener{
 		//---------------------------------------------------
 		
 		framePrincipal.getNegocioConfigMenu().addActionListener(this);
-
-		framePrincipal.getUsuarioAdminMenu().addActionListener(this);
-
-		framePrincipal.getUsuarioCajaMenu().addActionListener(this);
-
-		framePrincipal.getImpresoraBTMenu().addActionListener(this);
+		
 		//---------------------------------------------------
 		framePrincipal.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
@@ -147,9 +138,7 @@ public class FramePrincipalControl implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == framePrincipal.getProductosMenu()){
-			productosMenu_actionPerformed();
-		} else if(e.getSource() == framePrincipal.getVentasMenu()){
+		if(e.getSource() == framePrincipal.getVentasMenu()){
 			ventasMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getSalirMenu()){
 			salirMenu_actionPerformed();
@@ -163,14 +152,7 @@ public class FramePrincipalControl implements ActionListener{
 			ventaeliminarProdMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getVentaCancelarMenu()){
 			ventaCancelarMenu_actionPerformed();
-		} else if(e.getSource() == framePrincipal.getNegocioConfigMenu()){
-			negocioConfigMenu_actionPerformed();
-		} else if(e.getSource() == framePrincipal.getUsuarioAdminMenu()){
-			usuarioAdminMenu_actionPerformed();
-		} else if(e.getSource() == framePrincipal.getUsuarioCajaMenu()){
-			usuarioCajaMenu_actionPerformed();
-		} else if(e.getSource() == framePrincipal.getImpresoraBTMenu()){
-			impresoraBTMenu_actionPerformed();
+		} else {
 		}
 		
 	}
@@ -181,11 +163,6 @@ public class FramePrincipalControl implements ActionListener{
 
 	private void ventaCancelarMenu_actionPerformed() {
 		panelVentaControl.cancelar_ActionPerformed();
-	}
-
-	private void productosMenu_actionPerformed() {
-		panelProductosControl.estadoInicial();
-		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelProductos");
 	}
 
 	private void ventasMenu_actionPerformed() {
@@ -211,41 +188,20 @@ public class FramePrincipalControl implements ActionListener{
 	private void ventaTerminar_actionPerformed() {
 		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelVenta");
 	}
-	
-	private void negocioConfigMenu_actionPerformed() {
-		DialogConfiguracionSistemaControl.getInstance(framePrincipal).estadoInicial();
-	}
-	
+		
 	private void impresoraBTMenu_actionPerformed() {
 		DialogConfiguracionBTImpresoraControl.getInstance(framePrincipal).estadoInicial();		
 	}
 
-	private void usuarioAdminMenu_actionPerformed() {
-		DialogConfiguracionPasswordControl.getInstance(framePrincipal,
-				DialogConfiguracionPasswordControl.UPDATE_FOR_ADMIN).estadoInicial();
-	}
-
-	private void usuarioCajaMenu_actionPerformed() {
-		DialogConfiguracionPasswordControl.getInstance(framePrincipal,
-				DialogConfiguracionPasswordControl.UPDATE_FOR_USER).estadoInicial();
-	}	
-
+	
 	public void enableAndDisableAdminControls() {
 		framePrincipal.updateStatusWest();
-		final PanelProductos pp = (PanelProductos)framePrincipal.getPanelProductos();		
 		framePrincipal.getConfigMenu().setEnabled(true);
-		pp.getEditar().setEnabled(true);
-		pp.getEliminar().setEnabled(true);
-		pp.getNuevo().setEnabled(true);
-
 	}
 
-	public void setEnabledVentasMenus(boolean e){
-		
+	public void setEnabledVentasMenus(boolean e){		
 		framePrincipal.getVentaTerminarMenu().setEnabled(e);
-		
-		framePrincipal.getVentaeliminarProdMenu().setEnabled(e);
-		
+		framePrincipal.getVentaeliminarProdMenu().setEnabled(e);		
 		framePrincipal.getVentaCancelarMenu().setEnabled(e);
 	}
 	

@@ -87,7 +87,7 @@ public class DialogConfiguracionBTImpresora extends javax.swing.JDialog {
 
         getContentPane().add(jPanel3, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(509, 244));
+        setSize(new java.awt.Dimension(680, 343));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
