@@ -14,8 +14,11 @@ import java.util.List;
  * @author alfredo
  */
 public class SyncDTOPackage {
-	public static final int SYNC_OK   = 0;
-	public static final int SYNC_FAIL = 1;
+	public static final int SYNC_OK					= 0;
+	public static final int SYNC_EMPTY_TRANSACTION  = 1;
+	public static final int SYNC_FAIL_INTEGRITY     = 2;
+	public static final int SYNC_FAIL_JDBC          = 4;
+	public static final int SYNC_FAIL			    = 128;
 	
 	private int     syncDBStatus;
 	private List<Integer> listIndexProccessed;

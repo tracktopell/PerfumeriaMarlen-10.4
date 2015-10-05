@@ -192,7 +192,7 @@
 				<configuration>
 					<url>http://localhost:8070/manager/text</url>
 					<server>tomcat7_test</server>
-					<path>${project.web.context}</path>
+					<path>/${project.web.context}</path>
 				</configuration>
 			</plugin>
 
@@ -249,7 +249,7 @@
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_dev</server>
-							<path>${project.web.context}</path>
+							<path>/${project.web.context}</path>
 						</configuration>
 					</plugin>
 					
@@ -284,7 +284,7 @@
 						<configuration>
 							<url>http://localhost:8080/manager/text</url>
 							<server>tomcat7_stage</server>
-							<path>${project.web.context}</path>
+							<path>/${project.web.context}</path>
 						</configuration>
 					</plugin>
 					
@@ -319,7 +319,7 @@
 						<configuration>
 							<url>http://localhost:8080/manager/text</url>
 							<server>tomcat7</server>
-							<path>${project.web.context}</path>
+							<path>/${project.web.context}</path>
 						</configuration>
 					</plugin>
 					
@@ -354,7 +354,7 @@
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_test</server>
-							<path>${project.web.context}</path>
+							<path>/${project.web.context}</path>
 						</configuration>
 					</plugin>
 					

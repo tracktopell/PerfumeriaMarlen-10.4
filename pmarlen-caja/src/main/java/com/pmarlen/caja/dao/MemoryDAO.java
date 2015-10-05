@@ -144,8 +144,12 @@ public class MemoryDAO {
 	public final static int SYNC_STATE_ERROR_URL             = 6;
 	public final static int SYNC_STATE_ERROR                 = 10;
 	
+	private static long timeSleep = 15000L;
 	
 	public static void getPaqueteSyncPoll(){
+		
+		logger.debug("getPaqueteSyncPoll:");
+		ESFileSystemJsonDAO.laod();
 		logger.debug("----------------->>BEFORE while ");
 		syncPollState = SYNC_STATE_BEFORE_RUNNING;
 		while(runnigPool){
@@ -184,8 +188,8 @@ public class MemoryDAO {
 			}
 			
 			try {
-				logger.debug("\t----------------->> while running, sleep,.....");
-				Thread.sleep(10000L);
+				logger.debug("\t----------------->> while running, sleep for "+timeSleep+" ms .....");
+				Thread.sleep(timeSleep);
 			}catch(Exception e){
 				logger.error("downoload",e);
 			}
@@ -466,9 +470,20 @@ public class MemoryDAO {
 				logger.debug("...OK, JSon parse:");
 				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
 				logger.debug("paqueteSinc:->"+paqueteSinc+"<-");
+				logger.debug("paqueteSinc:->paqueteSinc.getSyncDBStatus():"+Integer.toBinaryString(paqueteSinc.getSyncDBStatus())+"<-");
 				
-				if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_OK) {
-					
+				if( (paqueteSinc.getSyncDBStatus() & SyncDTOPackage.SYNC_FAIL) == SyncDTOPackage.SYNC_FAIL) {
+					logger.debug("paqueteSinc:->SYNC_FAIL:");
+					if( (paqueteSinc.getSyncDBStatus() & SyncDTOPackage.SYNC_FAIL_INTEGRITY) == SyncDTOPackage.SYNC_FAIL_INTEGRITY) {
+						logger.debug("paqueteSinc:->SYNC_FAIL_INTEGRITY:");
+					} else if( (paqueteSinc.getSyncDBStatus() & SyncDTOPackage.SYNC_FAIL_JDBC) == SyncDTOPackage.SYNC_FAIL_JDBC) {
+						logger.debug("paqueteSinc:->SYNC_FAIL_JDBC:");
+					}
+				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_OK) {
+					logger.debug("paqueteSinc:->SYNC_OK");
+					ESFileSystemJsonDAO.reset();								
+				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_EMPTY_TRANSACTION) {
+					logger.debug("paqueteSinc:->SYNC_EMPTY_TRANSACTION");
 				}
 				
 				List<I> lp = paqueteSinc.getInventarioSucursalList();
