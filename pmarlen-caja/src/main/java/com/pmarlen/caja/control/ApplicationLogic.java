@@ -9,6 +9,7 @@ import com.pmarlen.backend.model.ConfiguracionSistema;
 import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.model.Constants;
+import com.pmarlen.rest.dto.U;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -52,18 +53,18 @@ public class ApplicationLogic {
 	private boolean adminLogedIn = false;
 	private String versionRead;
 	private static ApplicationLogic instance;
-	private Usuario logged;
+	private U logged;
 	private Almacen almacen;
 	private HashMap<Integer,Almacen> tipoAlmacen;
 
 	private ApplicationLogic(){	
 	}
 
-	public void setLogged(Usuario logged) {
+	public void setLogged(U logged) {
 		this.logged = logged;
 	}
 
-	public Usuario getLogged() {
+	public U getLogged() {
 		return logged;
 	}
 	
@@ -287,12 +288,12 @@ public class ApplicationLogic {
 		}
 	}
 	
-	Usuario checkForUser(String usuarioEmail,String plainPassword) {
-		Usuario logged=null;
-		List<Usuario> usuarioList = MemoryDAO.getPaqueteSinc().getUsuarioList();
-		for(Usuario u: usuarioList){
-			if(u.getEmail().equals(usuarioEmail)){
-				if(u.getPassword().equals(getMD5Encrypted(plainPassword))){
+	U checkForUser(String usuarioEmail,String plainPassword) {
+		U logged=null;
+		List<U> usuarioList = MemoryDAO.getPaqueteSinc().getUsuarioList();
+		for(U u: usuarioList){
+			if(u.getE().equals(usuarioEmail)){
+				if(u.getP().equals(getMD5Encrypted(plainPassword))){
 					logged=u;
 					break;
 				}

@@ -118,7 +118,7 @@ public class SyncDAO {
 			inventarioSucursalList.add(new I(bigI));
 		}
 		s.setInventarioSucursalList(inventarioSucursalList);
-		s.setUsuarioList(UsuarioDAO.getInstance().findAllSimple());
+		s.setUsuarioQVList(UsuarioDAO.getInstance().findAll());
 		ArrayList<ClienteQuickView> clientesQVList = ClienteDAO.getInstance().findAll();
 		ArrayList<Cliente> clientesList = new ArrayList<Cliente>();
 		clientesList.addAll(clientesQVList);

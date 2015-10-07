@@ -14,6 +14,7 @@ import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
 import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
+import com.pmarlen.rest.dto.U;
 import com.pmarlen.rest.dto.UserAgent;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -64,7 +65,7 @@ public class MemoryDAO {
 	private static HashMap<String,I> productosParaBuscar;
 	private static String propertiesFileNAme="./system.properties";
 	private static boolean exsistFile = false;	
-	private static List<Usuario> usuarioList;
+	private static List<U> usuarioList;
 	private static List<Cliente> clienteList;
 	private static List<MetodoDePago> metodoDePagoList;
 	private static List<FormaDePago> formaDePagoList;
@@ -340,9 +341,9 @@ public class MemoryDAO {
 		
 		String operatingSystem = System.getProperty("os.name")+"_"+System.getProperty("os.version")+"("+System.getProperty("os.arch")+")";
 		iAmAliveDTOPackage.setCajaId(1);
-		Usuario ul = ApplicationLogic.getInstance().getLogged();
+		U ul = ApplicationLogic.getInstance().getLogged();
 		if(ul != null) {
-			iAmAliveDTOPackage.setLoggedIn(ul.getEmail());
+			iAmAliveDTOPackage.setLoggedIn(ul.getE());
 		} else {
 			iAmAliveDTOPackage.setLoggedIn(null);
 		}
@@ -535,11 +536,11 @@ public class MemoryDAO {
 	}
 
 	private static Object getLoggedIn() {
-		Usuario logged = ApplicationLogic.getInstance().getLogged();
+		U logged = ApplicationLogic.getInstance().getLogged();
 		if(logged == null){
 			return null;
 		} else {
-			return logged.getEmail();
+			return logged.getE();
 		}
 	}
 	

@@ -2,6 +2,7 @@ package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.caja.view.DialogLogin;
+import com.pmarlen.rest.dto.U;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -20,7 +21,7 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 	private boolean leggedIn;
 	final int MAX_INTENTOS = 3;
 	int intentos;
-	Usuario logged;
+	U logged;
 
 	private static DialogLoginControl instance;
 
@@ -83,7 +84,7 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		} else {
 			leggedIn = true;
 			
-			JOptionPane.showMessageDialog(dialogLogin, "¡ BIENVENIDO "+logged.getNombreCompleto().toUpperCase()+" !", "ENTRAR", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(dialogLogin, "¡ BIENVENIDO "+logged.getN().toUpperCase()+" !", "ENTRAR", JOptionPane.INFORMATION_MESSAGE);
 			ApplicationLogic.getInstance().setLogged(logged);
 			dialogLogin.dispose();
 		}
@@ -113,7 +114,7 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		return logged != null;
 	}
 
-	public Usuario getLogged() {
+	public U getLogged() {
 		return logged;
 	}
 	

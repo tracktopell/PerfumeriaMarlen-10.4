@@ -6,6 +6,7 @@ import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.Usuario;
+import com.pmarlen.backend.model.quickviews.UsuarioQuickView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class SyncDTOPackage {
 	private int     syncDBStatus;
 	private List<Integer> listIndexProccessed;
 	private List<I> inventarioSucursalList;
-	private List<Usuario> usuarioList;
+	private List<U> usuarioList;
 	private List<Cliente> clienteList;
 	private List<MetodoDePago> metodoDePagoList;
 	private List<FormaDePago> formaDePagoList;
@@ -84,14 +85,23 @@ public class SyncDTOPackage {
 	/**
 	 * @return the usuarioList
 	 */
-	public List<Usuario> getUsuarioList() {
+	public List<U> getUsuarioList() {
 		return usuarioList;
 	}
 
 	/**
 	 * @param usuarioList the usuarioList to set
 	 */
-	public void setUsuarioList(List<Usuario> usuarioList) {
+	public void setUsuarioQVList(List<UsuarioQuickView> usuarioQVList) {
+		this.usuarioList = new ArrayList<U>();
+		for(UsuarioQuickView uqv: usuarioQVList){
+			this.usuarioList.add(new U(uqv));
+		}		
+	}
+	/**
+	 * @param usuarioList the usuarioList to set
+	 */
+	public void setUsuarioList(List<U> usuarioList) {
 		this.usuarioList = usuarioList;
 	}
 

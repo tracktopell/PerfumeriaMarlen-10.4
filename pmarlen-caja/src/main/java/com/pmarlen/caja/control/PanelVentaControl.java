@@ -235,7 +235,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			venta.getEs().setS(MemoryDAO.getSucursalId());			
 			venta.getEs().setNt(numTicket);
 			venta.getEsdList().addAll(detalleVentaList);
-			venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getEmail());
+			venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getE());
 			
 			logger.debug("terminar_ActionPerformed:before commit, venta="+venta);
 			

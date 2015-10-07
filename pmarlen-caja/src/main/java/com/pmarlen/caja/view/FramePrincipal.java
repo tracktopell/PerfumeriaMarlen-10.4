@@ -7,6 +7,7 @@ package com.pmarlen.caja.view;
 import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.dao.MemoryDAO;
+import com.pmarlen.rest.dto.U;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JMenuItem;
@@ -467,9 +468,9 @@ public class FramePrincipal extends javax.swing.JFrame {
 	
 	public void updateStatusWest(){
 		statusConeccion.setForeground(Color.DARK_GRAY);
-		Usuario logged = ApplicationLogic.getInstance().getLogged();
+		U logged = ApplicationLogic.getInstance().getLogged();
 		if( logged != null) {
-			statusWest.setText(MemoryDAO.getCajaGlobalInfo()+"/"+logged.getEmail());
+			statusWest.setText(MemoryDAO.getCajaGlobalInfo()+"/"+logged.getE());
 		} else {
 			statusWest.setText(MemoryDAO.getCajaGlobalInfo());
 		}
