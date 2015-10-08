@@ -67,6 +67,11 @@ public class Sucursal implements java.io.Serializable {
     * descuento mayoreo habilitado
     */
     private Integer descuentoMayoreoHabilitado;
+	
+	/**
+	 * clave
+	 */
+	private String clave;
 
     /** 
      * Default Constructor
@@ -165,7 +170,14 @@ public class Sucursal implements java.io.Serializable {
         this.descuentoMayoreoHabilitado = v;
     }
 
+	public void setClave(String clave) {
+		this.clave = clave;
+	}
 
+	public String getClave() {
+		return clave;
+	}
+	
     @Override
     public int hashCode() {
         int hash = 0;
