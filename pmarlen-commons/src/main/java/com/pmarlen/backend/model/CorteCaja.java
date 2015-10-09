@@ -52,6 +52,11 @@ public class CorteCaja implements java.io.Serializable {
     * comentarios
     */
     private String comentarios;
+	
+    /**
+    * tipo evento
+    */
+    private Integer tipoEvento;
 
     /** 
      * Default Constructor
@@ -126,6 +131,13 @@ public class CorteCaja implements java.io.Serializable {
         this.comentarios = v;
     }
 
+	public Integer getTipoEvento() {
+		return tipoEvento;
+	}
+
+	public void setTipoEvento(Integer tipoEvento) {
+		this.tipoEvento = tipoEvento;
+	}
 
     @Override
     public int hashCode() {
@@ -185,6 +197,9 @@ public class CorteCaja implements java.io.Serializable {
 		sb.append(s);
 		// String
 		sb.append(this.comentarios);
+		sb.append(s);
+		// Integer
+		sb.append(this.tipoEvento);		
 
 		return ser;
 	}
@@ -215,6 +230,9 @@ public class CorteCaja implements java.io.Serializable {
 			// String
 			this.comentarios = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
 			nf++;
+			// Integer
+			this.tipoEvento =  Integer.parseInt(srcSpplited[nf]);
+			nf++;			
 
 		}catch(Exception e){
 			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");

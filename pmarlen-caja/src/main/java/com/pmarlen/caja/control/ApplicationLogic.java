@@ -9,6 +9,7 @@ import com.pmarlen.backend.model.ConfiguracionSistema;
 import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.model.Constants;
+import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.U;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -56,10 +57,16 @@ public class ApplicationLogic {
 	private U logged;
 	private Almacen almacen;
 	private HashMap<Integer,Almacen> tipoAlmacen;
+	private CorteCajaDTO corteCajaDTO;
 
-	private ApplicationLogic(){	
+	private ApplicationLogic(){
+		corteCajaDTO = new CorteCajaDTO();
 	}
 
+	public CorteCajaDTO getCorteCajaDTO() {
+		return corteCajaDTO;
+	}
+	
 	public void setLogged(U logged) {
 		this.logged = logged;
 	}

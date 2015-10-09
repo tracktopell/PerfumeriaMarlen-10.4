@@ -12,7 +12,8 @@ public class IAmAliveDTORequest implements Serializable{
 	private int cajaId;
 	private String sessionId;
 	private String loggedIn;
-	private UserAgent userAgent;		
+	private UserAgent userAgent;
+	private CorteCajaDTO corteCajaDTO;
 
 	public IAmAliveDTORequest() {
 	}
@@ -86,4 +87,13 @@ public class IAmAliveDTORequest implements Serializable{
 	public void setUserAgent(UserAgent userAgent) {
 		this.userAgent = userAgent;
 	}
+
+	public CorteCajaDTO getCorteCajaDTO() {
+		return corteCajaDTO;
+	}
+
+	public void setCorteCajaDTO(CorteCajaDTO corteCajaDTO) {
+		this.corteCajaDTO = corteCajaDTO;
+	}
+	
 }

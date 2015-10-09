@@ -68,6 +68,12 @@ public class Constants {
 	public static final int ALMACEN_OPORTUNIDAD = 2;
 	public static final int ALMACEN_REGALIAS = 3;
 	//--------------------------------------------------------------------------
+	public static final int TIPO_EVENTO_ENLINEA   = 0;
+	public static final int TIPO_EVENTO_APERTURA  = 1;	
+	public static final int TIPO_EVENTO_SUSPENDER = 2;
+	public static final int TIPO_EVENTO_REANUDAR  = 3;
+	public static final int TIPO_EVENTO_CIERRE    = 9;
+		
 	public static final int DESCUENTO_0 = 0;
 	public static final int DESCUENTO_1 = 1;
 	public static final int DESCUENTO_2 = 2;

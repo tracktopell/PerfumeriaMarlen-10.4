@@ -9,6 +9,7 @@ import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.model.Sucursal;
+import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.I;
 import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
@@ -340,13 +341,23 @@ public class MemoryDAO {
 			*/
 		
 		String operatingSystem = System.getProperty("os.name")+"_"+System.getProperty("os.version")+"("+System.getProperty("os.arch")+")";
-		iAmAliveDTOPackage.setCajaId(1);
+		
+		ApplicationLogic.getInstance().getCorteCajaDTO().setCaja(getNumCaja());
+		ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(getSucursalId());
+		ApplicationLogic.getInstance().getCorteCajaDTO().setFecha(System.currentTimeMillis());
+		ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_ENLINEA);
+		ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(sessionID);
+		ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(getSucursalId());
+		
 		U ul = ApplicationLogic.getInstance().getLogged();
 		if(ul != null) {
 			iAmAliveDTOPackage.setLoggedIn(ul.getE());
+			ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(ul.getE());
 		} else {
 			iAmAliveDTOPackage.setLoggedIn(null);
+			ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(null);
 		}
+		iAmAliveDTOPackage.setCajaId(getNumCaja());
 		iAmAliveDTOPackage.setSessionId(getSessionID());
 		iAmAliveDTOPackage.setSucursalId(getSucursalId());
 		iAmAliveDTOPackage.setUserAgent(
@@ -356,6 +367,9 @@ public class MemoryDAO {
 						System.getProperty("java.version"),
 						System.getProperty("user.name"),
 						System.getProperty("user.dir")));
+		
+		iAmAliveDTOPackage.setCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
+		
 		return iAmAliveDTOPackage;
 	}
 	

@@ -90,7 +90,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         panelSesion.setLayout(new java.awt.GridLayout(3, 1, 30, 1));
         panelSesion.add(jPanel1);
 
-        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 50, 100));
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 150, 100));
 
         jButton4.setBackground(java.awt.Color.green);
         jButton4.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
