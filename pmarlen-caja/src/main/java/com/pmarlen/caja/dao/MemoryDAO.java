@@ -5,11 +5,13 @@ import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
+import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.caja.control.ApplicationLogic;
-import com.pmarlen.caja.model.Sucursal;
+import com.pmarlen.caja.control.FramePrincipalControl;
 import com.pmarlen.model.Constants;
+import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.I;
 import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
@@ -24,6 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -342,20 +346,20 @@ public class MemoryDAO {
 		
 		String operatingSystem = System.getProperty("os.name")+"_"+System.getProperty("os.version")+"("+System.getProperty("os.arch")+")";
 		
-		ApplicationLogic.getInstance().getCorteCajaDTO().setCaja(getNumCaja());
-		ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(getSucursalId());
-		ApplicationLogic.getInstance().getCorteCajaDTO().setFecha(System.currentTimeMillis());
-		ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_ENLINEA);
-		ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(sessionID);
-		ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(getSucursalId());
+//		ApplicationLogic.getInstance().getCorteCajaDTO().setCaja(getNumCaja());
+//		ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(getSucursalId());
+//		ApplicationLogic.getInstance().getCorteCajaDTO().setFecha(System.currentTimeMillis());
+//		ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_ENLINEA);
+//		ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(sessionID);
+//		ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(getSucursalId());
 		
 		U ul = ApplicationLogic.getInstance().getLogged();
 		if(ul != null) {
 			iAmAliveDTOPackage.setLoggedIn(ul.getE());
-			ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(ul.getE());
+			//ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(ul.getE());
 		} else {
 			iAmAliveDTOPackage.setLoggedIn(null);
-			ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(null);
+			//ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(null);
 		}
 		iAmAliveDTOPackage.setCajaId(getNumCaja());
 		iAmAliveDTOPackage.setSessionId(getSessionID());
@@ -510,15 +514,21 @@ public class MemoryDAO {
 				}
 				long t=t0-System.currentTimeMillis();
 				logger.debug("productosParaBuscar, ready T="+t);
-				
+				logger.debug("==========================>>>>>paqueteSinc.getSucursal="+paqueteSinc.getSucursal());				
+				if(paqueteSinc.getSucursal()!=null){
+					logger.debug("==========================>>>>>\tpaqueteSinc.getSucursal.clave="+paqueteSinc.getSucursal().getClave());
+				}
 				almacenList = paqueteSinc.getAlmacenList();
 				usuarioList = paqueteSinc.getUsuarioList();
 				clienteList = paqueteSinc.getClienteList();
 				metodoDePagoList = paqueteSinc.getMetodoDePagoList();
 				formaDePagoList = paqueteSinc.getFormaDePagoList();
-				sucursal = new Sucursal();
-				sucursal.setId(paqueteSinc.getSucursal().getId());
-				sucursal.setNombre(paqueteSinc.getSucursal().getNombre().toUpperCase());				
+				if(paqueteSinc.getSucursal() != null){
+					sucursal = paqueteSinc.getSucursal();					
+				} else {
+					sucursal = new Sucursal();
+					sucursal.setClave("????");
+				}
 				
 				ApplicationLogic.getInstance().setTipoAlmacen(almacenList);
 			}
@@ -542,7 +552,7 @@ public class MemoryDAO {
 	}
 	
 	public static String getCajaGlobalInfo() {
-		return "pms"+properties.getProperty("sucursal")+"c"+properties.getProperty("caja");
+		return sucursal.getClave()+"C"+properties.getProperty("caja").toUpperCase();
 	}
 
 	public static I fastSearchProducto(String codigoBuscar) {
@@ -559,4 +569,45 @@ public class MemoryDAO {
 	}
 	
 	private static String userAgentExpression;
+	private static final String corteCajaDTOjsonFile = "CorteCajaDTO.json";
+	
+	public static CorteCajaDTO getCorteCaja(){
+		CorteCajaDTO cc=null;
+		File fileToLoad = new File(corteCajaDTOjsonFile);
+		if(fileToLoad.exists() ){
+			logger.debug("getCorteCaja:File found:"+corteCajaDTOjsonFile);
+			Gson gson=new Gson();
+			try {
+				FileReader fr = new FileReader(fileToLoad);
+				logger.debug("\tReading");
+				cc= gson.fromJson(fr, CorteCajaDTO.class);					
+			}catch(IOException ioe){
+				logger.error("getCorteCaja: fail:",ioe);
+			}
+		} else {
+			logger.debug("getCorteCaja:File NOT found:"+corteCajaDTOjsonFile);
+			cc= new CorteCajaDTO();
+		}
+		return cc;
+	}
+	
+	public static void saveCorteCajaDTO(CorteCajaDTO cc){
+		logger.debug("saveCorteCajaDTO: CorteCajaDTO="+cc);
+		Gson gson=new Gson();
+		String jsonAllES = gson.toJson(cc);
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter(corteCajaDTOjsonFile);
+			fw.write(jsonAllES);
+			fw.flush();
+			fw.close();
+			
+			File x=new File(corteCajaDTOjsonFile);
+			
+			logger.debug("saveCorteCajaDTO: created file="+x.getAbsolutePath()+" ? "+x.exists()+", size="+x.length());
+			
+		}catch(IOException ioe){
+			logger.error("Error to write",ioe);
+		}	
+	}
 }

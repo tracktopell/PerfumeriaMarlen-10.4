@@ -1,7 +1,9 @@
 package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Usuario;
+import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.view.DialogLogin;
+import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.U;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -105,8 +107,22 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		if(passwordValue.trim().length()<1){
 			return false;
 		}
-		logged =ApplicationLogic.getInstance().checkForUser(dialogLogin.getEmail().getText(),passwordValue);
-		return 	logged != null;	
+		logged = ApplicationLogic.getInstance().checkForUser(dialogLogin.getEmail().getText(),passwordValue);
+		if(logged != null){
+			
+			ApplicationLogic.getInstance().getCorteCajaDTO().setCaja(MemoryDAO.getNumCaja());
+			ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
+			ApplicationLogic.getInstance().getCorteCajaDTO().setFecha(System.currentTimeMillis());
+			ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_ENLINEA);
+			ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(logged.getE());
+			ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
+			
+			MemoryDAO.saveCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
+			return 	true;	
+		}else{
+			return false;
+		}
+		
 		
 	}
 

@@ -7,7 +7,9 @@
 package com.pmarlen.rest.dto;
 
 import com.pmarlen.backend.model.CorteCaja;
+import com.pmarlen.model.Constants;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  *
@@ -52,7 +54,7 @@ public class CorteCajaDTO {
 
 	public CorteCajaDTO() {
 	}
-
+	
 	public CorteCaja reverse(){
 		CorteCaja cj= new CorteCaja();
 		
@@ -167,5 +169,18 @@ public class CorteCajaDTO {
 		this.tipoEvento = tipoEvento;
 	}
 	
+	public String toString(){
+		
+		StringBuilder sb= new StringBuilder("CorteCajaDTO{");
+		sb.append("fecha=").append(this.fecha).append("(").append(Constants.sdfLogDate.format(new Date(this.fecha))).append(")");
+		sb.append(", sucursalId=").append(this.sucursalId);
+		sb.append(", caja=").append(this.caja);
+		sb.append(", usuarioEmail=").append(this.usuarioEmail);
+		sb.append(", total=").append(this.total);
+		sb.append(", comentarios=").append(this.comentarios);
+		sb.append(", tipoEvento=").append(this.tipoEvento);			
+		sb.append("}");
+		return sb.toString();
+	}
 	
 }

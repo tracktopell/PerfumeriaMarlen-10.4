@@ -45,7 +45,7 @@ public class UsuarioDAO {
 	private static UsuarioDAO instance;
 
 	private UsuarioDAO(){	
-		logger.debug("created UsuarioDAO.");
+		logger.trace("created UsuarioDAO.");
 	}
 
 	public static UsuarioDAO getInstance() {
@@ -155,14 +155,14 @@ public class UsuarioDAO {
 			String nombreCompleto=null;
 			String password=null;
 			Integer abilitado = null;
-			logger.info("============================================>");
+			logger.trace("============================================>");
 			while(rs.next()) {
 				email			= (String)rs.getObject("EMAIL");
 				perfil			= (String)rs.getObject("PERFIL");
 				nombreCompleto	= (String)rs.getObject("NOMBRE_COMPLETO");
 				password		= (String)rs.getObject("PASSWORD");
 				abilitado		= (Integer)rs.getObject("ABILITADO");
-				logger.info("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado);
+				logger.trace("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado);
 				if(x == null){
 					// NUEVO
 					x = new UsuarioQuickView();					
@@ -184,7 +184,7 @@ public class UsuarioDAO {
 			if(x != null){
 				r.add(x);
 			}
-			logger.info("<============================================");
+			logger.trace("<============================================");
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());
@@ -323,7 +323,7 @@ public class UsuarioDAO {
 					" WHERE EMAIL=?");
 			psUP = conn.prepareStatement("DELETE FROM USUARIO_PERFIL WHERE EMAIL=?");
 			
-			logger.info("->x.email="+x.getEmail());
+			logger.trace("->x.email="+x.getEmail());
 			int ci=1;
 			ps.setObject(ci++,x.getAbilitado());
 			ps.setObject(ci++,x.getNombreCompleto());

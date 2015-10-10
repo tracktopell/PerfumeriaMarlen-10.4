@@ -72,7 +72,8 @@ public class Main {
 		logger.debug("==========================================================>>>");
 
 		MemoryDAO.loadProperties();
-
+		ApplicationLogic.getInstance().updateCorteCajaDTO();
+		
 		logger.debug("<<<==========================================================");
 
 		try {
@@ -149,9 +150,10 @@ public class Main {
 			if (!dialogLoginControl.isLoggedIn()) {
 				throw new IllegalAccessException("NO SE ACCESO ");
 			} else {
-				logger.debug("->OK logedin, GO !");
+				logger.info("->OK logedin, GO !");
 				
 				framePrincipalControl.enableAndDisableAdminControls();
+				framePrincipalControl.updateStatusWest();
 			}
 
 		} catch (Exception e) {

@@ -60,7 +60,7 @@ public class ApplicationLogic {
 	private CorteCajaDTO corteCajaDTO;
 
 	private ApplicationLogic(){
-		corteCajaDTO = new CorteCajaDTO();
+		corteCajaDTO = MemoryDAO.getCorteCaja();
 	}
 
 	public CorteCajaDTO getCorteCajaDTO() {
@@ -367,4 +367,17 @@ public class ApplicationLogic {
 		return almacen;
 	}
 	
+	public void updateCorteCajaDTO(){
+		getCorteCajaDTO().setCaja(MemoryDAO.getNumCaja());
+		getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
+		getCorteCajaDTO().setFecha(System.currentTimeMillis());
+		getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_ENLINEA);
+		if(logged!=null) {
+			getCorteCajaDTO().setUsuarioEmail(logged.getE());
+		} else {
+			getCorteCajaDTO().setUsuarioEmail(null);
+		}
+		getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
+		MemoryDAO.saveCorteCajaDTO(corteCajaDTO);
+	}	
 }

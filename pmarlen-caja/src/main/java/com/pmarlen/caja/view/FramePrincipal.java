@@ -105,7 +105,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         panelSesion.add(jPanel2);
         panelSesion.add(jPanel3);
 
-        panels.add(panelSesion, "card4");
+        panels.add(panelSesion, "panelSesion");
 
         panelVenta.setBorder(javax.swing.BorderFactory.createTitledBorder("Venta Actual"));
         panels.add(panelVenta, "panelVenta");
@@ -466,15 +466,9 @@ public class FramePrincipal extends javax.swing.JFrame {
 		statusConeccion.setToolTipText("STATUS:"+s);				
 	}
 	
-	public void updateStatusWest(){
+	public void updateStatusWest(String info){
 		statusConeccion.setForeground(Color.DARK_GRAY);
-		U logged = ApplicationLogic.getInstance().getLogged();
-		if( logged != null) {
-			statusWest.setText(MemoryDAO.getCajaGlobalInfo()+"/"+logged.getE());
-		} else {
-			statusWest.setText(MemoryDAO.getCajaGlobalInfo());
-		}
-		
+		statusWest.setText(info);		
 	}
 	
 	public void setFont(Font font){

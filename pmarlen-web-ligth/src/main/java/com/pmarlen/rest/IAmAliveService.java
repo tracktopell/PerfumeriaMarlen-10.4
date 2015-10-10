@@ -36,7 +36,7 @@ public class IAmAliveService {
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=" + encodingUTF8)
 	@Produces(MediaType.APPLICATION_JSON + ";charset=" + encodingUTF8)
 	public IAmAliveDTOPackage hello(IAmAliveDTORequest iamAliveDTOREquest) throws WebApplicationException {
-		logger.debug("hello: iamAliveDTOREquest=" + iamAliveDTOREquest);
+		logger.debug("hello: iamAliveDTOREquest:" + iamAliveDTOREquest);
 		String callerIpAddress = "?.?.?.?";
 		if(httpRequest != null) {
 			callerIpAddress = httpRequest.getRemoteAddr();
@@ -49,6 +49,7 @@ public class IAmAliveService {
 	}
 
 	static IAmAliveDTOPackage registerHello(IAmAliveDTORequest syncDTORequest, String callerIpAddress) {
+		logger.debug("iamAliveDTOREquest: syncDTORequest:CorteCajaDTO=" + syncDTORequest.getCorteCajaDTO());
 		CajaSessionInfo cajaSessionInfo = null;
 		if (syncDTORequest.getSessionId() != null) {
 			cajaSessionInfo = ContextAndSessionListener.cajaSessionInfoHT.get(syncDTORequest.getSessionId());

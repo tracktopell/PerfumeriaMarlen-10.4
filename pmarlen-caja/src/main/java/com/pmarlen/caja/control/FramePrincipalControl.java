@@ -4,10 +4,12 @@
  */
 package com.pmarlen.caja.control;
 
+import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.view.DialogConfiguracionBTImpresora;
 import com.pmarlen.caja.view.FramePrincipal;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.PanelVentas;
+import com.pmarlen.rest.dto.U;
 import java.awt.CardLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -93,10 +95,11 @@ public class FramePrincipalControl implements ActionListener{
 	
 	public void estadoInicial() {
 		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {				
-				framePrincipal.setVisible(true);
-				framePrincipal.updateStatusWest();
-				panelVentaControl.estadoInicial();				
+			public void run() {
+				((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
+				framePrincipal.setVisible(true);				
+				//panelVentaControl.estadoInicial();				
+				updateStatusWest();
 			}
 		});
 	}
@@ -194,8 +197,7 @@ public class FramePrincipalControl implements ActionListener{
 	}
 
 	
-	public void enableAndDisableAdminControls() {
-		framePrincipal.updateStatusWest();
+	public void enableAndDisableAdminControls() {		
 		framePrincipal.getConfigMenu().setEnabled(true);
 	}
 
@@ -208,4 +210,15 @@ public class FramePrincipalControl implements ActionListener{
 	public void setFontBigest() {
 		framePrincipal.setFont(new java.awt.Font("Tahoma", 0, 24));
 	}
+	
+	
+	public void updateStatusWest() {		
+		U logged = ApplicationLogic.getInstance().getLogged();
+		if( logged != null) {
+			framePrincipal.getStatusWest().setText(MemoryDAO.getCajaGlobalInfo()+"/"+logged.getE());
+		} else {
+			framePrincipal.getStatusWest().setText(MemoryDAO.getCajaGlobalInfo());
+		}		
+	}
+
 }
