@@ -552,7 +552,11 @@ public class MemoryDAO {
 	}
 	
 	public static String getCajaGlobalInfo() {
-		return sucursal.getClave()+"C"+properties.getProperty("caja").toUpperCase();
+		if(sucursal!=null){
+			return sucursal.getClave()+"C"+properties.getProperty("caja").toUpperCase();
+		} else {
+			return "["+getSucursalId()+"]C"+properties.getProperty("caja").toUpperCase();
+		}
 	}
 
 	public static I fastSearchProducto(String codigoBuscar) {
