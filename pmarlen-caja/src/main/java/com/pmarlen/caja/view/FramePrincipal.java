@@ -40,8 +40,8 @@ public class FramePrincipal extends javax.swing.JFrame {
         panelSesion = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        abrirSesionBtn = new javax.swing.JButton();
+        cerrarSesionBtn = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         panelVenta = new PanelVenta();
         panelVentas = new PanelVentas();
@@ -51,9 +51,9 @@ public class FramePrincipal extends javax.swing.JFrame {
         statusConeccion = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         archivoMenu = new javax.swing.JMenu();
-        jMenuItem12 = new javax.swing.JMenuItem();
+        sesionMenu = new javax.swing.JMenuItem();
         ventasMenu = new javax.swing.JMenuItem();
-        productosMenu = new javax.swing.JMenuItem();
+        devolsMenu = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         salirMenu = new javax.swing.JMenuItem();
         ventaMenu = new javax.swing.JMenu();
@@ -92,15 +92,15 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 150, 100));
 
-        jButton4.setBackground(java.awt.Color.green);
-        jButton4.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        jButton4.setText("ABRIR");
-        jPanel2.add(jButton4);
+        abrirSesionBtn.setBackground(java.awt.Color.green);
+        abrirSesionBtn.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
+        abrirSesionBtn.setText("ABRIR");
+        jPanel2.add(abrirSesionBtn);
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 0));
-        jButton1.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        jButton1.setText("CERRAR");
-        jPanel2.add(jButton1);
+        cerrarSesionBtn.setBackground(new java.awt.Color(255, 0, 0));
+        cerrarSesionBtn.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
+        cerrarSesionBtn.setText("CERRAR");
+        jPanel2.add(cerrarSesionBtn);
 
         panelSesion.add(jPanel2);
         panelSesion.add(jPanel3);
@@ -134,14 +134,14 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         archivoMenu.setText("Archivo");
 
-        jMenuItem12.setText("Sesión");
-        archivoMenu.add(jMenuItem12);
+        sesionMenu.setText("Sesión");
+        archivoMenu.add(sesionMenu);
 
         ventasMenu.setText("H. Ventas");
         archivoMenu.add(ventasMenu);
 
-        productosMenu.setText("H. Devol");
-        archivoMenu.add(productosMenu);
+        devolsMenu.setText("H. Devol");
+        archivoMenu.add(devolsMenu);
         archivoMenu.add(jSeparator1);
 
         salirMenu.setText("Salir");
@@ -271,19 +271,19 @@ public class FramePrincipal extends javax.swing.JFrame {
 		});
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton abrirSesionBtn;
     private javax.swing.JMenu archivoMenu;
+    private javax.swing.JButton cerrarSesionBtn;
     private javax.swing.JMenuItem coneccionMenu;
     private javax.swing.JMenu configMenu;
     private javax.swing.JMenu devolMenu;
+    private javax.swing.JMenuItem devolsMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenu impresionMenu;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -302,8 +302,8 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel panelVenta;
     private javax.swing.JPanel panelVentas;
     private javax.swing.JPanel panels;
-    private javax.swing.JMenuItem productosMenu;
     private javax.swing.JMenuItem salirMenu;
+    private javax.swing.JMenuItem sesionMenu;
     private javax.swing.JTextField statusCenter;
     private javax.swing.JTextField statusConeccion;
     private javax.swing.JPanel statusPanel;
@@ -343,7 +343,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 	 * @return the productosMenu
 	 */
 	public javax.swing.JMenuItem getProductosMenu() {
-		return productosMenu;
+		return devolsMenu;
 	}
 
 	/**

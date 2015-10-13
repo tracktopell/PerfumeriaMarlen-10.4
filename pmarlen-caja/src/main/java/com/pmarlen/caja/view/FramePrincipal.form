@@ -11,7 +11,7 @@
             <Property name="text" type="java.lang.String" value="Archivo"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem12">
+            <MenuItem class="javax.swing.JMenuItem" name="sesionMenu">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Sesi&#xf3;n"/>
               </Properties>
@@ -21,7 +21,7 @@
                 <Property name="text" type="java.lang.String" value="H. Ventas"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="productosMenu">
+            <MenuItem class="javax.swing.JMenuItem" name="devolsMenu">
               <Properties>
                 <Property name="text" type="java.lang.String" value="H. Devol"/>
               </Properties>
@@ -250,7 +250,7 @@
                 <Property name="verticalGap" type="int" value="100"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JButton" name="jButton4">
+                <Component class="javax.swing.JButton" name="abrirSesionBtn">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="0" green="ff" id="green" palette="1" red="0" type="palette"/>
@@ -261,7 +261,7 @@
                     <Property name="text" type="java.lang.String" value="ABRIR"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="jButton1">
+                <Component class="javax.swing.JButton" name="cerrarSesionBtn">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="0" green="0" red="ff" type="rgb"/>
