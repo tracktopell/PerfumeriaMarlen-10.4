@@ -140,18 +140,22 @@
 				<executions>			
 					<execution>
 						<id>clean-my-dirty-space</id>
-						<phase>post-clean</phase>
+						<phase>pre-clean</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
 						<configuration>
 							<target>
-								<echo message="======================= clean-my-dirty-space, in post-clean phase ==============>>>"/>
-								<!--
-								<delete>
-									<fileset dir="${basedir}" includes=""/>
+								<echo message="======================= clean-my-dirty-space, in pre-clean phase ==============>>>"/>
+								<delete quiet="true">
+									<!--
+									fileModel.zip CorteCajaDTO.json PMarlen.log4j.log system.properties
+									-->
+									<fileset dir="${basedir}" includes="fileModel.zip"/>
+									<fileset dir="${basedir}" includes="CorteCajaDTO.json "/>
+									<fileset dir="${basedir}" includes="PML30-CAJA*"/>
+									<fileset dir="${basedir}" includes="system.properties"/>
 								</delete>
-								-->
 							</target>
 						</configuration>
 					</execution>

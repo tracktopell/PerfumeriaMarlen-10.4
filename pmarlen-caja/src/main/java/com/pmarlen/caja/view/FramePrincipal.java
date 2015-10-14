@@ -10,6 +10,10 @@ import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.rest.dto.U;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 
@@ -24,6 +28,9 @@ public class FramePrincipal extends javax.swing.JFrame {
 	 */
 	public FramePrincipal() {
 		initComponents();
+		if(pml30ImageIcon != null){
+			logoLabel.setText(null);
+		}
 	}
 
 	/**
@@ -39,10 +46,10 @@ public class FramePrincipal extends javax.swing.JFrame {
         panels = new javax.swing.JPanel();
         panelSesion = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        logoLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         abrirSesionBtn = new javax.swing.JButton();
         cerrarSesionBtn = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
         panelVenta = new PanelVenta();
         panelVentas = new PanelVentas();
         statusPanel = new javax.swing.JPanel();
@@ -63,34 +70,44 @@ public class FramePrincipal extends javax.swing.JFrame {
         ventaCancelarMenu = new javax.swing.JMenuItem();
         ventaeliminarProdMenu = new javax.swing.JMenuItem();
         devolMenu = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        nuevaDevolMenu = new javax.swing.JMenuItem();
+        terminarDevolMenu = new javax.swing.JMenuItem();
+        cancelarDevolMenu = new javax.swing.JMenuItem();
         configMenu = new javax.swing.JMenu();
         coneccionMenu = new javax.swing.JMenuItem();
         impresionMenu = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItem2 = new javax.swing.JRadioButtonMenuItem();
+        impresionParamMenu = new javax.swing.JMenuItem();
+        impresionSistemaMenu = new javax.swing.JRadioButtonMenuItem();
+        impresionBluetothMenu = new javax.swing.JRadioButtonMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        impresionPruebaMenu = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jMenuItem11 = new javax.swing.JMenuItem();
+        manualMenu = new javax.swing.JMenuItem();
+        portalMenu = new javax.swing.JMenuItem();
+        emailSoporteMenu = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem9 = new javax.swing.JMenuItem();
+        acercaDeMenu = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Caja");
+        setIconImage(getPml30WindowImageIcon());
 
         panels.setLayout(new java.awt.CardLayout());
 
         panelSesion.setBorder(javax.swing.BorderFactory.createTitledBorder("Sesión"));
-        panelSesion.setLayout(new java.awt.GridLayout(3, 1, 30, 1));
-        panelSesion.add(jPanel1);
+        panelSesion.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 150, 100));
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        logoLabel.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
+        logoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        logoLabel.setIcon(getPml30ImageIcon());
+        logoLabel.setText("PML30-CAJA");
+        jPanel1.add(logoLabel, java.awt.BorderLayout.CENTER);
+
+        panelSesion.add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 150, 50));
 
         abrirSesionBtn.setBackground(java.awt.Color.green);
         abrirSesionBtn.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
@@ -102,8 +119,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         cerrarSesionBtn.setText("CERRAR");
         jPanel2.add(cerrarSesionBtn);
 
-        panelSesion.add(jPanel2);
-        panelSesion.add(jPanel3);
+        panelSesion.add(jPanel2, java.awt.BorderLayout.SOUTH);
 
         panels.add(panelSesion, "panelSesion");
 
@@ -175,14 +191,14 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         devolMenu.setText("Devolución");
 
-        jMenuItem1.setText("Nueva");
-        devolMenu.add(jMenuItem1);
+        nuevaDevolMenu.setText("Nueva");
+        devolMenu.add(nuevaDevolMenu);
 
-        jMenuItem2.setText("Terminar");
-        devolMenu.add(jMenuItem2);
+        terminarDevolMenu.setText("Terminar");
+        devolMenu.add(terminarDevolMenu);
 
-        jMenuItem3.setText("Cancelar");
-        devolMenu.add(jMenuItem3);
+        cancelarDevolMenu.setText("Cancelar");
+        devolMenu.add(cancelarDevolMenu);
 
         jMenuBar1.add(devolMenu);
 
@@ -193,21 +209,21 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         impresionMenu.setText("Impresión");
 
-        jMenuItem5.setText("Parametros");
-        impresionMenu.add(jMenuItem5);
+        impresionParamMenu.setText("Parametros");
+        impresionMenu.add(impresionParamMenu);
 
-        tipoImpresion.add(jRadioButtonMenuItem1);
-        jRadioButtonMenuItem1.setSelected(true);
-        jRadioButtonMenuItem1.setText("De Sistema");
-        impresionMenu.add(jRadioButtonMenuItem1);
+        tipoImpresion.add(impresionSistemaMenu);
+        impresionSistemaMenu.setSelected(true);
+        impresionSistemaMenu.setText("De Sistema");
+        impresionMenu.add(impresionSistemaMenu);
 
-        tipoImpresion.add(jRadioButtonMenuItem2);
-        jRadioButtonMenuItem2.setText("Bluetooth");
-        impresionMenu.add(jRadioButtonMenuItem2);
+        tipoImpresion.add(impresionBluetothMenu);
+        impresionBluetothMenu.setText("Bluetooth");
+        impresionMenu.add(impresionBluetothMenu);
         impresionMenu.add(jSeparator2);
 
-        jMenuItem4.setText("Enviar prueba");
-        impresionMenu.add(jMenuItem4);
+        impresionPruebaMenu.setText("Enviar prueba");
+        impresionMenu.add(impresionPruebaMenu);
 
         configMenu.add(impresionMenu);
 
@@ -215,18 +231,18 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         helpMenu.setText("Ayuda");
 
-        jMenuItem8.setText("Manual de Usuario");
-        helpMenu.add(jMenuItem8);
+        manualMenu.setText("Manual de Usuario");
+        helpMenu.add(manualMenu);
 
-        jMenuItem10.setText("Portal L30");
-        helpMenu.add(jMenuItem10);
+        portalMenu.setText("Portal L30");
+        helpMenu.add(portalMenu);
 
-        jMenuItem11.setText("Email Soporte");
-        helpMenu.add(jMenuItem11);
+        emailSoporteMenu.setText("Email Soporte");
+        helpMenu.add(emailSoporteMenu);
         helpMenu.add(jSeparator3);
 
-        jMenuItem9.setText("Acerca de");
-        helpMenu.add(jMenuItem9);
+        acercaDeMenu.setText("Acerca de");
+        helpMenu.add(acercaDeMenu);
 
         jMenuBar1.add(helpMenu);
 
@@ -272,42 +288,42 @@ public class FramePrincipal extends javax.swing.JFrame {
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton abrirSesionBtn;
+    private javax.swing.JMenuItem acercaDeMenu;
     private javax.swing.JMenu archivoMenu;
+    private javax.swing.JMenuItem cancelarDevolMenu;
     private javax.swing.JButton cerrarSesionBtn;
     private javax.swing.JMenuItem coneccionMenu;
     private javax.swing.JMenu configMenu;
     private javax.swing.JMenu devolMenu;
     private javax.swing.JMenuItem devolsMenu;
+    private javax.swing.JMenuItem emailSoporteMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JRadioButtonMenuItem impresionBluetothMenu;
     private javax.swing.JMenu impresionMenu;
+    private javax.swing.JMenuItem impresionParamMenu;
+    private javax.swing.JMenuItem impresionPruebaMenu;
+    private javax.swing.JRadioButtonMenuItem impresionSistemaMenu;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JLabel logoLabel;
+    private javax.swing.JMenuItem manualMenu;
+    private javax.swing.JMenuItem nuevaDevolMenu;
     private javax.swing.JPanel panelSesion;
     private javax.swing.JPanel panelVenta;
     private javax.swing.JPanel panelVentas;
     private javax.swing.JPanel panels;
+    private javax.swing.JMenuItem portalMenu;
     private javax.swing.JMenuItem salirMenu;
     private javax.swing.JMenuItem sesionMenu;
     private javax.swing.JTextField statusCenter;
     private javax.swing.JTextField statusConeccion;
     private javax.swing.JPanel statusPanel;
     private javax.swing.JTextField statusWest;
+    private javax.swing.JMenuItem terminarDevolMenu;
     private javax.swing.ButtonGroup tipoImpresion;
     private javax.swing.JMenuItem ventaActualMenu;
     private javax.swing.JMenuItem ventaCancelarMenu;
@@ -480,4 +496,194 @@ public class FramePrincipal extends javax.swing.JFrame {
 		//statusCenter.setFont(font);
 		//statusConeccion.setFont(font);
 	}
+	
+	private ImageIcon pml30ImageIcon = null;
+	
+	private Image pml30WindowImageIcon = null;
+	
+	private Icon getPml30ImageIcon() {
+		if(pml30ImageIcon ==null){
+			try{
+				pml30ImageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/imgs/L30_252x252_Ver1.png")));
+			} catch(Exception e){
+				e.printStackTrace(System.err);
+			}
+		}
+		return pml30ImageIcon;
+	
+	}
+
+	public Image getPml30WindowImageIcon() {		
+		if(pml30WindowImageIcon == null){
+			try{
+				pml30WindowImageIcon = ImageIO.read(getClass().getResourceAsStream("/imgs/L30_64x64_Ver1.png"));
+			} catch(Exception e){
+				e.printStackTrace(System.err);
+			}
+		}
+		return pml30WindowImageIcon;
+	}
+
+	/**
+	 * @return the abrirSesionBtn
+	 */
+	public javax.swing.JButton getAbrirSesionBtn() {
+		return abrirSesionBtn;
+	}
+
+	/**
+	 * @return the acercaDeMenu
+	 */
+	public javax.swing.JMenuItem getAcercaDeMenu() {
+		return acercaDeMenu;
+	}
+
+	/**
+	 * @return the cancelarDevolMenu
+	 */
+	public javax.swing.JMenuItem getCancelarDevolMenu() {
+		return cancelarDevolMenu;
+	}
+
+	/**
+	 * @return the cerrarSesionBtn
+	 */
+	public javax.swing.JButton getCerrarSesionBtn() {
+		return cerrarSesionBtn;
+	}
+
+	/**
+	 * @return the coneccionMenu
+	 */
+	public javax.swing.JMenuItem getConeccionMenu() {
+		return coneccionMenu;
+	}
+
+	/**
+	 * @return the devolMenu
+	 */
+	public javax.swing.JMenu getDevolMenu() {
+		return devolMenu;
+	}
+
+	/**
+	 * @return the devolsMenu
+	 */
+	public javax.swing.JMenuItem getDevolsMenu() {
+		return devolsMenu;
+	}
+
+	/**
+	 * @return the emailSoporteMenu
+	 */
+	public javax.swing.JMenuItem getEmailSoporteMenu() {
+		return emailSoporteMenu;
+	}
+
+	/**
+	 * @return the helpMenu
+	 */
+	public javax.swing.JMenu getHelpMenu() {
+		return helpMenu;
+	}
+
+	/**
+	 * @return the impresionBluetothMenu
+	 */
+	public javax.swing.JRadioButtonMenuItem getImpresionBluetothMenu() {
+		return impresionBluetothMenu;
+	}
+
+	/**
+	 * @return the impresionMenu
+	 */
+	public javax.swing.JMenu getImpresionMenu() {
+		return impresionMenu;
+	}
+
+	/**
+	 * @return the impresionParamMenu
+	 */
+	public javax.swing.JMenuItem getImpresionParamMenu() {
+		return impresionParamMenu;
+	}
+
+	/**
+	 * @return the impresionPruebaMenu
+	 */
+	public javax.swing.JMenuItem getImpresionPruebaMenu() {
+		return impresionPruebaMenu;
+	}
+
+	/**
+	 * @return the impresionSistemaMenu
+	 */
+	public javax.swing.JRadioButtonMenuItem getImpresionSistemaMenu() {
+		return impresionSistemaMenu;
+	}
+
+	/**
+	 * @return the logoLabel
+	 */
+	public javax.swing.JLabel getLogoLabel() {
+		return logoLabel;
+	}
+
+	/**
+	 * @return the manualMenu
+	 */
+	public javax.swing.JMenuItem getManualMenu() {
+		return manualMenu;
+	}
+
+	/**
+	 * @return the nuevaDevolMenu
+	 */
+	public javax.swing.JMenuItem getNuevaDevolMenu() {
+		return nuevaDevolMenu;
+	}
+
+	/**
+	 * @return the panelSesion
+	 */
+	public javax.swing.JPanel getPanelSesion() {
+		return panelSesion;
+	}
+
+	/**
+	 * @return the portalMenu
+	 */
+	public javax.swing.JMenuItem getPortalMenu() {
+		return portalMenu;
+	}
+
+	/**
+	 * @return the sesionMenu
+	 */
+	public javax.swing.JMenuItem getSesionMenu() {
+		return sesionMenu;
+	}
+
+	/**
+	 * @return the statusPanel
+	 */
+	public javax.swing.JPanel getStatusPanel() {
+		return statusPanel;
+	}
+
+	/**
+	 * @return the terminarDevolMenu
+	 */
+	public javax.swing.JMenuItem getTerminarDevolMenu() {
+		return terminarDevolMenu;
+	}
+
+	/**
+	 * @return the tipoImpresion
+	 */
+	public javax.swing.ButtonGroup getTipoImpresion() {
+		return tipoImpresion;
+	}
+	
 }
+

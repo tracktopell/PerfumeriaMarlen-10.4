@@ -19,6 +19,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
@@ -47,7 +48,7 @@ public class FramePrincipalControl implements ActionListener{
 		
 		framePrincipal = new FramePrincipal();
 		
-		framePrincipal.setTitle("PerfumeriaMarlen - caja ("+ApplicationLogic.getInstance().getVersion()+")");
+		framePrincipal.setTitle("PML30-CAJA ("+ApplicationLogic.getInstance().getVersion()+")");
 		
 		panelVentaControl  = new PanelVentaControl ((PanelVenta)framePrincipal.getPanelVenta());
 		
@@ -98,8 +99,8 @@ public class FramePrincipalControl implements ActionListener{
 			public void run() {
 				((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
 				framePrincipal.setVisible(true);				
-				//panelVentaControl.estadoInicial();				
 				updateStatusWest();
+				
 			}
 		});
 	}
@@ -195,9 +196,21 @@ public class FramePrincipalControl implements ActionListener{
 	private void impresoraBTMenu_actionPerformed() {
 		DialogConfiguracionBTImpresoraControl.getInstance(framePrincipal).estadoInicial();		
 	}
-
 	
-	public void enableAndDisableAdminControls() {		
+	public void enableAndDisableAdminControls() {
+		U u = ApplicationLogic.getInstance().getLogged();
+		if(u.getPlaysAsAdmin()) {
+			eanbleAdminControls();
+		}
+		final List<String> pl = u.getPerfiles();
+		logger.debug("enableAndDisableAdminControls:");
+		for(String  p: pl){
+			logger.debug("enableAndDisableAdminControls:\t->Perfil:"+p);
+		}		
+	}
+	
+	private void eanbleAdminControls(){
+		logger.debug("eanbleAdminControls():");
 		framePrincipal.getConfigMenu().setEnabled(true);
 	}
 

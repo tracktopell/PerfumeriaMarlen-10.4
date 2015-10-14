@@ -86,7 +86,8 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		} else {
 			leggedIn = true;
 			
-			JOptionPane.showMessageDialog(dialogLogin, "¡ BIENVENIDO "+logged.getN().toUpperCase()+" !", "ENTRAR", JOptionPane.INFORMATION_MESSAGE);
+			//JOptionPane.showMessageDialog(dialogLogin, "¡ BIENVENIDO "+logged.getN().toUpperCase()+" !", "ENTRAR", JOptionPane.INFORMATION_MESSAGE);
+			
 			ApplicationLogic.getInstance().setLogged(logged);
 			dialogLogin.dispose();
 		}
