@@ -72,7 +72,7 @@ public class Main {
 		logger.debug("==========================================================>>>");
 
 		MemoryDAO.loadProperties();
-		ApplicationLogic.getInstance().updateCorteCajaDTO();
+		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
 		
 		logger.debug("<<<==========================================================");
 

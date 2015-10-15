@@ -206,7 +206,8 @@ public class FramePrincipalControl implements ActionListener{
 		logger.debug("enableAndDisableAdminControls:");
 		for(String  p: pl){
 			logger.debug("enableAndDisableAdminControls:\t->Perfil:"+p);
-		}		
+		}
+		logger.debug("enableAndDisableAdminControls:CorteCajaDTO:"+ApplicationLogic.getInstance().getCorteCajaDTO());		
 	}
 	
 	private void eanbleAdminControls(){

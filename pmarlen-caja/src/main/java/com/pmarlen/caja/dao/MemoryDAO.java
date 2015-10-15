@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -611,7 +612,30 @@ public class MemoryDAO {
 			logger.debug("saveCorteCajaDTO: created file="+x.getAbsolutePath()+" ? "+x.exists()+", size="+x.length());
 			
 		}catch(IOException ioe){
-			logger.error("Error to write",ioe);
+			logger.error("saveCorteCajaDTO:Error to write",ioe);
 		}	
 	}
+	
+	public static void backupCorteCajaDTO(CorteCajaDTO cc){
+		logger.debug("backupCorteCajaDTO: CorteCajaDTO="+cc);
+		Gson gson=new Gson();
+		String jsonAllES = gson.toJson(cc);
+		FileWriter fw = null;
+		final String backupFaileName = "CorteCajaDTO"+Constants.sdfLogFile.format(new Date(cc.getFecha()))+".json";
+		try {
+			
+			fw = new FileWriter(backupFaileName);
+			fw.write(jsonAllES);
+			fw.flush();
+			fw.close();
+			
+			File x=new File(corteCajaDTOjsonFile);
+			
+			logger.debug("backupCorteCajaDTO: created file="+x.getAbsolutePath()+" ? "+x.exists()+", size="+x.length());
+			
+		}catch(IOException ioe){
+			logger.error("backupCorteCajaDTO:Error to write",ioe);
+		}	
+	}
+
 }

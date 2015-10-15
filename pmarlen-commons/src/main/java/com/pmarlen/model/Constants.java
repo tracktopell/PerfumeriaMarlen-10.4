@@ -68,11 +68,13 @@ public class Constants {
 	public static final int ALMACEN_OPORTUNIDAD = 2;
 	public static final int ALMACEN_REGALIAS = 3;
 	//--------------------------------------------------------------------------
-	public static final int TIPO_EVENTO_ENLINEA   = 0;
-	public static final int TIPO_EVENTO_APERTURA  = 1;	
-	public static final int TIPO_EVENTO_SUSPENDER = 2;
-	public static final int TIPO_EVENTO_REANUDAR  = 3;
-	public static final int TIPO_EVENTO_CIERRE    = 9;
+	public static final int TIPO_EVENTO_AP_INICIADA	= 0;
+	public static final int TIPO_EVENTO_AUTENTICADO	= 1;
+	public static final int TIPO_EVENTO_APERTURA		= 2;	
+	public static final int TIPO_EVENTO_SUSPENDER	= 3;
+	public static final int TIPO_EVENTO_REANUDAR	= 4;
+	public static final int TIPO_EVENTO_ERRORGRAVE	= 8;
+	public static final int TIPO_EVENTO_CIERRE		= 9;
 		
 	public static final int DESCUENTO_0 = 0;
 	public static final int DESCUENTO_1 = 1;
@@ -237,11 +239,12 @@ public class Constants {
 		tipoAlmacen.put(ALMACEN_REGALIAS   ,  "REGALIAS");
 	}
 	
-	public static final DecimalFormat dfCurrency     = new DecimalFormat("$ ###,###,###,##0.00");
-	public static final DecimalFormat dfDecimal      = new DecimalFormat("###########0.00");
-	public static final DecimalFormat dfLongDecimal  = new DecimalFormat("###########0.000000");
+	public static final DecimalFormat dfCurrency       = new DecimalFormat("$ ###,###,###,##0.00");
+	public static final DecimalFormat dfDecimal        = new DecimalFormat("###########0.00");
+	public static final DecimalFormat dfLongDecimal    = new DecimalFormat("###########0.000000");
 	public static final SimpleDateFormat sdfLogDate    = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	public static final SimpleDateFormat sdfLogTS      = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+	public static final SimpleDateFormat sdfLogFile    = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	public static final SimpleDateFormat sdfThinDate   = new SimpleDateFormat("yyyyMMddHHmmss");
 	
 	public static String getImporteDesglosado(double f){

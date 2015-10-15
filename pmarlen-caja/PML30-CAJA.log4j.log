@@ -1,0 +1,96 @@
+2015-10-14 16:03:31 DEBUG Main:172 - OK, is single instance !
+2015-10-14 16:03:32 DEBUG Main:186 - -->> close ?
+2015-10-14 16:03:32 DEBUG Main:72 - ==========================================================>>>
+2015-10-14 16:03:32 DEBUG MemoryDAO:593 - getCorteCaja:File NOT found:CorteCajaDTO.json
+2015-10-14 16:03:32 DEBUG MemoryDAO:600 - saveCorteCajaDTO: CorteCajaDTO=CorteCajaDTO{fecha=1444856612059(2015/10/14 16:03:32), sucursalId=1, caja=1, usuarioEmail=null, total=0.0, comentarios=null, tipoEvento=0}
+2015-10-14 16:03:32 DEBUG MemoryDAO:612 - saveCorteCajaDTO: created file=/home/alfredo/projects/PerfumeriaMarlen-10.4/pmarlen-caja/CorteCajaDTO.json ? true, size=74
+2015-10-14 16:03:32 DEBUG MemoryDAO:620 - backupCorteCajaDTO: CorteCajaDTO=CorteCajaDTO{fecha=1444856612059(2015/10/14 16:03:32), sucursalId=1, caja=1, usuarioEmail=null, total=0.0, comentarios=null, tipoEvento=0}
+2015-10-14 16:03:32 DEBUG MemoryDAO:634 - backupCorteCajaDTO: created file=/home/alfredo/projects/PerfumeriaMarlen-10.4/pmarlen-caja/CorteCajaDTO.json ? true, size=74
+2015-10-14 16:03:32 DEBUG Main:77 - <<<==========================================================
+2015-10-14 16:03:33 DEBUG Main:80 - L&Fs:[javax.swing.UIManager$LookAndFeelInfo[Metal javax.swing.plaf.metal.MetalLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[CDE/Motif com.sun.java.swing.plaf.motif.MotifLookAndFeel], javax.swing.UIManager$LookAndFeelInfo[GTK+ com.sun.java.swing.plaf.gtk.GTKLookAndFeel]]
+2015-10-14 16:03:33 DEBUG Main:92 - ==========================================================>>> 1 Time
+2015-10-14 16:03:39 DEBUG MemoryDAO:99 - ->Properties Doesn't exsist, wrinting File Properties.
+2015-10-14 16:03:39 DEBUG MemoryDAO:101 - ->ok, writing.
+2015-10-14 16:03:40 DEBUG Main:103 - ==>> is configuring:false
+2015-10-14 16:03:40 DEBUG ApplicationLogic:108 - url=http://localhost:8070/l30/pmcajaupdate/version.properties
+2015-10-14 16:03:40 DEBUG ApplicationLogic:125 - lineRead=pmarlencaja.version=10.4.1.40, versionReadOfLine=10.4.1.40
+2015-10-14 16:03:40 DEBUG ApplicationLogic:126 - current version =10.4.1.40
+2015-10-14 16:03:40 DEBUG ApplicationLogic:131 - comparing: [10, 4, 1, 40] < [10, 4, 1, 40] : 0
+2015-10-14 16:03:40 DEBUG Main:131 - ======================= INICIANDO =======================
+2015-10-14 16:03:40 DEBUG MemoryDAO:213 - ----------------->> startPaqueteSyncService
+2015-10-14 16:03:40 DEBUG MemoryDAO:158 - getPaqueteSyncPoll:
+2015-10-14 16:03:40 DEBUG MemoryDAO:160 - ----------------->>BEFORE while 
+2015-10-14 16:03:40 DEBUG MemoryDAO:163 - 	----------------->> while running, download
+2015-10-14 16:03:40 DEBUG FramePrincipal:32 - FramePrincipal():
+2015-10-14 16:03:40 DEBUG FramePrincipal:34 - FramePrincipal(): after initComponents
+2015-10-14 16:03:40 DEBUG FramePrincipal:39 - prepareComponents():pml30ImageIcon=javax.swing.ImageIcon@50866ce2
+2015-10-14 16:03:40 DEBUG PanelVentaControl:59 - ->>table columns=4
+2015-10-14 16:03:40 DEBUG PanelVentasControl:44 - ->>table columns=3
+2015-10-14 16:03:40 DEBUG Main:144 - -------->> Frame Principal, esperando antes de login
+2015-10-14 16:03:41 DEBUG MemoryDAO:247 - ...creating WebResource for ZIP
+2015-10-14 16:03:41 DEBUG MemoryDAO:259 - -->> building: SyncDTORequest=com.pmarlen.rest.dto.SyncDTORequest@6b010e34, before send.
+2015-10-14 16:03:41 DEBUG MemoryDAO:265 - ...invoking with:syncDTORequest={"iAmAliveDTORequest":{"sucursalId":2,"cajaId":1,"sessionId":"EB331F6AE984C4F1D1F3FE7A0C3A55D8","userAgent":{"version":"10.4.1.40","os":"Linux_3.19.0-28-lowlatency(amd64)","javaVersion":"1.7.0_79","userInSession":"alfredo","workingDirectory":"/home/alfredo/projects/PerfumeriaMarlen-10.4/pmarlen-caja"},"corteCajaDTO":{"fecha":1444856612059,"sucursalId":1,"caja":1,"total":0.0,"tipoEvento":0}},"escdList":[]}
+2015-10-14 16:03:41 DEBUG MemoryDAO:267 - ...get response
+2015-10-14 16:03:41 DEBUG MemoryDAO:287 -   fileZip = 129257 bytes. == 129257
+2015-10-14 16:03:41 DEBUG MemoryDAO:288 -   T = 1048
+2015-10-14 16:03:41 DEBUG MemoryDAO:289 - +T1 = 764
+2015-10-14 16:03:41 DEBUG MemoryDAO:290 - +T2 = 280
+2015-10-14 16:03:41 DEBUG MemoryDAO:291 - +T3 = 0
+2015-10-14 16:03:41 DEBUG MemoryDAO:292 - +T4 = 4
+2015-10-14 16:03:41 DEBUG MemoryDAO:169 - 	----------------->> OK, downloded, read locally
+2015-10-14 16:03:41 DEBUG MemoryDAO:443 - open ZIP:/home/alfredo/projects/PerfumeriaMarlen-10.4/pmarlen-caja/./fileModel.zip
+2015-10-14 16:03:41 DEBUG MemoryDAO:467 - Reading from:data.json, 974717 bytes
+2015-10-14 16:03:41 DEBUG MemoryDAO:476 - OK read.
+2015-10-14 16:03:41 DEBUG MemoryDAO:479 - content.length=974717
+2015-10-14 16:03:41 DEBUG MemoryDAO:483 - jsonContent.size=973478
+2015-10-14 16:03:41 DEBUG MemoryDAO:488 - After read zip
+2015-10-14 16:03:41 DEBUG MemoryDAO:490 - ...OK, JSon parse:
+2015-10-14 16:03:42 DEBUG MemoryDAO:492 - paqueteSinc:->SyncDTOPackage{ syncDBStatus=1, listIndexProccessed=[], inventarioSucursalList.length=2596, usuarioList.size=10, clienteList.size=301, metodoDePagoList.size=7, formaDePagoList.size=4, sucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN, almacenList.size=3 }<-
+2015-10-14 16:03:42 DEBUG MemoryDAO:493 - paqueteSinc:->paqueteSinc.getSyncDBStatus():1<-
+2015-10-14 16:03:42 DEBUG MemoryDAO:506 - paqueteSinc:->SYNC_EMPTY_TRANSACTION
+2015-10-14 16:03:42 DEBUG MemoryDAO:511 - productosParaBuscar, begin
+2015-10-14 16:03:42 DEBUG MemoryDAO:517 - productosParaBuscar, ready T=-4
+2015-10-14 16:03:42 DEBUG MemoryDAO:518 - ==========================>>>>>paqueteSinc.getSucursal=PERFUMERIA MARLEN S.A. DE C.V. SUCURSAL SN. MARTIN
+2015-10-14 16:03:42 DEBUG MemoryDAO:520 - ==========================>>>>>	paqueteSinc.getSucursal.clave=PMS1
+2015-10-14 16:03:42 DEBUG MemoryDAO:198 - 	----------------->> while running, sleep for 15000 ms .....
+2015-10-14 16:03:46 DEBUG DialogLoginControl:50 - estadoInicial()
+2015-10-14 16:03:57 DEBUG MemoryDAO:163 - 	----------------->> while running, download
+2015-10-14 16:03:57 DEBUG MemoryDAO:390 - ...creating WebResource for IAmAlive
+2015-10-14 16:03:57 DEBUG MemoryDAO:395 - -->> building: IAmAliveDTORequest=com.pmarlen.rest.dto.IAmAliveDTORequest@3e51d494, before send.
+2015-10-14 16:03:57 DEBUG MemoryDAO:401 - ...invoking with:IAmAliveDTORequest={"sucursalId":2,"cajaId":1,"sessionId":"EB331F6AE984C4F1D1F3FE7A0C3A55D8","userAgent":{"version":"10.4.1.40","os":"Linux_3.19.0-28-lowlatency(amd64)","javaVersion":"1.7.0_79","userInSession":"alfredo","workingDirectory":"/home/alfredo/projects/PerfumeriaMarlen-10.4/pmarlen-caja"},"corteCajaDTO":{"fecha":1444856612059,"sucursalId":1,"caja":1,"total":0.0,"tipoEvento":0}}
+2015-10-14 16:03:57 DEBUG MemoryDAO:403 - ...get response
+2015-10-14 16:03:57 DEBUG MemoryDAO:409 - OK, not error, trying get JSON response
+2015-10-14 16:03:57 DEBUG MemoryDAO:413 - Output from Server:output.length=16
+2015-10-14 16:03:57 DEBUG MemoryDAO:416 - jsonContent:{"statusCode":1}
+2015-10-14 16:03:57 DEBUG MemoryDAO:422 -   T = 172
+2015-10-14 16:03:57 DEBUG MemoryDAO:423 - +T1 = 129
+2015-10-14 16:03:57 DEBUG MemoryDAO:424 - +T2 = 6
+2015-10-14 16:03:57 DEBUG MemoryDAO:425 - +T3 = 1
+2015-10-14 16:03:57 DEBUG MemoryDAO:426 - +T4 = 36
+2015-10-14 16:03:57 DEBUG MemoryDAO:198 - 	----------------->> while running, sleep for 15000 ms .....
+2015-10-14 16:04:09 INFO  DialogLoginControl:65 - [USER]->aceptar_ActionPerformed()
+2015-10-14 16:04:09 DEBUG MemoryDAO:600 - saveCorteCajaDTO: CorteCajaDTO=CorteCajaDTO{fecha=1444856649584(2015/10/14 16:04:09), sucursalId=2, caja=1, usuarioEmail=root@perfumeriamarlen.com.mx, total=0.0, comentarios=null, tipoEvento=1}
+2015-10-14 16:04:09 DEBUG MemoryDAO:612 - saveCorteCajaDTO: created file=/home/alfredo/projects/PerfumeriaMarlen-10.4/pmarlen-caja/CorteCajaDTO.json ? true, size=120
+2015-10-14 16:04:09 DEBUG MemoryDAO:620 - backupCorteCajaDTO: CorteCajaDTO=CorteCajaDTO{fecha=1444856649584(2015/10/14 16:04:09), sucursalId=2, caja=1, usuarioEmail=root@perfumeriamarlen.com.mx, total=0.0, comentarios=null, tipoEvento=1}
+2015-10-14 16:04:09 DEBUG MemoryDAO:634 - backupCorteCajaDTO: created file=/home/alfredo/projects/PerfumeriaMarlen-10.4/pmarlen-caja/CorteCajaDTO.json ? true, size=120
+2015-10-14 16:04:09 INFO  Main:153 - ->OK logedin, GO !
+2015-10-14 16:04:09 DEBUG FramePrincipalControl:206 - enableAndDisableAdminControls:
+2015-10-14 16:04:09 DEBUG FramePrincipalControl:208 - enableAndDisableAdminControls:	->Perfil:root
+2015-10-14 16:04:09 DEBUG FramePrincipalControl:208 - enableAndDisableAdminControls:	->Perfil:admin
+2015-10-14 16:04:09 DEBUG FramePrincipalControl:208 - enableAndDisableAdminControls:	->Perfil:finances
+2015-10-14 16:04:09 DEBUG FramePrincipalControl:208 - enableAndDisableAdminControls:	->Perfil:pmarlenuser
+2015-10-14 16:04:09 DEBUG FramePrincipalControl:210 - enableAndDisableAdminControls:CorteCajaDTO:CorteCajaDTO{fecha=1444856649584(2015/10/14 16:04:09), sucursalId=2, caja=1, usuarioEmail=root@perfumeriamarlen.com.mx, total=0.0, comentarios=null, tipoEvento=1}
+2015-10-14 16:04:12 DEBUG MemoryDAO:163 - 	----------------->> while running, download
+2015-10-14 16:04:12 DEBUG MemoryDAO:390 - ...creating WebResource for IAmAlive
+2015-10-14 16:04:12 DEBUG MemoryDAO:395 - -->> building: IAmAliveDTORequest=com.pmarlen.rest.dto.IAmAliveDTORequest@2535128f, before send.
+2015-10-14 16:04:12 DEBUG MemoryDAO:401 - ...invoking with:IAmAliveDTORequest={"sucursalId":2,"cajaId":1,"sessionId":"EB331F6AE984C4F1D1F3FE7A0C3A55D8","loggedIn":"root@perfumeriamarlen.com.mx","userAgent":{"version":"10.4.1.40","os":"Linux_3.19.0-28-lowlatency(amd64)","javaVersion":"1.7.0_79","userInSession":"alfredo","workingDirectory":"/home/alfredo/projects/PerfumeriaMarlen-10.4/pmarlen-caja"},"corteCajaDTO":{"fecha":1444856649584,"sucursalId":2,"caja":1,"usuarioEmail":"root@perfumeriamarlen.com.mx","total":0.0,"tipoEvento":1}}
+2015-10-14 16:04:12 DEBUG MemoryDAO:403 - ...get response
+2015-10-14 16:04:12 DEBUG MemoryDAO:409 - OK, not error, trying get JSON response
+2015-10-14 16:04:12 DEBUG MemoryDAO:413 - Output from Server:output.length=16
+2015-10-14 16:04:12 DEBUG MemoryDAO:416 - jsonContent:{"statusCode":1}
+2015-10-14 16:04:12 DEBUG MemoryDAO:422 -   T = 82
+2015-10-14 16:04:12 DEBUG MemoryDAO:423 - +T1 = 73
+2015-10-14 16:04:12 DEBUG MemoryDAO:424 - +T2 = 8
+2015-10-14 16:04:12 DEBUG MemoryDAO:425 - +T3 = 1
+2015-10-14 16:04:12 DEBUG MemoryDAO:426 - +T4 = 0
+2015-10-14 16:04:12 DEBUG MemoryDAO:198 - 	----------------->> while running, sleep for 15000 ms .....

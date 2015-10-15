@@ -152,7 +152,8 @@
 									fileModel.zip CorteCajaDTO.json PMarlen.log4j.log system.properties
 									-->
 									<fileset dir="${basedir}" includes="fileModel.zip"/>
-									<fileset dir="${basedir}" includes="CorteCajaDTO.json "/>
+									<fileset dir="${basedir}" includes="data*.json"/>
+									<fileset dir="${basedir}" includes="CorteCajaDTO*.json "/>
 									<fileset dir="${basedir}" includes="PML30-CAJA*"/>
 									<fileset dir="${basedir}" includes="system.properties"/>
 								</delete>

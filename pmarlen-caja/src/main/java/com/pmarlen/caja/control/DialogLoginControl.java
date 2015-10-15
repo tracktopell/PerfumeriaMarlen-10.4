@@ -114,11 +114,12 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 			ApplicationLogic.getInstance().getCorteCajaDTO().setCaja(MemoryDAO.getNumCaja());
 			ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
 			ApplicationLogic.getInstance().getCorteCajaDTO().setFecha(System.currentTimeMillis());
-			ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_ENLINEA);
+			ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AUTENTICADO);
 			ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(logged.getE());
 			ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
 			
 			MemoryDAO.saveCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
+			MemoryDAO.backupCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
 			return 	true;	
 		}else{
 			return false;

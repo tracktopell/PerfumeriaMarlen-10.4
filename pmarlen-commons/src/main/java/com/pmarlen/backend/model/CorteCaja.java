@@ -44,10 +44,15 @@ public class CorteCaja implements java.io.Serializable {
     private String usuarioEmail;
     
     /**
-    * total
+    * saldo Inicial
     */
-    private double total;
-    
+    private double saldoInicial;
+
+	/**
+    * saldo Final
+    */
+    private double saldoFinal;
+
     /**
     * comentarios
     */
@@ -116,11 +121,11 @@ public class CorteCaja implements java.io.Serializable {
     }
 
     public double getTotal() {
-        return this.total;
+        return this.saldoInicial;
     }
 
     public void setTotal(double v) {
-        this.total = v;
+        this.saldoInicial = v;
     }
 
     public String getComentarios() {
@@ -193,7 +198,7 @@ public class CorteCaja implements java.io.Serializable {
 		sb.append(this.usuarioEmail);
 		sb.append(s);
 		// double
-		sb.append( df.format(this.total));
+		sb.append(df.format(this.saldoInicial));
 		sb.append(s);
 		// String
 		sb.append(this.comentarios);
@@ -225,7 +230,7 @@ public class CorteCaja implements java.io.Serializable {
 			this.usuarioEmail = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
 			nf++;
 			// double
-			this.total =  df.parse(srcSpplited[nf]).doubleValue();
+			this.saldoInicial =  df.parse(srcSpplited[nf]).doubleValue();
 			nf++;
 			// String
 			this.comentarios = srcSpplited[nf].equals("null")?null:srcSpplited[nf];

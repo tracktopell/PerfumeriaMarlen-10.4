@@ -11,26 +11,68 @@ import com.pmarlen.rest.dto.U;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class FramePrincipal extends javax.swing.JFrame {
-
+	private static Logger logger = Logger.getLogger(FramePrincipal.class.getName());
 	/**
 	 * Creates new form FramePrincipal
 	 */
 	public FramePrincipal() {
+		logger.debug("FramePrincipal():");
 		initComponents();
+		logger.debug("FramePrincipal(): after initComponents");
+		prepareComponents();
+	}
+	
+	private void prepareComponents(){
+		logger.debug("prepareComponents():pml30ImageIcon="+pml30ImageIcon);
 		if(pml30ImageIcon != null){
 			logoLabel.setText(null);
 		}
+
+		this.abrirSesionBtn.setEnabled(true);
+		this.archivoMenu.setEnabled(true);
+		this.emailSoporteMenu.setEnabled(true);
+		this.helpMenu.setEnabled(true);
+		this.manualMenu.setEnabled(true);
+		this.salirMenu.setEnabled(true);
+		this.sesionMenu.setEnabled(true);		
+		this.acercaDeMenu.setEnabled(true);
+		this.portalMenu.setEnabled(true);
+		
+		this.cerrarSesionBtn.setEnabled(true);		
+		this.cerrarSesionBtn.setVisible(false);
+		
+		this.cancelarDevolMenu.setEnabled(false);		
+		this.coneccionMenu.setEnabled(false);
+		this.configMenu.setEnabled(false);
+		this.devolMenu.setEnabled(false);
+		this.devolsMenu.setEnabled(false);
+		this.impresionBluetothMenu.setEnabled(false);
+		this.impresionMenu.setEnabled(false);
+		this.impresionParamMenu.setEnabled(false);
+		this.impresionPruebaMenu.setEnabled(false);
+		this.impresionSistemaMenu.setEnabled(false);
+		this.nuevaDevolMenu.setEnabled(false);
+		this.terminarDevolMenu.setEnabled(false);
+		this.ventaActualMenu.setEnabled(false);
+		this.ventaCancelarMenu.setEnabled(false);
+		this.ventaMenu.setEnabled(false);
+		this.ventaModoMenu.setEnabled(false);
+		this.ventaTerminarMenu.setEnabled(false);
+		this.ventaeliminarProdMenu.setEnabled(false);
+		this.ventasMenu.setEnabled(false);
 	}
 
 	/**
@@ -252,40 +294,6 @@ public class FramePrincipal extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String args[]) {
-		/* Set the Nimbus look and feel */
-		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-		 * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-		 */
-		try {
-			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					javax.swing.UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
-			}
-		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(FramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(FramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(FramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(FramePrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		}
-		//</editor-fold>
-
-		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new FramePrincipal().setVisible(true);
-			}
-		});
-	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton abrirSesionBtn;
     private javax.swing.JMenuItem acercaDeMenu;
@@ -488,13 +496,10 @@ public class FramePrincipal extends javax.swing.JFrame {
 	}
 	
 	public void setFont(Font font){
+		panelSesion.setFont(font);
 		panelVenta.setFont(font);
 		panelVentas.setFont(font);
 		statusPanel.setFont(font);
-		
-		//statusWest.setFont(font);
-		//statusCenter.setFont(font);
-		//statusConeccion.setFont(font);
 	}
 	
 	private ImageIcon pml30ImageIcon = null;

@@ -367,11 +367,11 @@ public class ApplicationLogic {
 		return almacen;
 	}
 	
-	public void updateCorteCajaDTO(){
+	public void iniciaAppCorteCajaDTO(){
 		getCorteCajaDTO().setCaja(MemoryDAO.getNumCaja());
 		getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
 		getCorteCajaDTO().setFecha(System.currentTimeMillis());
-		getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_ENLINEA);
+		getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AP_INICIADA);
 		if(logged!=null) {
 			getCorteCajaDTO().setUsuarioEmail(logged.getE());
 		} else {
@@ -379,5 +379,6 @@ public class ApplicationLogic {
 		}
 		getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
 		MemoryDAO.saveCorteCajaDTO(corteCajaDTO);
+		MemoryDAO.backupCorteCajaDTO(corteCajaDTO);
 	}	
 }
