@@ -47,36 +47,36 @@ public class Main {
 		FramePrincipalControl framePrincipalControl = null;
 		DialogLoginControl dialogLoginControl = null;
 		
-		System.out.println("Main args[]={");
+		System.out.println("main:Main args[]={");
 		dinamicDebug=false;
 		int na=0;
 		for(String a: args){
 			if(na>0){
 				System.out.print(", ");
 			}
-			System.out.print("\t\""+a+"\"");
+			System.out.println("main:\t\""+a+"\"");
 			if(a.equals("-debug=true")){
 				dinamicDebug = true;
 			}
 			na++;
 		}
-		System.out.println("}");
+		System.out.println("main:}");
 		
 		if(dinamicDebug){
-			System.out.println("->Activating Log4J DEBUG Level.");
+			System.out.println("main:->Activating Log4J DEBUG Level.");
 			LogManager.getRootLogger().setLevel(Level.DEBUG);
 		}
 		
 		isSingleInstanceRunning();
 
-		logger.debug("==========================================================>>>");
+		logger.debug("main:ok, Just 1 Thread");
 
 		MemoryDAO.loadProperties();		
 		
-		logger.debug("<<<==========================================================");
+		logger.debug("main: After Load Properties.");
 
 		try {
-			logger.debug("L&Fs:" + Arrays.asList(UIManager.getInstalledLookAndFeels()));
+			logger.trace("main: L&Fs:" + Arrays.asList(UIManager.getInstalledLookAndFeels()));
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 			//UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
@@ -84,7 +84,7 @@ public class Main {
 			JDialog.setDefaultLookAndFeelDecorated(true);
 
 		} catch (Exception e) {
-			logger.error( "setLookAndFeel:", e);
+			logger.error( "main:setLookAndFeel:", e);
 		}
 
 		if (!MemoryDAO.isExsistFile()) {
@@ -93,22 +93,18 @@ public class Main {
 
 			while (FirstRunParamsConfigDialogControl.isConfiguring()) {
 				try {
-					logger.trace("==>> configuring");
+					logger.trace("main:==>> configuring");
 					Thread.sleep(500);
 				} catch (InterruptedException ie) {
-					logger.trace("==>> InterruptedException");
+					logger.trace("main:==>> InterruptedException");
 				}
 			}
-			logger.debug("==>> is configuring:" + FirstRunParamsConfigDialogControl.isConfiguring());
+			logger.debug("main:==>> is configuring:" + FirstRunParamsConfigDialogControl.isConfiguring());
 			if (!FirstRunParamsConfigDialogControl.getParamatersConfigured()) {
 				System.exit(2);
 			}
 		}
 		
-		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
-		
-		logger.debug("------------>> CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
-
 		if (ApplicationLogic.getInstance().needsUpdateApplciation()) {
 			int respuesta = JOptionPane.showConfirmDialog(null,
 					"HAY UNA NUEVA VERIÓN PARA INSTALAR,\n ¿ DESEA ACTUALIZAR DE LA VERSIÓN ACTUAL "+
@@ -123,15 +119,20 @@ public class Main {
 				
 				while(uafc.isActualizando()){
 					try {
-						logger.debug("==>> updating");
+						logger.debug("main:==>> updating");
 						Thread.sleep(500);
 					} catch (InterruptedException ie) {
 					}
 				}
-			}
+			}		
 		}
 		
-		logger.debug("======================= INICIANDO =======================");
+		logger.debug("main: After Check Update.");
+		MemoryDAO.preLoad();
+		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();		
+		logger.debug("main:CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
+
+		logger.debug("main:======================= S T A R T I N G =======================");
 
 		MemoryDAO.startPaqueteSyncService();
 
@@ -144,7 +145,7 @@ public class Main {
 			framePrincipalControl.estadoInicial();
 			framePrincipalControl.iniciaReloj();
 
-			logger.debug("-------->> Frame Principal, esperando antes de login");
+			logger.debug("main:-------->> Frame Principal, esperando antes de login");
 			dialogLoginControl.setFontBigest();
 			dialogLoginControl.getDialogLogin().pack();
 			dialogLoginControl.getDialogLogin().setLocationRelativeTo(null);
@@ -153,15 +154,16 @@ public class Main {
 			if (!dialogLoginControl.isLoggedIn()) {
 				throw new IllegalAccessException("NO SE ACCESO ");
 			} else {
-				logger.info("->OK logedin, GO !");
-				
+				logger.debug("main:======================= L O G G E D   I N  =======================");
 				framePrincipalControl.enableAndDisableAdminControls();
 				framePrincipalControl.updateStatusWest();
 			}
-
-		} catch (Exception e) {
-			logger.error("EN acceso:", e);
+		} catch (IllegalAccessException e) {
+			logger.debug("main: NO se Acceso.");
 			System.exit(1);
+		} catch (Exception e) {
+			logger.error("Main:", e);
+			System.exit(2);
 		}
 
 	}

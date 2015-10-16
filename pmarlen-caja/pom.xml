@@ -155,6 +155,7 @@
 									<fileset dir="${basedir}" includes="data*.json"/>
 									<fileset dir="${basedir}" includes="CorteCajaDTO*.json "/>
 									<fileset dir="${basedir}" includes="PML30-CAJA*"/>
+									<fileset dir="${basedir}" includes="P*.log"/>
 									<fileset dir="${basedir}" includes="system.properties"/>
 								</delete>
 							</target>

@@ -28,16 +28,17 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
 		Object[] sucs=new Sucursal[]{
 			new Sucursal(2, "SAN MARTÍN"),
 			new Sucursal(3, "TECAMAC"),
-			new Sucursal(4, "OJO DE AGUA")
+			new Sucursal(4, "OJO DE AGUA"),
+			new Sucursal(5, "LOS REYES")
 		};
 		Object[] cajas=new Caja[]{
 			new Caja(1, "CAJA #1"),
-			new Caja(3, "CAJA #2"),
-			new Caja(4, "CAJA #3"),
+			new Caja(2, "CAJA #2"),
+			new Caja(3, "CAJA #3"),
 			new Caja(4, "CAJA #4"),
-			new Caja(4, "CAJA #5"),
-			new Caja(4, "CAJA #6"),
-			new Caja(4, "CAJA #7")
+			new Caja(5, "CAJA #5"),
+			new Caja(6, "CAJA #6"),
+			new Caja(7, "CAJA #7")
 		};
 		
 		sucursal.setModel(new DefaultComboBoxModel(sucs));

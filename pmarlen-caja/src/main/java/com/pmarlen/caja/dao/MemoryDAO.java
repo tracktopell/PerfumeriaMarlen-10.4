@@ -126,18 +126,33 @@ public class MemoryDAO {
 	}
 
 	public static SyncDTOPackage getPaqueteSinc() {
-		if(paqueteSinc ==null ){
+		logger.debug("getPaqueteSinc:paqueteSinc="+paqueteSinc);
+		if(paqueteSinc == null ){
 			try {
 				if(!exsistPackage()){
 					download();
 				}
 				readLocally();
 			}catch(IOException ioe){
-				logger.error("downoload",ioe);
+				logger.error("getPaqueteSinc: getting paqueteSinc:",ioe);
 			}
 		}
 		return paqueteSinc;
 	}
+	
+	public static void preLoad() {
+		logger.debug("preLoad:paqueteSinc is null ?");
+		if(paqueteSinc == null ){
+			try {
+				if(exsistPackage()){
+					readLocally();
+				}
+			}catch(Exception ioe){
+				logger.error("preLoad:: getting paqueteSinc:",ioe);
+			}
+		}		
+	}
+	
 	private static boolean runnigPool = true;
 	private static int     syncPollState = 0;
 	private static long    xt = 0;
@@ -220,11 +235,14 @@ public class MemoryDAO {
 	}
 
 	private static boolean exsistPackage() {
+		logger.debug("exsistPackage:");
 		File modelFile = null;
 		modelFile = new File(fileName);
 		if (modelFile.canRead() && modelFile.isFile() && modelFile.length() > 1024) {
+			logger.debug("exsistPackage: ok, File ("+modelFile.getAbsolutePath()+")Exist !");
 			return true;
 		}
+		logger.debug("exsistPackage: NO, File doesn't Exist :( ");
 		return false;
 	}
 	
@@ -433,6 +451,7 @@ public class MemoryDAO {
 	}
 
 	private static void readLocally() {
+		logger.debug("readLocally:");
 		ZipFile zf=null;
 		Gson gson=new Gson();
 		String jsonContent=null;
@@ -440,23 +459,23 @@ public class MemoryDAO {
 		boolean deleted=false;
 		try {
 			fileZip = new File(fileName);
-			logger.debug("open ZIP:"+fileZip.getAbsolutePath());
+			logger.debug("readLocally:open ZIP:"+fileZip.getAbsolutePath());
 			zf = new ZipFile(fileZip);
 		} catch(ZipException ze){
-			logger.error("ZIP corrupto:"+fileZip,ze);
+			logger.error("readLocally:ZIP corrupto:"+fileZip,ze);
 			deleted=fileZip.delete();
-			logger.debug("1)Deleteed  ZIP:"+fileZip.getAbsolutePath()+" ? "+deleted);
+			logger.debug("readLocally: 1)Deleteed  ZIP:"+fileZip.getAbsolutePath()+" ? "+deleted);
 			return;
 		} catch(IOException ioe) {
-			logger.error("ZIP error al leer:"+fileZip,ioe);
+			logger.error("readLocally: ZIP error al leer:"+fileZip,ioe);
 			deleted=fileZip.delete();
-			logger.debug("2)Deleteed  ZIP:"+fileZip.getAbsolutePath()+" ? "+deleted);
+			logger.debug("readLocally: 2)Deleteed  ZIP:"+fileZip.getAbsolutePath()+" ? "+deleted);
 			return;
 		}
 		
 		try {
 			Enumeration<? extends ZipEntry> entries = zf.entries();
-
+			logger.debug("readLocally: OK Reading ZIP");
 			while(entries.hasMoreElements()){
 				ZipEntry ze = entries.nextElement();
 
@@ -464,7 +483,7 @@ public class MemoryDAO {
 				byte buffer[] =new byte[1024];
 				ByteArrayOutputStream baos= new ByteArrayOutputStream();
 				if(ze.getName().endsWith(".json")){
-					logger.debug("Reading from:"+ze.getName()+", "+ze.getSize()+" bytes");
+					logger.debug("readLocally:\tReading from:"+ze.getName()+", "+ze.getSize()+" bytes");
 					InputStream is = zf.getInputStream(ze);
 					int r=0;
 					while((r=is.read(buffer))!=-1){
@@ -473,52 +492,53 @@ public class MemoryDAO {
 					}
 					baos.close();
 					is.close();
-					logger.debug("OK read.");
+					logger.debug("readLocally:\tOK read.");
 					
 					content = baos.toByteArray();
-					logger.debug("content.length="+content.length);
+					logger.debug("readLocally:\tcontent.length="+content.length);
 					
 					jsonContent=new String(content);					
 					
-					logger.debug("jsonContent.size="+jsonContent.length());
+					logger.debug("readLocally:\tjsonContent.size="+jsonContent.length());
 					//logger.debug("jsonContent="+jsonContent);
 				}
 			}
 			zf.close();
-			logger.debug("After read zip");
+			logger.debug("readLocally:After read zip");
 			if(jsonContent != null) {
-				logger.debug("...OK, JSon parse:");
+				logger.debug("readLocally:...OK, JSon parse:");
 				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
-				logger.debug("paqueteSinc:->"+paqueteSinc+"<-");
-				logger.debug("paqueteSinc:->paqueteSinc.getSyncDBStatus():"+Integer.toBinaryString(paqueteSinc.getSyncDBStatus())+"<-");
+				logger.debug("readLocally:paqueteSinc=->"+paqueteSinc+"<-");
+				logger.debug("readLocally:paqueteSinc=->paqueteSinc.getSyncDBStatus():"+Integer.toBinaryString(paqueteSinc.getSyncDBStatus())+"<-");
 				
 				if( (paqueteSinc.getSyncDBStatus() & SyncDTOPackage.SYNC_FAIL) == SyncDTOPackage.SYNC_FAIL) {
-					logger.debug("paqueteSinc:->SYNC_FAIL:");
+					logger.debug("readLocally:paqueteSinc:->SYNC_FAIL:");
 					if( (paqueteSinc.getSyncDBStatus() & SyncDTOPackage.SYNC_FAIL_INTEGRITY) == SyncDTOPackage.SYNC_FAIL_INTEGRITY) {
-						logger.debug("paqueteSinc:->SYNC_FAIL_INTEGRITY:");
+						logger.debug("readLocally:paqueteSinc=->SYNC_FAIL_INTEGRITY:");
 					} else if( (paqueteSinc.getSyncDBStatus() & SyncDTOPackage.SYNC_FAIL_JDBC) == SyncDTOPackage.SYNC_FAIL_JDBC) {
-						logger.debug("paqueteSinc:->SYNC_FAIL_JDBC:");
+						logger.debug("readLocally:paqueteSinc=->SYNC_FAIL_JDBC:");
 					}
 				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_OK) {
-					logger.debug("paqueteSinc:->SYNC_OK");
+					logger.debug("readLocally:paqueteSinc:->SYNC_OK");
 					ESFileSystemJsonDAO.reset();								
 				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_EMPTY_TRANSACTION) {
-					logger.debug("paqueteSinc:->SYNC_EMPTY_TRANSACTION");
+					logger.debug("readLocally:paqueteSinc:->SYNC_EMPTY_TRANSACTION");
 				}
 				
 				List<I> lp = paqueteSinc.getInventarioSucursalList();
 				productosParaBuscar = new HashMap<String,I>();
-				logger.debug("productosParaBuscar, begin");
+				logger.debug("readLocally:productosParaBuscar, begin");
 				long t0=System.currentTimeMillis();
 				for(I p: lp){
 					productosParaBuscar.put(p.getCb(),p);
 				}
 				long t=t0-System.currentTimeMillis();
-				logger.debug("productosParaBuscar, ready T="+t);
-				logger.debug("==========================>>>>>paqueteSinc.getSucursal="+paqueteSinc.getSucursal());				
+				logger.debug("readLocally:productosParaBuscar, ready T="+t);
+				logger.debug("readLocally:paqueteSinc.getSucursal="+paqueteSinc.getSucursal());				
 				if(paqueteSinc.getSucursal()!=null){
-					logger.debug("==========================>>>>>\tpaqueteSinc.getSucursal.clave="+paqueteSinc.getSucursal().getClave());
+					logger.debug("readLocally:paqueteSinc.getSucursal.clave="+paqueteSinc.getSucursal().getClave());
 				}
+				logger.debug("readLocally: --------------- LOADING All Objects in Memory ------------");
 				almacenList = paqueteSinc.getAlmacenList();
 				usuarioList = paqueteSinc.getUsuarioList();
 				clienteList = paqueteSinc.getClienteList();
@@ -532,10 +552,11 @@ public class MemoryDAO {
 				}
 				
 				ApplicationLogic.getInstance().setTipoAlmacen(almacenList);
+				logger.debug("readLocally:======================= E N D ======================");
 			}
 			
 		} catch (Exception ex) {
-			logger.error("Reading ZIP:", ex);
+			logger.debug("readLocally:Reading ZIP:", ex);
 		}
 
 	}
