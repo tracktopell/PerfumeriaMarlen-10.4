@@ -18,23 +18,17 @@ import org.apache.log4j.Logger;
  * @author tracktopell
  */
 public class DialogLoginControl implements ActionListener , FocusListener{
-	private static Logger logger = Logger.getLogger(DialogLoginControl.class.getName());
-	DialogLogin dialogLogin;
-	private boolean leggedIn;
-	final int MAX_INTENTOS = 3;
-	int intentos;
-	U logged;
-
-	private static DialogLoginControl instance;
-
-	public static DialogLoginControl getInstance(DialogLogin dialogLogin) {
-		if(instance == null){
-			instance = new DialogLoginControl(dialogLogin);
-		}
-		return instance;
-	}
+	public static final int MAX_INTENTOS = 3;
+	private static final String DOMAIN_NAME="@perfumeriamarlen.com.mx";
 	
-	private DialogLoginControl(DialogLogin dialogLogin) {
+	private Logger logger = Logger.getLogger(DialogLoginControl.class.getName());
+	private DialogLogin dialogLogin;
+	private boolean leggedIn;
+
+	private int intentos;
+	private U logged;
+	
+	public DialogLoginControl(DialogLogin dialogLogin) {
 		this.dialogLogin = dialogLogin;
 		this.dialogLogin.getEmail()   .addFocusListener(this);
 		this.dialogLogin.getEmail()   .addActionListener(this);
@@ -42,10 +36,6 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		this.dialogLogin.getPassword().addActionListener(this);
 	}
 
-	public DialogLogin getDialogLogin() {
-		return dialogLogin;
-	}
-	
 	public void estadoInicial(){
 		logger.debug("estadoInicial():setVisible(true) --------------------------------------[    V E N T A N A     V I S I B L E ]-----------------------------------");
 		dialogLogin.setVisible(true);
@@ -102,6 +92,7 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		return 	true;	
 		
 	}
+	
 	private boolean autheticate(){
 		
 		String passwordValue = new String(dialogLogin.getPassword().getPassword());
@@ -148,7 +139,6 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		}
 	}
 	
-	private static final String DOMAIN_NAME="@perfumeriamarlen.com.mx";
 	
 	private void email_FocusLost(){
 		String emailValue = dialogLogin.getEmail().getText().trim();
@@ -160,4 +150,9 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 	public void setFontBigest() {
 		dialogLogin.setFont(new java.awt.Font("Tahoma", 0, 24));
 	}
+
+	public DialogLogin getDialogLogin() {
+		return dialogLogin;
+	}
+
 }

@@ -12,6 +12,7 @@ import com.pmarlen.model.Constants;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
@@ -325,23 +326,24 @@ public class PanelVenta extends javax.swing.JPanel {
 		return defaultProductoImageIcon;	
 	}
 	
-	String imagePath = "/PM_MULTIMEDIO_MIN_JPG/";
+	String imagePath = "/jpg/";
 	
 	private ImageIcon getProductoImageIcon(Producto p){
 		logger.debug("=>getProductoImageIcon(" + p +")");
 		ImageIcon productoImageIcon = null;
 		File fileImage=null;
-		try{
-			//fileImage = new File(imagePath+"/MED_PRODUCTO_MULTIMEDIO_"+p.getCodigoBarras()+"_1.jpg");
-			fileImage = new File(getImagesDir()+imagePath+"/MIN_PRODUCTO_MULTIMEDIO_"+p.getCodigoBarras()+"_1.jpg");
+		try{			
+			fileImage = new File(getImagesDir()+imagePath+"/MIN_"+p.getCodigoBarras()+"_01.jpg");
 			if(fileImage.exists() && fileImage.canRead()) {
 				logger.trace("=>getProductoImageIcon: fileImage:" + fileImage+", size:"+fileImage.length()+" bytes");
 				productoImageIcon = new ImageIcon(ImageIO.read(new FileInputStream(fileImage)));
 			} else {
-				throw new Exception("Image not found for :"+p.getCodigoBarras()+", fileImage:"+fileImage);
+				throw new FileNotFoundException("Image not found for :"+p.getCodigoBarras()+", fileImage:"+fileImage);
 			}
+		} catch(FileNotFoundException fnfe){			
+			productoImageIcon = getDefaultProductoImageIcon();
 		} catch(Exception e){
-			logger.debug(e.getMessage());
+			logger.error("getProductoImageIcon("+p.getCodigoBarras()+"):Reading Image File:",e);
 			productoImageIcon = getDefaultProductoImageIcon();
 		}
 		return productoImageIcon;	
@@ -354,7 +356,8 @@ public class PanelVenta extends javax.swing.JPanel {
 			labelNombre.setText(p.getNombre());		
 			labelPresentacion.setText(p.getPresentacion());
 			labelContenido.setText(p.getContenido()+" "+p.getUnidadMedida());
-			infoColsPanel.setToolTipText("A1["+p.getA1c()+"] AO["+p.getaOc()+"] AR["+p.getaRc()+"]");
+			//infoColsPanel.setToolTipText("A1["+p.getA1c()+"] AO["+p.getaOc()+"] AR["+p.getaRc()+"]");
+			infoColsPanel.setToolTipText("#["+p.getA1c()+"]");
 			if(tipoAlmacen == Constants.ALMACEN_PRINCIPAL)
 				labelPrecio.setText(df.format(p.getA1p()));
 			else if(tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD)

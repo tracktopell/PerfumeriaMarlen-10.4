@@ -18,21 +18,11 @@ import java.awt.event.ActionListener;
  * @author alfredo
  */
 public class FirstRunParamsConfigDialogControl implements ActionListener{
-	private static boolean configuring=false;
-	private static boolean paramatersConfigured=false;
+	private boolean configuring=false;
+	private boolean paramatersConfigured=false;
+	private FirstRunParamsConfigDialog dlg;	
 	
-	public static boolean isConfiguring() {
-		return configuring;
-	}
-
-	public static boolean getParamatersConfigured() {
-		return paramatersConfigured;
-	}
-	FirstRunParamsConfigDialog dlg;
-	
-	private static FirstRunParamsConfigDialogControl instance;
-
-	private FirstRunParamsConfigDialogControl() {
+	public FirstRunParamsConfigDialogControl() {
 		this.dlg = new FirstRunParamsConfigDialog();
 		dlg.getGuardar().addActionListener(this);
 		dlg.getCancelar().addActionListener(this);		
@@ -47,14 +37,14 @@ public class FirstRunParamsConfigDialogControl implements ActionListener{
 		this.dlg.getCaja().setSelectedItem    (new Caja    (Integer.parseInt(MemoryDAO.getProperties().getProperty("caja"))));
 		this.dlg.setVisible(true);
 	}
-
-	public static FirstRunParamsConfigDialogControl getInstance() {
-		if(instance == null){
-			instance = new FirstRunParamsConfigDialogControl();
-		}
-		return instance;
+	public boolean isConfiguring() {
+		return configuring;
 	}
 
+	public boolean getParamatersConfigured() {
+		return paramatersConfigured;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == dlg.getGuardar()) {
@@ -78,12 +68,11 @@ public class FirstRunParamsConfigDialogControl implements ActionListener{
 		this.dlg.dispose();
 		configuring = false;
 		paramatersConfigured = true;
+		this.dlg = null;
 	}
 	
 	private void cancelar_ActionPerformed(){
 		this.dlg.dispose();
-		configuring = false;
-		//System.exit(2);
-	}
-	
+		configuring = false;		
+	}	
 }

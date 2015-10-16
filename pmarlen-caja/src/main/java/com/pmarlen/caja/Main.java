@@ -1,10 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pmarlen.caja;
 
-import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.control.DialogLoginControl;
 import com.pmarlen.caja.control.FirstRunParamsConfigDialogControl;
@@ -13,15 +8,10 @@ import com.pmarlen.caja.control.UpadateApplicationJFrameControl;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.view.DialogLogin;
 import com.pmarlen.caja.view.UpadateApplicationJFrame;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.Map;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -44,9 +34,6 @@ public class Main {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		FramePrincipalControl framePrincipalControl = null;
-		DialogLoginControl dialogLoginControl = null;
-		
 		System.out.println("main:Main args[]={");
 		dinamicDebug=false;
 		int na=0;
@@ -88,21 +75,24 @@ public class Main {
 		}
 
 		if (!MemoryDAO.isExsistFile()) {
-			logger.debug("==========================================================>>> 1 Time");
-			FirstRunParamsConfigDialogControl.getInstance().estadoInicial();
+			logger.debug("main: 1st Time");
+			FirstRunParamsConfigDialogControl firstRunParamsConfigDialogControl = new FirstRunParamsConfigDialogControl();
+			firstRunParamsConfigDialogControl.estadoInicial();
 
-			while (FirstRunParamsConfigDialogControl.isConfiguring()) {
+			while (firstRunParamsConfigDialogControl.isConfiguring()) {
 				try {
-					logger.trace("main:==>> configuring");
+					logger.trace("main:configuring");
 					Thread.sleep(500);
 				} catch (InterruptedException ie) {
-					logger.trace("main:==>> InterruptedException");
+					logger.trace("main:InterruptedException");
 				}
 			}
-			logger.debug("main:==>> is configuring:" + FirstRunParamsConfigDialogControl.isConfiguring());
-			if (!FirstRunParamsConfigDialogControl.getParamatersConfigured()) {
+			logger.debug("main:is configuring ?" + firstRunParamsConfigDialogControl.isConfiguring());
+			if (!firstRunParamsConfigDialogControl.getParamatersConfigured()) {
+				logger.info("[USER]->!firstRunParamsConfigDialogControl.getParamatersConfigured()" );
 				System.exit(2);
 			}
+			firstRunParamsConfigDialogControl = null;
 		}
 		
 		if (ApplicationLogic.getInstance().needsUpdateApplciation()) {
@@ -113,21 +103,25 @@ public class Main {
 					"ACTUALIZACION DISPONIBLE", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			if (respuesta == JOptionPane.YES_OPTION) {
+				logger.info("[USER]->UpdateApp:YES");
 				UpadateApplicationJFrame uaf = new UpadateApplicationJFrame();
 				UpadateApplicationJFrameControl uafc = new UpadateApplicationJFrameControl(uaf);
 				uafc.estadoInicial();
 				
 				while(uafc.isActualizando()){
 					try {
-						logger.debug("main:==>> updating");
+						logger.debug("main:Updating");
 						Thread.sleep(500);
 					} catch (InterruptedException ie) {
+						logger.trace("main:InterruptedException");
 					}
 				}
-			}		
+			} else {
+				logger.info("[USER]->UpdateApp:NO");
+			}	
 		}
 		
-		logger.debug("main: After Check Update.");
+		logger.debug("main:Ready for Preload.");
 		MemoryDAO.preLoad();
 		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();		
 		logger.debug("main:CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
@@ -137,35 +131,33 @@ public class Main {
 		MemoryDAO.startPaqueteSyncService();
 
 		try {
-			framePrincipalControl = FramePrincipalControl.getInstance();
-
-			DialogLogin dialogLogin = DialogLogin.getInstance(framePrincipalControl.getFramePrincipal());
-			dialogLoginControl = DialogLoginControl.getInstance(dialogLogin);
-			framePrincipalControl.setFontBigest();
-			framePrincipalControl.estadoInicial();
-			framePrincipalControl.iniciaReloj();
+			DialogLogin dialogLogin = DialogLogin.getInstance(FramePrincipalControl.getInstance().getFramePrincipal());
+			DialogLoginControl dlc = new DialogLoginControl(dialogLogin);
+			
+			FramePrincipalControl.getInstance().setFontBigest();
+			FramePrincipalControl.getInstance().estadoInicial();
+			FramePrincipalControl.getInstance().iniciaReloj();
 
 			logger.debug("main:-------->> Frame Principal, esperando antes de login");
-			dialogLoginControl.setFontBigest();
-			dialogLoginControl.getDialogLogin().pack();
-			dialogLoginControl.getDialogLogin().setLocationRelativeTo(null);
-			dialogLoginControl.estadoInicial();
+			dlc.setFontBigest();
+			dlc.getDialogLogin().pack();
+			dlc.getDialogLogin().setLocationRelativeTo(null);
+			dlc.estadoInicial();
 
-			if (!dialogLoginControl.isLoggedIn()) {
-				throw new IllegalAccessException("NO SE ACCESO ");
+			if (!dlc.isLoggedIn()) {
+				throw new IllegalAccessException();
 			} else {
 				logger.debug("main:======================= L O G G E D   I N  =======================");
-				framePrincipalControl.enableAndDisableAdminControls();
-				framePrincipalControl.updateStatusWest();
+				FramePrincipalControl.getInstance().enableAndDisableAdminControls();
+				FramePrincipalControl.getInstance().updateStatusWest();
 			}
 		} catch (IllegalAccessException e) {
-			logger.debug("main: NO se Acceso.");
+			logger.info("[USER]->CLOSE");
 			System.exit(1);
 		} catch (Exception e) {
 			logger.error("Main:", e);
 			System.exit(2);
 		}
-
 	}
 
 	private static void isSingleInstanceRunning() {

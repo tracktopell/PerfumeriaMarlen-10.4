@@ -5,19 +5,21 @@
  */
 package com.pmarlen.caja.view;
 
+import java.awt.Frame;
+
 /**
  *
  * @author alfredo
  */
-public class CierreCajaJFrame extends javax.swing.JFrame {
+public class CierreCajaJFrame extends javax.swing.JDialog {
 
 	/**
 	 * Creates new form CierreCajaJFrame
 	 */
-	public CierreCajaJFrame() {
+	public CierreCajaJFrame(final Frame parent) {
+		super(parent, true);
 		initComponents();
 	}
-
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,36 +29,42 @@ public class CierreCajaJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        saldoInicial = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        estimado = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        saldoFinal = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        diferencia = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        observaciones = new javax.swing.JTextField();
         jPanel7 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        usuarioAutorizo = new javax.swing.JComboBox();
+        jPanel10 = new javax.swing.JPanel();
+        jPanel11 = new javax.swing.JPanel();
+        generaFraseBtn = new javax.swing.JButton();
+        frase = new javax.swing.JTextField();
         jPanel8 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        token = new javax.swing.JTextField();
+        resultadoToken = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        aceptarBtn = new javax.swing.JButton();
+        cancelarBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new java.awt.BorderLayout(0, 5));
 
-        jPanel1.setLayout(new java.awt.GridLayout(7, 1));
+        jPanel12.setLayout(new java.awt.GridLayout(3, 1, 0, 10));
 
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -65,25 +73,12 @@ public class CierreCajaJFrame extends javax.swing.JFrame {
         jLabel2.setPreferredSize(new java.awt.Dimension(300, 25));
         jPanel2.add(jLabel2);
 
-        jTextField1.setEditable(false);
-        jTextField1.setColumns(6);
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel2.add(jTextField1);
+        saldoInicial.setEditable(false);
+        saldoInicial.setColumns(6);
+        saldoInicial.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel2.add(saldoInicial);
 
-        jPanel1.add(jPanel2);
-
-        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("SALDO FINAL :");
-        jLabel3.setPreferredSize(new java.awt.Dimension(300, 25));
-        jPanel3.add(jLabel3);
-
-        jTextField2.setColumns(6);
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel3.add(jTextField2);
-
-        jPanel1.add(jPanel3);
+        jPanel12.add(jPanel2);
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -92,12 +87,30 @@ public class CierreCajaJFrame extends javax.swing.JFrame {
         jLabel4.setPreferredSize(new java.awt.Dimension(300, 25));
         jPanel4.add(jLabel4);
 
-        jTextField3.setEditable(false);
-        jTextField3.setColumns(6);
-        jTextField3.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel4.add(jTextField3);
+        estimado.setEditable(false);
+        estimado.setColumns(6);
+        estimado.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel4.add(estimado);
 
-        jPanel1.add(jPanel4);
+        jPanel12.add(jPanel4);
+
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setText("SALDO FINAL :");
+        jLabel3.setPreferredSize(new java.awt.Dimension(300, 25));
+        jPanel3.add(jLabel3);
+
+        saldoFinal.setColumns(6);
+        saldoFinal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel3.add(saldoFinal);
+
+        jPanel12.add(jPanel3);
+
+        getContentPane().add(jPanel12, java.awt.BorderLayout.PAGE_START);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("CIERRE CON ANORMALIDADES"));
+        jPanel1.setLayout(new java.awt.GridLayout(5, 1));
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -106,9 +119,10 @@ public class CierreCajaJFrame extends javax.swing.JFrame {
         jLabel5.setPreferredSize(new java.awt.Dimension(300, 25));
         jPanel5.add(jLabel5);
 
-        jTextField4.setColumns(6);
-        jTextField4.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel5.add(jTextField4);
+        diferencia.setEditable(false);
+        diferencia.setColumns(6);
+        diferencia.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel5.add(diferencia);
 
         jPanel1.add(jPanel5);
 
@@ -119,11 +133,8 @@ public class CierreCajaJFrame extends javax.swing.JFrame {
         jLabel6.setPreferredSize(new java.awt.Dimension(300, 25));
         jPanel6.add(jLabel6);
 
-        jTextArea1.setColumns(30);
-        jTextArea1.setRows(3);
-        jScrollPane1.setViewportView(jTextArea1);
-
-        jPanel6.add(jScrollPane1);
+        observaciones.setColumns(30);
+        jPanel6.add(observaciones);
 
         jPanel1.add(jPanel6);
 
@@ -133,76 +144,65 @@ public class CierreCajaJFrame extends javax.swing.JFrame {
         jLabel7.setText("AUTORIZÓ DIFERENCIA :");
         jLabel7.setPreferredSize(new java.awt.Dimension(300, 25));
         jPanel7.add(jLabel7);
-        jPanel7.add(jComboBox1);
+        jPanel7.add(usuarioAutorizo);
 
         jPanel1.add(jPanel7);
+
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jPanel11.setPreferredSize(new java.awt.Dimension(300, 35));
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        generaFraseBtn.setText("OBTENER FRASE :");
+        jPanel11.add(generaFraseBtn);
+
+        jPanel10.add(jPanel11);
+
+        frase.setEditable(false);
+        frase.setColumns(6);
+        frase.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel10.add(frase);
+
+        jPanel1.add(jPanel10);
 
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel8.setText("FRASE: [--------] +TOKEN  :");
+        jLabel8.setText("TOKEN  :");
         jLabel8.setPreferredSize(new java.awt.Dimension(300, 25));
         jPanel8.add(jLabel8);
 
-        jTextField5.setColumns(8);
-        jPanel8.add(jTextField5);
+        token.setColumns(8);
+        jPanel8.add(token);
+
+        resultadoToken.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        resultadoToken.setPreferredSize(new java.awt.Dimension(30, 30));
+        jPanel8.add(resultadoToken);
 
         jPanel1.add(jPanel8);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 100, 20));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 100, 5));
 
-        jButton1.setText("ACEPTAR");
-        jPanel9.add(jButton1);
+        aceptarBtn.setText("ACEPTAR");
+        jPanel9.add(aceptarBtn);
 
-        jButton2.setText("CANCELAR");
-        jPanel9.add(jButton2);
+        cancelarBtn.setText("CANCELAR");
+        jPanel9.add(cancelarBtn);
 
         getContentPane().add(jPanel9, java.awt.BorderLayout.SOUTH);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String args[]) {
-		/* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-		 * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-		 */
-		try {
-			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					javax.swing.UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
-			}
-		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(CierreCajaJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(CierreCajaJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(CierreCajaJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(CierreCajaJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		}
-        //</editor-fold>
-
-		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new CierreCajaJFrame().setVisible(true);
-			}
-		});
-	}
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JButton aceptarBtn;
+    private javax.swing.JButton cancelarBtn;
+    private javax.swing.JTextField diferencia;
+    private javax.swing.JTextField estimado;
+    private javax.swing.JTextField frase;
+    private javax.swing.JButton generaFraseBtn;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -211,6 +211,9 @@ public class CierreCajaJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -219,12 +222,94 @@ public class CierreCajaJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField observaciones;
+    private javax.swing.JLabel resultadoToken;
+    private javax.swing.JTextField saldoFinal;
+    private javax.swing.JTextField saldoInicial;
+    private javax.swing.JTextField token;
+    private javax.swing.JComboBox usuarioAutorizo;
     // End of variables declaration//GEN-END:variables
+	/**
+	 * @return the aceptarBtn
+	 */
+	public javax.swing.JButton getAceptarBtn() {
+		return aceptarBtn;
+	}
+
+	/**
+	 * @return the cancelarBtn
+	 */
+	public javax.swing.JButton getCancelarBtn() {
+		return cancelarBtn;
+	}
+
+	/**
+	 * @return the diferencia
+	 */
+	public javax.swing.JTextField getDiferencia() {
+		return diferencia;
+	}
+
+	/**
+	 * @return the estimado
+	 */
+	public javax.swing.JTextField getEstimado() {
+		return estimado;
+	}
+
+	/**
+	 * @return the frase
+	 */
+	public javax.swing.JTextField getFrase() {
+		return frase;
+	}
+
+	/**
+	 * @return the generaFraseBtn
+	 */
+	public javax.swing.JButton getGeneraFraseBtn() {
+		return generaFraseBtn;
+	}
+
+	/**
+	 * @return the observaciones
+	 */
+	public javax.swing.JTextField getObservaciones() {
+		return observaciones;
+	}
+
+	/**
+	 * @return the resultadoToken
+	 */
+	public javax.swing.JLabel getResultadoToken() {
+		return resultadoToken;
+	}
+
+	/**
+	 * @return the saldoFinal
+	 */
+	public javax.swing.JTextField getSaldoFinal() {
+		return saldoFinal;
+	}
+
+	/**
+	 * @return the saldoInicial
+	 */
+	public javax.swing.JTextField getSaldoInicial() {
+		return saldoInicial;
+	}
+
+	/**
+	 * @return the token
+	 */
+	public javax.swing.JTextField getToken() {
+		return token;
+	}
+
+	/**
+	 * @return the usuarioAutorizo
+	 */
+	public javax.swing.JComboBox getUsuarioAutorizo() {
+		return usuarioAutorizo;
+	}
 }
