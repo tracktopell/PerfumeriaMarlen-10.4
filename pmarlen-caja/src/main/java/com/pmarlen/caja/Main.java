@@ -71,8 +71,7 @@ public class Main {
 
 		logger.debug("==========================================================>>>");
 
-		MemoryDAO.loadProperties();
-		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
+		MemoryDAO.loadProperties();		
 		
 		logger.debug("<<<==========================================================");
 
@@ -105,9 +104,13 @@ public class Main {
 				System.exit(2);
 			}
 		}
+		
+		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
+		
+		logger.debug("------------>> CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
 
 		if (ApplicationLogic.getInstance().needsUpdateApplciation()) {
-			int respuesta = JOptionPane.showConfirmDialog(null, 					
+			int respuesta = JOptionPane.showConfirmDialog(null,
 					"HAY UNA NUEVA VERIÓN PARA INSTALAR,\n ¿ DESEA ACTUALIZAR DE LA VERSIÓN ACTUAL "+
 					ApplicationLogic.getInstance().getVersion()+" A "+ApplicationLogic.getInstance().getVersionRead()+
 					"\n EN ESTE MOMENTO ?",

@@ -1,11 +1,4 @@
-
 package com.pmarlen.backend.model;
-
-import java.io.Serializable;
-import java.util.Set;
-import java.util.MissingFormatArgumentException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 
 
 /**
@@ -103,46 +96,4 @@ public class Almacen implements java.io.Serializable {
     public String toString() {
         return "com.pmarlen.backend.model.Almacen[id = "+id+ "]";
     }
-
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
-	private static final DecimalFormat    df  = new DecimalFormat("0.000000");
-	private static final DecimalFormat    cur = new DecimalFormat("0.00");
-
-	public String printPlainSeparated(String s){
-		String ser=null;
-		StringBuffer sb= new StringBuffer();
-
-		
-		// Integer
-		sb.append(this.id);
-		sb.append(s);
-		// int
-		sb.append(this.tipoAlmacen);
-		sb.append(s);
-		// int
-		sb.append(this.sucursalId);
-
-		return ser;
-	}
-
-	public void scanFrom(String src, String s) throws MissingFormatArgumentException{
-		String srcSpplited[] = src.split(s);
-		int nf=0;
-		try {			
-			
-			// Integer
-			this.id =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// int
-			this.tipoAlmacen =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// int
-			this.sucursalId =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-
-		}catch(Exception e){
-			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");
-		}
-	}
-
 }

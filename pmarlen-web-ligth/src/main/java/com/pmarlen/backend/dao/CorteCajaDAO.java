@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 
 import com.pmarlen.backend.model.*;
 import com.tracktopell.jdbc.DataSourceFacade;
+import java.util.Date;
 
 /**
  * Class for CorteCajaDAO of Table CORTE_CAJA.
@@ -70,7 +71,7 @@ public class CorteCajaDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,TOTAL,COMENTARIOS FROM CORTE_CAJA "+
+			ps = conn.prepareStatement("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,TIPO_EVENTO,USUARIO_AUTORIZO FROM CORTE_CAJA "+
 					"WHERE ID=?"
 			);
 			ps.setInt(1, x.getId());
@@ -83,8 +84,11 @@ public class CorteCajaDAO {
 				r.setSucursalId((Integer)rs.getObject("SUCURSAL_ID"));
 				r.setCaja((Integer)rs.getObject("CAJA"));
 				r.setUsuarioEmail((String)rs.getObject("USUARIO_EMAIL"));
-				r.setTotal((Double)rs.getObject("TOTAL"));
+				r.setSaldoInicial((Double)rs.getObject("SALDO_INICIAL"));
+				r.setSaldoFinal((Double)rs.getObject("SALDO_FINAL"));
 				r.setComentarios((String)rs.getObject("COMENTARIOS"));
+				r.setTipoEvento((Integer)rs.getObject("TIPO_EVENTO"));
+				r.setUsuarioAutorizo((String)rs.getObject("USUARIO_AUTORIZO"));
 			} else {
 				throw new EntityNotFoundException("CORTE_CAJA NOT FOUND FOR ID="+x.getId());
 			}
@@ -106,14 +110,119 @@ public class CorteCajaDAO {
 		return r;		
 	}
 
-    public ArrayList<CorteCaja> findAll() throws DAOException {
+    public int countFor(CorteCaja x) throws DAOException{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		int count = -1;
+		try {
+			conn = getConnection();
+			StringBuilder sq = new StringBuilder("SELECT COUNT(*) AS NUM_CC FROM CORTE_CAJA\n");
+			sq.append("WHERE 1=1\n");
+			if(x.getFecha() != null){
+				sq.append("AND DATE(FECHA)=DATE(?)\n");
+			} else {
+				sq.append("AND FECHA IS NULL\n");
+			}
+			sq.append("AND SUCURSAL_ID=?\n");
+			if(x.getCaja() != null){
+				sq.append("AND CAJA=?\n");
+			} else {
+				sq.append("AND CAJA IS NULL\n");
+			}
+			if(x.getUsuarioEmail() != null) {
+				sq.append("AND USUARIO_EMAIL=?\n");
+			} else {
+				sq.append("AND USUARIO_EMAIL IS NULL\n");
+			}
+			sq.append("AND TIPO_EVENTO=?");
+			
+			ps = conn.prepareStatement(sq.toString());
+			
+			int param=1;
+			
+			if(x.getFecha() != null){
+				ps.setTimestamp	(param++, x.getFecha());
+			} else {
+				
+			}
+			ps.setInt		(param++, x.getSucursalId());
+			if(x.getCaja() != null){
+				ps.setInt		(param++, x.getCaja());
+			} else {
+			
+			}
+			if(x.getUsuarioEmail() != null) {
+				ps.setString	(param++, x.getUsuarioEmail());
+			} else {
+			
+			}
+			ps.setInt		(param++, x.getTipoEvento());
+			
+			logger.debug("countFor: Query count:"+sq);
+			
+			rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				count = rs.getInt(1);
+			} 
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return count;		
+	}
+
+	public ArrayList<CorteCaja> findAllBy(Integer sucursalId,Integer caja,Date fechaInicial,Date fechaFinal) throws DAOException {
 		ArrayList<CorteCaja> r = new ArrayList<CorteCaja>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,TOTAL,COMENTARIOS FROM CORTE_CAJA");
+			StringBuilder sq = new StringBuilder("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO FROM CORTE_CAJA");
+			sq.append("\n");
+			sq.append("WHERE 1=1\n");
+			
+			if(sucursalId != null){
+				sq.append("AND   SUCURSAL_ID=?\n");
+			}
+			if(caja != null){
+				sq.append("AND   CAJA=?\n");
+			}
+			if(fechaInicial != null){
+				sq.append("AND   DATE(FECHA)>=DATE(?)\n");
+			}
+			if(fechaFinal != null){
+				sq.append("AND   DATE(FECHA)<=DATE(?)\n");
+			}
+			sq.append("ORDER BY SUCURSAL_ID,CAJA,FECHA\n");
+			
+			ps = conn.prepareStatement(sq.toString());
+			int param=1;
+			if(sucursalId != null){
+				ps.setObject(param++, sucursalId);
+			}
+			if(caja != null){
+				ps.setObject(param++, caja);
+			}
+			if(fechaInicial != null){
+				ps.setObject(param++, fechaInicial);
+			}
+			if(fechaFinal != null){
+				ps.setObject(param++, fechaFinal);
+			}
 			
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -122,9 +231,54 @@ public class CorteCajaDAO {
 				x.setFecha((Timestamp)rs.getObject("FECHA"));
 				x.setSucursalId((Integer)rs.getObject("SUCURSAL_ID"));
 				x.setCaja((Integer)rs.getObject("CAJA"));
-				x.setUsuarioEmail((String)rs.getObject("USUARIO_EMAIL"));
-				x.setTotal((Double)rs.getObject("TOTAL"));
+				x.setUsuarioEmail((String)rs.getObject("USUARIO_EMAIL"));				
+				x.setSaldoInicial((Double)rs.getObject("SALDO_INICIAL"));
+				x.setSaldoFinal((Double)rs.getObject("SALDO_FINAL"));
 				x.setComentarios((String)rs.getObject("COMENTARIOS"));
+				x.setUsuarioAutorizo((String)rs.getObject("USUARIO_AUTORIZO"));
+				r.add(x);
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+	};
+
+
+    public ArrayList<CorteCaja> findAll() throws DAOException {
+		ArrayList<CorteCaja> r = new ArrayList<CorteCaja>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO,TIPO_EVENTO FROM CORTE_CAJA");
+			
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				CorteCaja x = new CorteCaja();
+				x.setId((Integer)rs.getObject("ID"));
+				x.setFecha((Timestamp)rs.getObject("FECHA"));
+				x.setSucursalId((Integer)rs.getObject("SUCURSAL_ID"));
+				x.setCaja((Integer)rs.getObject("CAJA"));
+				x.setUsuarioEmail((String)rs.getObject("USUARIO_EMAIL"));				
+				x.setSaldoInicial((Double)rs.getObject("SALDO_INICIAL"));
+				x.setSaldoFinal((Double)rs.getObject("SALDO_FINAL"));
+				x.setComentarios((String)rs.getObject("COMENTARIOS"));
+				x.setUsuarioAutorizo((String)rs.getObject("USUARIO_AUTORIZO"));
+				x.setTipoEvento((Integer)rs.getObject("TIPO_EVENTO"));
 				r.add(x);
 			}
 		}catch(SQLException ex) {
@@ -151,23 +305,26 @@ public class CorteCajaDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("INSERT INTO CORTE_CAJA(FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,TOTAL,COMENTARIOS) "+
-					" VALUES(?,?,?,?,?,?)"
+			ps = conn.prepareStatement("INSERT INTO CORTE_CAJA(FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO,TIPO_EVENTO) "+
+					" VALUES(?,?,?,?,?,?,?,?,?)"
 					,Statement.RETURN_GENERATED_KEYS);			
 			int ci=1;
-			ps.setObject(ci++,x.getId());
+			
 			ps.setObject(ci++,x.getFecha());
 			ps.setObject(ci++,x.getSucursalId());
 			ps.setObject(ci++,x.getCaja());
 			ps.setObject(ci++,x.getUsuarioEmail());
-			ps.setObject(ci++,x.getTotal());
+			ps.setObject(ci++,x.getSaldoInicial());
+			ps.setObject(ci++,x.getSaldoFinal());
 			ps.setObject(ci++,x.getComentarios());
-
+			ps.setObject(ci++,x.getUsuarioAutorizo());
+			ps.setObject(ci++,x.getTipoEvento());
+			
 			r = ps.executeUpdate();					
 			ResultSet rsk = ps.getGeneratedKeys();
 			if(rsk != null){
 				while(rsk.next()){
-					x.setId((Integer)rsk.getObject(1));
+					x.setId(rsk.getInt(1));
 				}
 			}
 		}catch(SQLException ex) {
@@ -193,17 +350,21 @@ public class CorteCajaDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("UPDATE CORTE_CAJA SET FECHA=?,SUCURSAL_ID=?,CAJA=?,USUARIO_EMAIL=?,TOTAL=?,COMENTARIOS=? "+
+			ps = conn.prepareStatement("UPDATE CORTE_CAJA SET FECHA=?,SUCURSAL_ID=?,CAJA=?,USUARIO_EMAIL=?,SALDO_INICIAL=?,SALDO_FINAL=?,COMENTARIOS=?,USUARIO_AUTORIZO=?,TIPO_EVENTO=? "+
 					" WHERE ID=?");
 			
 			int ci=1;
-			ps.setObject(ci++,x.getId());
+			
 			ps.setObject(ci++,x.getFecha());
 			ps.setObject(ci++,x.getSucursalId());
 			ps.setObject(ci++,x.getCaja());
 			ps.setObject(ci++,x.getUsuarioEmail());
-			ps.setObject(ci++,x.getTotal());
+			ps.setObject(ci++,x.getSaldoInicial());
+			ps.setObject(ci++,x.getSaldoFinal());
 			ps.setObject(ci++,x.getComentarios());
+			ps.setObject(ci++,x.getUsuarioAutorizo());
+			ps.setObject(ci++,x.getTipoEvento());
+			
 			ps.setObject(ci++,x.getId());
 			
 			r = ps.executeUpdate();						

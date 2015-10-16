@@ -1,12 +1,6 @@
 
 package com.pmarlen.backend.model;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.MissingFormatArgumentException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-
 
 /**
  * Class for mapping DTO Entity of Table Multimedio.
@@ -129,58 +123,4 @@ public class Multimedio implements java.io.Serializable {
     public String toString() {
         return nombreArchivo;
     }
-
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
-	private static final DecimalFormat    df  = new DecimalFormat("0.000000");
-	private static final DecimalFormat    cur = new DecimalFormat("0.00");
-
-	public String printPlainSeparated(String s){
-		String ser=null;
-		StringBuffer sb= new StringBuffer();
-
-		
-		// Integer
-		sb.append(this.id);
-		sb.append(s);
-		// String
-		sb.append(this.mimeType);
-		sb.append(s);
-		// String
-		sb.append(this.rutaContenido);
-		sb.append(s);
-		// int
-		sb.append(this.sizeBytes);
-		sb.append(s);
-		// String
-		sb.append(this.nombreArchivo);
-
-		return ser;
-	}
-
-	public void scanFrom(String src, String s) throws MissingFormatArgumentException{
-		String srcSpplited[] = src.split(s);
-		int nf=0;
-		try {			
-			
-			// Integer
-			this.id =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// String
-			this.mimeType = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// String
-			this.rutaContenido = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// int
-			this.sizeBytes =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// String
-			this.nombreArchivo = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-
-		}catch(Exception e){
-			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");
-		}
-	}
-
 }

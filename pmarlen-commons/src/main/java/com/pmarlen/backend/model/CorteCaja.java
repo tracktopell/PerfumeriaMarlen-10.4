@@ -1,12 +1,6 @@
 
 package com.pmarlen.backend.model;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.MissingFormatArgumentException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-
 
 /**
  * Class for mapping DTO Entity of Table Corte_Caja.
@@ -36,7 +30,7 @@ public class CorteCaja implements java.io.Serializable {
     /**
     * caja
     */
-    private int caja;
+    private Integer caja;
     
     /**
     * usuario email
@@ -46,12 +40,12 @@ public class CorteCaja implements java.io.Serializable {
     /**
     * saldo Inicial
     */
-    private double saldoInicial;
+    private Double saldoInicial;
 
 	/**
     * saldo Final
     */
-    private double saldoFinal;
+    private Double saldoFinal;
 
     /**
     * comentarios
@@ -61,8 +55,13 @@ public class CorteCaja implements java.io.Serializable {
     /**
     * tipo evento
     */
-    private Integer tipoEvento;
+    private int tipoEvento;
 
+	/**
+	 * Usuario Autorizo
+	 */
+    private String usuarioAutorizo;	
+	
     /** 
      * Default Constructor
      */
@@ -76,75 +75,168 @@ public class CorteCaja implements java.io.Serializable {
         this.id 	= 	id;
 
     }
-    
-    /**
-     * Getters and Setters
-     */
-    public Integer getId() {
-        return this.id;
-    }
 
-    public void setId(Integer v) {
-        this.id = v;
-    }
+	/**
+	 * id
+	 * @return the id
+	 */
+	public Integer getId() {
+		return id;
+	}
 
-    public java.sql.Timestamp getFecha() {
-        return this.fecha;
-    }
+	/**
+	 * id
+	 * @param id the id to set
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setFecha(java.sql.Timestamp v) {
-        this.fecha = v;
-    }
+	/**
+	 * fecha
+	 * @return the fecha
+	 */
+	public java.sql.Timestamp getFecha() {
+		return fecha;
+	}
 
-    public int getSucursalId() {
-        return this.sucursalId;
-    }
+	/**
+	 * fecha
+	 * @param fecha the fecha to set
+	 */
+	public void setFecha(java.sql.Timestamp fecha) {
+		this.fecha = fecha;
+	}
 
-    public void setSucursalId(int v) {
-        this.sucursalId = v;
-    }
+	/**
+	 * sucursal id
+	 * @return the sucursalId
+	 */
+	public int getSucursalId() {
+		return sucursalId;
+	}
 
-    public int getCaja() {
-        return this.caja;
-    }
+	/**
+	 * sucursal id
+	 * @param sucursalId the sucursalId to set
+	 */
+	public void setSucursalId(int sucursalId) {
+		this.sucursalId = sucursalId;
+	}
 
-    public void setCaja(int v) {
-        this.caja = v;
-    }
+	/**
+	 * caja
+	 * @return the caja
+	 */
+	public Integer getCaja() {
+		return caja;
+	}
 
-    public String getUsuarioEmail() {
-        return this.usuarioEmail;
-    }
+	/**
+	 * caja
+	 * @param caja the caja to set
+	 */
+	public void setCaja(Integer caja) {
+		this.caja = caja;
+	}
 
-    public void setUsuarioEmail(String v) {
-        this.usuarioEmail = v;
-    }
+	/**
+	 * usuario email
+	 * @return the usuarioEmail
+	 */
+	public String getUsuarioEmail() {
+		return usuarioEmail;
+	}
 
-    public double getTotal() {
-        return this.saldoInicial;
-    }
+	/**
+	 * usuario email
+	 * @param usuarioEmail the usuarioEmail to set
+	 */
+	public void setUsuarioEmail(String usuarioEmail) {
+		this.usuarioEmail = usuarioEmail;
+	}
 
-    public void setTotal(double v) {
-        this.saldoInicial = v;
-    }
+	/**
+	 * saldo Inicial
+	 * @return the saldoInicial
+	 */
+	public Double getSaldoInicial() {
+		return saldoInicial;
+	}
 
-    public String getComentarios() {
-        return this.comentarios;
-    }
+	/**
+	 * saldo Inicial
+	 * @param saldoInicial the saldoInicial to set
+	 */
+	public void setSaldoInicial(Double saldoInicial) {
+		this.saldoInicial = saldoInicial;
+	}
 
-    public void setComentarios(String v) {
-        this.comentarios = v;
-    }
+	/**
+	 * saldo Final
+	 * @return the saldoFinal
+	 */
+	public Double getSaldoFinal() {
+		return saldoFinal;
+	}
 
-	public Integer getTipoEvento() {
+	/**
+	 * saldo Final
+	 * @param saldoFinal the saldoFinal to set
+	 */
+	public void setSaldoFinal(Double saldoFinal) {
+		this.saldoFinal = saldoFinal;
+	}
+
+	/**
+	 * comentarios
+	 * @return the comentarios
+	 */
+	public String getComentarios() {
+		return comentarios;
+	}
+
+	/**
+	 * comentarios
+	 * @param comentarios the comentarios to set
+	 */
+	public void setComentarios(String comentarios) {
+		this.comentarios = comentarios;
+	}
+
+	/**
+	 * tipo evento
+	 * @return the tipoEvento
+	 */
+	public int getTipoEvento() {
 		return tipoEvento;
 	}
 
-	public void setTipoEvento(Integer tipoEvento) {
+	/**
+	 * tipo evento
+	 * @param tipoEvento the tipoEvento to set
+	 */
+	public void setTipoEvento(int tipoEvento) {
 		this.tipoEvento = tipoEvento;
 	}
 
-    @Override
+	/**
+	 * Usuario Autorizo
+	 * @return the usuarioAutorizo
+	 */
+	public String getUsuarioAutorizo() {
+		return usuarioAutorizo;
+	}
+
+	/**
+	 * Usuario Autorizo
+	 * @param usuarioAutorizo the usuarioAutorizo to set
+	 */
+	public void setUsuarioAutorizo(String usuarioAutorizo) {
+		this.usuarioAutorizo = usuarioAutorizo;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
 		// bug ?
@@ -172,76 +264,5 @@ public class CorteCaja implements java.io.Serializable {
     public String toString() {
         return "com.pmarlen.backend.model.CorteCaja[id = "+id+ "]";
     }
-
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
-	private static final DecimalFormat    df  = new DecimalFormat("0.000000");
-	private static final DecimalFormat    cur = new DecimalFormat("0.00");
-
-	public String printPlainSeparated(String s){
-		String ser=null;
-		StringBuffer sb= new StringBuffer();
-
-		
-		// Integer
-		sb.append(this.id);
-		sb.append(s);
-		// java.sql.Timestamp
-		sb.append(this.fecha==null?"null":sdf.format(this.fecha));
-		sb.append(s);
-		// int
-		sb.append(this.sucursalId);
-		sb.append(s);
-		// int
-		sb.append(this.caja);
-		sb.append(s);
-		// String
-		sb.append(this.usuarioEmail);
-		sb.append(s);
-		// double
-		sb.append(df.format(this.saldoInicial));
-		sb.append(s);
-		// String
-		sb.append(this.comentarios);
-		sb.append(s);
-		// Integer
-		sb.append(this.tipoEvento);		
-
-		return ser;
-	}
-
-	public void scanFrom(String src, String s) throws MissingFormatArgumentException{
-		String srcSpplited[] = src.split(s);
-		int nf=0;
-		try {			
-			
-			// Integer
-			this.id =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// java.sql.Timestamp
-			this.fecha =  srcSpplited[nf].equals("null")?null:new java.sql.Timestamp(sdf.parse(srcSpplited[nf]).getTime());
-			nf++;
-			// int
-			this.sucursalId =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// int
-			this.caja =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// String
-			this.usuarioEmail = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// double
-			this.saldoInicial =  df.parse(srcSpplited[nf]).doubleValue();
-			nf++;
-			// String
-			this.comentarios = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// Integer
-			this.tipoEvento =  Integer.parseInt(srcSpplited[nf]);
-			nf++;			
-
-		}catch(Exception e){
-			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");
-		}
-	}
-
+	
 }

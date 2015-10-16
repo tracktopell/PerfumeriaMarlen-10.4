@@ -47,7 +47,7 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 	}
 	
 	public void estadoInicial(){
-		logger.debug("estadoInicial()");
+		logger.debug("estadoInicial():setVisible(true) --------------------------------------[    V E N T A N A     V I S I B L E ]-----------------------------------");
 		dialogLogin.setVisible(true);
 	}
 

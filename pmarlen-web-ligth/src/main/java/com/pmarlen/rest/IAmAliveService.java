@@ -1,5 +1,9 @@
 package com.pmarlen.rest;
 
+import com.pmarlen.backend.dao.CorteCajaDAO;
+import com.pmarlen.backend.dao.DAOException;
+import com.pmarlen.backend.model.CorteCaja;
+import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
 import com.pmarlen.web.servlet.CajaSessionInfo;
@@ -23,7 +27,7 @@ import org.apache.log4j.Logger;
  */
 @Path("/iamaliveservice/")
 public class IAmAliveService {
-	
+
 	@Context 
 	HttpServletRequest httpRequest;
 
@@ -49,13 +53,13 @@ public class IAmAliveService {
 	}
 
 	static IAmAliveDTOPackage registerHello(IAmAliveDTORequest syncDTORequest, String callerIpAddress) {
-		logger.debug("iamAliveDTOREquest: syncDTORequest:CorteCajaDTO=" + syncDTORequest.getCorteCajaDTO());
+		logger.debug("registerHello: syncDTORequest:CorteCajaDTO=" + syncDTORequest.getCorteCajaDTO());
 		CajaSessionInfo cajaSessionInfo = null;
 		if (syncDTORequest.getSessionId() != null) {
 			cajaSessionInfo = ContextAndSessionListener.cajaSessionInfoHT.get(syncDTORequest.getSessionId());
-			logger.debug("cajaSessionInfo=" + cajaSessionInfo);
+			logger.debug("registerHello:cajaSessionInfo=" + cajaSessionInfo);
 			if (cajaSessionInfo == null) {
-				logger.debug(" add new cajaSessionInfo, loggedIn=" + syncDTORequest.getLoggedIn());
+				logger.debug("registerHello: -->> add new cajaSessionInfo, loggedIn=" + syncDTORequest.getLoggedIn());
 				cajaSessionInfo = new CajaSessionInfo();
 				cajaSessionInfo.setSessionId(syncDTORequest.getSessionId());
 				cajaSessionInfo.setCaja(String.valueOf(syncDTORequest.getCajaId()));
@@ -68,10 +72,27 @@ public class IAmAliveService {
 				cajaSessionInfo.setLoggedIn(syncDTORequest.getLoggedIn());
 			}
 			cajaSessionInfo.setLastAccesedTime(System.currentTimeMillis());
+			registerCorteCaja(syncDTORequest.getCorteCajaDTO());
 		}
 		IAmAliveDTOPackage r = new IAmAliveDTOPackage(1);
 		return r;
 	}
+
+	private static void registerCorteCaja(CorteCajaDTO corteCajaDTO) {
+		logger.debug("registerCorteCaja:corteCajaDTO=" + corteCajaDTO);
+		CorteCaja cc = corteCajaDTO.reverse();
+		try {
+			if(CorteCajaDAO.getInstance().countFor(cc)==0){
+				logger.debug("registerCorteCaja: INSERT !");
+				CorteCajaDAO.getInstance().insert(cc);
+			} else {
+				logger.debug("registerCorteCaja: SIMILAR FOUND.");
+			}
+		} catch(DAOException de){
+			logger.error("registerCorteCaja:", de);
+		}
+	}
+	
 
 	public void setHttpRequest(HttpServletRequest httpRequest) {
 		this.httpRequest = httpRequest;

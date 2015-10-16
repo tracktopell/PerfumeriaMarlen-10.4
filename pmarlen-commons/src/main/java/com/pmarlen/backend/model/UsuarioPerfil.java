@@ -1,12 +1,6 @@
 
 package com.pmarlen.backend.model;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.MissingFormatArgumentException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-
 
 /**
  * Class for mapping DTO Entity of Table Usuario_Perfil.
@@ -93,40 +87,4 @@ public class UsuarioPerfil implements java.io.Serializable {
     public String toString() {
         return "com.pmarlen.backend.model.UsuarioPerfil[perfil = "+perfil + ", email = "+email+ "]";
     }
-
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
-	private static final DecimalFormat    df  = new DecimalFormat("0.000000");
-	private static final DecimalFormat    cur = new DecimalFormat("0.00");
-
-	public String printPlainSeparated(String s){
-		String ser=null;
-		StringBuffer sb= new StringBuffer();
-
-		
-		// String
-		sb.append(this.email);
-		sb.append(s);
-		// String
-		sb.append(this.perfil);
-
-		return ser;
-	}
-
-	public void scanFrom(String src, String s) throws MissingFormatArgumentException{
-		String srcSpplited[] = src.split(s);
-		int nf=0;
-		try {			
-			
-			// String
-			this.email = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// String
-			this.perfil = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-
-		}catch(Exception e){
-			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");
-		}
-	}
-
 }

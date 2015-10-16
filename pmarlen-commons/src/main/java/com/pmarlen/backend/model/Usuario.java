@@ -1,12 +1,6 @@
 
 package com.pmarlen.backend.model;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.MissingFormatArgumentException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-
 
 /**
  * Class for mapping DTO Entity of Table Usuario.
@@ -116,52 +110,4 @@ public class Usuario implements java.io.Serializable {
     public String toString() {
         return nombreCompleto;
     }
-
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
-	private static final DecimalFormat    df  = new DecimalFormat("0.000000");
-	private static final DecimalFormat    cur = new DecimalFormat("0.00");
-
-	public String printPlainSeparated(String s){
-		String ser=null;
-		StringBuffer sb= new StringBuffer();
-
-		
-		// String
-		sb.append(this.email);
-		sb.append(s);
-		// int
-		sb.append(this.abilitado);
-		sb.append(s);
-		// String
-		sb.append(this.nombreCompleto);
-		sb.append(s);
-		// String
-		sb.append(this.password);
-
-		return ser;
-	}
-
-	public void scanFrom(String src, String s) throws MissingFormatArgumentException{
-		String srcSpplited[] = src.split(s);
-		int nf=0;
-		try {			
-			
-			// String
-			this.email = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// int
-			this.abilitado =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// String
-			this.nombreCompleto = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// String
-			this.password = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-
-		}catch(Exception e){
-			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");
-		}
-	}
-
 }

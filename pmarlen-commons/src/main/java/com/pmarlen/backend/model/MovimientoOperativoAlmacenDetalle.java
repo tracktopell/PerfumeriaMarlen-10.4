@@ -1,12 +1,6 @@
 
 package com.pmarlen.backend.model;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.MissingFormatArgumentException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-
 
 /**
  * Class for mapping DTO Entity of Table Movimiento_operativo_almacen_Detalle.
@@ -129,58 +123,4 @@ public class MovimientoOperativoAlmacenDetalle implements java.io.Serializable {
     public String toString() {
         return "com.pmarlen.backend.model.MovimientoOperativoAlmacenDetalle[id = "+id+ "]";
     }
-
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
-	private static final DecimalFormat    df  = new DecimalFormat("0.000000");
-	private static final DecimalFormat    cur = new DecimalFormat("0.00");
-
-	public String printPlainSeparated(String s){
-		String ser=null;
-		StringBuffer sb= new StringBuffer();
-
-		
-		// Integer
-		sb.append(this.id);
-		sb.append(s);
-		// int
-		sb.append(this.movimientoOperativoAlmacenId);
-		sb.append(s);
-		// String
-		sb.append(this.productoCodigoBarras);
-		sb.append(s);
-		// int
-		sb.append(this.cantidad);
-		sb.append(s);
-		// Integer
-		sb.append(this.cantidadConfirmada);
-
-		return ser;
-	}
-
-	public void scanFrom(String src, String s) throws MissingFormatArgumentException{
-		String srcSpplited[] = src.split(s);
-		int nf=0;
-		try {			
-			
-			// Integer
-			this.id =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// int
-			this.movimientoOperativoAlmacenId =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// String
-			this.productoCodigoBarras = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// int
-			this.cantidad =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// Integer
-			this.cantidadConfirmada =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-
-		}catch(Exception e){
-			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");
-		}
-	}
-
 }

@@ -97,10 +97,13 @@ public class FramePrincipalControl implements ActionListener{
 	public void estadoInicial() {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				logger.debug("estadoInicial():START");
 				((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
+				logger.debug("estadoInicial():setVisible(true) --------------------------------------[    V E N T A N A     V I S I B L E ]-----------------------------------");
 				framePrincipal.setVisible(true);				
+				logger.debug("estadoInicial():updateStatusWest()");
 				updateStatusWest();
-				
+				logger.debug("estadoInicial():END");
 			}
 		});
 	}

@@ -1,12 +1,6 @@
 
 package com.pmarlen.backend.model;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.MissingFormatArgumentException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-
 
 /**
  * Class for mapping DTO Entity of Table Movimiento_operativo_almacen.
@@ -194,88 +188,4 @@ public class MovimientoOperativoAlmacen implements java.io.Serializable {
     public String toString() {
         return "com.pmarlen.backend.model.MovimientoOperativoAlmacen[id = "+id+ "]";
     }
-
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
-	private static final DecimalFormat    df  = new DecimalFormat("0.000000");
-	private static final DecimalFormat    cur = new DecimalFormat("0.00");
-
-	public String printPlainSeparated(String s){
-		String ser=null;
-		StringBuffer sb= new StringBuffer();
-
-		
-		// Integer
-		sb.append(this.id);
-		sb.append(s);
-		// String
-		sb.append(this.motivo);
-		sb.append(s);
-		// String
-		sb.append(this.usuarioGenero);
-		sb.append(s);
-		// java.sql.Timestamp
-		sb.append(this.fechaInicio==null?"null":sdf.format(this.fechaInicio));
-		sb.append(s);
-		// int
-		sb.append(this.almacenOrigen);
-		sb.append(s);
-		// int
-		sb.append(this.almacenDestino);
-		sb.append(s);
-		// int
-		sb.append(this.tipoMovimiento);
-		sb.append(s);
-		// String
-		sb.append(this.usuarioConfirmo);
-		sb.append(s);
-		// java.sql.Timestamp
-		sb.append(this.fechaConfirmacion==null?"null":sdf.format(this.fechaConfirmacion));
-		sb.append(s);
-		// String
-		sb.append(this.comentarios);
-
-		return ser;
-	}
-
-	public void scanFrom(String src, String s) throws MissingFormatArgumentException{
-		String srcSpplited[] = src.split(s);
-		int nf=0;
-		try {			
-			
-			// Integer
-			this.id =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// String
-			this.motivo = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// String
-			this.usuarioGenero = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// java.sql.Timestamp
-			this.fechaInicio =  srcSpplited[nf].equals("null")?null:new java.sql.Timestamp(sdf.parse(srcSpplited[nf]).getTime());
-			nf++;
-			// int
-			this.almacenOrigen =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// int
-			this.almacenDestino =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// int
-			this.tipoMovimiento =  Integer.parseInt(srcSpplited[nf]);
-			nf++;
-			// String
-			this.usuarioConfirmo = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-			// java.sql.Timestamp
-			this.fechaConfirmacion =  srcSpplited[nf].equals("null")?null:new java.sql.Timestamp(sdf.parse(srcSpplited[nf]).getTime());
-			nf++;
-			// String
-			this.comentarios = srcSpplited[nf].equals("null")?null:srcSpplited[nf];
-			nf++;
-
-		}catch(Exception e){
-			throw new MissingFormatArgumentException("Exception scanning for["+nf+"] from string ->"+srcSpplited[nf]+"<-");
-		}
-	}
-
 }
