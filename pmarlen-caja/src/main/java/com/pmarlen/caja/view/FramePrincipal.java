@@ -41,7 +41,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 			logoLabel.setText(null);
 		}
 
-		this.abrirSesionBtn.setEnabled(true);
+		this.abrirSesion.setEnabled(true);
 		this.archivoMenu.setEnabled(true);
 		this.emailSoporteMenu.setEnabled(true);
 		this.helpMenu.setEnabled(true);
@@ -51,8 +51,8 @@ public class FramePrincipal extends javax.swing.JFrame {
 		this.acercaDeMenu.setEnabled(true);
 		this.portalMenu.setEnabled(true);
 		
-		this.cerrarSesionBtn.setEnabled(true);		
-		this.cerrarSesionBtn.setVisible(false);
+		this.cerrarSesion.setEnabled(true);		
+		this.cerrarSesion.setVisible(false);
 		
 		this.cancelarDevolMenu.setEnabled(false);		
 		this.coneccionMenu.setEnabled(false);
@@ -75,6 +75,45 @@ public class FramePrincipal extends javax.swing.JFrame {
 		this.ventasMenu.setEnabled(false);
 	}
 
+	public void enableMinimalComponents(){
+		logger.debug("enableMinimalComponents()");
+
+		this.abrirSesion.setEnabled(false);
+		this.abrirSesion.setVisible(false);
+		
+		this.archivoMenu.setEnabled(true);
+		this.emailSoporteMenu.setEnabled(true);
+		this.helpMenu.setEnabled(true);
+		this.manualMenu.setEnabled(true);
+		this.salirMenu.setEnabled(true);
+		this.sesionMenu.setEnabled(true);		
+		this.acercaDeMenu.setEnabled(true);
+		this.portalMenu.setEnabled(true);
+		
+		this.cerrarSesion.setEnabled(true);		
+		this.cerrarSesion.setVisible(true);
+		
+		this.cancelarDevolMenu.setEnabled(true);		
+		this.coneccionMenu.setEnabled(true);
+		this.devolMenu.setEnabled(true);
+		this.devolsMenu.setEnabled(true);
+		this.impresionBluetothMenu.setEnabled(true);
+		this.impresionMenu.setEnabled(true);
+		this.impresionParamMenu.setEnabled(true);
+		this.impresionPruebaMenu.setEnabled(true);
+		this.impresionSistemaMenu.setEnabled(true);
+		this.nuevaDevolMenu.setEnabled(true);
+		this.terminarDevolMenu.setEnabled(true);
+		this.ventaActualMenu.setEnabled(true);
+		this.ventaCancelarMenu.setEnabled(true);
+		this.ventaMenu.setEnabled(true);
+		this.ventaModoMenu.setEnabled(true);
+		this.ventaTerminarMenu.setEnabled(true);
+		this.ventaeliminarProdMenu.setEnabled(true);
+		this.ventasMenu.setEnabled(true);
+	}
+
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -90,8 +129,8 @@ public class FramePrincipal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         logoLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        abrirSesionBtn = new javax.swing.JButton();
-        cerrarSesionBtn = new javax.swing.JButton();
+        abrirSesion = new javax.swing.JButton();
+        cerrarSesion = new javax.swing.JButton();
         panelVenta = new PanelVenta();
         panelVentas = new PanelVentas();
         statusPanel = new javax.swing.JPanel();
@@ -151,15 +190,15 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 150, 50));
 
-        abrirSesionBtn.setBackground(java.awt.Color.green);
-        abrirSesionBtn.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        abrirSesionBtn.setText("ABRIR");
-        jPanel2.add(abrirSesionBtn);
+        abrirSesion.setBackground(java.awt.Color.green);
+        abrirSesion.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
+        abrirSesion.setText("ABRIR");
+        jPanel2.add(abrirSesion);
 
-        cerrarSesionBtn.setBackground(new java.awt.Color(255, 0, 0));
-        cerrarSesionBtn.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        cerrarSesionBtn.setText("CERRAR");
-        jPanel2.add(cerrarSesionBtn);
+        cerrarSesion.setBackground(new java.awt.Color(255, 0, 0));
+        cerrarSesion.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
+        cerrarSesion.setText("CERRAR");
+        jPanel2.add(cerrarSesion);
 
         panelSesion.add(jPanel2, java.awt.BorderLayout.SOUTH);
 
@@ -295,11 +334,11 @@ public class FramePrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton abrirSesionBtn;
+    private javax.swing.JButton abrirSesion;
     private javax.swing.JMenuItem acercaDeMenu;
     private javax.swing.JMenu archivoMenu;
     private javax.swing.JMenuItem cancelarDevolMenu;
-    private javax.swing.JButton cerrarSesionBtn;
+    private javax.swing.JButton cerrarSesion;
     private javax.swing.JMenuItem coneccionMenu;
     private javax.swing.JMenu configMenu;
     private javax.swing.JMenu devolMenu;
@@ -476,12 +515,12 @@ public class FramePrincipal extends javax.swing.JFrame {
 		} else if(s == MemoryDAO.SYNC_STATE_IMLIVE ) {
 			statusConeccion.setForeground(Color.BLUE);
 			statusConeccion.setText("I'M ALIVE");
-		} else if(s == MemoryDAO.SYNC_STATE_ERROR_URL ) {
+		} else if(s == MemoryDAO.SYNC_STATE_IO_ERROR ) {
 			statusConeccion.setForeground(Color.CYAN);
-			statusConeccion.setText("URL ERROR");
+			statusConeccion.setText("ERROR E/S");
 		} else if(s == MemoryDAO.SYNC_STATE_ERROR) {
 			statusConeccion.setForeground(Color.RED);
-			statusConeccion.setText("ERROR");
+			statusConeccion.setText("ERROR DE DATOS");
 		} else {
 			statusConeccion.setForeground(Color.DARK_GRAY);
 			statusConeccion.setText("???");
@@ -532,8 +571,8 @@ public class FramePrincipal extends javax.swing.JFrame {
 	/**
 	 * @return the abrirSesionBtn
 	 */
-	public javax.swing.JButton getAbrirSesionBtn() {
-		return abrirSesionBtn;
+	public javax.swing.JButton getAbrirSesion() {
+		return abrirSesion;
 	}
 
 	/**
@@ -549,12 +588,12 @@ public class FramePrincipal extends javax.swing.JFrame {
 	public javax.swing.JMenuItem getCancelarDevolMenu() {
 		return cancelarDevolMenu;
 	}
-
+	
 	/**
-	 * @return the cerrarSesionBtn
+	 * @return the cerrarSesion
 	 */
-	public javax.swing.JButton getCerrarSesionBtn() {
-		return cerrarSesionBtn;
+	public javax.swing.JButton getCerrarSesion() {
+		return cerrarSesion;
 	}
 
 	/**

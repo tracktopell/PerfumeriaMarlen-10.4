@@ -277,7 +277,7 @@
                 <Property name="verticalGap" type="int" value="50"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JButton" name="abrirSesionBtn">
+                <Component class="javax.swing.JButton" name="abrirSesion">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="0" green="ff" id="green" palette="1" red="0" type="palette"/>
@@ -288,7 +288,7 @@
                     <Property name="text" type="java.lang.String" value="ABRIR"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="cerrarSesionBtn">
+                <Component class="javax.swing.JButton" name="cerrarSesion">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="0" green="0" red="ff" type="rgb"/>

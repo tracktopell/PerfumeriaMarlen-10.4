@@ -20,6 +20,7 @@ import com.pmarlen.rest.dto.SyncDTORequest;
 import com.pmarlen.rest.dto.U;
 import com.pmarlen.rest.dto.UserAgent;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import java.io.ByteArrayOutputStream;
@@ -31,6 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.Enumeration;
@@ -163,7 +165,7 @@ public class MemoryDAO {
 	public final static int SYNC_STATE_READ                  = 3;
 	public final static int SYNC_STATE_BEFORE_CONNECTINGLIVE = 4;
 	public final static int SYNC_STATE_IMLIVE                = 5;
-	public final static int SYNC_STATE_ERROR_URL             = 6;
+	public final static int SYNC_STATE_IO_ERROR              = 6;
 	public final static int SYNC_STATE_ERROR                 = 10;
 	
 	private static long timeSleep = 15000L;
@@ -172,48 +174,49 @@ public class MemoryDAO {
 		
 		logger.debug("getPaqueteSyncPoll:");
 		ESFileSystemJsonDAO.laod();
-		logger.debug("----------------->>BEFORE while ");
+		logger.debug("getPaqueteSyncPoll:----------------->>BEFORE while ");
 		syncPollState = SYNC_STATE_BEFORE_RUNNING;
 		while(runnigPool){
-			logger.debug("\t----------------->> while running, download");
+			logger.debug("getPaqueteSyncPoll:\t----------------->> while running, download");
 			if(xt%6==0){
 				try {
 					syncPollState = SYNC_STATE_BEFORE_CONNECTING;
+					logger.debug("getPaqueteSyncPoll: --> download ? syncPollState="+syncPollState);
 					download();
 					syncPollState = SYNC_STATE_BEFORE_DOWNLOADED;
-					logger.debug("\t----------------->> OK, downloded, read locally");
+					logger.debug("getPaqueteSyncPoll:\t----------------->> OK, downloded, read locally, syncPollState="+syncPollState);
 					readLocally();
 					syncPollState = SYNC_STATE_READ;
-				}catch(MalformedURLException e){
-					logger.error("URL: downoload",e);
-					syncPollState = SYNC_STATE_ERROR_URL;
-					break;
+				}catch(IOException e){
+					logger.debug("getPaqueteSyncPoll:IOException:-> downoload",e);
+					syncPollState = SYNC_STATE_IO_ERROR;					
 				}catch(Exception e){
-					logger.error("X: downoload",e);
+					logger.error("getPaqueteSyncPoll:Exception: ->downoload",e);
 					syncPollState = SYNC_STATE_ERROR;
 				}
 
 			} else {
 				try {					
 					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
+					logger.debug("getPaqueteSyncPoll: --> iamalive ?syncPollState="+syncPollState);
 					iamalive();
+					logger.debug("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
 					syncPollState = SYNC_STATE_IMLIVE;
-				}catch(MalformedURLException e){
-					logger.error("URL: imlive",e);
-					syncPollState = SYNC_STATE_ERROR_URL;
-					break;
+				}catch(IOException e){
+					logger.debug("getPaqueteSyncPoll:IOException:-> imlive:",e);
+					syncPollState = SYNC_STATE_IO_ERROR;
 				}catch(Exception e){
-					logger.error("X: exception",e);
+					logger.error("getPaqueteSyncPoll:Exception: -> imlive:",e);
 					syncPollState = SYNC_STATE_ERROR;
 				}
 
 			}
 			
 			try {
-				logger.debug("\t----------------->> while running, sleep for "+timeSleep+" ms .....");
+				logger.debug("getPaqueteSyncPoll:\t----------------->> while running, sleep for "+timeSleep+" ms .., syncPollState="+syncPollState);
 				Thread.sleep(timeSleep);
 			}catch(Exception e){
-				logger.error("downoload",e);
+				logger.debug("getPaqueteSyncPoll:->sleep ? ",e);
 			}
 			
 			xt++;
@@ -225,7 +228,7 @@ public class MemoryDAO {
 	}
 	
 	public static void startPaqueteSyncService(){
-		logger.debug("----------------->> startPaqueteSyncService");
+		logger.debug("startPaqueteSyncService:startPaqueteSyncService");
 		new Thread(){
 			@Override
 			public void run() {
@@ -262,7 +265,7 @@ public class MemoryDAO {
 		try {
 			long t0=System.currentTimeMillis();
 			Client client = Client.create();
-			logger.debug("...creating WebResource for ZIP");
+			logger.debug("download:...creating WebResource for ZIP");
 			WebResource webResource = client.resource(getServerContext()+uriServiceZipSync);
 			
 			
@@ -274,18 +277,18 @@ public class MemoryDAO {
 			syncDTORequest.setiAmAliveDTORequest(iAmAliveDTORequest);			
 			syncDTORequest.setEscdList(ESFileSystemJsonDAO.getEsList());
 			
-			logger.debug("-->> building: SyncDTORequest="+syncDTORequest+", before send.");
+			logger.debug("download:-->> building: SyncDTORequest="+syncDTORequest+", before send.");
 			
 			long t1=System.currentTimeMillis();
 			
 			jsonInput = gson.toJson(syncDTORequest);
 			
-			logger.debug("...invoking with:syncDTORequest="+jsonInput);
+			logger.debug("download:...invoking with:syncDTORequest="+jsonInput);
 			ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,jsonInput);
-			logger.debug("...get response");
+			logger.debug("download:...get response");
 			long t2=System.currentTimeMillis();
 			if (response.getStatus() != 200) {
-				throw new RuntimeException("Failed HTTP error code :"
+				throw new IOException("Failed HTTP error code :"
 						+ response.getStatus());
 			}
 			int rl=response.getLength();
@@ -302,18 +305,23 @@ public class MemoryDAO {
 			os.close();
 			long t4=System.currentTimeMillis();
 			File fileZip =  new File(fileName);
-			logger.debug("  fileZip = "+fileZip.length()+" bytes. == "+rl);						
-			logger.debug("  T = "+(t4-t0));
-			logger.debug("+T1 = "+(t1-t0));
-			logger.debug("+T2 = "+(t2-t1));
-			logger.debug("+T3 = "+(t3-t2));					
-			logger.debug("+T4 = "+(t4-t3));			
+			logger.trace("download:  fileZip = "+fileZip.length()+" bytes. == "+rl);						
+			logger.trace("download:  T = "+(t4-t0));
+			logger.trace("download:+T1 = "+(t1-t0));
+			logger.trace("download:+T2 = "+(t2-t1));
+			logger.trace("download:+T3 = "+(t3-t2));					
+			logger.trace("download:+T4 = "+(t4-t3));			
+		} catch (ClientHandlerException e) {
+			logger.debug("download:ClientHandlerException Cause:="+e.getCause().getClass(),e);
+			if(e.getCause() instanceof ConnectException){
+				throw new IOException("AQUI ESTAS PERRA 2 :->ConnectException",e.getCause());
+			} else {
+				throw new IOException("No se puede leer el RestService:"+e.getMessage());
+			}
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
-		} finally {
-			return;
-		}
-
+			logger.error("download: Exception: e.class="+e.getClass(),e);
+			throw new IOException("Error en RestService:"+e.getMessage());
+		} 
 	}
 
 	private static IAmAliveDTORequest buildIAmALivePackageDTO() {
@@ -405,48 +413,54 @@ public class MemoryDAO {
 		try {
 			long t0=System.currentTimeMillis();
 			Client client = Client.create();
-			logger.debug("...creating WebResource for IAmAlive");
+			logger.debug("iamalive:...creating WebResource for IAmAlive");
 			WebResource webResource = client.resource(getServerContext()+uriServiceIAmAlive);			
 			
 			String jsonInput = null;
 			IAmAliveDTORequest iAmAliveDTORequest = buildIAmALivePackageDTO();
-			logger.debug("-->> building: IAmAliveDTORequest="+iAmAliveDTORequest+", before send.");
+			logger.debug("iamalive:-->> building: IAmAliveDTORequest="+iAmAliveDTORequest+", before send.");
 			
 			long t1=System.currentTimeMillis();
 			
 			jsonInput = gson.toJson(iAmAliveDTORequest);
 			
-			logger.debug("...invoking with:IAmAliveDTORequest="+jsonInput);
+			logger.debug("iamalive:...invoking with:IAmAliveDTORequest="+jsonInput);
 			ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,jsonInput);
-			logger.debug("...get response");
+			logger.debug("iamalive:...get response");
 			long t2=System.currentTimeMillis();
 			if (response.getStatus() != 200) {
-				throw new RuntimeException("Failed HTTP error code :"
+				throw new IOException("Failed HTTP error code :"
 						+ response.getStatus());
 			}
-			logger.debug("OK, not error, trying get JSON response");
+			logger.debug("iamalive:OK, not error, trying get JSON response");
 			byte byteArr[]=new byte[0];
 			byte[] output = response.getEntity(byteArr.getClass());
 			long t3=System.currentTimeMillis();
-			logger.debug("Output from Server:output.length="+output.length);
+			logger.debug("iamalive:Output from Server:output.length="+output.length);
 			String content = new String(output);			
 			String jsonContent=new String(content);					
-			logger.debug("jsonContent:"+jsonContent);
+			logger.debug("iamalive:jsonContent:"+jsonContent);
 			
 			if(jsonContent != null) {
 				iAmAliveDTOPackage = gson.fromJson(jsonContent, IAmAliveDTOPackage.class);			
 				long t4=System.currentTimeMillis();
 
-				logger.debug("  T = "+(t4-t0));
-				logger.debug("+T1 = "+(t1-t0));
-				logger.debug("+T2 = "+(t2-t1));
-				logger.debug("+T3 = "+(t3-t2));					
-				logger.debug("+T4 = "+(t4-t3));
+				logger.trace("iamalive:  T = "+(t4-t0));
+				logger.trace("iamalive:+T1 = "+(t1-t0));
+				logger.trace("iamalive:+T2 = "+(t2-t1));
+				logger.trace("iamalive:+T3 = "+(t3-t2));					
+				logger.trace("iamalive:+T4 = "+(t4-t3));
+			}
+		} catch (ClientHandlerException e) {
+			logger.debug("iamalive:ClientHandlerException Cause:="+e.getCause().getClass(),e);
+			if(e.getCause() instanceof ConnectException){
+				throw new IOException("AQUI ESTAS PERRA:->ConnectException",e.getCause());
+			} else {
+				throw new IOException("No se puede leer el RestService:"+e.getMessage());
 			}
 		} catch (Exception e) {
-			logger.error("iamalive: Exception",e);
-		} finally {
-			return ;
+			logger.error("iamalive: Exception: e.class="+e.getClass(),e);
+			throw new IOException("Error en RestService:"+e.getMessage());
 		}
 	}
 

@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 public class UpadateApplicationJFrameControl implements UpdateApplicationListener, ActionListener{
 	private static boolean actualizando;
 	private UpadateApplicationJFrame ua;	
-
+	private boolean reboot = false;
 	public UpadateApplicationJFrameControl(UpadateApplicationJFrame ua) {
 		this.ua = ua;
 		this.ua.getProgressUpdate().setValue(0);
@@ -61,18 +61,25 @@ public class UpadateApplicationJFrameControl implements UpdateApplicationListene
 	public void finisUpdate() {
 		JOptionPane.showMessageDialog(null, "SE DESCARGO E EINSTALO CORRECTAMENTE,\n REINICIE PARA APLICAR CAMBIOS", "ACTUALIZAR", JOptionPane.INFORMATION_MESSAGE);
 		actualizando =  false;
-		System.exit(3);
+		reboot = true;
+		this.ua.dispose();
 	}
 
+	public boolean isReboot() {
+		return reboot;
+	}
+	
 	@Override
 	public void cancelUpdate() {
 		JOptionPane.showMessageDialog(null, "SE CANCELO LA DESCARGA", "ACTUALIZAR", JOptionPane.ERROR_MESSAGE);
+		this.ua.dispose();
 		actualizando =  false;
 	}
 
 	@Override
 	public void errorUpdate(String error) {
 		JOptionPane.showMessageDialog(null, "ERROR AN DESCARGA:"+error, "ACTUALIZAR", JOptionPane.ERROR_MESSAGE);
+		this.ua.dispose();
 		actualizando = false;
 	}
 }

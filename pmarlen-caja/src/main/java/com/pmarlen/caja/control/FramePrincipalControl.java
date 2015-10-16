@@ -5,6 +5,7 @@
 package com.pmarlen.caja.control;
 
 import com.pmarlen.caja.dao.MemoryDAO;
+import com.pmarlen.caja.view.AperturaCajaJFrame;
 import com.pmarlen.caja.view.DialogConfiguracionBTImpresora;
 import com.pmarlen.caja.view.FramePrincipal;
 import com.pmarlen.caja.view.PanelVenta;
@@ -49,6 +50,10 @@ public class FramePrincipalControl implements ActionListener{
 		framePrincipal = new FramePrincipal();
 		
 		framePrincipal.setTitle("PML30-CAJA ("+ApplicationLogic.getInstance().getVersion()+")");
+		
+		framePrincipal.getAbrirSesion().addActionListener(this);
+		
+		framePrincipal.getCerrarSesion().addActionListener(this);
 		
 		panelVentaControl  = new PanelVentaControl ((PanelVenta)framePrincipal.getPanelVenta());
 		
@@ -122,14 +127,17 @@ public class FramePrincipalControl implements ActionListener{
 	}
 	
 	private void procesoReloj(){
+		logger.debug("procesoReloj:");
 		relojRunning=true;
 		Date fecha;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		while(relojRunning) {
 			try{
+				logger.debug("procesoReloj:sleep(1000)");
 				Thread.sleep(1000);
 				String hora=sdf.format(new Date());
 				framePrincipal.getStatusCenter().setText(hora);
+				logger.debug("procesoReloj:->framePrincipal.updateStatus():MemoryDAO.getSyncPollState()="+MemoryDAO.getSyncPollState());
 				framePrincipal.updateStatus();
 			}catch(InterruptedException ie){
 				ie.printStackTrace(System.err);
@@ -145,7 +153,11 @@ public class FramePrincipalControl implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == framePrincipal.getVentasMenu()){
+		if(e.getSource() == framePrincipal.getAbrirSesion()){
+			abrirSesion_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getCerrarSesion()){
+			cerrarSesion_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getVentasMenu()){
 			ventasMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getSalirMenu()){
 			salirMenu_actionPerformed();
@@ -164,6 +176,33 @@ public class FramePrincipalControl implements ActionListener{
 		
 	}
 
+	AperturaCajaJFrame  acDlg = null;
+	AperturaCajaControl acc   = null;
+	
+	private void abrirSesion_actionPerformed() {
+		acDlg = new AperturaCajaJFrame(framePrincipal);
+		acc =  new AperturaCajaControl(acDlg);
+		new Thread(){
+			public void run(){
+				acc.estadoInicial();
+				if(acc.isAperturaCorrecta()){
+					abrirSesionNueva();
+					acDlg = null;
+					acc   = null;
+				}
+			}
+		}.start();
+	}
+	
+	private void abrirSesionNueva(){
+		framePrincipal.enableMinimalComponents();
+		ventasMenu_actionPerformed();
+	}
+
+	private void cerrarSesion_actionPerformed() {
+		JOptionPane.showMessageDialog(framePrincipal, "NO IMPLEMENTADO", "CERRAR", JOptionPane.ERROR_MESSAGE);
+	}
+	
 	private void ventaeliminarProdMenu_actionPerformed() {
 		panelVentaControl.ventaeliminarProdMenu();
 	}
@@ -217,7 +256,7 @@ public class FramePrincipalControl implements ActionListener{
 		logger.debug("eanbleAdminControls():");
 		framePrincipal.getConfigMenu().setEnabled(true);
 	}
-
+	
 	public void setEnabledVentasMenus(boolean e){		
 		framePrincipal.getVentaTerminarMenu().setEnabled(e);
 		framePrincipal.getVentaeliminarProdMenu().setEnabled(e);		
@@ -227,8 +266,7 @@ public class FramePrincipalControl implements ActionListener{
 	public void setFontBigest() {
 		framePrincipal.setFont(new java.awt.Font("Tahoma", 0, 24));
 	}
-	
-	
+		
 	public void updateStatusWest() {		
 		U logged = ApplicationLogic.getInstance().getLogged();
 		if( logged != null) {

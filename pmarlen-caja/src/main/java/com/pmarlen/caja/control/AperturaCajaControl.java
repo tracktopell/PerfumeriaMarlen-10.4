@@ -143,4 +143,10 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 	private void saldoInicial_focusLost() {
 		validateAll();
 	}
+
+	public boolean isAperturaCorrecta() {
+		return aperturaCorrecta;
+	}
+	
+	
 }

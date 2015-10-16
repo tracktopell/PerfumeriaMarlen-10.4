@@ -117,7 +117,7 @@ public class CorteCajaDAO {
 		int count = -1;
 		try {
 			conn = getConnection();
-			StringBuilder sq = new StringBuilder("SELECT COUNT(*) AS NUM_CC FROM CORTE_CAJA\n");
+			StringBuilder sq = new StringBuilder("SELECT COUNT(*) AS NCC FROM CORTE_CAJA\n");
 			sq.append("WHERE 1=1\n");
 			if(x.getFecha() != null){
 				sq.append("AND DATE(FECHA)=DATE(?)\n");
@@ -135,7 +135,7 @@ public class CorteCajaDAO {
 			} else {
 				sq.append("AND USUARIO_EMAIL IS NULL\n");
 			}
-			sq.append("AND TIPO_EVENTO=?");
+			sq.append("AND TIPO_EVENTO != ?");
 			
 			ps = conn.prepareStatement(sq.toString());
 			
@@ -165,7 +165,8 @@ public class CorteCajaDAO {
 			
 			if(rs.next()) {
 				count = rs.getInt(1);
-			} 
+			}
+			logger.debug("countFor: count="+count);
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());

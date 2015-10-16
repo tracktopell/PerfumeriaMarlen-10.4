@@ -116,6 +116,14 @@ public class Main {
 						logger.trace("main:InterruptedException");
 					}
 				}
+				
+				if(uafc.isReboot()) {
+					logger.info("[USER]->REBOT AFTER UPDATE");
+					System.exit(3);
+				}
+				
+				uaf  = null;
+				uafc = null;
 			} else {
 				logger.info("[USER]->UpdateApp:NO");
 			}	
@@ -138,7 +146,7 @@ public class Main {
 			FramePrincipalControl.getInstance().estadoInicial();
 			FramePrincipalControl.getInstance().iniciaReloj();
 
-			logger.debug("main:-------->> Frame Principal, esperando antes de login");
+			logger.debug("main:Frame Principal, esperando por Login");
 			dlc.setFontBigest();
 			dlc.getDialogLogin().pack();
 			dlc.getDialogLogin().setLocationRelativeTo(null);
@@ -147,7 +155,12 @@ public class Main {
 			if (!dlc.isLoggedIn()) {
 				throw new IllegalAccessException();
 			} else {
+				
+				dialogLogin = null;
+				dlc         = null;
+				
 				logger.debug("main:======================= L O G G E D   I N  =======================");
+				
 				FramePrincipalControl.getInstance().enableAndDisableAdminControls();
 				FramePrincipalControl.getInstance().updateStatusWest();
 			}
