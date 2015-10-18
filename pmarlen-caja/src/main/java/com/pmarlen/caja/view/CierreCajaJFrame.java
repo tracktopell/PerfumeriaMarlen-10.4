@@ -61,7 +61,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         aceptarBtn = new javax.swing.JButton();
         cancelarBtn = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("CIERRE DE CAJA");
         getContentPane().setLayout(new java.awt.BorderLayout(0, 5));
 
         jPanel12.setLayout(new java.awt.GridLayout(3, 1, 0, 10));
@@ -193,7 +193,8 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 
         getContentPane().add(jPanel9, java.awt.BorderLayout.SOUTH);
 
-        pack();
+        setSize(new java.awt.Dimension(770, 363));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -10,6 +10,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.plaf.FontUIResource;
 import org.apache.log4j.Logger;
 
@@ -41,6 +42,7 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 		saldoInicial = 0.0;
 		observaciones = null;
 		aperturaCorrecta = false;
+		aperturaCajaDialog.getAceptar().setEnabled(false);
 		aperturaCajaDialog.setVisible(true);
 	}
 
@@ -57,16 +59,19 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 	private void aceptar_ActionPerformed(){
 		logger.info("[USER]->aceptar_ActionPerformed()");
 		
-		if(! validateAll()){
-			return;
+		if(validateAll()) {
+			aperturaCajaDialog.getAceptar().setEnabled(true);
+		} else {
+			aperturaCajaDialog.getAceptar().setEnabled(false);
 		}
 		
 		registraAperturaCaja();
+		
 		aperturaCajaDialog.dispose();
 		aperturaCajaDialog = null;
 	}
 
-	private boolean validateAll() throws HeadlessException {
+	private boolean validateAll() {
 		JComponent componentWithError;
 		try {
 			validate();
@@ -76,7 +81,10 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 				javax.swing.UIManager.put("OptionPane.font", new FontUIResource(new java.awt.Font("Tahoma", 0, 24)));
 				javax.swing.UIManager.put("JOptionPane.font", new FontUIResource(new java.awt.Font("Tahoma", 0, 24)));
 				JOptionPane.showMessageDialog(aperturaCajaDialog, ve.getMessage(), "ACEPTAR", JOptionPane.ERROR_MESSAGE);
-				componentWithError.requestFocus();
+				if(componentWithError instanceof JTextField) {
+					((JTextField)componentWithError).setText("");
+				}
+				//componentWithError.requestFocus();
 				return false;
 			}
 		}
@@ -123,12 +131,16 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 
 	@Override
 	public void validate() throws ValidacionCamposException {
-		String saldoInicialValue = aperturaCajaDialog.getSaldoInicial().getText().trim();
+		String saldoInicialValue = aperturaCajaDialog.getSaldoInicial().getText().replace("$", "").replace(",", "").trim();
 		
 		try {
 			saldoInicial = Double.parseDouble(saldoInicialValue);			
 		} catch(NumberFormatException nfe){
 			throw new ValidacionCamposException("EL SALDO DEBE SER UN IMPORTE DE MONEDA", aperturaCajaDialog.getSaldoInicial());
+		}
+		
+		if(saldoInicial< 0 || saldoInicial > 10000 ) {
+			throw new ValidacionCamposException("EL SALDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.00 A $9,999.99", aperturaCajaDialog.getSaldoInicial());
 		}
 		
 		String observaciones = aperturaCajaDialog.getObservaciones().getText().trim();
@@ -141,7 +153,12 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 	}
 
 	private void saldoInicial_focusLost() {
-		validateAll();
+		logger.info("[USER]->saldoInicial_focusLost():saldoInicial="+aperturaCajaDialog.getSaldoInicial().getText());
+		if(validateAll()) {
+			aperturaCajaDialog.getAceptar().setEnabled(true);
+		} else {
+			aperturaCajaDialog.getAceptar().setEnabled(false);
+		}
 	}
 
 	public boolean isAperturaCorrecta() {

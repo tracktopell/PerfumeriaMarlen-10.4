@@ -180,6 +180,7 @@ public class FramePrincipalControl implements ActionListener{
 	AperturaCajaControl acc   = null;
 	
 	private void abrirSesion_actionPerformed() {
+		logger.info("[USER]->abrirSesion_actionPerformed():");
 		acDlg = new AperturaCajaJFrame(framePrincipal);
 		acc =  new AperturaCajaControl(acDlg);
 		new Thread(){
@@ -196,7 +197,7 @@ public class FramePrincipalControl implements ActionListener{
 	
 	private void abrirSesionNueva(){
 		framePrincipal.enableMinimalComponents();
-		ventasMenu_actionPerformed();
+		ventaActualMenu_actionPerformed();
 	}
 
 	private void cerrarSesion_actionPerformed() {

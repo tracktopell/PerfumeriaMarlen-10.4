@@ -94,7 +94,8 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
 
         getContentPane().add(jPanel9, java.awt.BorderLayout.SOUTH);
 
-        pack();
+        setSize(new java.awt.Dimension(767, 364));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
