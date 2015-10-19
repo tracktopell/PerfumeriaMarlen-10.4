@@ -6,6 +6,7 @@
 package com.pmarlen.caja.view;
 
 import java.awt.Frame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -39,7 +40,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         saldoFinal = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
+        cierreAnormalPanel = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         diferencia = new javax.swing.JTextField();
@@ -51,15 +52,15 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         usuarioAutorizo = new javax.swing.JComboBox();
         jPanel10 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
-        generaFraseBtn = new javax.swing.JButton();
+        generaFrase = new javax.swing.JButton();
         frase = new javax.swing.JTextField();
         jPanel8 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         token = new javax.swing.JTextField();
         resultadoToken = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
-        aceptarBtn = new javax.swing.JButton();
-        cancelarBtn = new javax.swing.JButton();
+        aceptar = new javax.swing.JButton();
+        cancelar = new javax.swing.JButton();
 
         setTitle("CIERRE DE CAJA");
         getContentPane().setLayout(new java.awt.BorderLayout(0, 5));
@@ -109,8 +110,8 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 
         getContentPane().add(jPanel12, java.awt.BorderLayout.PAGE_START);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("CIERRE CON ANORMALIDADES"));
-        jPanel1.setLayout(new java.awt.GridLayout(5, 1));
+        cierreAnormalPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("CIERRE CON ANORMALIDADES"));
+        cierreAnormalPanel.setLayout(new java.awt.GridLayout(5, 1));
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -124,7 +125,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         diferencia.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel5.add(diferencia);
 
-        jPanel1.add(jPanel5);
+        cierreAnormalPanel.add(jPanel5);
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -136,7 +137,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         observaciones.setColumns(30);
         jPanel6.add(observaciones);
 
-        jPanel1.add(jPanel6);
+        cierreAnormalPanel.add(jPanel6);
 
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -146,24 +147,25 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jPanel7.add(jLabel7);
         jPanel7.add(usuarioAutorizo);
 
-        jPanel1.add(jPanel7);
+        cierreAnormalPanel.add(jPanel7);
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jPanel11.setPreferredSize(new java.awt.Dimension(300, 35));
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        generaFraseBtn.setText("OBTENER FRASE :");
-        jPanel11.add(generaFraseBtn);
+        generaFrase.setText("OBTENER FRASE :");
+        jPanel11.add(generaFrase);
 
         jPanel10.add(jPanel11);
 
         frase.setEditable(false);
         frase.setColumns(6);
+        frase.setFont(new java.awt.Font("Monospaced", 1, 13)); // NOI18N
         frase.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel10.add(frase);
 
-        jPanel1.add(jPanel10);
+        cierreAnormalPanel.add(jPanel10);
 
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -172,24 +174,25 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jLabel8.setPreferredSize(new java.awt.Dimension(300, 25));
         jPanel8.add(jLabel8);
 
-        token.setColumns(8);
+        token.setColumns(6);
+        token.setFont(new java.awt.Font("Monospaced", 1, 13)); // NOI18N
         jPanel8.add(token);
 
         resultadoToken.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         resultadoToken.setPreferredSize(new java.awt.Dimension(30, 30));
         jPanel8.add(resultadoToken);
 
-        jPanel1.add(jPanel8);
+        cierreAnormalPanel.add(jPanel8);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(cierreAnormalPanel, java.awt.BorderLayout.CENTER);
 
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 100, 5));
 
-        aceptarBtn.setText("ACEPTAR");
-        jPanel9.add(aceptarBtn);
+        aceptar.setText("ACEPTAR");
+        jPanel9.add(aceptar);
 
-        cancelarBtn.setText("CANCELAR");
-        jPanel9.add(cancelarBtn);
+        cancelar.setText("CANCELAR");
+        jPanel9.add(cancelar);
 
         getContentPane().add(jPanel9, java.awt.BorderLayout.SOUTH);
 
@@ -198,12 +201,13 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton aceptarBtn;
-    private javax.swing.JButton cancelarBtn;
+    private javax.swing.JButton aceptar;
+    private javax.swing.JButton cancelar;
+    private javax.swing.JPanel cierreAnormalPanel;
     private javax.swing.JTextField diferencia;
     private javax.swing.JTextField estimado;
     private javax.swing.JTextField frase;
-    private javax.swing.JButton generaFraseBtn;
+    private javax.swing.JButton generaFrase;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -211,7 +215,6 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
@@ -231,17 +234,17 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
     private javax.swing.JComboBox usuarioAutorizo;
     // End of variables declaration//GEN-END:variables
 	/**
-	 * @return the aceptarBtn
+	 * @return the aceptar
 	 */
-	public javax.swing.JButton getAceptarBtn() {
-		return aceptarBtn;
+	public javax.swing.JButton getAceptar() {
+		return aceptar;
 	}
 
 	/**
-	 * @return the cancelarBtn
+	 * @return the cancelar
 	 */
-	public javax.swing.JButton getCancelarBtn() {
-		return cancelarBtn;
+	public javax.swing.JButton getCancelar() {
+		return cancelar;
 	}
 
 	/**
@@ -266,10 +269,10 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 	}
 
 	/**
-	 * @return the generaFraseBtn
+	 * @return the generaFrase
 	 */
-	public javax.swing.JButton getGeneraFraseBtn() {
-		return generaFraseBtn;
+	public javax.swing.JButton getGeneraFrase() {
+		return generaFrase;
 	}
 
 	/**
@@ -313,4 +316,10 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 	public javax.swing.JComboBox getUsuarioAutorizo() {
 		return usuarioAutorizo;
 	}
+
+	public JPanel getCierreAnormalPanel() {
+		return cierreAnormalPanel;
+	}
+	
+	
 }

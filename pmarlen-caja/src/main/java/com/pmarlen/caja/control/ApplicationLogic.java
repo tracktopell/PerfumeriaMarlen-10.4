@@ -381,4 +381,11 @@ public class ApplicationLogic {
 		MemoryDAO.saveCorteCajaDTO(corteCajaDTO);
 		MemoryDAO.backupCorteCajaDTO(corteCajaDTO);
 	}	
+
+	double getSaldoFinalEstimado() {
+		double  saldoFinalEstimado = 0.0;
+		
+		
+		return saldoFinalEstimado;
+	}
 }

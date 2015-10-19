@@ -115,7 +115,7 @@
         </Container>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel1">
+    <Container class="javax.swing.JPanel" name="cierreAnormalPanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -220,7 +220,7 @@
                 <Property name="alignment" type="int" value="2"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JButton" name="generaFraseBtn">
+                <Component class="javax.swing.JButton" name="generaFrase">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="OBTENER FRASE :"/>
                   </Properties>
@@ -231,6 +231,9 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="columns" type="int" value="6"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Monospaced" size="13" style="1"/>
+                </Property>
                 <Property name="horizontalAlignment" type="int" value="4"/>
               </Properties>
             </Component>
@@ -254,7 +257,10 @@
             </Component>
             <Component class="javax.swing.JTextField" name="token">
               <Properties>
-                <Property name="columns" type="int" value="8"/>
+                <Property name="columns" type="int" value="6"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Monospaced" size="13" style="1"/>
+                </Property>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="resultadoToken">
@@ -280,12 +286,12 @@
         <Property name="horizontalGap" type="int" value="100"/>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="aceptarBtn">
+        <Component class="javax.swing.JButton" name="aceptar">
           <Properties>
             <Property name="text" type="java.lang.String" value="ACEPTAR"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="cancelarBtn">
+        <Component class="javax.swing.JButton" name="cancelar">
           <Properties>
             <Property name="text" type="java.lang.String" value="CANCELAR"/>
           </Properties>

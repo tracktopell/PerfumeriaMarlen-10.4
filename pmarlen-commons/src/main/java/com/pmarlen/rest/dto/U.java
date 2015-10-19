@@ -143,5 +143,10 @@ public class U {
 	public boolean getPlaysAsRoot(){
 		return inRoleRoot;
 	}
+
+	@Override
+	public String toString() {
+		return n;
+	}
 	
 }
