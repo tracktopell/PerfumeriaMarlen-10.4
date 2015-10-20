@@ -9,8 +9,10 @@ import java.util.zip.ZipOutputStream;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -76,6 +78,14 @@ public class SyncService {
 		return zipData;
 	}
 
+	@GET
+	@Path("/saldoEstimado/{sucursalId:[0-9]+}/{caja:[0-9]+}")
+	@Produces(MediaType.TEXT_PLAIN + ";charset=" + encodingUTF8)
+	public Double getSaldoEstimado(@PathParam("sucursalId") String sucursalId,@PathParam("caja") String caja) throws WebApplicationException {
+		Double saldoEstimado = 20.54;
+		
+		return saldoEstimado;
+	}
 	public void setHttpRequest(HttpServletRequest httpRequest) {
 		this.httpRequest = httpRequest;
 	}
