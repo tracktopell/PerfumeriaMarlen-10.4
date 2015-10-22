@@ -24,7 +24,8 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- *
+ * /rest/syncservice/sync
+ * /rest/syncservice/saldoEstimado/1/2
  * @author alfredo
  */
 @Path("/syncservice/")
@@ -80,10 +81,10 @@ public class SyncService {
 
 	@GET
 	@Path("/saldoEstimado/{sucursalId:[0-9]+}/{caja:[0-9]+}")
-	@Produces(MediaType.TEXT_PLAIN + ";charset=" + encodingUTF8)
+	@Produces(MediaType.APPLICATION_JSON + ";charset=" + encodingUTF8)
 	public Double getSaldoEstimado(@PathParam("sucursalId") String sucursalId,@PathParam("caja") String caja) throws WebApplicationException {
 		Double saldoEstimado = 20.54;
-		
+		logger.debug("getSaldoEstimado: sucursalId="+sucursalId+", caja="+caja);
 		return saldoEstimado;
 	}
 	public void setHttpRequest(HttpServletRequest httpRequest) {
