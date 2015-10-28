@@ -48,9 +48,9 @@ public class PrepareDataForTest_PM104 {
 			
 			List<Object[]> resultAllProductos = executeQuery(newDBConnection, "SELECT CODIGO_BARRAS,COSTO_VENTA FROM PRODUCTO");
 			
-			List<Object[]> resultAllAlmacenes = executeQuery(newDBConnection, "SELECT ID,TIPO_ALMACEN,SUCURSAL_ID FROM ALMACEN WHERE SUCURSAL_ID IN (2,3,4,5)");
+			List<Object[]> resultAllAlmacenes = executeQuery(newDBConnection, "SELECT ID,TIPO_ALMACEN,SUCURSAL_ID FROM ALMACEN WHERE SUCURSAL_ID IN (2,3,4,5,6)");
 			
-			debug = true;
+			debug = false;
 			
 			for(Object[] prodArr: resultAllProductos){
 				String codigoBarras = prodArr[0].toString();
@@ -62,7 +62,9 @@ public class PrepareDataForTest_PM104 {
 					
 					Integer almacenId=(Integer)almaArr[0];
 					
-					executeDirectUpdate(newDBConnection,"UPDATE ALMACEN_PRODUCTO SET CANTIDAD = "+cantidadNueva+" WHERE ALMACEN_ID="+almacenId+" AND PRODUCTO_CODIGO_BARRAS='"+codigoBarras+"'");
+					if(executeDirectUpdate(newDBConnection,"UPDATE ALMACEN_PRODUCTO SET CANTIDAD = "+cantidadNueva+" WHERE ALMACEN_ID="+almacenId+" AND PRODUCTO_CODIGO_BARRAS='"+codigoBarras+"'")==0){
+						executeDirectUpdate(newDBConnection,"INSERT INTO ALMACEN_PRODUCTO VALUES("+almacenId+",'"+codigoBarras+"',"+cantidadNueva+","+costoVenta+",NULL)");
+					}
 				}			
 			}
 			
@@ -201,12 +203,15 @@ public class PrepareDataForTest_PM104 {
 		return generatedKey;
 	}
 	
-	private static void executeDirectUpdate(Connection conn, String q) throws SQLException {		
-		System.out.println("-> executeDirectUpdate: SQL:"+q);
+	private static int executeDirectUpdate(Connection conn, String q) throws SQLException {		
+		if (debug) {
+			System.out.println("-> executeDirectUpdate: SQL:"+q);
+		}
 		int r = conn.createStatement().executeUpdate(q);
 		if (debug) {
 			System.out.println("Affected: " + r);
 		}
+		return r;
 	}
 
 	private static String extractXMLValue(String label, String xml) {
