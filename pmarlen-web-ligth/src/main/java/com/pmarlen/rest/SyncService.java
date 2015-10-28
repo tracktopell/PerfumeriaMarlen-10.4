@@ -1,6 +1,10 @@
 package com.pmarlen.rest;
 
+import com.pmarlen.backend.dao.CorteCajaDAO;
+import com.pmarlen.backend.dao.DAOException;
+import com.pmarlen.backend.dao.EntradaSalidaDAO;
 import com.pmarlen.backend.dao.SyncDAO;
+import com.pmarlen.backend.model.CorteCaja;
 import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
 import java.io.ByteArrayOutputStream;
@@ -83,8 +87,33 @@ public class SyncService {
 	@Path("/saldoEstimado/{sucursalId:[0-9]+}/{caja:[0-9]+}")
 	@Produces(MediaType.APPLICATION_JSON + ";charset=" + encodingUTF8)
 	public Double getSaldoEstimado(@PathParam("sucursalId") String sucursalId,@PathParam("caja") String caja) throws WebApplicationException {
-		Double saldoEstimado = 20.54;
+		Double saldoEstimado = 0.0;
 		logger.debug("getSaldoEstimado: sucursalId="+sucursalId+", caja="+caja);
+		CorteCaja busqueda=new CorteCaja();
+		busqueda.setSucursalId(Integer.parseInt(sucursalId));
+		busqueda.setCaja(Integer.parseInt(caja));
+		CorteCaja ultimo=null;
+		try {
+			ultimo = CorteCajaDAO.getInstance().findLastBySucursalCaja(busqueda);
+			Double saldoVta = null;
+			Double saldoDev = null;
+			
+			saldoVta = EntradaSalidaDAO.getInstance().findSaldoEstimadoSucursalCajaVentas(ultimo.getSucursalId(), ultimo.getCaja(), ultimo.getId());
+			logger.debug("getSaldoEstimado: saldoVta="+saldoVta);
+			saldoDev = EntradaSalidaDAO.getInstance().findSaldoEstimadoSucursalCajaDevol (ultimo.getSucursalId(), ultimo.getCaja(), ultimo.getId());
+			logger.debug("getSaldoEstimado: saldoDev="+saldoDev);
+			
+			if(saldoVta != null){
+				saldoEstimado += saldoVta;
+			}
+			if(saldoDev != null){
+				saldoEstimado -= saldoDev;
+			}
+			logger.debug("getSaldoEstimado: return saldoEstimado="+saldoEstimado);
+		}catch(DAOException de){
+			logger.error ("getSyncDTOPackageZipped", de);
+			throw new WebApplicationException(de, Response.Status.INTERNAL_SERVER_ERROR);
+		}
 		return saldoEstimado;
 	}
 	public void setHttpRequest(HttpServletRequest httpRequest) {

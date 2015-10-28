@@ -109,64 +109,34 @@ public class CorteCajaDAO {
 		}
 		return r;		
 	}
-
-    public int countFor(CorteCaja x) throws DAOException{
+	
+	public CorteCaja findLastBySucursalCaja(CorteCaja x) throws DAOException{
+		CorteCaja r = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Connection conn = null;
-		int count = -1;
 		try {
 			conn = getConnection();
-			StringBuilder sq = new StringBuilder("SELECT COUNT(*) AS NCC FROM CORTE_CAJA\n");
-			sq.append("WHERE 1=1\n");
-			if(x.getFecha() != null){
-				sq.append("AND DATE(FECHA)=DATE(?)\n");
-			} else {
-				sq.append("AND FECHA IS NULL\n");
-			}
-			sq.append("AND SUCURSAL_ID=?\n");
-			if(x.getCaja() != null){
-				sq.append("AND CAJA=?\n");
-			} else {
-				sq.append("AND CAJA IS NULL\n");
-			}
-			if(x.getUsuarioEmail() != null) {
-				sq.append("AND USUARIO_EMAIL=?\n");
-			} else {
-				sq.append("AND USUARIO_EMAIL IS NULL\n");
-			}
-			sq.append("AND TIPO_EVENTO != ?");
-			
-			ps = conn.prepareStatement(sq.toString());
-			
-			int param=1;
-			
-			if(x.getFecha() != null){
-				ps.setTimestamp	(param++, x.getFecha());
-			} else {
-				
-			}
-			ps.setInt		(param++, x.getSucursalId());
-			if(x.getCaja() != null){
-				ps.setInt		(param++, x.getCaja());
-			} else {
-			
-			}
-			if(x.getUsuarioEmail() != null) {
-				ps.setString	(param++, x.getUsuarioEmail());
-			} else {
-			
-			}
-			ps.setInt		(param++, x.getTipoEvento());
-			
-			logger.debug("countFor: Query count:"+sq);
+			ps = conn.prepareStatement("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,TIPO_EVENTO,USUARIO_AUTORIZO FROM CORTE_CAJA "+
+					"WHERE SUCURSAL_ID=? AND CAJA=? ORDER BY FECHA DESC LIMIT 1"
+			);
+			ps.setInt(1, x.getSucursalId());
+			ps.setInt(2, x.getCaja());
 			
 			rs = ps.executeQuery();
-			
 			if(rs.next()) {
-				count = rs.getInt(1);
+				r = new CorteCaja();
+				r.setId((Integer)rs.getObject("ID"));
+				r.setFecha((Timestamp)rs.getObject("FECHA"));
+				r.setSucursalId((Integer)rs.getObject("SUCURSAL_ID"));
+				r.setCaja((Integer)rs.getObject("CAJA"));
+				r.setUsuarioEmail((String)rs.getObject("USUARIO_EMAIL"));
+				r.setSaldoInicial((Double)rs.getObject("SALDO_INICIAL"));
+				r.setSaldoFinal((Double)rs.getObject("SALDO_FINAL"));
+				r.setComentarios((String)rs.getObject("COMENTARIOS"));
+				r.setTipoEvento((Integer)rs.getObject("TIPO_EVENTO"));
+				r.setUsuarioAutorizo((String)rs.getObject("USUARIO_AUTORIZO"));
 			}
-			logger.debug("countFor: count="+count);
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());
@@ -182,7 +152,71 @@ public class CorteCajaDAO {
 				}
 			}
 		}
-		return count;		
+		return r;		
+	}
+	
+    public Integer ultimoEstadoPara(CorteCaja x) throws DAOException{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		Integer tipoEvento = null;
+		try {
+			conn = getConnection();
+			StringBuilder sq = new StringBuilder("SELECT TIPO_EVENTO FROM CORTE_CAJA\n");
+			sq.append("WHERE 1=1\n");
+			sq.append("AND SUCURSAL_ID=?\n");
+			if(x.getCaja() != null){
+				sq.append("AND CAJA=?\n");
+			} else {
+				sq.append("AND CAJA IS NULL\n");
+			}
+			if(x.getUsuarioEmail() != null) {
+				sq.append("AND USUARIO_EMAIL=?\n");
+			} else {
+				sq.append("AND USUARIO_EMAIL IS NULL\n");
+			}
+			sq.append("ORDER BY FECHA DESC");
+			
+			ps = conn.prepareStatement(sq.toString());
+			
+			int param=1;
+			
+			ps.setInt		(param++, x.getSucursalId());
+			if(x.getCaja() != null){
+				ps.setInt		(param++, x.getCaja());
+			} else {
+			
+			}
+			if(x.getUsuarioEmail() != null) {
+				ps.setString	(param++, x.getUsuarioEmail());
+			} else {
+			
+			}
+			
+			logger.debug("countFor: Query:"+sq);
+			
+			rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				tipoEvento = rs.getInt(1);
+			}
+			logger.debug("countFor: tipoEvento="+tipoEvento);
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return tipoEvento;		
 	}
 
 	public ArrayList<CorteCaja> findAllBy(Integer sucursalId,Integer caja,Date fechaInicial,Date fechaFinal) throws DAOException {

@@ -82,11 +82,17 @@ public class IAmAliveService {
 		logger.debug("registerCorteCaja:corteCajaDTO=" + corteCajaDTO);
 		CorteCaja cc = corteCajaDTO.reverse();
 		try {
-			if(CorteCajaDAO.getInstance().countFor(cc)==0){
-				logger.debug("registerCorteCaja: INSERT !");
-				CorteCajaDAO.getInstance().insert(cc);
+			Integer ultimoEstadoPara = CorteCajaDAO.getInstance().ultimoEstadoPara(cc);
+			if(ultimoEstadoPara != null){
+				if(ultimoEstadoPara != corteCajaDTO.getTipoEvento()){
+					logger.debug("registerCorteCaja: NUEVO ESTADO !");
+					CorteCajaDAO.getInstance().insert(cc);
+				} else {
+					logger.debug("registerCorteCaja: ESTADO REPETIDO!");
+				}
 			} else {
-				logger.debug("registerCorteCaja: SIMILAR FOUND.");
+				logger.debug("registerCorteCaja: PRIMER ESTADO !");
+				CorteCajaDAO.getInstance().insert(cc);
 			}
 		} catch(DAOException de){
 			logger.error("registerCorteCaja:", de);

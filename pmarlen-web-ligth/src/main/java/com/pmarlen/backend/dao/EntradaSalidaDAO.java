@@ -730,6 +730,136 @@ public class EntradaSalidaDAO {
 	private ArrayList<EntradaSalidaQuickView> findAllHistorico(int tipoMov,int sucursalId) throws DAOException {
 		return findAllActive(tipoMov,sucursalId,false);
 	}
+	
+	public Double findSaldoEstimadoSucursalCajaVentas(int sucursalId,int caja,int corteCajaId)throws DAOException{
+		Double saldoEstimado=null;
+				logger.info("->findSaldoEstimadoSucursalCajaVentas(sucursalId="+sucursalId+",caja="+caja+")");
+		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			
+			String q =  "SELECT ES.ID,\n" +
+						"       ES.TIPO_MOV,\n" +
+						"       ESD.ID,\n" +
+						"       CC.ID,\n" +
+						"       CC.TIPO_EVENTO,\n" +
+						"       CC.SUCURSAL_ID,\n" +
+						"       CC.CAJA,\n" +
+						"       CC.SALDO_INICIAL,\n" +
+						"       ESD.CANTIDAD,\n" +
+						"       ESD.ALMACEN_ID,\n" +
+						"       ESD.PRODUCTO_CODIGO_BARRAS,\n" +
+						"       ESD.PRECIO_VENTA,\n" +
+						"       SUM(ESD.CANTIDAD * ESD.PRECIO_VENTA) AS VTA\n" +
+						"FROM   ENTRADA_SALIDA ES,\n" +
+						"       ENTRADA_SALIDA_DETALLE ESD,\n" +
+						"       CORTE_CAJA     CC\n" +
+						"WHERE  1=1\n" +
+						"AND    ES.ID           = ESD.ENTRADA_SALIDA_ID\n" +
+						"AND    ES.TIPO_MOV     = 30\n" +
+						"AND    CC.TIPO_EVENTO  = 2\n" +
+						"AND    CC.SUCURSAL_ID  = ?\n" +
+						"AND    CC.CAJA         = ?\n" +
+						"AND    CC.ID           = ?\n" +
+						"AND    ES.FECHA_CREO   >= CC.FECHA\n" +
+						"ORDER BY ES.ID,ESD.ID;";
+			int ci=1;
+			
+			ps.setInt(ci++, sucursalId);
+			ps.setInt(ci++, caja);
+			ps.setInt(ci++, corteCajaId);
+			
+			rs = ps.executeQuery();					
+			
+			while (rs.next()) {
+				saldoEstimado = rs.getDouble("VTA");
+			}
+			
+		} catch (SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+					ps.close();
+					conn.close();
+				} catch (SQLException ex) {
+					logger.error("findAll:clossing:", ex);
+				}
+			}
+		}
+
+		return saldoEstimado;
+	}
+
+	public Double findSaldoEstimadoSucursalCajaDevol(int sucursalId,int caja,int corteCajaId)throws DAOException{
+		Double saldoEstimado=null;
+				logger.info("->findSaldoEstimadoSucursalCajaVentas(sucursalId="+sucursalId+",caja="+caja+")");
+		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			
+			String q =  "SELECT ES.ID,\n" +
+						"       ES.TIPO_MOV,\n" +
+						"       ESD.ID,\n" +
+						"       CC.ID,\n" +
+						"       CC.TIPO_EVENTO,\n" +
+						"       CC.SUCURSAL_ID,\n" +
+						"       CC.CAJA,\n" +
+						"       CC.SALDO_INICIAL,\n" +
+						"       ESD.CANTIDAD,\n" +
+						"       ESD.ALMACEN_ID,\n" +
+						"       ESD.PRODUCTO_CODIGO_BARRAS,\n" +
+						"       ESD.PRECIO_VENTA,\n" +
+						"       SUM(-1 * ESD.CANTIDAD * ESD.PRECIO_VENTA) AS DEV\n" +
+						"FROM   ENTRADA_SALIDA ES,\n" +
+						"       ENTRADA_SALIDA_DETALLE ESD,\n" +
+						"       CORTE_CAJA     CC\n" +
+						"WHERE  1=1\n" +
+						"AND    ES.ID           = ESD.ENTRADA_SALIDA_ID\n" +
+						"AND    ES.TIPO_MOV     = 30\n" +
+						"AND    CC.TIPO_EVENTO  = 2\n" +
+						"AND    CC.SUCURSAL_ID  = ?\n" +
+						"AND    CC.CAJA         = ?\n" +
+						"AND    CC.ID           = ?\n" +
+						"AND    ES.FECHA_CREO   >= CC.FECHA\n" +
+						"ORDER BY ES.ID,ESD.ID;";
+			int ci=1;
+			
+			ps.setInt(ci++, sucursalId);
+			ps.setInt(ci++, caja);
+			ps.setInt(ci++, corteCajaId);
+			
+			rs = ps.executeQuery();					
+			
+			while (rs.next()) {
+				saldoEstimado = rs.getDouble("DEV");
+			}
+			
+		} catch (SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+					ps.close();
+					conn.close();
+				} catch (SQLException ex) {
+					logger.error("findAll:clossing:", ex);
+				}
+			}
+		}
+
+		return saldoEstimado;
+	}
 
 	public int insertPedidoVentaSucursal(Connection conn, EntradaSalida x, List<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
 		

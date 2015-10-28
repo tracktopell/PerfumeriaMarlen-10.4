@@ -70,7 +70,7 @@ public class Constants {
 	//--------------------------------------------------------------------------
 	public static final int TIPO_EVENTO_AP_INICIADA	= 0;
 	public static final int TIPO_EVENTO_AUTENTICADO	= 1;
-	public static final int TIPO_EVENTO_APERTURA		= 2;	
+	public static final int TIPO_EVENTO_APERTURA	= 2;	
 	public static final int TIPO_EVENTO_SUSPENDER	= 3;
 	public static final int TIPO_EVENTO_REANUDAR	= 4;
 	public static final int TIPO_EVENTO_ERRORGRAVE	= 8;
