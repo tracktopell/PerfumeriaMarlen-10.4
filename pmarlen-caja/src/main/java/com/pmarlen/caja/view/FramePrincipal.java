@@ -40,6 +40,10 @@ public class FramePrincipal extends javax.swing.JFrame {
 		if(pml30ImageIcon != null){
 			logoLabel.setText(null);
 		}
+		preareAbrirSesion();
+	}
+	
+	public void preareAbrirSesion(){
 
 		this.abrirSesion.setEnabled(true);
 		this.archivoMenu.setEnabled(true);
@@ -72,7 +76,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 		this.ventaModoMenu.setEnabled(false);
 		this.ventaTerminarMenu.setEnabled(false);
 		this.ventaeliminarProdMenu.setEnabled(false);
-		this.ventasMenu.setEnabled(false);
+		this.ventasMenu.setEnabled(false);	
 	}
 
 	public void enableMinimalComponents(){

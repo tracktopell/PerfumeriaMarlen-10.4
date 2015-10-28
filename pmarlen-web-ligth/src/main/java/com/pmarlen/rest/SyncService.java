@@ -97,19 +97,22 @@ public class SyncService {
 			ultimo = CorteCajaDAO.getInstance().findLastBySucursalCaja(busqueda);
 			Double saldoVta = null;
 			Double saldoDev = null;
-			
-			saldoVta = EntradaSalidaDAO.getInstance().findSaldoEstimadoSucursalCajaVentas(ultimo.getSucursalId(), ultimo.getCaja(), ultimo.getId());
-			logger.debug("getSaldoEstimado: saldoVta="+saldoVta);
-			saldoDev = EntradaSalidaDAO.getInstance().findSaldoEstimadoSucursalCajaDevol (ultimo.getSucursalId(), ultimo.getCaja(), ultimo.getId());
-			logger.debug("getSaldoEstimado: saldoDev="+saldoDev);
-			
-			if(saldoVta != null){
-				saldoEstimado += saldoVta;
+			if(ultimo!= null){
+				saldoVta = EntradaSalidaDAO.getInstance().findSaldoEstimadoSucursalCajaVentas(ultimo.getSucursalId(), ultimo.getCaja(), ultimo.getId());
+				logger.debug("getSaldoEstimado: saldoVta="+saldoVta);
+				saldoDev = EntradaSalidaDAO.getInstance().findSaldoEstimadoSucursalCajaDevol (ultimo.getSucursalId(), ultimo.getCaja(), ultimo.getId());
+				logger.debug("getSaldoEstimado: saldoDev="+saldoDev);
+
+				if(saldoVta != null){
+					saldoEstimado += saldoVta;
+				}
+				if(saldoDev != null){
+					saldoEstimado -= saldoDev;
+				}
+			} else {
+				logger.debug("getSaldoEstimado: NO HAY ULTIMO CORTE.");
 			}
-			if(saldoDev != null){
-				saldoEstimado -= saldoDev;
-			}
-			logger.debug("getSaldoEstimado: return saldoEstimado="+saldoEstimado);
+			logger.debug("getSaldoEstimado: saldoEstimado="+saldoEstimado);
 		}catch(DAOException de){
 			logger.error ("getSyncDTOPackageZipped", de);
 			throw new WebApplicationException(de, Response.Status.INTERNAL_SERVER_ERROR);

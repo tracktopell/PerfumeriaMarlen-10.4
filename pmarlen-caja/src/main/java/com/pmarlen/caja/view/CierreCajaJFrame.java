@@ -84,7 +84,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText("IMPORTE ESTIMADO NETO :");
+        jLabel4.setText("IMPORTE ESTIMADO BRUTO :");
         jLabel4.setPreferredSize(new java.awt.Dimension(300, 25));
         jPanel4.add(jLabel4);
 

@@ -60,7 +60,7 @@ public class ApplicationLogic {
 	private CorteCajaDTO corteCajaDTO;
 
 	private ApplicationLogic(){
-		corteCajaDTO = MemoryDAO.getCorteCaja();
+		corteCajaDTO = new CorteCajaDTO();
 	}
 
 	public CorteCajaDTO getCorteCajaDTO() {
@@ -367,7 +367,16 @@ public class ApplicationLogic {
 		return almacen;
 	}
 	
+	private CorteCajaDTO lastSavedCC;
+
+	public CorteCajaDTO getLastSavedCC() {
+		return lastSavedCC;
+	}
+	
 	public void iniciaAppCorteCajaDTO(){
+		
+		lastSavedCC = MemoryDAO.readLastSavedCorteCajaDTO();
+		
 		getCorteCajaDTO().setCaja(MemoryDAO.getNumCaja());
 		getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
 		getCorteCajaDTO().setFecha(System.currentTimeMillis());
@@ -382,9 +391,10 @@ public class ApplicationLogic {
 		MemoryDAO.backupCorteCajaDTO(corteCajaDTO);
 	}	
 
-	double getSaldoFinalEstimado() {
+	double getSaldoFinalEstimado() throws IOException{
 		double  saldoFinalEstimado = 0.0;
 		
+		saldoFinalEstimado = MemoryDAO.getSaldoEstimado();
 		
 		return saldoFinalEstimado;
 	}

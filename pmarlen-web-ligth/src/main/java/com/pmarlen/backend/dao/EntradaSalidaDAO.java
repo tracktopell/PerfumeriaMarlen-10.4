@@ -733,7 +733,7 @@ public class EntradaSalidaDAO {
 	
 	public Double findSaldoEstimadoSucursalCajaVentas(int sucursalId,int caja,int corteCajaId)throws DAOException{
 		Double saldoEstimado=null;
-				logger.info("->findSaldoEstimadoSucursalCajaVentas(sucursalId="+sucursalId+",caja="+caja+")");
+		logger.debug("findSaldoEstimadoSucursalCajaVentas(sucursalId="+sucursalId+",caja="+caja+")");
 		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -765,8 +765,9 @@ public class EntradaSalidaDAO {
 						"AND    CC.CAJA         = ?\n" +
 						"AND    CC.ID           = ?\n" +
 						"AND    ES.FECHA_CREO   >= CC.FECHA\n" +
-						"ORDER BY ES.ID,ESD.ID;";
+						"ORDER BY ES.ID,ESD.ID";
 			int ci=1;
+			ps = conn.prepareStatement(q);
 			
 			ps.setInt(ci++, sucursalId);
 			ps.setInt(ci++, caja);
@@ -798,7 +799,7 @@ public class EntradaSalidaDAO {
 
 	public Double findSaldoEstimadoSucursalCajaDevol(int sucursalId,int caja,int corteCajaId)throws DAOException{
 		Double saldoEstimado=null;
-				logger.info("->findSaldoEstimadoSucursalCajaVentas(sucursalId="+sucursalId+",caja="+caja+")");
+		logger.debug("findSaldoEstimadoSucursalCajaVentas(sucursalId="+sucursalId+",caja="+caja+")");
 		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -824,7 +825,7 @@ public class EntradaSalidaDAO {
 						"       CORTE_CAJA     CC\n" +
 						"WHERE  1=1\n" +
 						"AND    ES.ID           = ESD.ENTRADA_SALIDA_ID\n" +
-						"AND    ES.TIPO_MOV     = 30\n" +
+						"AND    ES.TIPO_MOV     = 21\n" +
 						"AND    CC.TIPO_EVENTO  = 2\n" +
 						"AND    CC.SUCURSAL_ID  = ?\n" +
 						"AND    CC.CAJA         = ?\n" +
@@ -832,6 +833,7 @@ public class EntradaSalidaDAO {
 						"AND    ES.FECHA_CREO   >= CC.FECHA\n" +
 						"ORDER BY ES.ID,ESD.ID;";
 			int ci=1;
+			ps = conn.prepareStatement(q);
 			
 			ps.setInt(ci++, sucursalId);
 			ps.setInt(ci++, caja);

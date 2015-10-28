@@ -23,6 +23,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,9 +32,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -54,7 +57,11 @@ public class MemoryDAO {
 	private static final String uriServiceIAmAlive =               "/rest/iamaliveservice/hello";
 	
 	private static final String uriServiceZipSync =                "/rest/syncservice/sync";
-		
+	
+	private static final String uriSaldoEstimado =                "/rest/syncservice/saldoEstimado";
+	
+	private static boolean enviandoCierreCaja = false;
+	private static boolean enviandoCierreCorrectmente = false;
 	static {
 		properties.put("sucursal","1");
 		properties.put("caja","1");
@@ -154,6 +161,8 @@ public class MemoryDAO {
 			}
 		}		
 	}
+	private static int iAmALiveBuild        =0;
+	private static int iAmALiveOKEnviadas   =0;
 	
 	private static boolean runnigPool = true;
 	private static int     syncPollState = 0;
@@ -287,10 +296,20 @@ public class MemoryDAO {
 			ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,jsonInput);
 			logger.debug("download:...get response");
 			long t2=System.currentTimeMillis();
+			if(iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
+				enviandoCierreCaja = false;
+			}
 			if (response.getStatus() != 200) {
+				if(iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
+					enviandoCierreCorrectmente = false;
+				}
 				throw new IOException("Failed HTTP error code :"
 						+ response.getStatus());
 			}
+			if(iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
+				enviandoCierreCorrectmente = true;
+			}
+			iAmALiveOKEnviadas++;
 			int rl=response.getLength();
 			long t3=System.currentTimeMillis();
 			InputStream is = response.getEntityInputStream();
@@ -373,13 +392,6 @@ public class MemoryDAO {
 		
 		String operatingSystem = System.getProperty("os.name")+"_"+System.getProperty("os.version")+"("+System.getProperty("os.arch")+")";
 		
-//		ApplicationLogic.getInstance().getCorteCajaDTO().setCaja(getNumCaja());
-//		ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(getSucursalId());
-//		ApplicationLogic.getInstance().getCorteCajaDTO().setFecha(System.currentTimeMillis());
-//		ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_ENLINEA);
-//		ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(sessionID);
-//		ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(getSucursalId());
-		
 		U ul = ApplicationLogic.getInstance().getLogged();
 		if(ul != null) {
 			iAmAliveDTOPackage.setLoggedIn(ul.getE());
@@ -388,9 +400,10 @@ public class MemoryDAO {
 			iAmAliveDTOPackage.setLoggedIn(null);
 			//ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(null);
 		}
+		iAmAliveDTOPackage.setSucursalId(getSucursalId());
 		iAmAliveDTOPackage.setCajaId(getNumCaja());
 		iAmAliveDTOPackage.setSessionId(getSessionID());
-		iAmAliveDTOPackage.setSucursalId(getSucursalId());
+		
 		iAmAliveDTOPackage.setUserAgent(
 				new UserAgent(
 						ApplicationLogic.getInstance().getVersion(),
@@ -399,8 +412,17 @@ public class MemoryDAO {
 						System.getProperty("user.name"),
 						System.getProperty("user.dir")));
 		
-		iAmAliveDTOPackage.setCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
+		CorteCajaDTO lastSavedCC = ApplicationLogic.getInstance().getLastSavedCC();
+		CorteCajaDTO corteCajaDTOEnviar = ApplicationLogic.getInstance().getCorteCajaDTO();
+		if(lastSavedCC != null && lastSavedCC.getTipoEvento()==Constants.TIPO_EVENTO_CIERRE && iAmALiveOKEnviadas==0) {
+			logger.debug("buildIAmALivePackageDTO:Forzando Evnio de CIERRE DE CAJA");
+			iAmAliveDTOPackage.setCorteCajaDTO(lastSavedCC);
+		} else {
+			iAmAliveDTOPackage.setCorteCajaDTO(corteCajaDTOEnviar);
+		}
 		
+		
+		iAmALiveBuild++;
 		return iAmAliveDTOPackage;
 	}
 	
@@ -428,10 +450,21 @@ public class MemoryDAO {
 			ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,jsonInput);
 			logger.debug("iamalive:...get response");
 			long t2=System.currentTimeMillis();
+			if(iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
+				enviandoCierreCaja = false;
+			}
 			if (response.getStatus() != 200) {
+				if(iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
+					enviandoCierreCorrectmente = false;
+				}
 				throw new IOException("Failed HTTP error code :"
 						+ response.getStatus());
 			}
+			if(iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
+				enviandoCierreCorrectmente = true;
+			}
+			iAmALiveOKEnviadas++;
+			
 			logger.debug("iamalive:OK, not error, trying get JSON response");
 			byte byteArr[]=new byte[0];
 			byte[] output = response.getEntity(byteArr.getClass());
@@ -611,7 +644,7 @@ public class MemoryDAO {
 	private static String userAgentExpression;
 	private static final String corteCajaDTOjsonFile = "CorteCajaDTO.json";
 	
-	public static CorteCajaDTO getCorteCaja(){
+	public static CorteCajaDTO _getCorteCaja(){
 		CorteCajaDTO cc=null;
 		File fileToLoad = new File(corteCajaDTOjsonFile);
 		if(fileToLoad.exists() ){
@@ -672,5 +705,54 @@ public class MemoryDAO {
 			logger.error("backupCorteCajaDTO:Error to write",ioe);
 		}	
 	}
+	
+	public static CorteCajaDTO readLastSavedCorteCajaDTO(){
+		logger.debug("readLastSavedCorteCajaDTO: ");
+		final String backupFaileName = "CorteCajaDTO.json";
+		Gson gson=new Gson();
+		CorteCajaDTO cc = null;
+		
+		try {			
+			cc = gson.fromJson(new FileReader(backupFaileName), CorteCajaDTO.class);		
+			logger.debug("readLastSavedCorteCajaDTO: cc="+cc);
+		}catch(IOException ioe){
+			logger.debug("readLastSavedCorteCajaDTO: No existe el archivo:"+ioe.getMessage());
+		}
+		return cc;
+	}
 
+	public static double getSaldoEstimado() throws IOException{
+		double saldoEstimado = 0.0;
+		
+		URL url = null;
+		InputStream is=null;
+		
+		try {
+			url = new URL(getServerContext()+uriSaldoEstimado+"/"+getSucursalId()+"/"+getNumCaja());
+			logger.debug("getSaldoEstimado: url::"+url);
+			is = url.openConnection().getInputStream();
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			saldoEstimado = Double.parseDouble(br.readLine());
+			logger.debug("getSaldoEstimado: saldoEstimado="+saldoEstimado);
+			is.close();
+		}catch(Exception e){
+			logger.error("getSaldoEstimado: error", e);
+			throw new IOException("No se puede Obtener el saldo:"+e.getMessage());
+		}
+		return saldoEstimado;
+	}
+
+	public static void iniciaEnvioCierreCaja() {
+		enviandoCierreCaja = true;
+		enviandoCierreCorrectmente = false;
+	}
+
+	public static boolean isEnviandoCierreCaja() {
+		return enviandoCierreCaja;
+	}
+
+	public static boolean isEnviandoCierreCorrectmente() {
+		return enviandoCierreCorrectmente;
+	}
+	
 }

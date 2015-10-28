@@ -6,10 +6,13 @@ package com.pmarlen.caja.control;
 
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.view.AperturaCajaJFrame;
+import com.pmarlen.caja.view.CierreCajaJFrame;
 import com.pmarlen.caja.view.DialogConfiguracionBTImpresora;
 import com.pmarlen.caja.view.FramePrincipal;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.PanelVentas;
+import com.pmarlen.model.Constants;
+import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.U;
 import java.awt.CardLayout;
 import java.awt.Font;
@@ -50,6 +53,8 @@ public class FramePrincipalControl implements ActionListener{
 		framePrincipal = new FramePrincipal();
 		
 		framePrincipal.setTitle("PML30-CAJA ("+ApplicationLogic.getInstance().getVersion()+")");
+		
+		framePrincipal.getSesionMenu().addActionListener(this);
 		
 		framePrincipal.getAbrirSesion().addActionListener(this);
 		
@@ -103,7 +108,14 @@ public class FramePrincipalControl implements ActionListener{
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				logger.debug("estadoInicial():START");
-				((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
+				CorteCajaDTO lastSavedCC = ApplicationLogic.getInstance().getLastSavedCC();
+				if(lastSavedCC != null && lastSavedCC.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA){
+					abrirSesionNueva();
+					logger.debug("estadoInicial(): APERTUR DE CAJA YA INICIADA");
+				} else {
+					((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
+					logger.debug("estadoInicial(): NUEVA SESION");
+				}
 				logger.debug("estadoInicial():setVisible(true) --------------------------------------[    V E N T A N A     V I S I B L E ]-----------------------------------");
 				framePrincipal.setVisible(true);				
 				logger.debug("estadoInicial():updateStatusWest()");
@@ -153,7 +165,9 @@ public class FramePrincipalControl implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == framePrincipal.getAbrirSesion()){
+		if(e.getSource() == framePrincipal.getSesionMenu()){
+			sesionMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getAbrirSesion()){
 			abrirSesion_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getCerrarSesion()){
 			cerrarSesion_actionPerformed();
@@ -179,6 +193,10 @@ public class FramePrincipalControl implements ActionListener{
 	AperturaCajaJFrame  acDlg = null;
 	AperturaCajaControl acc   = null;
 	
+	private void sesionMenu_actionPerformed(){
+		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
+	}
+	
 	private void abrirSesion_actionPerformed() {
 		logger.info("[USER]->abrirSesion_actionPerformed():");
 		acDlg = new AperturaCajaJFrame(framePrincipal);
@@ -201,7 +219,33 @@ public class FramePrincipalControl implements ActionListener{
 	}
 
 	private void cerrarSesion_actionPerformed() {
-		JOptionPane.showMessageDialog(framePrincipal, "NO IMPLEMENTADO", "CERRAR", JOptionPane.ERROR_MESSAGE);
+		//JOptionPane.showMessageDialog(framePrincipal, "NO IMPLEMENTADO", "CERRAR", JOptionPane.ERROR_MESSAGE);
+		CierreCajaJFrame cierreCajaDialog = new CierreCajaJFrame(framePrincipal);
+		CierreCajaControl cierreCajaControl = new CierreCajaControl(cierreCajaDialog);
+		cierreCajaControl.estadoInicial();
+		if(cierreCajaControl.isCierreCorrecto()){
+			framePrincipal.dispose();
+			
+			while(MemoryDAO.isEnviandoCierreCaja()) {
+				try {
+					Thread.sleep(1000);
+					logger.debug("ESPERANDO Envio de Cierre de Caja");
+				}catch(InterruptedException ie){
+					
+				}
+			}
+			
+			if(MemoryDAO.isEnviandoCierreCorrectmente()) {
+				logger.debug("Envio correcto, iniciaAppCorteCajaDTO, cerrando");
+				ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
+			} else {
+				logger.debug("Envio de Cierre no se envio, :(");
+			}
+			
+			System.exit(0);
+		} else {
+		
+		}
 	}
 	
 	private void ventaeliminarProdMenu_actionPerformed() {

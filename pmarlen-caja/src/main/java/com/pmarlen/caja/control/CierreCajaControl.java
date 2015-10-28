@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
  */
 public class CierreCajaControl implements ActionListener , FocusListener, ValidadorDeCampos{
 	private static Logger logger = Logger.getLogger(CierreCajaControl.class.getName());
-	private CierreCajaJFrame aperturaCajaDialog;	
+	private CierreCajaJFrame cierreCajaDialog;	
 	private double saldoInicial;
 	private double saldoFinal;
 	private double saldoEstimado;
@@ -34,48 +35,64 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	private String usuarioAutorizo;
 	private String observaciones;
 	private boolean cierreCorrecto;
-	public static final int OBSERVACIONES_MAX_LENGTH = 64;
+	public static final int OBSERVACIONES_MAX_LENGTH = 255;
 	
 	public CierreCajaControl(CierreCajaJFrame dialogLogin) {
-		this.aperturaCajaDialog = dialogLogin;
-		this.aperturaCajaDialog.getSaldoFinal().addFocusListener(this);
-		this.aperturaCajaDialog.getSaldoFinal().addActionListener(this);
-		this.aperturaCajaDialog.getAceptar() .addActionListener(this);
-		this.aperturaCajaDialog.getCancelar().addActionListener(this);
-		this.aperturaCajaDialog.getObservaciones().addFocusListener(this);
-		this.aperturaCajaDialog.getObservaciones().addActionListener(this);
-		this.aperturaCajaDialog.getGeneraFrase().addActionListener(this);
-		this.aperturaCajaDialog.getToken().addFocusListener(this);
-		this.aperturaCajaDialog.getToken().addActionListener(this);
+		this.cierreCajaDialog = dialogLogin;
+		this.cierreCajaDialog.getSaldoFinal().addFocusListener(this);
+		this.cierreCajaDialog.getSaldoFinal().addActionListener(this);
+		this.cierreCajaDialog.getAceptar() .addActionListener(this);
+		this.cierreCajaDialog.getCancelar().addActionListener(this);
+		this.cierreCajaDialog.getObservaciones().addFocusListener(this);
+		this.cierreCajaDialog.getObservaciones().addActionListener(this);
+		this.cierreCajaDialog.getGeneraFrase().addActionListener(this);
+		this.cierreCajaDialog.getToken().addFocusListener(this);
+		this.cierreCajaDialog.getToken().addActionListener(this);
 	}
 
 	public CierreCajaJFrame getCierreCajaJFrame() {
-		return aperturaCajaDialog;
+		return cierreCajaDialog;
 	}
 	
 	public void estadoInicial(){
 		saldoInicial  = ApplicationLogic.getInstance().getCorteCajaDTO().getSaldoInicial().doubleValue();
-		saldoEstimado = ApplicationLogic.getInstance().getSaldoFinalEstimado();
+		//saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getSaldoFinalEstimado();
+		saldoEstimado = saldoInicial;
+		buscarSaldoFinalEstimado();
 		observaciones = null;
 		cierreCorrecto = false;
-		aperturaCajaDialog.getSaldoInicial().setText(Constants.dfMoneda.format(saldoEstimado));
-		aperturaCajaDialog.getAceptar().setEnabled(false);
+		cierreCajaDialog.getSaldoInicial().setText(Constants.dfMoneda.format(saldoInicial));
+		cierreCajaDialog.getEstimado().setText(Constants.dfMoneda.format(saldoEstimado));
+		cierreCajaDialog.getAceptar().setEnabled(false);
 		
-		aperturaCajaDialog.getCierreAnormalPanel().setEnabled(false);
-		aperturaCajaDialog.getUsuarioAutorizo().setModel(getAdministradores());
-		aperturaCajaDialog.setVisible(true);
+		cierreCajaDialog.getCierreAnormalPanel().setEnabled(false);
+		cierreCajaDialog.getUsuarioAutorizo().setModel(getAdministradores());
+		cierreCajaDialog.setVisible(true);
+	}
+	
+	private void buscarSaldoFinalEstimado(){
+		new Thread(){
+			public void run(){
+				try {
+					saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getSaldoFinalEstimado();
+					cierreCajaDialog.getEstimado().setText(Constants.dfMoneda.format(saldoEstimado));
+				}catch(IOException ioe){
+					JOptionPane.showMessageDialog(cierreCajaDialog, "NO SE PUEDE OBTENER EL SALDO FINAL ESTIMADO", "CIERRE CAJA", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}.start();
 	}
 	
 	
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == aperturaCajaDialog.getSaldoFinal()) {
+		if (e.getSource() == cierreCajaDialog.getSaldoFinal()) {
 			saldoFinal_focusLost();
-		} if (e.getSource() == aperturaCajaDialog.getAceptar()) {
+		} if (e.getSource() == cierreCajaDialog.getAceptar()) {
 			aceptar_ActionPerformed();
-		} else if (e.getSource() == aperturaCajaDialog.getCancelar()) {
+		} else if (e.getSource() == cierreCajaDialog.getCancelar()) {
 			cancelar_ActionPerformed();
-		} else if (e.getSource() == aperturaCajaDialog.getGeneraFrase()) {
+		} else if (e.getSource() == cierreCajaDialog.getGeneraFrase()) {
 			generaFrase_ActionPerformed();
 		}		
 	}
@@ -84,20 +101,20 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		logger.info("[USER]->aceptar_ActionPerformed()");
 		
 		if(validateAll()) {
-			aperturaCajaDialog.getAceptar().setEnabled(true);
+			cierreCajaDialog.getAceptar().setEnabled(true);
 		} else {
-			aperturaCajaDialog.getAceptar().setEnabled(false);
+			cierreCajaDialog.getAceptar().setEnabled(false);
 		}
 		
 		registraCirreCaja();
 		
-		aperturaCajaDialog.dispose();
-		aperturaCajaDialog = null;
+		cierreCajaDialog.dispose();
+		cierreCajaDialog = null;
 	}
 	
 	private void generaFrase_ActionPerformed() {
 		GeneradorDeToken gt = new GeneradorDeToken();		
-		aperturaCajaDialog.getFrase().setText(gt.getFrase());
+		cierreCajaDialog.getFrase().setText(gt.getFrase());
 	}
 
 	private boolean validateAll() {
@@ -109,7 +126,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 			if (componentWithError != null) {
 				javax.swing.UIManager.put("OptionPane.font", new FontUIResource(new java.awt.Font("Tahoma", 0, 24)));
 				javax.swing.UIManager.put("JOptionPane.font", new FontUIResource(new java.awt.Font("Tahoma", 0, 24)));
-				JOptionPane.showMessageDialog(aperturaCajaDialog, ve.getMessage(), "ACEPTAR", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(cierreCajaDialog, ve.getMessage(), "ACEPTAR", JOptionPane.ERROR_MESSAGE);
 				if(componentWithError instanceof JTextField) {
 					((JTextField)componentWithError).setText("");
 				}
@@ -122,11 +139,12 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	
 	private void cancelar_ActionPerformed(){
 		logger.info("[USER]->cancelar_ActionPerformed()");
-		aperturaCajaDialog.dispose();
-		aperturaCajaDialog = null;
+		cierreCajaDialog.dispose();
+		cierreCajaDialog = null;
 	}
 	
 	private void registraCirreCaja(){
+		
 		ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(ApplicationLogic.getInstance().getLogged().getE());
 		ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
 		ApplicationLogic.getInstance().getCorteCajaDTO().setCaja(MemoryDAO.getNumCaja());
@@ -139,7 +157,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		
 		MemoryDAO.saveCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
 		MemoryDAO.backupCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
-		
+		MemoryDAO.iniciaEnvioCierreCaja();
 		cierreCorrecto=true;
 	}
 
@@ -150,27 +168,27 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 
 	@Override
 	public void focusLost(FocusEvent fe) {
-		if (fe.getSource() == aperturaCajaDialog.getSaldoInicial()) {
+		if (fe.getSource() == cierreCajaDialog.getSaldoInicial()) {
 			saldoFinal_focusLost();
 		}
 	}
 	
 	public void setFontBigest() {
-		aperturaCajaDialog.setFont(new java.awt.Font("Tahoma", 0, 24));
+		cierreCajaDialog.setFont(new java.awt.Font("Tahoma", 0, 24));
 	}
 
 	@Override
 	public void validate() throws ValidacionCamposException {
-		String saldoFinalValue = aperturaCajaDialog.getSaldoFinal().getText().replace("$", "").replace(",", "").trim();
+		String saldoFinalValue = cierreCajaDialog.getSaldoFinal().getText().replace("$", "").replace(",", "").trim();
 		
 		try {
 			saldoFinal = Double.parseDouble(saldoFinalValue);			
 		} catch(NumberFormatException nfe){
-			throw new ValidacionCamposException("EL SALDO DEBE SER UN IMPORTE DE MONEDA", aperturaCajaDialog.getSaldoInicial());
+			throw new ValidacionCamposException("EL SALDO DEBE SER UN IMPORTE DE MONEDA", cierreCajaDialog.getSaldoInicial());
 		}
 		
 		if(saldoFinal< 0 || saldoFinal > 100000 ) {
-			throw new ValidacionCamposException("EL SALDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.00 A $99,999.99", aperturaCajaDialog.getSaldoInicial());
+			throw new ValidacionCamposException("EL SALDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.00 A $99,999.99", cierreCajaDialog.getSaldoInicial());
 		}
 		
 		
@@ -182,33 +200,54 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		// -1 = 10 - 11
 		
 		if(difRelativa < 0 ) {
-			if( !aperturaCajaDialog.getCierreAnormalPanel().isEnabled()) {
-				aperturaCajaDialog.getCierreAnormalPanel().setEnabled(true);
-				throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", aperturaCajaDialog.getCierreAnormalPanel());
+			if( !cierreCajaDialog.getCierreAnormalPanel().isEnabled()) {
+				cierreCajaDialog.getCierreAnormalPanel().setEnabled(true);
+				throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getCierreAnormalPanel());
 			} else {
-				observaciones = aperturaCajaDialog.getObservaciones().getText().trim();
+				observaciones = cierreCajaDialog.getObservaciones().getText().trim();
 				
 				if(observaciones.length() > 0 ){
 					if(observaciones.length() > OBSERVACIONES_MAX_LENGTH) {
-						observaciones = observaciones.substring(0, OBSERVACIONES_MAX_LENGTH);
-					} else if(observaciones.length() > OBSERVACIONES_MAX_LENGTH) {
-					
+						observaciones = observaciones.substring(0, OBSERVACIONES_MAX_LENGTH-3)+"...";
+					} else if(observaciones.length() <= 10) {
+						throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN CON COHERENCIA Y EXPLICITA, NO PUEDE SER UNA(S) SIMPLE(S) PALABRA(S)", cierreCajaDialog.getObservaciones());	
 					}
 				} else {
-						
-						
-				}	
-
+					throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA, NO PUEDE QUEDAR EN BLANCO ", cierreCajaDialog.getObservaciones());	
+				}
+			}
+			
+			if(cierreCajaDialog.getUsuarioAutorizo().getSelectedIndex()==0){
+				throw new ValidacionCamposException("DEBE ELEGIR QUIÉN AUTORIZARÁ", cierreCajaDialog.getUsuarioAutorizo());	
+			}
+			String fraseGenerada = cierreCajaDialog.getFrase().getText().trim();
+			
+			if(fraseGenerada.length() == 0){
+				throw new ValidacionCamposException("DEBE OBTENER FRASE CON EL BOTÓN", cierreCajaDialog.getGeneraFrase());	
+			}
+			
+			String tokenEscrito = cierreCajaDialog.getToken().getText().trim();			
+			if(cierreCajaDialog.getToken().getText().trim().length() == 0 ) {
+				throw new ValidacionCamposException("LLAME A SU ADMINISTRADOR QUE ELIGIO PARA OBTENER EL TOKEN SEGUN LA FRASE", cierreCajaDialog.getToken());	
+			} else if(! tokenEscrito.matches("[0-9]{6}")){
+				throw new ValidacionCamposException("EL TOKEN DEBE SER 6 DIGITOS", cierreCajaDialog.getToken());	
+			} else {
+				GeneradorDeToken gt=new GeneradorDeToken();
+				String tokenObtenido = gt.getToken(fraseGenerada);
+				if(!gt.isValid(fraseGenerada, tokenEscrito)) {
+					logger.debug("validate:tokenObtenido="+tokenObtenido+", tokenEscrito="+tokenEscrito);
+					throw new ValidacionCamposException("EL TOKEN ES INVALIDO", cierreCajaDialog.getToken());	
+				}
 			}
 		}
 	}
 
 	private void 	saldoFinal_focusLost() {
-		logger.info("[USER]->saldoInicial_focusLost():saldoInicial="+aperturaCajaDialog.getSaldoInicial().getText());
+		logger.info("[USER]->saldoFinal_focusLost():saldoFinal="+cierreCajaDialog.getSaldoFinal().getText());
 		if(validateAll()) {
-			aperturaCajaDialog.getAceptar().setEnabled(true);
+			cierreCajaDialog.getAceptar().setEnabled(true);
 		} else {
-			aperturaCajaDialog.getAceptar().setEnabled(false);
+			cierreCajaDialog.getAceptar().setEnabled(false);
 		}
 	}
 

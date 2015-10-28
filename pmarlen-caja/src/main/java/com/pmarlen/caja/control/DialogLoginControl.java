@@ -4,6 +4,7 @@ import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.view.DialogLogin;
 import com.pmarlen.model.Constants;
+import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.U;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -101,16 +102,29 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 		}
 		logged = ApplicationLogic.getInstance().checkForUser(dialogLogin.getEmail().getText(),passwordValue);
 		if(logged != null){
+			CorteCajaDTO lastSavedCC = ApplicationLogic.getInstance().getLastSavedCC();
 			
 			ApplicationLogic.getInstance().getCorteCajaDTO().setCaja(MemoryDAO.getNumCaja());
 			ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
-			ApplicationLogic.getInstance().getCorteCajaDTO().setFecha(System.currentTimeMillis());
-			ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AUTENTICADO);
+			ApplicationLogic.getInstance().getCorteCajaDTO().setFecha(System.currentTimeMillis());	
 			ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(logged.getE());
-			ApplicationLogic.getInstance().getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
+			
+			if(lastSavedCC == null ) {
+				ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AUTENTICADO);
+			} else {
+				if(lastSavedCC.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA){
+					ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_APERTURA);
+					ApplicationLogic.getInstance().getCorteCajaDTO().setSaldoInicial(lastSavedCC.getSaldoInicial());
+					logger.debug("autheticate: SE INICIO , RECUPERANDO DE SESION ABIERTA ("+lastSavedCC.getUsuarioEmail()+") y Entro:"+logged.getE());
+				} else {
+					ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AUTENTICADO);
+					logger.debug("autheticate: SE INICIO , PERO NUNCA SE AUNTENTICO ANTERIORMENTE");
+				}
+			}
 			
 			MemoryDAO.saveCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
 			MemoryDAO.backupCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
+			
 			return 	true;	
 		}else{
 			return false;

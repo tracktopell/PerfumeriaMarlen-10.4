@@ -74,7 +74,7 @@
             <Component class="javax.swing.JLabel" name="jLabel4">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="4"/>
-                <Property name="text" type="java.lang.String" value="IMPORTE ESTIMADO NETO :"/>
+                <Property name="text" type="java.lang.String" value="IMPORTE ESTIMADO BRUTO :"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[300, 25]"/>
                 </Property>
