@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
@@ -37,8 +38,8 @@ import org.primefaces.model.chart.LineChartModel;
 import org.primefaces.model.chart.LineChartSeries;
 
 @ManagedBean(name="inventarioSucursalMB")
-@SessionScoped
-public class InventarioSucursalMB  {
+@ViewScoped
+public class InventarioSucursalMB implements Serializable {
 	private List<AlmacenProductoQuickView> entityList;
 	private Integer viewRows;
 	private int     almacenId;
@@ -48,8 +49,7 @@ public class InventarioSucursalMB  {
 	private ArrayList<MovimientoHistoricoProductoQuickView> movsHisProducto;
 	private transient static Logger logger = Logger.getLogger(InventarioSucursalMB.class.getName());
 	private LineChartModel historicoMovsLCM;
-	private String[] selectedIndustrias;  
-    private List<String> industrias;
+	    
 	private AlmacenProductoQuickView selected;
 	@PostConstruct
     public void init() {				
@@ -60,16 +60,6 @@ public class InventarioSucursalMB  {
 		getEntityList();
 		movsHisProducto = new ArrayList<MovimientoHistoricoProductoQuickView>();
 		historicoMovsLCM = new LineChartModel();
-		industrias = new ArrayList<String>();
-        industrias.add("San Francisco");
-        industrias.add("London");
-        industrias.add("Paris");
-        industrias.add("Istanbul");
-        industrias.add("Berlin");
-        industrias.add("Barcelona");
-        industrias.add("Rome");
-        industrias.add("Sao Paulo");
-        industrias.add("Amsterdam");
 		viewRows = 10;
     }
 	
@@ -77,6 +67,14 @@ public class InventarioSucursalMB  {
         init();
 		return "/pages/inventarioMB";
     }
+
+	public void setSucursalId(int sucursalId) {
+		this.sucursalId = sucursalId;
+	}
+
+	public int getSucursalId() {
+		return sucursalId;
+	}
 	
 	public void setAlmacenId(int almacenId) {
 		this.almacenId = almacenId;
@@ -87,9 +85,11 @@ public class InventarioSucursalMB  {
 	}
 	
 	public List<AlmacenProductoQuickView> getEntityList() {
+		logger.trace("getEntityList:almacenId="+almacenId+", entityList is null?"+(entityList==null));
 		if(entityList == null){
 			try {
-				entityList = AlmacenProductoDAO.getInstance().findAllByAlmacen(almacenId);				
+				entityList = AlmacenProductoDAO.getInstance().findAllByAlmacen(almacenId);
+				logger.trace("getEntityList:entityList.size():"+entityList.size());
 			}catch(DAOException de){
 				entityList = new ArrayList<AlmacenProductoQuickView>();
 				logger.error(de.getMessage());
@@ -114,7 +114,7 @@ public class InventarioSucursalMB  {
 			if(sucursales != null){
 				sucursalesList.add(new SelectItem(0,"--SELECCIONE--"));			
 				for(Sucursal s:sucursales){
-					if(s.getId() != 1){						
+					if(s.getIdPadre() != null){						
 						sucursalesList.add(new SelectItem(s.getId(),s.getNombre()));			
 					}
 				}
@@ -122,24 +122,26 @@ public class InventarioSucursalMB  {
 		}
 		return sucursalesList;
 	}
-		
+	
 	public List<SelectItem> getAlmacenList() {
 		if(almacenList==null){
 			almacenList = new ArrayList<SelectItem>();
 			List<Almacen> almacenes=null;
 			try {
 				almacenes=(List<Almacen>) AlmacenDAO.getInstance().findBySucursal(sucursalId);
+				//logger.trace("getAlmacenList:sucursalId="+sucursalId+", almacenes:");
 			}catch(DAOException de){
 				logger.error(de.getMessage());			
 			}
 			if(almacenes != null){
-				//almacenList.add(new SelectItem(0,"--SELECCIONE--"));			
 				for(Almacen a:almacenes){
+					//logger.trace("getAlmacenList:almacen:"+a.getId()+"] "+(a.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL?"*":" ")+Constants.getDescripcionTipoAlmacen(a.getTipoAlmacen()).toUpperCase());
 					if(a.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
 						almacenId = a.getId();
 					}
 					almacenList.add(new SelectItem(a.getId(),Constants.getDescripcionTipoAlmacen(a.getTipoAlmacen()).toUpperCase()));			
 				}
+				//logger.trace("getAlmacenList:sucursalId="+sucursalId+", almacenId="+almacenId);
 			}
 		}
 		return almacenList;
@@ -149,7 +151,7 @@ public class InventarioSucursalMB  {
 	}
 	
 	public void updateMovsHisProducto(AlmacenProductoQuickView apSelected){
-		logger.trace("int almacenId="+apSelected.getAlmacenId()+"codigoBarras="+apSelected.getProductoCodigoBarras());
+		//logger.trace("updateMovsHisProducto: almacenId="+apSelected.getAlmacenId()+", codigoBarras="+apSelected.getProductoCodigoBarras());
 //		movsHisProducto = new ArrayList<MovimientoHistoricoProductoQuickView>(); 
 		try {
 			movsHisProducto = MovimientoHistoricoProductoDAO.getInstance().findAllByAlmacenAndProducto(apSelected.getAlmacenId(), apSelected.getProductoCodigoBarras());
@@ -191,18 +193,14 @@ public class InventarioSucursalMB  {
 	public LineChartModel getHistoricoMovsLCM() {
 		return historicoMovsLCM;
 	}
-	
-	public void onIndustriasChanged(){
-		logger.trace("selectedIndustrias={"+Arrays.asList(selectedIndustrias+"}"));
-	}
-	
+		
 	public ArrayList<MovimientoHistoricoProductoQuickView> getMovsHisProducto() {
 		logger.trace("movsHisProducto.size"+movsHisProducto.size());
 		return movsHisProducto;
 	}
 	
 	public void onSucursalChange() {
-		logger.trace("sucursalId="+sucursalId);
+		logger.trace("onSucursalChange:sucursalId="+sucursalId);
 		entityList = null;
 		almacenList = null;
 	}
@@ -212,21 +210,9 @@ public class InventarioSucursalMB  {
 		entityList = null;
 	}
 	
-	public String[] getSelectedIndustrias() {
-        return selectedIndustrias;
-    }
- 
-    public void setSelectedIndustrias(String[] selectedIndustrias) {
-        this.selectedIndustrias = selectedIndustrias;
-    }
-
 	public AlmacenProductoQuickView getSelected() {
 		return selected;
 	}
-	
-    public List<String> getIndustrias() {
-        return industrias;
-    }
 	
 	public void updateUbicacionProducto(AlmacenProductoQuickView selectedAP){
 		selected = selectedAP;
@@ -292,7 +278,6 @@ public class InventarioSucursalMB  {
 	}
 	
 	
-	
 	public void prepararParaCambioDePrecio(AlmacenProductoQuickView selectedAP){
 		selected = selectedAP;
 		nuevoPrecio = selected.getPrecio();
@@ -324,7 +309,7 @@ public class InventarioSucursalMB  {
 	}
 	
 	public void cancelarCambioDePrecio(){
-		logger.trace("cancelar");
+		//logger.trace("cancelar");
 		selected = null;
 		ubucacionEditar = null;
 	}	
@@ -338,13 +323,12 @@ public class InventarioSucursalMB  {
 	}
 
 	public void setViewRows(int viewRows) {
-		logger.trace("setViewRows("+viewRows+")");
+		//logger.trace("setViewRows("+viewRows+")");
 		this.viewRows = viewRows;
 	}
 	
 	public void refresh(){
 		this.entityList=null;
 		init();
-		//return "/pages/inventarios";
 	}
 }

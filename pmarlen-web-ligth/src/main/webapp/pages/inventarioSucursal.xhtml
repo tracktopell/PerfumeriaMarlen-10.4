@@ -6,7 +6,7 @@
                 template="/WEB-INF/templates/mainWithMenu.xhtml">
 
     <ui:define name="title">
-        INVENTARIO PRINCIPAL
+        INVENTARIO SUCURSAL
     </ui:define>
 
     <ui:define name="body-title">
@@ -22,7 +22,7 @@
 				<h:panelGrid columns="2" cellpadding="0" width="100%" columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign,columnWidth20 rightAlign, columnWidth80 leftAlign">
 					<p:outputLabel for="sucursal" value="SUCURSAL :" />
 
-					<p:selectOneMenu id="sucursal" value="#{inventarioSucursalMB.almacenId}" >				
+					<p:selectOneMenu id="sucursal" value="#{inventarioSucursalMB.sucursalId}" >				
 						<f:selectItems  value="#{inventarioSucursalMB.sucursalesList}"/>					
 						<p:ajax listener="#{inventarioSucursalMB.onSucursalChange}" process=":form1:sucursal" update=":form1:"/>
 					</p:selectOneMenu>
@@ -56,17 +56,12 @@
 					</p:column>
 
 					<p:column headerText="CANTIDAD" sortBy="#{ap.cantidad}"  width="5%">
-						<p:commandButton    actionListener="#{inventarioSucursalMB.updateMovsHisProducto(ap)}"
-											update=":form1:panel1,:form2:dlg2table1,:form2:chart"
-											icon="ui-icon-clock" onsuccess="PF('dlg2').show();"
-											title="VER HISTORIAL DE MOVIMIENTOS"/>
-						<p:spacer width="10"/>
 						<h:outputText value="#{ap.cantidad}" />
 					</p:column>
 
 					<p:column headerText="PRECIO" sortBy="#{ap.precio}" width="7%">
 						<p:commandButton    actionListener="#{inventarioSucursalMB.prepararParaCambioDePrecio(ap)}"
-											update=":form1:panel1,:form2:dlg2table1,:form4:panel4_1"
+											update=":form1:panel1,:form4:panel4_1"
 											icon="ui-icon-pencil" onsuccess="PF('dlg4').show();"
 											title="CAMBIO DE PRECIO"/>
 						<p:spacer width="10"/>
@@ -105,118 +100,9 @@
 						<h:outputText value="#{ap.productoContenido} #{ap.productoUnidadMedida} [#{ap.productoUnidadEmpaque}]" />
 					</p:column>
 					
-					<p:column headerText="UBIC." sortBy="#{ap.ubicacion}" width="5%">						
-						<p:commandButton   actionListener="#{inventarioSucursalMB.updateUbicacionProducto(ap)}"
-											update=":form1:panel1,:form3:ubicacion"
-											icon="ui-icon-contact" onsuccess="PF('dlg3').show();"
-											title="VER MAPA DE UBICACION"/>
-						<p:spacer width="10"/>
-						
-						<h:outputText value="#{ap.ubicacion}" class="#{ap.ubicacionRenderedColor}"/>
-						
-						<h:outputText value="N/E" rendered="#{empty ap.ubicacion}"/>
-						
-						<p:inplace id="ubicacionEditor" editor="true" emptyLabel="-- N/E --" rendered ="false">
-							<p:inputText value="#{ap.ubicacion}" label="text" valueChangeListener="#{inventarioSucursalMB.edicionDirectaUbicacion}" size="10"
-										 />
-						</p:inplace>
-						
-					</p:column>
 				</p:dataTable>
 
 			</h:panelGrid>
-		</h:form>
-		
-		<h:form id="form2">
-		
-			<p:dialog header="HISTORICO DE MOVIMIENTOS " widgetVar="dlg2"  modal="true" width="750" height="360" >
-				<p:dataTable id="dlg2table1" value="#{inventarioSucursalMB.movsHisProducto}" var="mhp" scrollable="true" scrollHeight="290">
-					
-					<p:column headerText="#EVENTO">
-						<h:outputText value="#{mhp.rowId}" />
-					</p:column>
-					
-					<p:column headerText="FECHA">
-						<h:outputText value="#{mhp.fecha}" />
-					</p:column>
-
-					<p:column headerText="T.MOV.">
-						<h:outputText value="#{mhp.tipoMovDesc}" />
-					</p:column>
-					
-					<p:column headerText="ENTRADA">
-						<h:outputText value="#{mhp.cantidad}" rendered="#{mhp.entrada}"/>
-						<h:outputText value="" rendered="#{not mhp.entrada}"/>
-					</p:column>
-					
-					<p:column headerText="SALIDA">
-						<h:outputText value="#{mhp.cantidad}" rendered="#{mhp.salida}"/>
-						<h:outputText value="" rendered="#{not mhp.salida}"/>
-					</p:column>
-					
-					<p:column headerText="SALDO">
-						<h:outputText value="#{mhp.saldo}" />
-					</p:column>
-					
-
-				</p:dataTable>
-				<p:chart id="chart" type="line" model="#{inventarioSucursalMB.historicoMovsLCM}" style="height:300px;width: 880px;" rendered="false"/>
-			</p:dialog> 
-			
-		</h:form>
-
-		<h:form id="form3">
-			
-			<p:dialog header="UBICACION DE PRODUCTO" widgetVar="dlg3"  modal="true" width="950" height="610" closeOnEscape="true">
-				
-				<h:panelGrid columns="2" columnClasses="columnWidth90 centerAlign, columnWidth15 leftAlign">
-					<p:scrollPanel style="width:800px;height:600px">
-						<h:graphicImage value="/images/Acomodo_para_Claves_V1.png" class="imgUbicacion" usemap="#mapaUbicacion"/>
-						<map name="mapaUbicacion">
-							<area shape="rect" coords="15 ,126,233,174" title="Rack A1" href="#" class="areaRef1"/>
-							<area shape="rect" coords="15 ,175,61 ,648" title="Rack AA" href="#" class="areaRef1"/>
-							<area shape="rect" coords="62 ,617,106,648" title="Rack A2" href="#" class="areaRef1"/>
-							<area shape="rect" coords="107,224,144,648" title="Rack AB" href="#" class="areaRef1"/>
-							<area shape="rect" coords="145,224,181,648" title="Rack AC" href="#" class="areaRef1"/>
-							<area shape="rect" coords="182,625,245,648" title="Rack A3" href="#" class="areaRef1"/>
-							<area shape="rect" coords="246,208,294,648" title="Rack AD" href="#" class="areaRef1"/>
-
-							<area shape="rect" coords="300,204,349,648" title="Tarimas BA" href="#" class="areaRef1"/>
-
-
-							<area shape="rect" coords="500, 10,1012, 54" title="Tarimas C1" href="#" class="areaRef1"/>
-							<area shape="rect" coords="626,124, 668,538" title="Tarimas CA" href="#" class="areaRef1"/>
-						</map>
-					</p:scrollPanel>
-					
-					<h:panelGrid columns="1">
-						<h:outputLabel for="ubicacion" value="UBICACION :"/>
-
-						<h:inputText id="ubicacion" value="#{inventarioSucursalMB.ubucacionEditar}" class="ubicacion" title="SELECCIONE DEL MAPA DONDE SE ENCUENTRA" size="15"/>
-						
-						<p:commandButton	update=":form1:panel1" 
-											oncomplete="PF('dlg3').hide();" icon="ui-icon-check" value="ACEPTAR" title="ACEPTAR"
-											actionListener="#{inventarioSucursalMB.aceptarEdicionUbicacion}">
-
-						</p:commandButton>
-						<p:commandButton	update=":form1:panel1" 
-											oncomplete="PF('dlg3').hide();" icon="ui-icon-close" value="CANCELAR" title="CANCELAR"
-											actionListener="#{inventarioSucursalMB.cancelarEdicionUbicacion}">
-						</p:commandButton>
-
-					</h:panelGrid>
-				</h:panelGrid>
-				
-			</p:dialog>
-			<script type="text/javascript" src="#{request.contextPath}/js/jquery.maphilight.min.js"></script>
-			<script type="text/javascript">
-				$(function() {
-					$('.imgUbicacion').maphilight({fade: true});
-					$('.areaRef1').click(function() {					
-						$(".ubicacion").val($(this).prop("title"));			
-					});
-				});
-			</script>
 		</h:form>
 		
 		<h:form id="form4">
