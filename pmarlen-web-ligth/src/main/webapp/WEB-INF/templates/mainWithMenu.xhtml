@@ -65,6 +65,7 @@
 								<p:menuitem value="NUEVO"       url="/pages/pedidoVenta.jsf" icon="ui-icon-cart"/>
 								<p:menuitem value="EN PROCESO"  url="/pages/pedidosVenta.jsf" icon="ui-icon-calculator"/>								
 								<p:menuitem value="HISTORICO"   url="/pages/historicoPedidosVenta.jsf" icon="ui-icon-clock"/>
+								<p:menuitem value="SUCURSALES"  url="/pages/ventasSucursales.jsf" icon="ui-icon-home"/>
 							</p:submenu>
 							
 							<p:submenu label="COMPRAS" icon="ui-icon-arrowstop-1-s">
@@ -77,12 +78,12 @@
 								<p:menuitem value="NUEVA" url="/pages/nuevaDevolucion.jsf" icon="ui-icon-cart"/>
 								<p:menuitem value="EN PROCESO" url="/pages/devoluciones.jsf" icon="ui-icon-calculator"/>
 								<p:menuitem value="HISTORICO" url="/pages/historicoDevoluciones.jsf" icon="ui-icon-clock"/>
+								<p:menuitem value="SUCURSALES"  url="/pages/devolucionesSucursales.jsf" icon="ui-icon-home"/>
 							</p:submenu>
 							
 							<p:submenu label="MERMAS" icon="ui-icon-trash" rendered="false">
 								<p:menuitem value="NUEVA" url="/pages/pendiente.jsf" icon="ui-icon-cart"/>
 								<p:menuitem value="EN PROCESO" url="/pages/pendiente.jsf" icon="ui-icon-calculator"/>
-								<p:menuitem value="HISTORICO" url="/pages/pendiente.jsf" icon="ui-icon-clock"/>
 							</p:submenu>
 							
 							<p:submenu label="MOVS. ALMACENES" icon="ui-icon-transfer-e-w" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
@@ -94,11 +95,10 @@
 								<p:menuitem value="PRINCIPAL"   url="/pages/inventarioPrincipal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}"/>
 								<p:menuitem value="CONTEO."     url="/pages/pendiente.jsf" icon="ui-icon-shuffle"/>
 								<p:menuitem value="SUCURSALES " url="/pages/inventarioSucursal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}" />
-								
 							</p:submenu>
 
 						</p:submenu>
-						
+						<!--
 						<p:submenu label="SUCURSALES" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}">
 							<p:submenu label="SÁN MARTÍN" icon="ui-icon-calculator">
 								<p:menuitem value="VENTAS"     icon="ui-icon-contact"          url="/pages/pendiente.jsf"/>
@@ -120,7 +120,7 @@
 								<p:menuitem value="DEVOL V."   icon="ui-icon-arrowreturn-1-w"  url="/pages/pendiente.jsf"/>						
 							</p:submenu>							
 						</p:submenu>
-						
+						-->
 						<p:submenu label="ADMINISTRACI&Oacute;N" icon="ui-icon-suitcase"  rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}">
 							
 							<p:submenu label="CAT&Aacute;LOGOS" icon="ui-icon-newwin">

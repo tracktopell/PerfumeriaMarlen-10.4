@@ -21,7 +21,10 @@ public class ES {
 	private int fp;
 	private int j;
 	private double i;
-	private String nt;
+	private String nt;	
+	private int mp;	
+	private double ir;
+	private String amc;
 	
 	public EntradaSalida reverse(){
 		EntradaSalida es = new EntradaSalida();
@@ -31,9 +34,12 @@ public class ES {
 		es.setUsuarioEmailCreo(u);
 		es.setCfdId(c);
 		es.setFormaDePagoId(fp);
+		es.setMetodoDePagoId(mp);
 		es.setCaja(j);
 		es.setFactorIva(i);
 		es.setNumeroTicket(nt);
+		es.setAprobacionVisaMastercard(amc);
+		es.setImporteRecibido(ir);
 		return es;
 	}
 
@@ -125,6 +131,14 @@ public class ES {
 		this.fp = fp;
 	}
 
+	public int getMp() {
+		return mp;
+	}
+
+	public void setMp(int mp) {
+		this.mp = mp;
+	}
+	
 	/**
 	 * @return the j
 	 */
@@ -165,5 +179,33 @@ public class ES {
 	 */
 	public void setNt(String nt) {
 		this.nt = nt;
+	}
+
+	/**
+	 * @return the ir
+	 */
+	public double getIr() {
+		return ir;
+	}
+
+	/**
+	 * @param ir the ir to set
+	 */
+	public void setIr(double ir) {
+		this.ir = ir;
+	}
+
+	/**
+	 * @return the amc
+	 */
+	public String getAmc() {
+		return amc;
+	}
+
+	/**
+	 * @param amc the amc to set
+	 */
+	public void setAmc(String amc) {
+		this.amc = amc;
 	}
 }

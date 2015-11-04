@@ -546,6 +546,7 @@ public class EntradaSalidaDAO {
 		
 	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(int tipoMov,int sucursalId,boolean active,PagerInfo pagerInfo) throws DAOException {
 		logger.info("->findAllActiveByPage(tipoMov="+tipoMov+",sucursalId="+sucursalId+",active="+active+",pagerInfo.filters="+pagerInfo.getFilters()+")");
+		logger.info("->SARITA ME AYUDO");
 		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -579,7 +580,7 @@ public class EntradaSalidaDAO {
 					+ "LEFT JOIN FORMA_DE_PAGO  FP  ON ES.FORMA_DE_PAGO_ID  = FP.ID\n"
 					+ "LEFT JOIN METODO_DE_PAGO MP  ON ES.METODO_DE_PAGO_ID = MP.ID\n"
 					+ "WHERE     1=1\n"
-					+ (active ? "AND       ES.ESTADO_ID IN (1,2,4)\n":
+					+ (active ? "AND       ES.ESTADO_ID IN (1,2,4,512)\n":
 							    "AND       ES.ESTADO_ID >  4\n" )
 					+ "AND       ES.ID        = ESD.ENTRADA_SALIDA_ID\n"
 					+ "AND       ES.ID        = ESE.ENTRADA_SALIDA_ID\n"

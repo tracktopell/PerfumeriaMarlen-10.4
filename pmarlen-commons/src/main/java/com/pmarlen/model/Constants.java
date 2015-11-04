@@ -102,6 +102,11 @@ public class Constants {
 	private static String mavenBuildTimeStamp = null;
 
 	private static Properties pro =null;
+	public static final int ID_CLIENTE_MOSTRADOR = 1;
+	public static final int ID_MDP_EFECTIVO = 1;
+	public static final int ID_MDP_TARJETA = 2;
+	public static final int ID_MDP_EFECTIVO_Y_TARJETA = 7;
+	public static final int ID_FDP_1SOLA_E = 1;
 
 	public static Properties getPro() {
 		if(pro == null){

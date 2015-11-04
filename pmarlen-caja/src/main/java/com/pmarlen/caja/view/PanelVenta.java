@@ -53,6 +53,10 @@ public class PanelVenta extends javax.swing.JPanel {
         codigoBuscar = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
+        labelTotal1 = new javax.swing.JLabel();
+        numArt = new javax.swing.JTextField();
+        jPanel6 = new javax.swing.JPanel();
         labelTotal = new javax.swing.JLabel();
         total = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
@@ -91,16 +95,31 @@ public class PanelVenta extends javax.swing.JPanel {
 
         jPanel3.setLayout(new java.awt.GridLayout(2, 1));
 
-        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        jPanel1.setLayout(new java.awt.GridLayout(1, 2));
+
+        labelTotal1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal1.setText("# ART. :");
+        jPanel12.add(labelTotal1);
+
+        numArt.setEditable(false);
+        numArt.setColumns(4);
+        numArt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        numArt.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel12.add(numArt);
+
+        jPanel1.add(jPanel12);
 
         labelTotal.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         labelTotal.setText("Total :");
-        jPanel1.add(labelTotal);
+        jPanel6.add(labelTotal);
 
-        total.setColumns(12);
+        total.setEditable(false);
+        total.setColumns(8);
         total.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel1.add(total);
+        jPanel6.add(total);
+
+        jPanel1.add(jPanel6);
 
         jPanel3.add(jPanel1);
 
@@ -213,10 +232,12 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
@@ -227,6 +248,8 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JLabel labelPrecio;
     private javax.swing.JLabel labelPresentacion;
     private javax.swing.JLabel labelTotal;
+    private javax.swing.JLabel labelTotal1;
+    private javax.swing.JTextField numArt;
     private javax.swing.JSplitPane splitPanel;
     private javax.swing.JButton terminar;
     private javax.swing.JTextField total;

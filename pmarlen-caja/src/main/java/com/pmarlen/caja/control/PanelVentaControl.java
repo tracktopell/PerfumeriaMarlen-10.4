@@ -12,6 +12,7 @@ import com.pmarlen.caja.model.PedidoVentaDetalleTableItem;
 import com.pmarlen.caja.model.PedidoVentaDetalleTableModel;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.ProductoCellRender;
+import com.pmarlen.caja.view.TerminarVentaDlg;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ESD;
@@ -127,19 +128,106 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 	
 	//private Producto productoBuscar = new Producto();
-
 	private void codigoBuscar_ActionPerformed() {
 		String codigoBuscar = panelVenta.getCodigoBuscar().getText().trim();
 		
 		logger.info("[USER]->codigoBuscar_ActionPerformed:codigoBuscar=->" + codigoBuscar+"<-");
-//		String[] linesCBArr = codigoBuscar.split("(\\r?\\n)|([ ]+)");
-//		for(String lineCB: linesCBArr){
-//			logger.debug("\tcodigoBuscar_ActionPerformed:line->"+lineCB+"<-");
-//			String[] codesCB = lineCB.split("\\t");
-//			for(String cdLineCB: codesCB){
-//				logger.debug("\t\tcodigoBuscar_ActionPerformed:code->"+cdLineCB+"<-");
-//			}
-//		}		
+		String[] linesCBArr = codigoBuscar.split("(\\r?\\n)|([ ]+)");
+		List<I> encontrados=new ArrayList<I>();
+		StringBuilder sbNoEncontrados=new StringBuilder();
+		I productoEncontrado = null;
+		for(String lineCB: linesCBArr){
+			logger.debug("\tcodigoBuscar_ActionPerformed:line->"+lineCB+"<-");
+			String[] codesCB = lineCB.split("\\s");
+			for(String cdLineCB: codesCB){
+				logger.debug("\t\tcodigoBuscar_ActionPerformed:code->"+cdLineCB+"<-");
+				productoEncontrado = MemoryDAO.fastSearchProducto(cdLineCB);
+				if(productoEncontrado == null){
+					logger.debug("\t\t\tcodigoBuscar_ActionPerformed:producto no encontrado:"+cdLineCB);
+					sbNoEncontrados.append(cdLineCB).append(" ");
+				} else {
+					logger.debug("\t\t\tcodigoBuscar_ActionPerformed:producto encontrado:"+productoEncontrado);
+					encontrados.add(productoEncontrado);
+				}
+			}
+		}
+		
+		if(encontrados.size() > 0) {
+			productoEncontrado =  null;
+			for(I i:encontrados){
+				productoEncontrado = i;
+				
+				if(!estadoChecando){
+					int ta=ApplicationLogic.getInstance().getAlmacen().getTipoAlmacen();
+					ESD esd = new ESD();
+
+					esd.setA(ApplicationLogic.getInstance().getAlmacen().getId());
+					esd.setC(ta);				
+					if(ta == Constants.ALMACEN_PRINCIPAL) {
+						esd.setP(productoEncontrado.getA1p());
+					} else if(ta == Constants.ALMACEN_REGALIAS) {
+						esd.setP(productoEncontrado.getaRp());
+					} else if(ta == Constants.ALMACEN_OPORTUNIDAD) {
+						esd.setP(productoEncontrado.getaOp());
+					} else {
+
+					}
+					esd.setCb(productoEncontrado.getCb());
+					PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, ta);
+					int idx = 0;
+
+					idx = detalleVentaTableItemList.size();
+					detalleVentaTableItemList.add(detalleVentaTableItemNuevo);
+	
+					panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx, idx);
+					panelVenta.getDetalleVentaJTable().updateUI();
+					renderTotal();
+				}
+			}
+			panelVenta.getCodigoBuscar().setText("");
+			panelVenta.resetInfoForProducto(productoEncontrado.reverse(),1);
+		}
+		
+		final String noEncotrados = sbNoEncontrados.toString().trim();
+		if(noEncotrados.length() > 1) {
+			new Thread() {
+				@Override
+				public void run() {
+					panelVenta.getCodigoBuscar().setText(noEncotrados);
+					Color pc = panelVenta.getCodigoBuscar().getBackground();
+					panelVenta.getCodigoBuscar().setBackground(Color.red);
+					logger.debug("\t\t\tcodigoBuscar_ActionPerformed:ROJO:["+noEncotrados+"]");
+					try {
+						for (int i = 0; i < 3; i++) {
+							panelVenta.getCodigoBuscar().setBackground(Color.red);
+							Thread.sleep(500);
+							panelVenta.getCodigoBuscar().setBackground(pc);
+							Thread.sleep(100);
+						}
+					} catch (InterruptedException ex) {
+						
+					} finally {
+						panelVenta.getCodigoBuscar().setBackground(pc);
+						panelVenta.getCodigoBuscar().setText("");
+					}
+				}
+			}.start();
+		}
+		
+	}
+	
+	private void _codigoBuscar_ActionPerformed() {
+		String codigoBuscar = panelVenta.getCodigoBuscar().getText().trim();
+		
+		logger.info("[USER]->codigoBuscar_ActionPerformed:codigoBuscar=->" + codigoBuscar+"<-");
+		String[] linesCBArr = codigoBuscar.split("(\\r?\\n)|([ ]+)");
+		for(String lineCB: linesCBArr){
+			logger.debug("\tcodigoBuscar_ActionPerformed:line->"+lineCB+"<-");
+			String[] codesCB = lineCB.split("\\s");
+			for(String cdLineCB: codesCB){
+				logger.debug("\t\tcodigoBuscar_ActionPerformed:code->"+cdLineCB+"<-");
+			}
+		}		
 		I productoEncontrado = null;
 		try{
 			productoEncontrado = MemoryDAO.fastSearchProducto(codigoBuscar);
@@ -216,6 +304,15 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		}
 
 		try {
+			TerminarVentaDlg tvDlg = new TerminarVentaDlg(FramePrincipalControl.getInstance().getFramePrincipal(), true);
+			TerminarVentaControl tvdControl = new TerminarVentaControl(tvDlg, total, 0.0, total);
+
+			tvdControl.estadoInicial();
+			
+			if(!tvdControl.isCierreCorrecto()){
+				return;
+			}
+			
 			final ES_ESD venta = new ES_ESD();
 			final ArrayList<ESD> detalleVentaList = new ArrayList<ESD>();
 
@@ -228,9 +325,12 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			
 			venta.getEs().setTm(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
 			venta.getEs().setJ(MemoryDAO.getNumCaja());
-			venta.getEs().setC(cteId);
+			venta.getEs().setC(tvdControl.getClienteId());
 			venta.getEs().setFc(System.currentTimeMillis());
 			venta.getEs().setFp(formaPagoId);
+			venta.getEs().setIr(tvdControl.getRecibido());
+			venta.getEs().setMp(tvdControl.getMetodoDePagoId());
+			venta.getEs().setAmc(tvdControl.getAutorizacion());
 			venta.getEs().setI(Constants.IVA);
 			venta.getEs().setS(MemoryDAO.getSucursalId());			
 			venta.getEs().setNt(numTicket);
