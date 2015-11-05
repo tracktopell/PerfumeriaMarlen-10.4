@@ -157,6 +157,7 @@
 									<fileset dir="${basedir}" includes="EntradaSalida*.json "/>
 									<fileset dir="${basedir}" includes="PML30-CAJA*"/>
 									<fileset dir="${basedir}" includes="P*.log"/>
+									<fileset dir="${basedir}" includes="TICKET_*.TXT"/>
 									<fileset dir="${basedir}" includes="system.properties"/>
 								</delete>
 							</target>

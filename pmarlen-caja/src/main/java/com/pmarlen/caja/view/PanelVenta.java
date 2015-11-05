@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import org.apache.log4j.Logger;
 
 /**
@@ -297,6 +298,10 @@ public class PanelVenta extends javax.swing.JPanel {
 		return total;
 	}
 
+	public JTextField getNumArt() {
+		return numArt;
+	}
+	
 	public JLabel getImgProducto() {
 		return imgProducto;
 	}

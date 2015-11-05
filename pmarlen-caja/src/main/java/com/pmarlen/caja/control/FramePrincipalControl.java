@@ -145,11 +145,11 @@ public class FramePrincipalControl implements ActionListener{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		while(relojRunning) {
 			try{
-				logger.debug("procesoReloj:sleep(1000)");
+				logger.trace("procesoReloj:sleep(1000)");
 				Thread.sleep(1000);
 				String hora=sdf.format(new Date());
 				framePrincipal.getStatusCenter().setText(hora);
-				logger.debug("procesoReloj:->framePrincipal.updateStatus():MemoryDAO.getSyncPollState()="+MemoryDAO.getSyncPollState());
+				logger.trace("procesoReloj:->framePrincipal.updateStatus():MemoryDAO.getSyncPollState()="+MemoryDAO.getSyncPollState());
 				framePrincipal.updateStatus();
 			}catch(InterruptedException ie){
 				ie.printStackTrace(System.err);

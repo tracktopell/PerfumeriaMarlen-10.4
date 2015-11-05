@@ -5,6 +5,7 @@ import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.businesslogic.GeneradorNumTicket;
+import com.pmarlen.businesslogic.reports.TextReporter;
 import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.ImporteCellRender;
@@ -20,6 +21,7 @@ import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.I;
 import com.pmarlen.ticket.TicketPrinteService;
 import com.pmarlen.ticket.bluetooth.TicketBlueToothPrinter;
+import com.pmarlen.ticket.systemprinter.TicketSystemPrinter;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,7 +54,8 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	private DecimalFormat df;
 	private TicketPrinteService ticketPrinteService;
 	private boolean estadoChecando = false;
-
+	private ES_ESD venta;
+	
 	public PanelVentaControl(PanelVenta panelVenta) {
 		this.panelVenta = panelVenta;
 		PedidoVentaDetalleTableModel x = (PedidoVentaDetalleTableModel) this.panelVenta.getDetalleVentaJTable().getModel();
@@ -98,7 +101,8 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		this.panelVenta.getChechar().addActionListener(this);
 
 		df = new DecimalFormat("$ ###,###,##0.00");
-		ticketPrinteService = TicketBlueToothPrinter.getInstance();
+		
+		ticketPrinteService = TicketSystemPrinter.getInstance();
 		ticketPrinteService.setApplicationLogic(ApplicationLogic.getInstance());
 	}
 
@@ -109,6 +113,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		panelVenta.getDetalleVentaJTable().updateUI();
 		panelVenta.resetInfoForProducto(null,0);
 		estadoChecando = false;
+		venta = null;
 		actualizarEstadoChecado();
 		renderTotal();
 	}
@@ -215,81 +220,6 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		}
 		
 	}
-	
-	private void _codigoBuscar_ActionPerformed() {
-		String codigoBuscar = panelVenta.getCodigoBuscar().getText().trim();
-		
-		logger.info("[USER]->codigoBuscar_ActionPerformed:codigoBuscar=->" + codigoBuscar+"<-");
-		String[] linesCBArr = codigoBuscar.split("(\\r?\\n)|([ ]+)");
-		for(String lineCB: linesCBArr){
-			logger.debug("\tcodigoBuscar_ActionPerformed:line->"+lineCB+"<-");
-			String[] codesCB = lineCB.split("\\s");
-			for(String cdLineCB: codesCB){
-				logger.debug("\t\tcodigoBuscar_ActionPerformed:code->"+cdLineCB+"<-");
-			}
-		}		
-		I productoEncontrado = null;
-		try{
-			productoEncontrado = MemoryDAO.fastSearchProducto(codigoBuscar);
-		}catch(Exception e){
-		
-		}
-		logger.debug("=>codigoBuscar_ActionPerformed:productoEncontrado=" + productoEncontrado+", oferta?");
-
-		if (productoEncontrado != null) {
-			panelVenta.resetInfoForProducto(productoEncontrado.reverse(),1);
-			
-			if(!estadoChecando){
-				int ta=ApplicationLogic.getInstance().getAlmacen().getTipoAlmacen();
-				ESD esd = new ESD();
-
-				esd.setA(ApplicationLogic.getInstance().getAlmacen().getId());
-				esd.setC(ta);				
-				if(ta == Constants.ALMACEN_PRINCIPAL) {
-					esd.setP(productoEncontrado.getA1p());
-				} else if(ta == Constants.ALMACEN_REGALIAS) {
-					esd.setP(productoEncontrado.getaRp());
-				} else if(ta == Constants.ALMACEN_OPORTUNIDAD) {
-					esd.setP(productoEncontrado.getaOp());
-				} else {
-
-				}
-				esd.setCb(productoEncontrado.getCb());
-				PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, ta);
-				int idx = 0;
-
-				idx = detalleVentaTableItemList.size();
-				detalleVentaTableItemList.add(detalleVentaTableItemNuevo);
-
-				panelVenta.getCodigoBuscar().setText("");
-				panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx, idx);
-				panelVenta.getDetalleVentaJTable().updateUI();
-				renderTotal();
-			} else {
-				panelVenta.getCodigoBuscar().setText("");			
-			}
-		} else {
-			new Thread() {
-				@Override
-				public void run() {
-					Color pc = panelVenta.getCodigoBuscar().getBackground();
-					panelVenta.getCodigoBuscar().setBackground(Color.red);
-					try {
-						for (int i = 0; i < 3; i++) {
-							panelVenta.getCodigoBuscar().setBackground(Color.red);
-							Thread.sleep(500);
-							panelVenta.getCodigoBuscar().setBackground(pc);
-							Thread.sleep(100);
-						}
-					} catch (InterruptedException ex) {
-					} finally {
-						panelVenta.getCodigoBuscar().setBackground(pc);
-						panelVenta.getCodigoBuscar().setText("");
-					}
-				}
-			}.start();
-		}
-	}
 
 	private void terminar_ActionPerformed() {
 		logger.info("terminar_ActionPerformed()");
@@ -299,57 +229,32 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					JOptionPane.WARNING_MESSAGE);
 
 			panelVenta.getCodigoBuscar().requestFocus();
-
+			
 			return;
 		}
 
 		try {
 			TerminarVentaDlg tvDlg = new TerminarVentaDlg(FramePrincipalControl.getInstance().getFramePrincipal(), true);
-			TerminarVentaControl tvdControl = new TerminarVentaControl(tvDlg, total, 0.0, total);
+			TerminarVentaControl tvdControl = new TerminarVentaControl(tvDlg, total, 0.0, total,detalleVentaTableItemList);
 
 			tvdControl.estadoInicial();
 			
 			if(!tvdControl.isCierreCorrecto()){
 				return;
 			}
+			logger.info("terminar_ActionPerformed(): IMPRIMIENDO ...");
+			venta = tvdControl.venta;
 			
-			final ES_ESD venta = new ES_ESD();
-			final ArrayList<ESD> detalleVentaList = new ArrayList<ESD>();
-
-			for (PedidoVentaDetalleTableItem dvil : detalleVentaTableItemList) {				
-				detalleVentaList.add(dvil.getPvd());
-			}
-			int cteId=1;			
-			int formaPagoId=1;
-			String numTicket = GeneradorNumTicket.getNumTicket(MemoryDAO.getSucursalId(), MemoryDAO.getNumCaja(), cteId, total);
-			
-			venta.getEs().setTm(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
-			venta.getEs().setJ(MemoryDAO.getNumCaja());
-			venta.getEs().setC(tvdControl.getClienteId());
-			venta.getEs().setFc(System.currentTimeMillis());
-			venta.getEs().setFp(formaPagoId);
-			venta.getEs().setIr(tvdControl.getRecibido());
-			venta.getEs().setMp(tvdControl.getMetodoDePagoId());
-			venta.getEs().setAmc(tvdControl.getAutorizacion());
-			venta.getEs().setI(Constants.IVA);
-			venta.getEs().setS(MemoryDAO.getSucursalId());			
-			venta.getEs().setNt(numTicket);
-			venta.getEsdList().addAll(detalleVentaList);
-			venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getE());
-			
-			logger.debug("terminar_ActionPerformed:before commit, venta="+venta);
-			
-			ESFileSystemJsonDAO.commit(venta);
-			
-			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Se guardo Correctamente, ...Imprimiendo ticket", "Venta", JOptionPane.INFORMATION_MESSAGE);
 			if (ApplicationLogic.getInstance().isPrintingEnabled()) {
 				new Thread() {
 					@Override
 					public void run() {
-						imprimirTicket(venta.getEs(), detalleVentaList);
+						logger.info("terminar_ActionPerformed(): despues de cerrar dialogo:");
+						imprimirTicket();
 					}
 				}.start();
 			}
+
 			estadoInicial();
 
 		} catch (Exception ex) {
@@ -394,6 +299,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	double total = 0.0;
 	private void renderTotal() {
 		total = 0.0;
+		
 		if (detalleVentaTableItemList.size() > 0) {
 			FramePrincipalControl.getInstance().setEnabledVentasMenus(true);
 
@@ -404,10 +310,12 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			this.panelVenta.getTerminar().setEnabled(false);
 			this.panelVenta.getCancelar().setEnabled(false);
 		}
-
+		int np=0;
 		for (PedidoVentaDetalleTableItem dvti : detalleVentaTableItemList) {
+			np += dvti.getPvd().getC();
 			total += dvti.getI();
 		}
+		panelVenta.getNumArt().setText(String.valueOf(np));
 		panelVenta.getTotal().setText(df.format(total));
 	}
 
@@ -500,29 +408,33 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		panelVenta.getCodigoBuscar().requestFocus();
 	}
 
-	private void imprimirTicket(ES venta, List<ESD> detalleVentaList) {
+	void imprimirTicket() {
 		HashMap<String, String> extraInformation = new HashMap<String, String>();
-
-		extraInformation.put("recibimos", "100000.45");
-		extraInformation.put("cambio", "2323.00");
+		logger.debug("imprimirTicket: venta.getEs().getIr()="+venta.getEs().getIr());
+		
+		extraInformation.put("recibimos", Constants.dfCurrency.format(venta.getEs().getIr()));
+		extraInformation.put("cambio"   , Constants.dfCurrency.format(total - venta.getEs().getIr()));
 
 		boolean printed = false;
 		try {
-			
 			ArrayList<EntradaSalidaDetalle> pvdList = new ArrayList<EntradaSalidaDetalle>();
-			for(ESD esd: detalleVentaList){
+			for(ESD esd:venta.getEsdList()){
 				pvdList.add(esd.reverse());
 			}
-			Object ticketFile = ticketPrinteService.generateTicket(venta.reverse(),pvdList , extraInformation);
-			ticketPrinteService.sendToPrinter(ticketFile);
+			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:");
+			//Object ticketFile = ticketPrinteService.generateTicket(venta.getEs().reverse(),pvdList , extraInformation);
+			TextReporter.generateTicket(venta.getEs().reverse(), pvdList, extraInformation);
+			logger.debug("->ticketPrinteService:");
+			
+			
 			printed = true;
-		} catch (IOException ioe) {
-			//ioe.printStackTrace(System.err);
+		} catch (Exception ioe) {
+			logger.error("imprimiedo",ioe);
 			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
 		} finally {
-			logger.debug("------------->>> DESPUES DE IMPRIMIR TICKET");
+			logger.debug("DESPUES DE IMPRIMIR TICKET: printed?"+printed);
 			if (!printed) {
-				logger.debug("------------->>> ERROR AL IMPRIMIR");
+				logger.debug("ERROR AL IMPRIMIR");
 				//t.printStackTrace(System.err);
 				JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error grave al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
 			}

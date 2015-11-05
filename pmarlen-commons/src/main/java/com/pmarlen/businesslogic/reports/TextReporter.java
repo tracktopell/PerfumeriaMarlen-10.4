@@ -5,7 +5,11 @@
  */
 package com.pmarlen.businesslogic.reports;
 
+import com.pmarlen.backend.model.EntradaSalida;
+import com.pmarlen.backend.model.EntradaSalidaDetalle;
+import com.pmarlen.model.Constants;
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -464,6 +469,10 @@ public class TextReporter {
 		if(DEBUG) System.err.println("processLine:->.........1.........2.........3.........4.........5.........6");
 		System.out.println("processLine:->" + processLine(srcline, parameters, rfield, maxlw) + "<-");
 		*/
+
+	}
+	
+	public static String generateTicket(EntradaSalida pv,ArrayList<EntradaSalidaDetalle> pvdList,HashMap<String,String> extraInformation){
 		HashMap<String, String> parameters = new HashMap<String, String> (); 
 		List<HashMap<String, String>> records=new ArrayList<HashMap<String, String>>();
 		
@@ -471,24 +480,24 @@ public class TextReporter {
 		parameters.put("subTitulo","|S.A. DE C.V.|");
 		
 		parameters.put("fechaL","FECHA");
-		parameters.put("fecha" ,"2015/04/28");
+		parameters.put("fecha" ,"9999/99/99");
 		
 		parameters.put("clienteL","CLIENTE");
-		parameters.put("cliente" ,"ALFREDO ESTRADA GONZÁLEZ");
+		parameters.put("cliente" ,"????????????????????????");
 		Random rand= new Random();
 		DecimalFormat df= new DecimalFormat("###,##0.00");
 		double st=0.0;
 		double tt=0.0;
 		double iva=0.0;
-		for(int i=0;i<15;i++){
+		for(EntradaSalidaDetalle pvd: pvdList){		
 			HashMap<String, String> r=new HashMap<String, String>();
-			int n=rand.nextInt(100);
+			int n=pvd.getCantidad();
 			String c=String.valueOf(rand.nextInt(1000000))+String.valueOf(rand.nextInt(1000000));
-			String d="DESCRIPCCIÓN["+c+"]@"+rand.nextInt(100000);
-			double pp=rand.nextDouble()*100.0;
+			String d=pvd.getProductoCodigoBarras();
+			double pp=pvd.getPrecioVenta();
 			double imp =n*pp;
 			st  += imp/1.16;
-			iva += imp/0.16;
+			iva += imp*0.16;
 			String p=df.format(pp);
 			
 			r.put("n", String.valueOf(n));
@@ -504,7 +513,17 @@ public class TextReporter {
 		parameters.put("iva",df.format(iva));
 		parameters.put("tot",df.format(st));
 		DEBUG=false;
-		processReport(TextReporter.class.getResourceAsStream("/textreports/test1report.txt"), System.out, parameters, records, 47);
+		Date today = new Date();
+		String fileName = "TICKET_"+pv.getNumeroTicket()+"_"+Constants.sdfLogFile.format(today)+".txt";
+		FileOutputStream fos = null;
+		try {
+			
+			fos = new FileOutputStream(fileName);
+			processReport(TextReporter.class.getResourceAsStream("/textreports/test1report.txt"), fos , parameters, records, 47);	
+		}catch(IOException ioe) {
+		
+		}
+		return fileName;		
 	}
-
+	
 }

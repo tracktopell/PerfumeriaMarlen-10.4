@@ -48,7 +48,7 @@ public class ApplicationLogic {
 	private static final String FILE_APP_PACKAGE = "./update.zip";
 	
 	private static String _version = null;
-	private static final boolean printingEnabled = false; 
+	private static final boolean printingEnabled = true; 
 		
 	private static final String VERSION_PROPERTY = "pmarlencaja.version";
 	private boolean adminLogedIn = false;

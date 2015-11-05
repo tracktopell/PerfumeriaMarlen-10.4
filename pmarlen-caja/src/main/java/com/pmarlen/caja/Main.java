@@ -57,11 +57,14 @@ public class Main {
 		isSingleInstanceRunning();
 
 		logger.debug("main:ok, Just 1 Thread");
-
+		
 		MemoryDAO.loadProperties();		
 		
+		ApplicationLogic.getInstance().getVersion();
 		logger.debug("main: After Load Properties.");
-
+		logger.info("main: ====================================================================");
+		logger.info("main: ApplicationLogic.getInstance().getVersion():"+ApplicationLogic.getInstance().getVersion());
+		
 		try {
 			logger.trace("main: L&Fs:" + Arrays.asList(UIManager.getInstalledLookAndFeels()));
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");

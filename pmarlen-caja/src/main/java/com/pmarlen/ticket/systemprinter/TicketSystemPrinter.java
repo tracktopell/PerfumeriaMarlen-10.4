@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.pmarlen.ticket.bluetooth;
+package com.pmarlen.ticket.systemprinter;
 
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
@@ -10,6 +10,7 @@ import com.pmarlen.backend.model.Producto;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.ticket.NumeroCastellano;
 import com.pmarlen.ticket.TicketPrinteService;
+import com.pmarlen.ticket.bluetooth.SendBytesToDevice;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -19,7 +20,7 @@ import java.util.*;
  *
  * @author alfredo
  */
-public class TicketBlueToothPrinter implements TicketPrinteService {
+public class TicketSystemPrinter implements TicketPrinteService {
     private static final String SPACES = "                                ";
     public  static final String DEFAULT_BT_PRINTER = "00037A66B839";
     private static final String TICKET_TEST        = "/ticket_layout/TICKET_TEST.txt";    
@@ -31,18 +32,18 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
 	public static final String BT_PRINTER_MODE = "Bluetooth";	
     private String btAdress;
 	private ApplicationLogic applicationLogic;
-	private static TicketBlueToothPrinter instance;
+	private static TicketSystemPrinter instance;
 	
-	private TicketBlueToothPrinter(){
+	private TicketSystemPrinter(){
 	
 	}
 	
 	/**
 	 * @return the instance
 	 */
-	public static TicketBlueToothPrinter getInstance() {
+	public static TicketSystemPrinter getInstance() {
 		if(instance == null){
-			instance = new TicketBlueToothPrinter();
+			instance = new TicketSystemPrinter();
 		}
 		return instance;
 	}
@@ -61,14 +62,15 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
         String tiketPrinted = null;
         PrintStream psPrintTicket = null;
         
-        InputStream is = TicketBlueToothPrinter.class.getResourceAsStream(TICKET_LAYOUT_FILE);
+        InputStream is = TicketSystemPrinter.class.getResourceAsStream(TICKET_LAYOUT_FILE);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
         try {
             String line = null;
             Date fecha = new Date();
-            tiketPrinted = "";//"TICKET_"+pedidoVenta.getId()+"_"+sdf_fecha_full.format(fecha)+".TXT";
+            tiketPrinted = "TICKET_"+pv.getNumeroTicket()+"_"+sdf_fecha_full.format(fecha)+".TXT";
             psPrintTicket = new PrintStream(new File(tiketPrinted),"ISO-8859-1");
+			
             HashMap<String, String> staticVars = new HashMap();
             staticVars.put("${FECHA}", sdf_fecha.format(fecha));
             staticVars.put("${HORA}", sdf_hora.format(fecha));
@@ -145,12 +147,10 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
 
                     if (expandDetail) {
 						
-						Producto prod=null;//productoDAO.getProducto(pvdList.get(i).getProductoCodigo());
-						
 						//${CODIGO } ${PRODUCTO}
 						//   ${CANT} *  ${PRECIO}  ${IMP}
 						staticVars.put("${CANT}"    , alignTextRigth(df_6.format(pvdList.get(i).getCantidad()),3));
-						String nombre = prod.getNombre();
+						String nombre = pvdList.get(i).getProductoCodigoBarras();
                         //staticVars.put("${PRODUCTO}", alignTextLeft(prod.getNombre(),25));
 						if(nombre.length()>28){
 							nombre = nombre.substring(28);
@@ -206,9 +206,6 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
                     staticVars.put("${TOTAL}", alignTextRigth(strTotal,9));
 					String recibimosOriginal = extraInformation.get("recibimos").toString();
 					String recibimos = recibimosOriginal;
-					if(recibimos!=null && recibimos.trim().length()>0){
-						recibimos = dfs4_2.format(Double.parseDouble(recibimos));
-					}
 					staticVars.put("${RECIB}", alignTextRigth(recibimos,9));
 					String suCambio = extraInformation.get("cambio").toString();
 					if(suCambio == null || suCambio.trim().length()==0){
@@ -320,7 +317,7 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
 	
 	@Override
     public void testDefaultPrinter() throws IOException {
-        InputStream is = TicketBlueToothPrinter.class.getResourceAsStream(TICKET_TEST);
+        InputStream is = TicketSystemPrinter.class.getResourceAsStream(TICKET_TEST);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		Date fecha = new Date();
 		
@@ -356,7 +353,7 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
 			psTestPrint.close();
 			fos.close();
 			
-			SendBytesToDevice.print(getBtAdress(), fileNameTest);
+			SendFileToSystemPrinter.printFile(fileNameTest);
 			
         } catch (IOException ex) {
             //ex.printStackTrace(System.err);
@@ -368,7 +365,7 @@ public class TicketBlueToothPrinter implements TicketPrinteService {
 
 	@Override
 	public void sendToPrinter(Object ticketFileName) throws IOException {
-		SendBytesToDevice.print(getBtAdress(),(String)ticketFileName);
+		SendFileToSystemPrinter.printFile((String)ticketFileName);
 	}
 	
 	/**
