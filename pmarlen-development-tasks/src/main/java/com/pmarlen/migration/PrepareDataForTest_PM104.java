@@ -51,11 +51,15 @@ public class PrepareDataForTest_PM104 {
 			List<Object[]> resultAllAlmacenes = executeQuery(newDBConnection, "SELECT ID,TIPO_ALMACEN,SUCURSAL_ID FROM ALMACEN WHERE SUCURSAL_ID IN (2,3,4,5,6)");
 			
 			debug = false;
-			
+			int tot=resultAllProductos.size();
+			int i=0;
+			int adv=0;
+			System.out.println("EXECUTING UPDATE OR INSERT:");
 			for(Object[] prodArr: resultAllProductos){
 				String codigoBarras = prodArr[0].toString();
 				Double costoVenta   = ((Double)prodArr[1]);
 				Random r=new Random(System.currentTimeMillis());
+				
 				for(Object[] almaArr: resultAllAlmacenes){
 					
 					int cantidadNueva = 200+r.nextInt(1000);
@@ -65,8 +69,13 @@ public class PrepareDataForTest_PM104 {
 					if(executeDirectUpdate(newDBConnection,"UPDATE ALMACEN_PRODUCTO SET CANTIDAD = "+cantidadNueva+" WHERE ALMACEN_ID="+almacenId+" AND PRODUCTO_CODIGO_BARRAS='"+codigoBarras+"'")==0){
 						executeDirectUpdate(newDBConnection,"INSERT INTO ALMACEN_PRODUCTO VALUES("+almacenId+",'"+codigoBarras+"',"+cantidadNueva+","+costoVenta+",NULL)");
 					}
-				}			
+				}
+				i++;
+				adv= (i *100) / tot;
+				
+				System.out.print("ADVANCE: \t"+i+"/\t"+tot+"\t"+adv+" % \r");
 			}
+			System.out.println("ADVANCE: \t"+i+"/\t"+tot+"\t"+adv+" % ");
 			
 			System.out.println("=================================== END IMPORT OK =================================");	
 			System.exit(0);	
