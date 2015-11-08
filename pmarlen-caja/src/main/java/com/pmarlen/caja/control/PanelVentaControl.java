@@ -427,6 +427,8 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:pvdList="+pvdList);
 			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:extraInformation="+extraInformation);
 			
+			TextReporter.setColumns(MemoryDAO.getTextSystemPrinterColumns());
+			
 			String fileTicket = TextReporter.generateTicket(venta.getEs().reverse(), pvdList, extraInformation);
 			
 			logger.debug("->ticketPrinteService:fileTicket="+fileTicket);

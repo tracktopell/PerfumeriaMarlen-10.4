@@ -472,6 +472,12 @@ public class TextReporter {
 
 	}
 	
+	public static int columns = 38;
+
+	public static void setColumns(int columns) {
+		TextReporter.columns = columns;
+	}
+	
 	public static String generateTicket(EntradaSalida pv,ArrayList<EntradaSalidaDetalle> pvdList,HashMap<String,String> extraInformation){
 		HashMap<String, String> parameters = new HashMap<String, String> (); 
 		List<HashMap<String, String>> records=new ArrayList<HashMap<String, String>>();
@@ -519,7 +525,7 @@ public class TextReporter {
 		try {
 			
 			fos = new FileOutputStream(fileName);
-			processReport(TextReporter.class.getResourceAsStream("/textreports/test1report.txt"), fos , parameters, records, 47);	
+			processReport(TextReporter.class.getResourceAsStream("/textreports/test1report.txt"), fos , parameters, records, columns);	
 		}catch(IOException ioe) {
 		
 		}

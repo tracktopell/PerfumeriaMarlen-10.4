@@ -68,8 +68,9 @@ public class MemoryDAO {
 		properties.put("host","localhost");
 		properties.put("port","8070");
 		properties.put("context","/l30");
+		properties.put("textSystemPrinterColumns","38");
 		
-		properties.put("dropboxdir",System.getProperty("user.home")+"/DropBox/");
+		properties.put("dropboxdir",System.getProperty("user.home")+"/Dropbox/");
 	}
 	
 	private static SyncDTOPackage paqueteSinc;
@@ -618,6 +619,10 @@ public class MemoryDAO {
 
 	public static int getNumCaja(){
 		return Integer.parseInt(properties.getProperty("caja"));
+	}
+	
+	public static int getTextSystemPrinterColumns(){
+		return Integer.parseInt(properties.getProperty("textSystemPrinterColumns"));
 	}
 	
 	public static String getCajaGlobalInfo() {
