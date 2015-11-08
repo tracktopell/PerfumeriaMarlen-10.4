@@ -21,6 +21,7 @@ import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.I;
 import com.pmarlen.ticket.TicketPrinteService;
 import com.pmarlen.ticket.bluetooth.TicketBlueToothPrinter;
+import com.pmarlen.ticket.systemprinter.SendFileToSystemPrinter;
 import com.pmarlen.ticket.systemprinter.TicketSystemPrinter;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -112,10 +113,10 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		}
 		panelVenta.getDetalleVentaJTable().updateUI();
 		panelVenta.resetInfoForProducto(null,0);
-		estadoChecando = false;
-		venta = null;
+		estadoChecando = false;		
 		actualizarEstadoChecado();
 		renderTotal();
+		this.panelVenta.getCodigoBuscar().requestFocus();
 	}
 
 	@Override
@@ -421,16 +422,21 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			for(ESD esd:venta.getEsdList()){
 				pvdList.add(esd.reverse());
 			}
-			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:");
-			//Object ticketFile = ticketPrinteService.generateTicket(venta.getEs().reverse(),pvdList , extraInformation);
-			TextReporter.generateTicket(venta.getEs().reverse(), pvdList, extraInformation);
-			logger.debug("->ticketPrinteService:");
 			
+			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:venta.getEs().reverse()="+venta.getEs().reverse());
+			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:pvdList="+pvdList);
+			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:extraInformation="+extraInformation);
+			
+			String fileTicket = TextReporter.generateTicket(venta.getEs().reverse(), pvdList, extraInformation);
+			
+			logger.debug("->ticketPrinteService:fileTicket="+fileTicket);
+			
+			SendFileToSystemPrinter.printFile(fileTicket);
 			
 			printed = true;
 		} catch (Exception ioe) {
 			logger.error("imprimiedo",ioe);
-			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
+			//JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			logger.debug("DESPUES DE IMPRIMIR TICKET: printed?"+printed);
 			if (!printed) {
@@ -438,7 +444,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 				//t.printStackTrace(System.err);
 				JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error grave al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
 			}
-			panelVenta.getCodigoBuscar().requestFocus();
+			venta = null;
 		}
 	}
 }

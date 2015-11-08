@@ -354,21 +354,24 @@ public class PanelVenta extends javax.swing.JPanel {
 		return defaultProductoImageIcon;	
 	}
 	
-	String imagePath = "/jpg/";
+	String imagePath = "jpg/";
 	
 	private ImageIcon getProductoImageIcon(Producto p){
-		logger.debug("=>getProductoImageIcon(" + p +")");
+		logger.debug("getProductoImageIcon(" + p +")");
 		ImageIcon productoImageIcon = null;
 		File fileImage=null;
 		try{			
-			fileImage = new File(getImagesDir()+imagePath+"/MIN_"+p.getCodigoBarras()+"_01.jpg");
+			String fileNaeImage = getImagesDir()+imagePath+"/MIN_"+p.getCodigoBarras()+"_01.jpg";
+			fileImage = new File(fileNaeImage);
+			logger.debug("getProductoImageIcon(" + p +"): fileNaeImage="+fileNaeImage);
 			if(fileImage.exists() && fileImage.canRead()) {
 				logger.trace("=>getProductoImageIcon: fileImage:" + fileImage+", size:"+fileImage.length()+" bytes");
 				productoImageIcon = new ImageIcon(ImageIO.read(new FileInputStream(fileImage)));
 			} else {
 				throw new FileNotFoundException("Image not found for :"+p.getCodigoBarras()+", fileImage:"+fileImage);
 			}
-		} catch(FileNotFoundException fnfe){			
+		} catch(FileNotFoundException fnfe){
+			logger.debug("getProductoImageIcon(" + p +"): Not fount:"+fnfe.getMessage()+" =>> DEFAULT !");
 			productoImageIcon = getDefaultProductoImageIcon();
 		} catch(Exception e){
 			logger.error("getProductoImageIcon("+p.getCodigoBarras()+"):Reading Image File:",e);

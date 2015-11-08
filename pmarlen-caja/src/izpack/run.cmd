@@ -1,1 +1,1 @@
-java -jar ${project.artifactId}-${project.version}.jar
+java -jar pmarlen-caja.jar -debug=true

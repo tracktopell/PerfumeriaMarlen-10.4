@@ -75,7 +75,7 @@ public class ReporteProductos {
 		for(Object[] arr: productos){
 			String cb=arr[0].toString();
 			String cb_ean13=null;
-			File imgFile=new File("/Users/alfredo/pmarlen_imgs/transformed/MED_PRODUCTO_MULTIMEDIO_"+cb+"_1.jpg");
+			File imgFile=new File("/Users/alfredo/Dropbox/multimedia/imgs_productos/min/jpg/MIN_"+cb+"_01.jpg");
 			
 			if(r.nextInt(100)%5==0 && imgFile.exists()){
 				
@@ -94,7 +94,7 @@ public class ReporteProductos {
 				
 				vals.put("img",imgFile.getAbsolutePath());					
 				
-				System.out.println("SELECTED: ->"+arr[0]+", "+arr[1]+", "+arr[2]+", "+arr[3]+", "+arr[4]+", ean13->"+cb_ean13+"<-");
+				System.out.println("SELECTED: ->"+cb+", "+arr[1]+", "+arr[2]+", "+arr[3]+", "+arr[4]+", ean13->"+cb_ean13+"<-");
 
 				col.add(vals);
 			}
@@ -106,7 +106,7 @@ public class ReporteProductos {
 		Map parameters = new HashMap();
 		JRDataSource beanColDataSource = new JRMapCollectionDataSource(col);
 
-		InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream("/reports/productos_catalogo.jrxml");
+		InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream("/reports/productos.jrxml");
 		try{
 			JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 			jasperReport = JasperCompileManager.compileReport(jasperDesign);
@@ -118,7 +118,7 @@ public class ReporteProductos {
 
 			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 			
-			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(new FileOutputStream("./reportes_productos_"+sdf.format(new Date())+".pdf")));
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(new FileOutputStream("./productos_"+sdf.format(new Date())+".pdf")));
 
 			SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
 			configuration.setMetadataAuthor("PerfumeriaMarlen_SAA_10.3");						

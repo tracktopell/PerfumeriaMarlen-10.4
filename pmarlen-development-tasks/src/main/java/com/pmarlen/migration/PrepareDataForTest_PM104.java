@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +44,8 @@ public class PrepareDataForTest_PM104 {
 		connectToNewDB();
 				
 		try {
-			
+			long t0=System.currentTimeMillis();
+			long t1,t2,t3,T;
 			System.out.println("---------------------- SELECT ALL PRODUCTOS -----------------------");
 			
 			List<Object[]> resultAllProductos = executeQuery(newDBConnection, "SELECT CODIGO_BARRAS,COSTO_VENTA FROM PRODUCTO");
@@ -72,10 +74,11 @@ public class PrepareDataForTest_PM104 {
 				}
 				i++;
 				adv= (i *100) / tot;
-				
-				System.out.print("ADVANCE: \t"+i+"/\t"+tot+"\t"+adv+" % \r");
+				t1 = System.currentTimeMillis();
+				System.out.print("ADVANCE: \t"+i+"/\t"+tot+"\t:"+adv+" % [ "+enalapsed(t0, t1)+" ] \r");
 			}
-			System.out.println("ADVANCE: \t"+i+"/\t"+tot+"\t"+adv+" % ");
+			t2 = System.currentTimeMillis();
+			System.out.println("ADVANCE: \t"+i+"/\t"+tot+"\t:"+adv+" % [ "+enalapsed(t0, t2)+" ] \r");;
 			
 			System.out.println("=================================== END IMPORT OK =================================");	
 			System.exit(0);	
@@ -83,6 +86,29 @@ public class PrepareDataForTest_PM104 {
 			ex.printStackTrace(System.err);
 			System.exit(3);
 		}
+	}
+	
+	private static final DecimalFormat df = new DecimalFormat("00");
+	
+	private static String enalapsed(long t0,long t1){
+		StringBuffer sb=new StringBuffer();
+		long milliseconds = t1 -t0;
+		
+		int seconds = (int) (milliseconds / 1000) % 60 ;
+		int minutes = (int) ((milliseconds / (1000*60)) % 60);
+		int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
+		
+		if(hours>0){
+			sb.append(df.format(hours)).append(":");			
+		}
+		if(minutes>0){
+			sb.append(df.format(minutes)).append(":");			
+		}
+		if(seconds>0){
+			sb.append(df.format(seconds));			
+		}
+		
+		return sb.toString();
 	}
 
 	private static void executeMultipleUpdates(String sql, List<Object[]> resultLineas) throws SQLException {

@@ -92,8 +92,15 @@ public class TerminarVentaControl implements ActionListener , ItemListener , Foc
 		this.terminarVentaDlg.getCargo().setEnabled(false);
 		this.terminarVentaDlg.getAutorizacion().setEnabled(false);
 		
-		this.terminarVentaDlg.getRecibido().requestFocus();
-		
+		new Thread(){
+			public void run(){
+				try{
+					Thread.sleep(2000);
+					terminarVentaDlg.getRecibido().requestFocus();
+				}catch(InterruptedException ie){
+				}
+			}
+		}.start();		
 		terminarVentaDlg.setVisible(true);
 	}
 	

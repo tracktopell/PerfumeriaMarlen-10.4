@@ -168,6 +168,32 @@
 					</archive>
 				</configuration>
 			</plugin>
+													
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>			
+					<execution>
+						<id>clean-my-dirty-space</id>
+						<phase>pre-clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo message="======================= clean-my-dirty-space, in pre-clean phase ==============>>>"/>
+								<delete quiet="true">
+					
+									<fileset dir="${basedir}" includes="productos*.pdf"/>
+									<fileset dir="${basedir}" includes="reportes*.pdf"/>
+									<fileset dir="${basedir}" includes="PM*.log"/>
+								</delete>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>			
 		</plugins>
 	</build>
 
