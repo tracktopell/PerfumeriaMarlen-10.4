@@ -31,7 +31,8 @@ import java.util.regex.Pattern;
  * @author alfredo
  */
 public class TextReporter {
-
+	public static int columns = 38;
+	
 	static boolean DEBUG = false;
 
 	static class TextToken {
@@ -416,63 +417,6 @@ public class TextReporter {
 		
 		
 	}
-
-	public static void main(String[] args) {
-		/*
-		String srcline = "";
-		HashMap<String, String> parameters = new HashMap<String, String>();
-		HashMap<String, String> rfield = new HashMap<String, String>();
-		int maxlw = 35;
-		// srcline:\"\${a,r,2,L} \${b,l,3,F}\"  param:a=12345 param:b=223344 rfield:xx=11  rfield:zz=33  maxlw:25
-		// srcline:\"\${a,r,2,L} \${b,l,1,F}    \${c,l,10,R}\"  param:a=12345 param:b=223344 param:c=2015/04/28 rfield:xx=11  rfield:zz=33  maxlw:35
-		// srcline:\"\${-,l,80%,C}\"  maxlw:40
-		// srcline:\"\${clienteL,r,8,L}:\${cliente,l,-10,F}\" param:clienteL=CLIENTE param:cliente=ALFREDO_ESTRADA_GONZÁLEZ  rfield:xx=11  rfield:zz=33  maxlw:35 --debug:true
-		// srcline:\"\${cL,r,8,L}@\${c,l,-10,F}\" param:cL=CLIENTE param:c=ALFREDO_ESTRADA_GONZÁLEZ  rfield:xx=11  rfield:zz=33  maxlw:45 --debug:true
-
-		for (String a : args) {
-			//if(DEBUG) System.err.println("a->"+a+"<-");
-
-			String aa[] = a.split(":");
-			if (aa != null && aa.length > 1) {
-				String an = aa[0];
-				String av = aa[1];
-
-				if (an.equals("param")) {
-					String aap[] = av.split("=");
-					if (aap != null && aap.length > 1) {
-						String pn = aap[0];
-						String pv = aap[1];
-						parameters.put(pn, pv);
-					}
-				} else if (an.equals("rfield")) {
-					String aap[] = av.split("=");
-					if (aap != null && aap.length > 1) {
-						String rn = aap[0];
-						String rv = aap[1];
-						rfield.put(rn, rv);
-					}
-				} else if (an.equals("srcline")) {
-					srcline = av;
-				} else if (an.equals("maxlw")) {
-					maxlw = Integer.parseInt(av);
-				} else if (an.equals("--debug")) {
-					DEBUG = av.equals("true");
-				}
-			}
-		}
-
-		if(DEBUG) System.err.println("srcline:   ->" + srcline + "<-");
-		if(DEBUG) System.err.println("parameters:->" + parameters + "<-");
-		if(DEBUG) System.err.println("rfield:    ->" + rfield + "<-");
-		if(DEBUG) System.err.println("maxlw:     ->" + maxlw + "<-");
-
-		if(DEBUG) System.err.println("processLine:->.........1.........2.........3.........4.........5.........6");
-		System.out.println("processLine:->" + processLine(srcline, parameters, rfield, maxlw) + "<-");
-		*/
-
-	}
-	
-	public static int columns = 38;
 
 	public static void setColumns(int columns) {
 		TextReporter.columns = columns;

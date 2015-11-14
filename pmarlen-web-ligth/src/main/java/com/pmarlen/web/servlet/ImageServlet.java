@@ -65,9 +65,8 @@ public class ImageServlet extends HttpServlet {
 		File f =  new File((new StringBuilder(
 				"/usr/local/pmarlen_multimedio/imgs_productos/").append(
 				size.toLowerCase()).append(
-				"/png/").append(
-				size.toUpperCase()).append(
-				"-NWM_")).append(
+				"_png/").append(
+				"NWM_")).append(
 				cb).append(
 				"_01.png"
 				).toString());

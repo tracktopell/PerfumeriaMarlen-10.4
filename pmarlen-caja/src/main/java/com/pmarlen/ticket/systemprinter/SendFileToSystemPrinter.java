@@ -5,6 +5,7 @@
  */
 package com.pmarlen.ticket.systemprinter;
 
+import java.awt.print.PrinterJob;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -85,6 +86,7 @@ public class SendFileToSystemPrinter {
 				theFlavor = otherFlavor;
 			}
 		}
+		
 		DocPrintJob job = defaultPrintService.createPrintJob();
 		logger.debug("printFile:job="+job);
 		// Set the document type

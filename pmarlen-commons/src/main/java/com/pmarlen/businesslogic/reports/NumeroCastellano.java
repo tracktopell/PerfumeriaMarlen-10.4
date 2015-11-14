@@ -119,7 +119,6 @@ public class NumeroCastellano {
     }
 
     public static void main(String[] args) {
-        //System.out.println(numeroACastellano(Long.parseLong(args[0])));
-        System.out.println(numeroACastellano(213897747213423L));
+        System.out.println(numeroACastellano(Long.parseLong(args[0])));
     }
 }

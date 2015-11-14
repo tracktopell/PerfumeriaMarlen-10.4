@@ -337,7 +337,14 @@ public class PanelVenta extends javax.swing.JPanel {
 
 	public static String getImagesDir() {
 		if(imagesDir == null){
-			imagesDir = MemoryDAO.getProperty("dropboxdir");
+			String dirDevDropbox = System.getProperty("user.home")+"/Dropbox/multimedia/imgs_productos/";
+			File devDropBoxDir = new File(dirDevDropbox);
+			if(devDropBoxDir.exists() && devDropBoxDir.isDirectory()){
+				imagesDir = dirDevDropbox;
+				logger.info("getImagesDir: DEVELOPMENT dir:"+imagesDir);
+			} else {
+				imagesDir = MemoryDAO.getProperty("dropboxdir");
+			}
 		}
 		return imagesDir;
 	}
@@ -345,8 +352,8 @@ public class PanelVenta extends javax.swing.JPanel {
 	private ImageIcon getDefaultProductoImageIcon(){
 		if(defaultProductoImageIcon==null){
 			try{
-				//defaultProductoImageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/images/cardboard-box-icon-320x320_1.jpg")));
-				defaultProductoImageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/images/cardboard-box-icon-256x256_1.png")));
+				defaultProductoImageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/images/cardboard-box-icon-320x320_1.jpg")));
+				//defaultProductoImageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/images/cardboard-box-icon-256x256_1.png")));
 			} catch(Exception e){
 				e.printStackTrace(System.err);
 			}
@@ -354,14 +361,14 @@ public class PanelVenta extends javax.swing.JPanel {
 		return defaultProductoImageIcon;	
 	}
 	
-	String imagePath = "jpg/";
+	String imagePath = "med_png/";
 	
 	private ImageIcon getProductoImageIcon(Producto p){
 		logger.debug("getProductoImageIcon(" + p +")");
 		ImageIcon productoImageIcon = null;
 		File fileImage=null;
 		try{			
-			String fileNaeImage = getImagesDir()+imagePath+"/MIN_"+p.getCodigoBarras()+"_01.jpg";
+			String fileNaeImage = getImagesDir()+imagePath+"/NWM_"+p.getCodigoBarras()+"_01.png";
 			fileImage = new File(fileNaeImage);
 			logger.debug("getProductoImageIcon(" + p +"): fileNaeImage="+fileNaeImage);
 			if(fileImage.exists() && fileImage.canRead()) {
