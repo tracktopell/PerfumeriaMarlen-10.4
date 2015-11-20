@@ -29,6 +29,9 @@ cloud-test-redeploy:
 	~/tomcat7_test/bin/startup.sh
 	mvn -pl pmarlen-web-ligth tomcat7:deploy -P cloud_test
 
+cloud-test-caja-installer:
+	mvn -pl pmarlen-caja install -P installer
+
 #-------------------------------------------------------------------
 
 local-dev-deploy:

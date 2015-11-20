@@ -183,7 +183,7 @@ public class ApplicationLogic {
 			long length = conn.getContentLengthLong();
 			is = conn.getInputStream();
 			FileOutputStream fos = new FileOutputStream(FILE_APP_PACKAGE);
-			byte[] buffer = new byte[1024 * 16];
+			byte[] buffer = new byte[1024 * 1024]; // 1MB
 			long r = -1;
 			long t= 0;
 			keepDownlaod = true;
@@ -201,7 +201,7 @@ public class ApplicationLogic {
 				fos.write(buffer, 0, (int)r);
 				fos.flush();
 				long advance = (100L * t) / length;
-				logger.trace("------->> Downloaded:\t [+ "+r+"]( "+t+"/"+length+") : "+advance+" %");
+				logger.debug("------->> Downloaded:\t [+ "+r+"]( "+t+"/"+length+") : "+advance+" %");
 				ual.updateProgress((int)advance);
 			}
 			ual.updateProgress(100);

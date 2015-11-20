@@ -110,10 +110,9 @@ public class Main {
 				UpadateApplicationJFrame uaf = new UpadateApplicationJFrame();
 				UpadateApplicationJFrameControl uafc = new UpadateApplicationJFrameControl(uaf);
 				uafc.estadoInicial();
-				
+				logger.debug("main:Updating, wait... for download");
 				while(uafc.isActualizando()){
-					try {
-						logger.debug("main:Updating");
+					try {						
 						Thread.sleep(500);
 					} catch (InterruptedException ie) {
 						logger.trace("main:InterruptedException");
