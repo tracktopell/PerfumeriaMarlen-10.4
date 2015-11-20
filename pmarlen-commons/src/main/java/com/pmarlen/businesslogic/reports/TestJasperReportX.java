@@ -1,20 +1,23 @@
 package com.pmarlen.businesslogic.reports;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.*;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 public class TestJasperReportX {
 	private static Logger logger = Logger.getLogger(TestJasperReportX.class.getName());
@@ -41,26 +44,26 @@ public class TestJasperReportX {
             JRDataSource beanColDataSource = new JRMapCollectionDataSource(col);
             logger.info("Ok, JRDataSource created");
             JasperReport jasperReport = null;
-            //String intDecParts[] = dfEnt.format(esf.getTotal()).split("\\.");
+            
 			File compiledReportPathFile=new File(compiledReportPath);
-			/*
+			
+			logger.info("compiledReportPathFile:"+compiledReportPathFile.getAbsolutePath()+", exist?"+compiledReportPathFile.exists());
+			
+			int ph = 132+35+23+111+19*col.size();			
             if(! compiledReportPathFile.exists()){
 				InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream(reportPath);
 				JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 				JasperCompileManager.compileReportToStream(jasperDesign,new FileOutputStream(compiledReportPathFile));
-				logger.info("Ok, JasperReport compiled and saved 1st time, to:"+compiledReportPath);				
+				logger.info("Ok, JasperReport compiled and saved 1st time, to:"+compiledReportPath);
+				jasperReport = (JasperReport)JRLoader.loadObject(compiledReportPathFile);
+				logger.info("Ok, JasperReport 1st time loaded from:"+compiledReportPath);
+			} else {
+				jasperReport = (JasperReport)JRLoader.loadObject(compiledReportPathFile);
+				logger.info("Ok, JasperReport, loaded from:"+compiledReportPath);
 			}
-			jasperReport = (JasperReport)JRLoader.loadObject(compiledReportPathFile);
-			*/
-			InputStream inputStream = TestJasperReportX.class.getResourceAsStream(reportPath);
-			JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 			
-			jasperDesign.setPageHeight(132+35+23+111+19*col.size());
+			logger.info("Ok, JasperReport Ready, filling.");
 			
-			
-			jasperReport = JasperCompileManager.compileReport(jasperDesign);
-			
-			logger.info("Ok, JasperReport loaded from:"+compiledReportPath);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
             logger.info("Ok, JasperPrint created.");
             OutputStream os = null;
@@ -88,7 +91,13 @@ public class TestJasperReportX {
 	
 	
 	public static void main(String[] args) {
-		
+		Properties props = new Properties();
+		try {
+			props.load(TestJasperReportX.class.getResourceAsStream("/log4j_local/log4j.properties"));
+			PropertyConfigurator.configure(props);
+		}catch(IOException ioe){
+			ioe.printStackTrace(System.err);
+		}
 		Collection<Map<String,?>> col = new ArrayList<Map<String,?>>();
 		Map<String,Object> parameters = new HashMap<String,Object>();
 		
