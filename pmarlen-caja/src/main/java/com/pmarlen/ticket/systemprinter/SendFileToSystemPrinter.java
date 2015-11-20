@@ -50,30 +50,35 @@ public class SendFileToSystemPrinter {
 		logger.debug("printFile:myFlavor:MimeType="+theFlavor.getMimeType()+", MediaType="+theFlavor.getMediaType()+", MediaSubtype="+theFlavor.getMediaSubtype());
 		
 		PrintService defaultPrintService = PrintServiceLookup.lookupDefaultPrintService();
+		logger.debug("printFile:defaultPrintService: " + defaultPrintService);
 		PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
-        logger.debug("printFile:Number of print services: " + printServices.length);
+        logger.debug("printFile:printServices: " + printServices);
 		int i=0;
-        for (PrintService ps : printServices) {
-			boolean servieSelected= ps.equals(defaultPrintService);
-            logger.debug("\tprintFile: Printer["+i+"]: " +(servieSelected?" -> ":"    ")+ps.getName()); 
-			i++;
-			DocFlavor[] supportedDocFlavors = ps.getSupportedDocFlavors();
-			int j=0;
-			logger.debug("\t\tprintFile:supportedDocFlavors:");
-			for(DocFlavor df: supportedDocFlavors){
-				boolean likeMyFlavor=false;
-				if(df.getMimeType().equalsIgnoreCase(theFlavor.getMimeType())){
-					likeMyFlavor = true;
+		if(printServices != null){
+			for (PrintService ps : printServices) {
+				boolean servieSelected= ps.equals(defaultPrintService);
+				logger.debug("\tprintFile: Printer["+i+"]: " +(servieSelected?" -> ":"    ")+ps.getName()); 
+				i++;
+				DocFlavor[] supportedDocFlavors = ps.getSupportedDocFlavors();
+				int j=0;
+				logger.debug("\t\tprintFile:supportedDocFlavors:"+supportedDocFlavors);
+				if(supportedDocFlavors!=null){
+					for(DocFlavor df: supportedDocFlavors){
+						boolean likeMyFlavor=false;
+						if(df.getMimeType().equalsIgnoreCase(theFlavor.getMimeType())){
+							likeMyFlavor = true;
+						}
+						logger.debug("\t\tprintFile:supportedDocFlavors["+j+"]: "+(likeMyFlavor?"-> ":"   ")+"MimeType="+df.getMimeType()+", MediaType="+df.getMediaType()+", MediaSubtype="+df.getMediaSubtype());
+						if(likeMyFlavor && servieSelected){
+							otherFlavor = df;
+						}
+						j++;
+					}
 				}
-				logger.debug("\t\tprintFile:supportedDocFlavors["+j+"]: "+(likeMyFlavor?"-> ":"   ")+"MimeType="+df.getMimeType()+", MediaType="+df.getMediaType()+", MediaSubtype="+df.getMediaSubtype());
-				if(likeMyFlavor && servieSelected){
-					otherFlavor = df;
-				}
-				j++;
 			}
-		}
-		logger.debug("printFile:flavors....");
-		if(!defaultPrintService.isDocFlavorSupported(theFlavor) && otherFlavor!=null){
+		}		
+		logger.debug("printFile:flavors.... ? ");
+		if(defaultPrintService!=null && !defaultPrintService.isDocFlavorSupported(theFlavor) && otherFlavor!=null){
 			logger.debug("printFile:not defaultPrintService.isDocFlavorSupported("+theFlavor+"): Dam it !! , changing the flavor to:"+otherFlavor);
 			if(!defaultPrintService.isDocFlavorSupported(otherFlavor)){
 				logger.debug("printFile: no defaultPrintService.isDocFlavorSupported("+otherFlavor+"): Dam it !! , changing the flavor to:"+binFlavor);
@@ -85,35 +90,36 @@ public class SendFileToSystemPrinter {
 			} else {
 				theFlavor = otherFlavor;
 			}
-		}
 		
-		DocPrintJob job = defaultPrintService.createPrintJob();
-		logger.debug("printFile:job="+job);
-		// Set the document type
-		// Create a Doc
-		Doc myDoc = new SimpleDoc(textstream, theFlavor, null);
-		logger.debug("printFile:myDoc="+myDoc);
 		
-		try {
-			PrintRequestAttributeSet printAtt = new HashPrintRequestAttributeSet();
-			Date today=new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-			printAtt.add(new JobName("JAVA_PRINTJOB_"+sdf.format(today),Locale.getDefault())); 
-			MyPrintListener pl = new MyPrintListener();
-			job.addPrintJobListener(pl);
-			logger.debug("printFile: ["+defaultPrintService.getName()+"] before print, with flavor:"+theFlavor);
-			job.print(myDoc, printAtt);
-			logger.debug("printFile:after print");
+			DocPrintJob job = defaultPrintService.createPrintJob();
+			logger.debug("printFile:job="+job);
+			// Set the document type
+			// Create a Doc
+			Doc myDoc = new SimpleDoc(textstream, theFlavor, null);
+			logger.debug("printFile:myDoc="+myDoc);
+
 			try {
-				while(pl.jobRunning){
-					Thread.sleep(1000L);
-					logger.debug("printFile:...waiting 1 sec.");
+				PrintRequestAttributeSet printAtt = new HashPrintRequestAttributeSet();
+				Date today=new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+				printAtt.add(new JobName("JAVA_PRINTJOB_"+sdf.format(today),Locale.getDefault())); 
+				MyPrintListener pl = new MyPrintListener();
+				job.addPrintJobListener(pl);
+				logger.debug("printFile: ["+defaultPrintService.getName()+"] before print, with flavor:"+theFlavor);
+				job.print(myDoc, printAtt);
+				logger.debug("printFile:after print");
+				try {
+					while(pl.jobRunning){
+						Thread.sleep(1000L);
+						logger.debug("printFile:...waiting 1 sec.");
+					}
+				}catch(InterruptedException ie){
+					logger.debug("printFile: ie:"+ie.getMessage());
 				}
-			}catch(InterruptedException ie){
-				logger.debug("printFile: ie:"+ie.getMessage());
+			} catch (PrintException pe) {
+				logger.error("printFile:", pe);
 			}
-		} catch (PrintException pe) {
-			logger.error("printFile:", pe);
 		}
 		
 	}
