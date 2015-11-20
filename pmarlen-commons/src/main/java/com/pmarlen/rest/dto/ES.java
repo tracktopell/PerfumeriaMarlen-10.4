@@ -31,8 +31,8 @@ public class ES {
 		es.setTipoMov(tm);
 		es.setSucursalId(s);
 		es.setFechaCreo(new Timestamp(fc));
-		es.setUsuarioEmailCreo(u);
-		es.setCfdId(c);
+		es.setUsuarioEmailCreo(u);		
+		es.setClienteId(c);
 		es.setFormaDePagoId(fp);
 		es.setMetodoDePagoId(mp);
 		es.setCaja(j);
