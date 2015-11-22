@@ -41,7 +41,8 @@
     -->
     <resources>
         <res id="LicencePanel.licence" src="Licence.txt"/>
-        <res id="InfoPanel.info" src="Readme.txt"/>		
+        <res id="InfoPanel.info" src="Readme.txt"/>
+		<res id="Unix_shortcutSpec.xml" src="shortcut.xml"/>
     </resources>
 
     <!-- 
@@ -73,7 +74,14 @@
 			<file src="../classes/run.sh" targetdir="$INSTALL_PATH"/>
             <parsable   targetfile="$INSTALL_PATH/run.sh"/>
 			<executable targetfile="$INSTALL_PATH/run.sh" os="unix" type="bin"/>
-
+			
+			<file src="L30_16x16_Ver1.png"   targetdir="$INSTALL_PATH"/>
+			<file src="L30_252x252_Ver1.png" targetdir="$INSTALL_PATH"/>
+			<file src="L30_64x64_Ver1.png"   targetdir="$INSTALL_PATH"/>
+			
+			<file src="PM_NewLogo.jpg"   targetdir="$INSTALL_PATH"/>
+			<file src="PM_NewLogo.jpg"   targetdir="$INSTALL_PATH"/>
+			
 			<file src="../classes/run.cmd" targetdir="$INSTALL_PATH"/>
             <parsable   targetfile="$INSTALL_PATH/run.cmd"/>
 			<executable targetfile="$INSTALL_PATH/run.cmd" os="windows" type="bin"/>

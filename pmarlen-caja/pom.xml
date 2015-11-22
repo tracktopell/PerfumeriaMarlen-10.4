@@ -203,7 +203,10 @@
 									<zipfileset dir="${staging.dir}/dependency-jars"		prefix="dependency-jars/"	 includes="*.jar"/>
 									<!-- -->
 									<zipfileset dir="${project.build.directory}/classes/"	includes="run*.*"/>
-									<zipfileset dir="${staging.dir}/../"					includes="${project.artifactId}.jar"/>											
+									<zipfileset dir="${staging.dir}/../"					includes="${project.artifactId}.jar"/>
+									
+									<zipfileset dir="${basedir}/src/izpack"	includes="*.png"/>
+									<zipfileset dir="${basedir}/src/izpack"	includes="*.desktop"/>
 								</zip>
 										
 							</target>

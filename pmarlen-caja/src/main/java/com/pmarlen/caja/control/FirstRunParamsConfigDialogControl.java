@@ -12,6 +12,7 @@ import com.pmarlen.caja.model.Sucursal;
 import com.pmarlen.caja.view.FirstRunParamsConfigDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  *
@@ -74,5 +75,14 @@ public class FirstRunParamsConfigDialogControl implements ActionListener{
 	private void cancelar_ActionPerformed(){
 		this.dlg.dispose();
 		configuring = false;		
-	}	
+	}
+	
+	public static void main(String[] args) {
+		
+		File desktopEN=new File(System.getProperty("user.home")+"/Desktop");
+		File desktopES=new File(System.getProperty("user.home")+"/Escritorio");
+		
+		
+	}
+	
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<shortcuts>
+	<skipIfNotSupported/>
+	<programGroup defaultName="pmarlen-caja" location="pmarlen-caja"/>
+
+	<shortcut
+		name="pmarlen-caja"
+		programGroup="yes"
+		desktop="yes"
+		applications="no"
+		startMenu="yes"
+		startup="no"
+		target="$INSTALL_PATH/run.sh"
+		commandLine=""
+		workingDirectory="$INSTALL_PATH"
+		description="PMalren"
+		iconFile="$INSTALL_PATH/L30_64x64_Ver1.png"
+		iconIndex="0"
+		type="Application"
+		encoding="UTF-8"
+		terminal="false"
+		KdeSubstUID="false"
+		initialState="normal">
+		<createForPack name="Core"/>
+	</shortcut>
+
+</shortcuts>

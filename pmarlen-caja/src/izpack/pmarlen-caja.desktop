@@ -1,0 +1,28 @@
+
+[Desktop Entry]
+Categories=
+Comment=pmarlen-caja
+Comment[es]=pmarlen-caja
+Encoding=UTF-8
+Exec=${INSTALL_PATH}/runMasterDB.sh 
+GenericName=pmarlen-caja
+GenericName[es]=pmarlen-caja
+Icon=${INSTALL_PATH}/L30_64x64_Ver1.png
+MimeType=
+Name=pmarlen-caja
+Name[es]=pmarlen-caja
+Path=${INSTALL_PATH}
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=false
+TerminalOptions=
+Type=Application
+URL=
+X-KDE-SubstituteUID=false
+X-KDE-Username=root
+
+# created by com.izforge.izpack.util.os.Unix_Shortcut $Revision$
+# $Id$
+StartupNotify=true
+Name[es_MX]=pmarlen-caja
