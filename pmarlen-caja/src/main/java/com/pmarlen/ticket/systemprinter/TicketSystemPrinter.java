@@ -8,6 +8,7 @@ import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Producto;
 import com.pmarlen.caja.control.ApplicationLogic;
+import com.pmarlen.model.OSValidator;
 import com.pmarlen.ticket.NumeroCastellano;
 import com.pmarlen.ticket.TicketPrinteService;
 import com.pmarlen.ticket.bluetooth.SendBytesToDevice;
@@ -15,6 +16,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -33,6 +35,7 @@ public class TicketSystemPrinter implements TicketPrinteService {
     private String btAdress;
 	private ApplicationLogic applicationLogic;
 	private static TicketSystemPrinter instance;
+	private static Logger logger = Logger.getLogger(TicketSystemPrinter.class.getSimpleName());
 	
 	private TicketSystemPrinter(){
 	
@@ -125,7 +128,7 @@ public class TicketSystemPrinter implements TicketPrinteService {
 
                 if (detailStart) {
                     iterationLines.add(line);
-                    //System.err.println("#=>>"+line);
+                    //logger.info("#=>>"+line);
                     continue;
                 }
 
@@ -177,7 +180,7 @@ public class TicketSystemPrinter implements TicketPrinteService {
                             if (innerLine.contains(k)) {
                                 innerLine = innerLine.replace(k, staticVars.get(k));
                             }
-                            //System.err.println("\t\t===>>> replace "+k+" ->"+staticVars.get(k));
+                            //logger.info("\t\t===>>> replace "+k+" ->"+staticVars.get(k));
                         }
                         if (innerLine.indexOf("?{") >= 0) {
                             String optionalField = innerLine.substring(innerLine.indexOf("?{"), innerLine.indexOf("}"));
@@ -186,17 +189,17 @@ public class TicketSystemPrinter implements TicketPrinteService {
                             }
                         }
                         if (!skipLine) {
-                            //System.err.println("=>>" + innerLine);
+                            //logger.info("=>>" + innerLine);
                             psPrintTicket.print(innerLine+"\r");
                         } else {
-                            //System.err.println("X=>>" + innerLine);
+                            //logger.info("X=>>" + innerLine);
                         }
 
                     }
                 }
 
                 if (expandDetail) {
-                    //System.err.println("#=>>______________");
+                    //logger.info("#=>>______________");
                     expandDetail = false;
 					final double subTotal = sum_importe;
                     staticVars.put("${SBTOT}" , alignTextRigth(dfs4_2.format(subTotal),9));
@@ -250,7 +253,7 @@ public class TicketSystemPrinter implements TicketPrinteService {
                 return text.trim().substring(0, maxPerColumn);
             }
         }catch(Exception ex){
-            System.err.println("\t==>>> alignTextRigth: ->"+text.trim()+"<-["+text.trim().length()+"],"+maxPerColumn+":"+ex.getMessage());
+            logger.info("\t==>>> alignTextRigth: ->"+text.trim()+"<-["+text.trim().length()+"],"+maxPerColumn+":"+ex.getMessage());
             return text.trim();
         }
     }
@@ -265,7 +268,7 @@ public class TicketSystemPrinter implements TicketPrinteService {
                 return text.trim().substring(0, maxPerColumn);
             }
         }catch(Exception ex){
-            System.err.println("\t==>>> alignTextRigth: ->"+text.trim()+"<-["+text.trim().length()+"],"+maxPerColumn+":"+ex.getMessage());
+            logger.info("\t==>>> alignTextRigth: ->"+text.trim()+"<-["+text.trim().length()+"],"+maxPerColumn+":"+ex.getMessage());
             return text.trim();
         }
     }
@@ -278,7 +281,7 @@ public class TicketSystemPrinter implements TicketPrinteService {
                 return text.trim().substring(0, maxPerColumn);
             }
         }catch(Exception ex){
-            System.err.println("\t==>>> alignTextLeft: ->"+text.trim()+"<-["+text.trim().length()+"],"+maxPerColumn+":"+ex.getMessage());
+            logger.info("\t==>>> alignTextLeft: ->"+text.trim()+"<-["+text.trim().length()+"],"+maxPerColumn+":"+ex.getMessage());
             return text.trim();
         }
     }
@@ -337,7 +340,7 @@ public class TicketSystemPrinter implements TicketPrinteService {
 			
 			Set<String> keySet = staticVars.keySet();
 			for(String key: keySet){
-				System.err.println("\t-->>key:"+key+"="+staticVars.get(key));				
+				logger.info("\t-->>key:"+key+"="+staticVars.get(key));				
 			}
 			while((line=br.readLine())!=null){
 				//final String key = "${FECHA}";
@@ -346,14 +349,14 @@ public class TicketSystemPrinter implements TicketPrinteService {
 						line = line.replace(key, staticVars.get(key));
 					}
 				}
-				//System.err.println("-->>testDefaultPrinter:"+line);
+				
 				psTestPrint.print(line+"\r");
 			}
 			br.close();
 			psTestPrint.close();
 			fos.close();
 			
-			SendFileToSystemPrinter.printFile(fileNameTest);
+			sendToPrinter(fileNameTest);
 			
         } catch (IOException ex) {
             //ex.printStackTrace(System.err);
@@ -365,7 +368,18 @@ public class TicketSystemPrinter implements TicketPrinteService {
 
 	@Override
 	public void sendToPrinter(Object ticketFileName) throws IOException {
-		SendFileToSystemPrinter.printFile((String)ticketFileName);
+		logger.info("sendToPrinter:ticketFileName:"+ticketFileName);
+		
+		logger.info("sendToPrinter:OSValidator.isUnix()?:"+OSValidator.isUnix());
+		logger.info("sendToPrinter:OSValidator.isMac():"+OSValidator.isMac());
+		
+		if(OSValidator.isUnix() || OSValidator.isMac()){
+			logger.info("sendToPrinter: calling UnixSendToLP.printFile");
+			UnixSendToLP.printFile((String)ticketFileName);
+		}else{
+			logger.info("sendToPrinter: calling SendFileToSystemPrinter.printFile");
+			SendFileToSystemPrinter.printFile((String)ticketFileName);
+		}
 	}
 	
 	/**

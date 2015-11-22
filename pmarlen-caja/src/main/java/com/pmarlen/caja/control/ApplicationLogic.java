@@ -284,7 +284,7 @@ public class ApplicationLogic {
 			URL  url = new URL(MemoryDAO.getServerContext()+URI_APP_PACKAGE);
 			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 			int length = conn.getContentLength();
-			if(length > 1024*1024){
+			if(length > 1024){
 				return true;
 			} else{
 				return false;

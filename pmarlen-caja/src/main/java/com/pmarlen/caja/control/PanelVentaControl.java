@@ -15,6 +15,7 @@ import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.ProductoCellRender;
 import com.pmarlen.caja.view.TerminarVentaDlg;
 import com.pmarlen.model.Constants;
+import com.pmarlen.model.OSValidator;
 import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
@@ -23,6 +24,7 @@ import com.pmarlen.ticket.TicketPrinteService;
 import com.pmarlen.ticket.bluetooth.TicketBlueToothPrinter;
 import com.pmarlen.ticket.systemprinter.SendFileToSystemPrinter;
 import com.pmarlen.ticket.systemprinter.TicketSystemPrinter;
+import com.pmarlen.ticket.systemprinter.UnixSendToLP;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -433,7 +435,19 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			
 			logger.debug("->ticketPrinteService:fileTicket="+fileTicket);
 			
-			SendFileToSystemPrinter.printFile(fileTicket);
+			//SendFileToSystemPrinter.printFile(fileTicket);
+			logger.info("imprimirTicket:ticketFileName:"+fileTicket);
+		
+			logger.info("imprimirTicket:OSValidator.isUnix()?:"+OSValidator.isUnix());
+			logger.info("imprimirTicket:OSValidator.isMac():"+OSValidator.isMac());
+
+			if(OSValidator.isUnix() || OSValidator.isMac()){
+				logger.info("imprimirTicket: calling UnixSendToLP.printFile");
+				UnixSendToLP.printFile((String)fileTicket);
+			}else{
+				logger.info("imprimirTicket: calling SendFileToSystemPrinter.printFile");
+				SendFileToSystemPrinter.printFile((String)fileTicket);
+			}
 			
 			printed = true;
 		} catch (Exception ioe) {
