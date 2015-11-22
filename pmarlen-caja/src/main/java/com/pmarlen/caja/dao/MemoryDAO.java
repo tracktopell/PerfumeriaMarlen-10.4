@@ -627,9 +627,9 @@ public class MemoryDAO {
 	
 	public static String getCajaGlobalInfo() {
 		if(sucursal!=null){
-			return sucursal.getClave()+"C"+properties.getProperty("caja").toUpperCase();
+			return sucursal.getNombre()+" C#"+properties.getProperty("caja").toUpperCase();
 		} else {
-			return "["+getSucursalId()+"]C"+properties.getProperty("caja").toUpperCase();
+			return "["+getSucursalId()+"] C#"+properties.getProperty("caja").toUpperCase();
 		}
 	}
 

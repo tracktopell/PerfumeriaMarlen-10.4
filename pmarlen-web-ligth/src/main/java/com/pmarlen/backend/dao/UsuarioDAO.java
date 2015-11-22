@@ -265,18 +265,20 @@ public class UsuarioDAO {
 			conn = getConnectionCommiteable();
 			ps = conn.prepareStatement("INSERT INTO USUARIO(EMAIL,ABILITADO,NOMBRE_COMPLETO,PASSWORD) "+
 					" VALUES(?,?,?,?)");			
-			psUP = conn.prepareStatement("INSERT INTO USUARIO_PERFIL(EMAIL,PERFIL) VALUES(?,?)");			
 			
-			r = ps.executeUpdate();					
-
 			int ci=1;
-			
+
 			ps.setObject(ci++,x.getEmail());
 			ps.setObject(ci++,x.getAbilitado());
 			ps.setObject(ci++,x.getNombreCompleto());
 			ps.setObject(ci++,x.getPassword());
-
+			
 			r = ps.executeUpdate();
+			ps.close();
+			
+			psUP = conn.prepareStatement("INSERT INTO USUARIO_PERFIL(EMAIL,PERFIL) VALUES(?,?)");						
+
+			ci = 0;
 			
 			List<String> roleList = x.getRoleList();
 			for(String rol: roleList){
