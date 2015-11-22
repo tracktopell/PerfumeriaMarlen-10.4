@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
  *
  * @author alfredo
  */
+@Deprecated
 public class TicketSystemPrinter implements TicketPrinteService {
     private static final String SPACES = "                                ";
     public  static final String DEFAULT_BT_PRINTER = "00037A66B839";

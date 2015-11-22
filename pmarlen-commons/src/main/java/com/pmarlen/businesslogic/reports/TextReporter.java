@@ -422,6 +422,21 @@ public class TextReporter {
 		TextReporter.columns = columns;
 	}
 	
+	public static String generateTicket(String nticket,HashMap<String, String> parameters,List<HashMap<String, String>> records){
+		String fileName = null;
+		DEBUG=false;
+		Date today = new Date();
+		fileName = "TICKET_"+nticket+"_"+Constants.sdfLogFile.format(today)+".txt";
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(fileName);
+			processReport(TextReporter.class.getResourceAsStream("/textreports/test1report.txt"), fos , parameters, records, columns);	
+		}catch(IOException ioe) {
+		
+		}		
+		return fileName;
+	}
+	
 	public static String generateTicket(EntradaSalida pv,ArrayList<EntradaSalidaDetalle> pvdList,HashMap<String,String> extraInformation){
 		HashMap<String, String> parameters = new HashMap<String, String> (); 
 		List<HashMap<String, String>> records=new ArrayList<HashMap<String, String>>();
@@ -430,10 +445,11 @@ public class TextReporter {
 		parameters.put("subTitulo","|S.A. DE C.V.|");
 		
 		parameters.put("fechaL","FECHA");
-		parameters.put("fecha" ,"9999/99/99");
+		parameters.put("fechaL","FECHA");
+		parameters.put("fecha" ,Constants.sdfThinDate.format(pv.getFechaCreo()));
 		
 		parameters.put("clienteL","CLIENTE");
-		parameters.put("cliente" ,"????????????????????????");
+		
 		Random rand= new Random();
 		DecimalFormat df= new DecimalFormat("###,##0.00");
 		double st=0.0;
@@ -442,12 +458,13 @@ public class TextReporter {
 		for(EntradaSalidaDetalle pvd: pvdList){		
 			HashMap<String, String> r=new HashMap<String, String>();
 			int n=pvd.getCantidad();
-			String c=String.valueOf(rand.nextInt(1000000))+String.valueOf(rand.nextInt(1000000));
+			String c=pvd.getProductoCodigoBarras();
 			String d=pvd.getProductoCodigoBarras();
 			double pp=pvd.getPrecioVenta();
 			double imp =n*pp;
 			st  += imp/1.16;
 			iva += imp*0.16;
+			tt  += imp;
 			String p=df.format(pp);
 			
 			r.put("n", String.valueOf(n));
@@ -461,7 +478,7 @@ public class TextReporter {
 		parameters.put("st",df.format(st));
 		parameters.put("des",df.format(0.0));
 		parameters.put("iva",df.format(iva));
-		parameters.put("tot",df.format(st));
+		parameters.put("tot",df.format(tt));
 		DEBUG=false;
 		Date today = new Date();
 		String fileName = "TICKET_"+pv.getNumeroTicket()+"_"+Constants.sdfLogFile.format(today)+".txt";
