@@ -139,6 +139,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         panelVentas = new PanelVentas();
         statusPanel = new javax.swing.JPanel();
         statusWest = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
         statusCenter = new javax.swing.JTextField();
         statusConeccion = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -217,19 +218,24 @@ public class FramePrincipal extends javax.swing.JFrame {
         getContentPane().add(panels, java.awt.BorderLayout.CENTER);
 
         statusPanel.setPreferredSize(new java.awt.Dimension(42, 35));
-        statusPanel.setLayout(new java.awt.GridLayout(1, 3));
+        statusPanel.setLayout(new java.awt.BorderLayout());
 
         statusWest.setEditable(false);
         statusWest.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        statusPanel.add(statusWest);
+        statusPanel.add(statusWest, java.awt.BorderLayout.CENTER);
+
+        jPanel3.setPreferredSize(new java.awt.Dimension(500, 30));
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
 
         statusCenter.setEditable(false);
         statusCenter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        statusPanel.add(statusCenter);
+        jPanel3.add(statusCenter);
 
         statusConeccion.setEditable(false);
         statusConeccion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        statusPanel.add(statusConeccion);
+        jPanel3.add(statusConeccion);
+
+        statusPanel.add(jPanel3, java.awt.BorderLayout.EAST);
 
         getContentPane().add(statusPanel, java.awt.BorderLayout.SOUTH);
 
@@ -357,6 +363,7 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
