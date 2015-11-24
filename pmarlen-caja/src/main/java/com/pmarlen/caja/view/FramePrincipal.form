@@ -43,7 +43,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="ventaActualMenu">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F1"/>
+                  <KeyStroke key="F2"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Actual"/>
               </Properties>
@@ -51,7 +51,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="ventaTerminarMenu">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F2"/>
+                  <KeyStroke key="F1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Terminar"/>
               </Properties>
@@ -273,7 +273,7 @@
               </Constraints>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                <Property name="horizontalGap" type="int" value="150"/>
+                <Property name="horizontalGap" type="int" value="0"/>
                 <Property name="verticalGap" type="int" value="50"/>
               </Layout>
               <SubComponents>
@@ -285,7 +285,7 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Dialog" size="48" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="ABRIR"/>
+                    <Property name="text" type="java.lang.String" value="ABRIR CAJA"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="cerrarSesion">
@@ -296,7 +296,7 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Dialog" size="48" style="1"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="CERRAR"/>
+                    <Property name="text" type="java.lang.String" value="CERRAR CAJA"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -371,7 +371,7 @@
         <Container class="javax.swing.JPanel" name="jPanel3">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[500, 30]"/>
+              <Dimension value="[380, 30]"/>
             </Property>
           </Properties>
           <Constraints>
@@ -380,7 +380,10 @@
             </Constraint>
           </Constraints>
 
-          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+            <Property name="columns" type="int" value="2"/>
+            <Property name="rows" type="int" value="1"/>
+          </Layout>
           <SubComponents>
             <Component class="javax.swing.JTextField" name="statusCenter">
               <Properties>

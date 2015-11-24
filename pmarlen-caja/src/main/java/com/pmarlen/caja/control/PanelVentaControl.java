@@ -224,7 +224,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		
 	}
 
-	private void terminar_ActionPerformed() {
+	void terminar_ActionPerformed() {
 		logger.info("terminar_ActionPerformed()");
 		if (detalleVentaTableItemList.size() == 0) {
 			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(),
@@ -281,6 +281,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	void checar_ActionPerformed(){
 		estadoChecando = ! estadoChecando;
 		actualizarEstadoChecado();
+		panelVenta.getCodigoBuscar().requestFocus();
 	}
 
 	private void actualizarEstadoChecado() {

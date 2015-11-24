@@ -48,13 +48,13 @@ public class DialogLogin extends javax.swing.JDialog {
         aceptar = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
         labelEmail = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
         email = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         labelContrasena = new javax.swing.JLabel();
-        password = new javax.swing.JPasswordField();
         jPanel7 = new javax.swing.JPanel();
+        password = new javax.swing.JPasswordField();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -71,32 +71,38 @@ public class DialogLogin extends javax.swing.JDialog {
 
         getContentPane().add(jPanel3, java.awt.BorderLayout.SOUTH);
 
-        jPanel5.setLayout(new java.awt.GridLayout(4, 0, 0, 5));
+        jPanel5.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
+
+        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        labelEmail.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        labelEmail.setText("USUARIO( CORREO ELECTRÓNICO ) :");
+        labelEmail.setPreferredSize(new java.awt.Dimension(450, 28));
+        jPanel8.add(labelEmail);
+
         jPanel5.add(jPanel8);
 
-        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        labelEmail.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        labelEmail.setText("CORREO ELECTRÓNICO :");
-        labelEmail.setPreferredSize(new java.awt.Dimension(310, 30));
-        jPanel4.add(labelEmail);
-
-        email.setColumns(18);
+        email.setColumns(24);
         jPanel4.add(email);
 
         jPanel5.add(jPanel4);
 
-        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        labelContrasena.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelContrasena.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         labelContrasena.setText("CONTRASEÑA :");
-        labelContrasena.setPreferredSize(new java.awt.Dimension(310, 30));
+        labelContrasena.setPreferredSize(new java.awt.Dimension(450, 28));
         jPanel6.add(labelContrasena);
 
-        password.setColumns(10);
-        jPanel6.add(password);
-
         jPanel5.add(jPanel6);
+
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        password.setColumns(10);
+        jPanel7.add(password);
+
         jPanel5.add(jPanel7);
 
         getContentPane().add(jPanel5, java.awt.BorderLayout.CENTER);

@@ -24,6 +24,7 @@ import java.awt.event.ComponentListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
@@ -111,15 +112,17 @@ public class FramePrincipalControl implements ActionListener{
 				CorteCajaDTO lastSavedCC = ApplicationLogic.getInstance().getLastSavedCC();
 				if(lastSavedCC != null && lastSavedCC.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA){
 					abrirSesionNueva();
-					logger.debug("estadoInicial(): APERTUR DE CAJA YA INICIADA");
+					final long dt = System.currentTimeMillis() - lastSavedCC.getFecha();					
+					logger.debug("estadoInicial(): APERTURA DE CAJA YA INICIADA: DIFF lastSavedCC:"+Constants.getDiff(dt)+" ( "+System.currentTimeMillis()+"-"+lastSavedCC.getFecha()+" = "+dt+ ")");
 				} else {
 					((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
 					logger.debug("estadoInicial(): NUEVA SESION");
 				}
 				logger.debug("estadoInicial():setVisible(true) --------------------------------------[    V E N T A N A     V I S I B L E ]-----------------------------------");
-				framePrincipal.setVisible(true);				
+				framePrincipal.setVisible(true);
 				logger.debug("estadoInicial():updateStatusWest()");
 				updateStatusWest();
+				framePrincipal.setExtendedState( framePrincipal.getExtendedState()|JFrame.MAXIMIZED_BOTH );
 				logger.debug("estadoInicial():END");
 			}
 		});
@@ -278,6 +281,7 @@ public class FramePrincipalControl implements ActionListener{
 
 	private void ventaTerminar_actionPerformed() {
 		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelVenta");
+		panelVentaControl.terminar_ActionPerformed();
 	}
 		
 	private void impresoraBTMenu_actionPerformed() {

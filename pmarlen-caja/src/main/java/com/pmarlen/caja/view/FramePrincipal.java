@@ -70,7 +70,6 @@ public class FramePrincipal extends javax.swing.JFrame {
 		this.impresionSistemaMenu.setEnabled(false);
 		this.nuevaDevolMenu.setEnabled(false);
 		this.terminarDevolMenu.setEnabled(false);
-		this.ventaActualMenu.setEnabled(false);
 		this.ventaCancelarMenu.setEnabled(false);
 		this.ventaMenu.setEnabled(false);
 		this.ventaModoMenu.setEnabled(false);
@@ -108,7 +107,6 @@ public class FramePrincipal extends javax.swing.JFrame {
 		this.impresionSistemaMenu.setEnabled(true);
 		this.nuevaDevolMenu.setEnabled(true);
 		this.terminarDevolMenu.setEnabled(true);
-		this.ventaActualMenu.setEnabled(true);
 		this.ventaCancelarMenu.setEnabled(true);
 		this.ventaMenu.setEnabled(true);
 		this.ventaModoMenu.setEnabled(true);
@@ -193,16 +191,16 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         panelSesion.add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 150, 50));
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 50));
 
         abrirSesion.setBackground(java.awt.Color.green);
         abrirSesion.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        abrirSesion.setText("ABRIR");
+        abrirSesion.setText("ABRIR CAJA");
         jPanel2.add(abrirSesion);
 
         cerrarSesion.setBackground(new java.awt.Color(255, 0, 0));
         cerrarSesion.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        cerrarSesion.setText("CERRAR");
+        cerrarSesion.setText("CERRAR CAJA");
         jPanel2.add(cerrarSesion);
 
         panelSesion.add(jPanel2, java.awt.BorderLayout.SOUTH);
@@ -224,8 +222,8 @@ public class FramePrincipal extends javax.swing.JFrame {
         statusWest.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         statusPanel.add(statusWest, java.awt.BorderLayout.CENTER);
 
-        jPanel3.setPreferredSize(new java.awt.Dimension(500, 30));
-        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
+        jPanel3.setPreferredSize(new java.awt.Dimension(380, 30));
+        jPanel3.setLayout(new java.awt.GridLayout(1, 2));
 
         statusCenter.setEditable(false);
         statusCenter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -258,11 +256,11 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         ventaMenu.setText("Venta");
 
-        ventaActualMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        ventaActualMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         ventaActualMenu.setText("Actual");
         ventaMenu.add(ventaActualMenu);
 
-        ventaTerminarMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
+        ventaTerminarMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         ventaTerminarMenu.setText("Terminar");
         ventaMenu.add(ventaTerminarMenu);
 
@@ -444,7 +442,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 	/**
 	 * @return the ventaActualMenu
 	 */
-	public javax.swing.JMenuItem getVentaActualMenu() {
+	public JMenuItem getVentaActualMenu() {
 		return ventaActualMenu;
 	}
 
@@ -513,10 +511,10 @@ public class FramePrincipal extends javax.swing.JFrame {
 			statusConeccion.setText("..PREPARADO");
 		} else if(s == MemoryDAO.SYNC_STATE_BEFORE_CONNECTING) {
 			statusConeccion.setForeground(Color.YELLOW);
-			statusConeccion.setText("..CONECTANDO DATOS");
+			statusConeccion.setText("..CONECTANDO DT");
 		} else if(s == MemoryDAO.SYNC_STATE_BEFORE_CONNECTINGLIVE) {
 			statusConeccion.setForeground(Color.YELLOW);
-			statusConeccion.setText("..CONECTADO LIVE");
+			statusConeccion.setText("..CONECTANDO SL");
 		} else if(s == MemoryDAO.SYNC_STATE_BEFORE_DOWNLOADED ) {
 			statusConeccion.setForeground(Color.DARK_GRAY);
 			statusConeccion.setText("OK DESCARGADO");
@@ -525,7 +523,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 			statusConeccion.setText("DATOS CARGADOS");
 		} else if(s == MemoryDAO.SYNC_STATE_IMLIVE ) {
 			statusConeccion.setForeground(Color.BLUE);
-			statusConeccion.setText("I'M ALIVE");
+			statusConeccion.setText("EN LINEA");
 		} else if(s == MemoryDAO.SYNC_STATE_IO_ERROR ) {
 			statusConeccion.setForeground(Color.CYAN);
 			statusConeccion.setText("ERROR E/S");

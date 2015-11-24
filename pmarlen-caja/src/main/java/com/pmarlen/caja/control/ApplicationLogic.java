@@ -23,6 +23,9 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -45,8 +48,8 @@ public class ApplicationLogic {
 	private static final  long  statTime=System.currentTimeMillis();
 	private static final String URI_VERSION_FILE = "/pmcajaupdate/version.properties";
 	private static final String URI_APP_PACKAGE  = "/pmcajaupdate/update.zip";
-	private static final String FILE_APP_PACKAGE = "./update.zip";
-	
+	private static final String FILE_APP_PACKAGE = "update.zip";
+	private static final String BACKUP_DIR       = "backup";
 	private static String _version = null;
 	private static final boolean printingEnabled = true; 
 		
@@ -182,6 +185,21 @@ public class ApplicationLogic {
 			conn = (HttpURLConnection)url.openConnection();
 			long length = conn.getContentLengthLong();
 			is = conn.getInputStream();
+			File lastUpdate = new File(FILE_APP_PACKAGE);
+			if(lastUpdate.exists() && lastUpdate.isFile() && lastUpdate.canRead() && lastUpdate.length()>1024){
+				logger.debug("downloadApplication: Backup last update File.");
+				
+				File backupDir = new File(BACKUP_DIR);
+				if(!backupDir.exists()) {
+					boolean r = backupDir.mkdirs();
+					logger.debug("downloadApplication: Creating BACKUP DIR:"+backupDir+" ? resutl created:"+r);
+				}
+				File backupFile=new File(BACKUP_DIR+"/update_"+getVersion()+".zip");
+				logger.debug("downloadApplication: Backup last update File to:"+backupFile);				
+				Path copied = Files.copy(lastUpdate.toPath(),backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				logger.debug("downloadApplication: OK copied for backup:"+copied);
+			}
+			
 			FileOutputStream fos = new FileOutputStream(FILE_APP_PACKAGE);
 			byte[] buffer = new byte[1024 * 1024]; // 1MB
 			long r = -1;

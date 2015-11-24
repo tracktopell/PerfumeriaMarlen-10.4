@@ -74,7 +74,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("CLIENTE :");
-        jLabel4.setPreferredSize(new java.awt.Dimension(150, 20));
+        jLabel4.setPreferredSize(new java.awt.Dimension(180, 20));
         jPanel8.add(jLabel4);
         jPanel8.add(cliente);
 
@@ -84,7 +84,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("MÉTODO DE PAGO :");
-        jLabel6.setPreferredSize(new java.awt.Dimension(150, 20));
+        jLabel6.setPreferredSize(new java.awt.Dimension(180, 20));
         jPanel10.add(jLabel6);
         jPanel10.add(metodoDePago);
 
@@ -94,11 +94,12 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("SUBTOTAL :");
-        jLabel1.setPreferredSize(new java.awt.Dimension(150, 20));
+        jLabel1.setPreferredSize(new java.awt.Dimension(180, 20));
         jPanel3.add(jLabel1);
 
         subtotal.setEditable(false);
-        subtotal.setColumns(5);
+        subtotal.setColumns(6);
+        subtotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel3.add(subtotal);
 
         jPanel6.add(jPanel3);
@@ -107,11 +108,12 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("DESCUENTO :");
-        jLabel2.setPreferredSize(new java.awt.Dimension(150, 20));
+        jLabel2.setPreferredSize(new java.awt.Dimension(180, 20));
         jPanel4.add(jLabel2);
 
         descuento.setEditable(false);
-        descuento.setColumns(5);
+        descuento.setColumns(6);
+        descuento.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel4.add(descuento);
 
         jPanel6.add(jPanel4);
@@ -120,11 +122,12 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("TOTAL :");
-        jLabel3.setPreferredSize(new java.awt.Dimension(150, 20));
+        jLabel3.setPreferredSize(new java.awt.Dimension(180, 20));
         jPanel5.add(jLabel3);
 
         total.setEditable(false);
-        total.setColumns(5);
+        total.setColumns(6);
+        total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel5.add(total);
 
         jPanel6.add(jPanel5);
@@ -133,10 +136,11 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel8.setText("RECIBIDO :");
-        jLabel8.setPreferredSize(new java.awt.Dimension(150, 20));
+        jLabel8.setPreferredSize(new java.awt.Dimension(180, 20));
         jPanel14.add(jLabel8);
 
-        recibido.setColumns(5);
+        recibido.setColumns(6);
+        recibido.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel14.add(recibido);
 
         cambioLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -145,7 +149,8 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jPanel14.add(cambioLbl);
 
         cambio.setEditable(false);
-        cambio.setColumns(5);
+        cambio.setColumns(6);
+        cambio.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel14.add(cambio);
 
         jPanel6.add(jPanel14);
@@ -154,10 +159,11 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel7.setText("CARGO A TARJETA :");
-        jLabel7.setPreferredSize(new java.awt.Dimension(150, 20));
+        jLabel7.setPreferredSize(new java.awt.Dimension(180, 20));
         jPanel12.add(jLabel7);
 
-        cargo.setColumns(5);
+        cargo.setColumns(6);
+        cargo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel12.add(cargo);
 
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -165,7 +171,8 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jLabel9.setPreferredSize(new java.awt.Dimension(150, 20));
         jPanel12.add(jLabel9);
 
-        autorizacion.setColumns(8);
+        autorizacion.setColumns(6);
+        autorizacion.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         jPanel12.add(autorizacion);
 
         jPanel6.add(jPanel12);
