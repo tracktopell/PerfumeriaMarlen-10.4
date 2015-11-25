@@ -90,9 +90,18 @@ public class Constants {
 	
 	public static final double IVA     = 0.16;
 	public static final double MAS_IVA = 1.0 + IVA;
+		
+	public static final DecimalFormat dfMonedaLong     = new DecimalFormat("$ ###,###,###,##0.000000");
+	public static final DecimalFormat dfCurrency       = new DecimalFormat("$ ###,###,###,##0.00");
+	public static final DecimalFormat df2Decimal        = new DecimalFormat("###########0.00");
+	public static final DecimalFormat dfLongDecimal    = new DecimalFormat("###########0.000000");
+
+	public static final SimpleDateFormat sdfLogDate    = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	public static final SimpleDateFormat sdfLogTS      = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+	public static final SimpleDateFormat sdfLogFile    = new SimpleDateFormat("yyyyMMdd_HHmmss");
+	public static final SimpleDateFormat sdfThinDate   = new SimpleDateFormat("yyyyMMddHHmmss");
 	
-	public static final DecimalFormat dfMoneda     = new DecimalFormat("$ ###,###,###,##0.00");
-	public static final DecimalFormat dfMonedaLong = new DecimalFormat("$ ###,###,###,##0.000000");
+	
 	private static final String VERSION_FILE_RESOURCE = "/com/tracktopell/util/version/file/Version.properties";
 	
 	private static Logger logger = Logger.getLogger(Constants.class.getSimpleName());
@@ -244,28 +253,20 @@ public class Constants {
 		tipoAlmacen.put(ALMACEN_REGALIAS   ,  "REGALIAS");
 	}
 	
-	public static final DecimalFormat dfCurrency       = new DecimalFormat("$ ###,###,###,##0.00");
-	public static final DecimalFormat dfDecimal        = new DecimalFormat("###########0.00");
-	public static final DecimalFormat dfLongDecimal    = new DecimalFormat("###########0.000000");
-	public static final SimpleDateFormat sdfLogDate    = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-	public static final SimpleDateFormat sdfLogTS      = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-	public static final SimpleDateFormat sdfLogFile    = new SimpleDateFormat("yyyyMMdd_HHmmss");
-	public static final SimpleDateFormat sdfThinDate   = new SimpleDateFormat("yyyyMMddHHmmss");
-	
 	public static String getImporteDesglosado(double f){
 		StringBuffer s = new StringBuffer();
 				
 		double importe = f / MAS_IVA;
 		double iva     = f - importe;
 		
-		s.append(dfMoneda.format(importe)).append(" + ").append(dfMoneda.format(iva));
+		s.append(dfCurrency.format(importe)).append(" + ").append(dfCurrency.format(iva));
 		
 		return s.toString();
 	
 	}
 
 	public static String getImporteMoneda(double f) {
-		return dfMoneda.format(f);
+		return dfCurrency.format(f);
 	}
 	
 	public static String extractXMLValue(String label, String xml) {

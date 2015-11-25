@@ -5,12 +5,14 @@ import com.pmarlen.caja.view.CierreCajaJFrame;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.GeneradorDeToken;
 import com.pmarlen.rest.dto.U;
+import java.awt.Color;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
@@ -31,6 +33,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	private double saldoInicial;
 	private double saldoFinal;
 	private double saldoEstimado;
+	private double saldoNeto;
 	private double diferencia;
 	private String usuarioAutorizo;
 	private String observaciones;
@@ -59,10 +62,13 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		//saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getSaldoFinalEstimado();
 		saldoEstimado = saldoInicial;
 		buscarSaldoFinalEstimado();
+		saldoNeto     = saldoEstimado - saldoInicial;
+		logger.debug("estadoInicial:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
 		observaciones = null;
 		cierreCorrecto = false;
-		cierreCajaDialog.getSaldoInicial().setText(Constants.dfMoneda.format(saldoInicial));
-		cierreCajaDialog.getEstimado().setText(Constants.dfMoneda.format(saldoEstimado));
+		cierreCajaDialog.getSaldoInicial().setText(Constants.df2Decimal.format(saldoInicial));
+		cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
+		cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));
 		cierreCajaDialog.getAceptar().setEnabled(false);
 		
 		cierreCajaDialog.getCierreAnormalPanel().setEnabled(false);
@@ -75,7 +81,10 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 			public void run(){
 				try {
 					saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getSaldoFinalEstimado();
-					cierreCajaDialog.getEstimado().setText(Constants.dfMoneda.format(saldoEstimado));
+					cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
+					saldoNeto     = saldoEstimado - saldoInicial;
+					cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));		
+					logger.debug("buscarSaldoFinalEstimado:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
 				}catch(IOException ioe){
 					JOptionPane.showMessageDialog(cierreCajaDialog, "NO SE PUEDE OBTENER EL SALDO FINAL ESTIMADO", "CIERRE CAJA", JOptionPane.ERROR_MESSAGE);
 				}
@@ -182,7 +191,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		String saldoFinalValue = cierreCajaDialog.getSaldoFinal().getText().replace("$", "").replace(",", "").trim();
 		
 		try {
-			saldoFinal = Double.parseDouble(saldoFinalValue);			
+			saldoFinal = Double.parseDouble(saldoFinalValue);		
 		} catch(NumberFormatException nfe){
 			throw new ValidacionCamposException("EL SALDO DEBE SER UN IMPORTE DE MONEDA", cierreCajaDialog.getSaldoInicial());
 		}
@@ -190,19 +199,31 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		if(saldoFinal< 0 || saldoFinal > 100000 ) {
 			throw new ValidacionCamposException("EL SALDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.00 A $99,999.99", cierreCajaDialog.getSaldoInicial());
 		}
+		double saldoEstimadoRedondeado = saldoEstimado;
+		try {
+			saldoEstimadoRedondeado = Constants.df2Decimal.parse(cierreCajaDialog.getEstimado().getText()).doubleValue();
+		}catch(ParseException pe){
+		}
+		double difReal     = saldoFinal - saldoEstimadoRedondeado;
+		double factorPerdida = 0.0;
 		
-		
-		double difReal     = saldoFinal    - saldoInicial;
-		double difEstimada = saldoEstimado - saldoInicial;		
-		double difRelativa = difReal - difEstimada;
-		// 10 = 12 - 2
-		// 11 = 13 - 2
-		// -1 = 10 - 11
-		
-		if(difRelativa < 0 ) {
+		cierreCajaDialog.getDiferencia().setText(Constants.df2Decimal.format(difReal));
+		boolean grave=false;
+		if(difReal < 0 ) {
+			factorPerdida = (difReal*-1)/saldoNeto;
+			logger.info("validate:factorPerdida="+factorPerdida);
+			
+			if(saldoFinal < saldoInicial || factorPerdida<=0.1 || (difReal*-1) > 100.0){
+				cierreCajaDialog.getDiferencia().setBackground(Color.RED);
+				grave =true;
+			} else {
+				cierreCajaDialog.getDiferencia().setBackground(cierreCajaDialog.getSaldoInicial().getBackground());
+				grave =false;
+			}
+			
 			if( !cierreCajaDialog.getCierreAnormalPanel().isEnabled()) {
 				cierreCajaDialog.getCierreAnormalPanel().setEnabled(true);
-				throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getCierreAnormalPanel());
+				throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getObservaciones());
 			} else {
 				observaciones = cierreCajaDialog.getObservaciones().getText().trim();
 				
@@ -217,26 +238,28 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 				}
 			}
 			
-			if(cierreCajaDialog.getUsuarioAutorizo().getSelectedIndex()==0){
-				throw new ValidacionCamposException("DEBE ELEGIR QUIÉN AUTORIZARÁ", cierreCajaDialog.getUsuarioAutorizo());	
-			}
-			String fraseGenerada = cierreCajaDialog.getFrase().getText().trim();
-			
-			if(fraseGenerada.length() == 0){
-				throw new ValidacionCamposException("DEBE OBTENER FRASE CON EL BOTÓN", cierreCajaDialog.getGeneraFrase());	
-			}
-			
-			String tokenEscrito = cierreCajaDialog.getToken().getText().trim();			
-			if(cierreCajaDialog.getToken().getText().trim().length() == 0 ) {
-				throw new ValidacionCamposException("LLAME A SU ADMINISTRADOR QUE ELIGIO PARA OBTENER EL TOKEN SEGUN LA FRASE", cierreCajaDialog.getToken());	
-			} else if(! tokenEscrito.matches("[0-9]{6}")){
-				throw new ValidacionCamposException("EL TOKEN DEBE SER 6 DIGITOS", cierreCajaDialog.getToken());	
-			} else {
-				GeneradorDeToken gt=new GeneradorDeToken();
-				String tokenObtenido = gt.getToken(fraseGenerada);
-				if(!gt.isValid(fraseGenerada, tokenEscrito)) {
-					logger.debug("validate:tokenObtenido="+tokenObtenido+", tokenEscrito="+tokenEscrito);
-					throw new ValidacionCamposException("EL TOKEN ES INVALIDO", cierreCajaDialog.getToken());	
+			if(grave){
+				if(cierreCajaDialog.getUsuarioAutorizo().getSelectedIndex()==0){
+					throw new ValidacionCamposException("DEBE ELEGIR QUIÉN AUTORIZARÁ", cierreCajaDialog.getUsuarioAutorizo());	
+				}
+				String fraseGenerada = cierreCajaDialog.getFrase().getText().trim();
+
+				if(fraseGenerada.length() == 0){
+					throw new ValidacionCamposException("DEBE OBTENER FRASE CON EL BOTÓN", cierreCajaDialog.getGeneraFrase());	
+				}
+
+				String tokenEscrito = cierreCajaDialog.getToken().getText().trim();			
+				if(cierreCajaDialog.getToken().getText().trim().length() == 0 ) {
+					throw new ValidacionCamposException("LLAME A SU ADMINISTRADOR QUE ELIGIO PARA OBTENER EL TOKEN SEGUN LA FRASE", cierreCajaDialog.getToken());	
+				} else if(! tokenEscrito.matches("[0-9]{6}")){
+					throw new ValidacionCamposException("EL TOKEN DEBE SER 6 DIGITOS", cierreCajaDialog.getToken());	
+				} else {
+					GeneradorDeToken gt=new GeneradorDeToken();
+					String tokenObtenido = gt.getToken(fraseGenerada);
+					if(!gt.isValid(fraseGenerada, tokenEscrito)) {
+						logger.debug("validate:tokenObtenido="+tokenObtenido+", tokenEscrito="+tokenEscrito);
+						throw new ValidacionCamposException("EL TOKEN ES INVALIDO", cierreCajaDialog.getToken());	
+					}
 				}
 			}
 		}
@@ -256,19 +279,21 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	}
 
 	private ComboBoxModel getAdministradores() {
-		List<U> usuarioList = MemoryDAO.getPaqueteSinc().getUsuarioList();		
+		List<U> usuarioList = MemoryDAO.getPaqueteSinc().getUsuarioList();	
+		logger.debug("getAdministradores:"+usuarioList);
 		Vector<U> v= new Vector<U>();
 		U seleccioneUsuario = new U();
 		seleccioneUsuario.setE(null);
 		seleccioneUsuario.setN("-- SELECCIONE --");
 		v.add(seleccioneUsuario);
 		for(U u:usuarioList){
+			logger.debug("getAdministradores:\t->U:"+u+", ADMIN?"+u.getPlaysAsAdmin()+", Perfiles:"+u.getPerfiles());
 			if(u.getPlaysAsAdmin()) {
 				v.add(u);
 			}
 		}
 		
-		ComboBoxModel m =  new DefaultComboBoxModel();
+		ComboBoxModel m =  new DefaultComboBoxModel(v);
 		
 		return m;
 	}

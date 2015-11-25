@@ -197,24 +197,24 @@ public class MemoryDAO {
 		logger.debug("getPaqueteSyncPoll:----------------->>BEFORE while ");
 		syncPollState = SYNC_STATE_BEFORE_RUNNING;
 		while(runnigPool){
-			logger.debug("getPaqueteSyncPoll:\t----------------->> while running, download");
+			logger.trace("getPaqueteSyncPoll:\t----------------->> while running, download");
 			if(xt % DOWNLOADPERIOD_SECS == 0){
 				try {
 					syncPollState = SYNC_STATE_BEFORE_CONNECTING;
-					logger.debug("getPaqueteSyncPoll: -->  [  DOWNLOAD  ] syncPollState="+syncPollState);
+					logger.trace("getPaqueteSyncPoll: -->  [  DOWNLOAD  ] syncPollState="+syncPollState);
 					download();
 					syncPollState = SYNC_STATE_BEFORE_DOWNLOADED;
-					logger.debug("getPaqueteSyncPoll:\t----------------->> OK, downloded, read locally, syncPollState="+syncPollState);
+					logger.trace("getPaqueteSyncPoll:\t----------------->> OK, downloded, read locally, syncPollState="+syncPollState);
 					readLocally();
 					syncPollState = SYNC_STATE_READ;
 				}catch(ConnectException ce){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:",ce);
+					logger.debug("getPaqueteSyncPoll: after call iamalive:"+ce);
 					syncPollState = SYNC_STATE_CONNECTION;					
 				}catch(FileNotFoundException fnfe){
-					logger.debug("getPaqueteSyncPoll: after call downoload, readLocally:",fnfe);
+					logger.debug("getPaqueteSyncPoll: after call downoload, readLocally:"+fnfe);
 					syncPollState = SYNC_STATE_SERVER_4XX;					
 				}catch(IOException e){
-					logger.debug("getPaqueteSyncPoll: after call downoload, readLocally:",e);
+					logger.debug("getPaqueteSyncPoll: after call downoload, readLocally:"+e);
 					syncPollState = SYNC_STATE_IO_ERROR;					
 				}catch(Exception e){
 					logger.error("getPaqueteSyncPoll: after call downoload, readLocally:",e);
@@ -224,18 +224,18 @@ public class MemoryDAO {
 			} else if(xt % IMALIVEPERIOD_SECS == 0){
 				try {					
 					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
-					logger.debug("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
+					logger.trace("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
 					iamalive();
-					logger.debug("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
+					logger.trace("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
 					syncPollState = SYNC_STATE_IMLIVE;
 				}catch(ConnectException ce){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:",ce);
+					logger.debug("getPaqueteSyncPoll: after call iamalive:"+ce);
 					syncPollState = SYNC_STATE_CONNECTION;					
 				}catch(FileNotFoundException fnfe){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:",fnfe);
+					logger.debug("getPaqueteSyncPoll: after call iamalive:"+fnfe);
 					syncPollState = SYNC_STATE_SERVER_4XX;					
 				}catch(IOException e){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:",e);
+					logger.debug("getPaqueteSyncPoll: after call iamalive:"+e);
 					syncPollState = SYNC_STATE_IO_ERROR;					
 				}catch(Exception e){
 					logger.error("getPaqueteSyncPoll: after call iamalive:",e);
@@ -245,10 +245,10 @@ public class MemoryDAO {
 			}
 			
 			try {
-				logger.debug("getPaqueteSyncPoll:\t----------------->> while running, sleep for "+TIMESLEEP_MS+" ms .., syncPollState="+syncPollState);
+				logger.trace("getPaqueteSyncPoll:\t----------------->> while running, sleep for "+TIMESLEEP_MS+" ms .., syncPollState="+syncPollState);
 				Thread.sleep(TIMESLEEP_MS);
 			}catch(Exception e){
-				logger.debug("getPaqueteSyncPoll:->sleep ? ",e);
+				logger.error("getPaqueteSyncPoll:->sleep ? ",e);
 			}
 			
 			xt++;

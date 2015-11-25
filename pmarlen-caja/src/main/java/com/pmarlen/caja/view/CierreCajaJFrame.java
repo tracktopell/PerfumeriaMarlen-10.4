@@ -7,6 +7,7 @@ package com.pmarlen.caja.view;
 
 import java.awt.Frame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
@@ -37,6 +38,8 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         estimado = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        neto = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         saldoFinal = new javax.swing.JTextField();
@@ -84,7 +87,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText("IMPORTE ESTIMADO BRUTO :");
+        jLabel4.setText("IMPORTE ESTIMADO: BRUTO :");
         jLabel4.setPreferredSize(new java.awt.Dimension(300, 25));
         jPanel4.add(jLabel4);
 
@@ -92,6 +95,14 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         estimado.setColumns(6);
         estimado.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel4.add(estimado);
+
+        jLabel1.setText("NETO:");
+        jPanel4.add(jLabel1);
+
+        neto.setEditable(false);
+        neto.setColumns(6);
+        neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel4.add(neto);
 
         jPanel12.add(jPanel4);
 
@@ -208,6 +219,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
     private javax.swing.JTextField estimado;
     private javax.swing.JTextField frase;
     private javax.swing.JButton generaFrase;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -226,6 +238,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JTextField neto;
     private javax.swing.JTextField observaciones;
     private javax.swing.JLabel resultadoToken;
     private javax.swing.JTextField saldoFinal;
@@ -320,6 +333,9 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 	public JPanel getCierreAnormalPanel() {
 		return cierreAnormalPanel;
 	}
-	
+
+	public JTextField getNeto() {
+		return neto;
+	}
 	
 }
