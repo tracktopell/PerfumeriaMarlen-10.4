@@ -212,4 +212,11 @@ public class UsuarioQuickView extends Usuario{
 		
 		return rolesList;
 	}
+
+	@Override
+	public String toString() {		
+		return this.getEmail()+"|"+this.getNombreCompleto()+"|"+this.getRoleList();
+	}
+	
+	
 }

@@ -207,7 +207,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 
         getContentPane().add(jPanel9, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(770, 363));
+        setSize(new java.awt.Dimension(878, 406));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

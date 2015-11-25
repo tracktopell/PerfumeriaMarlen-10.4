@@ -126,19 +126,19 @@ public class U {
 	
 	
 	public boolean getPlaysAsAdmin(){
-		return inRoleRoot || inRoleAdmin && getA()==1;
+		return (inRoleRoot || inRoleAdmin) && getA()==1;
 	}	
 	public boolean getPlaysAsFinances(){
-		return inRoleRoot || inRoleFinances && getA()==1;
+		return (inRoleRoot || inRoleFinances) && getA()==1;
 	}
 	public boolean getPlaysAsPMarlenUser(){
-		return inRoleRoot || inRolePMarlenUser && getA()==1;
+		return (inRoleRoot || inRolePMarlenUser) && getA()==1;
 	}
 	public boolean getPlaysAsSales(){
-		return inRoleRoot || inRoleSales && getA()==1;
+		return (inRoleRoot || inRoleSales) && getA()==1;
 	}
 	public boolean getPlaysAsStock(){
-		return inRoleRoot || inRoleStock && getA()==1;
+		return (inRoleRoot || inRoleStock) && getA()==1;
 	}
 	public boolean getPlaysAsRoot(){
 		return inRoleRoot;
@@ -146,7 +146,7 @@ public class U {
 
 	@Override
 	public String toString() {
-		return n;
+		return (a==1?"[ ]":"[X]")+n.toUpperCase() + "<"+e+">";
 	}
 	
 }

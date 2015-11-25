@@ -42,14 +42,14 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	
 	public CierreCajaControl(CierreCajaJFrame dialogLogin) {
 		this.cierreCajaDialog = dialogLogin;
-		this.cierreCajaDialog.getSaldoFinal().addFocusListener(this);
+		//this.cierreCajaDialog.getSaldoFinal().addFocusListener(this);
 		this.cierreCajaDialog.getSaldoFinal().addActionListener(this);
 		this.cierreCajaDialog.getAceptar() .addActionListener(this);
 		this.cierreCajaDialog.getCancelar().addActionListener(this);
-		this.cierreCajaDialog.getObservaciones().addFocusListener(this);
+		//this.cierreCajaDialog.getObservaciones().addFocusListener(this);
 		this.cierreCajaDialog.getObservaciones().addActionListener(this);
 		this.cierreCajaDialog.getGeneraFrase().addActionListener(this);
-		this.cierreCajaDialog.getToken().addFocusListener(this);
+		//this.cierreCajaDialog.getToken().addFocusListener(this);
 		this.cierreCajaDialog.getToken().addActionListener(this);
 	}
 
@@ -71,9 +71,19 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));
 		cierreCajaDialog.getAceptar().setEnabled(false);
 		
-		cierreCajaDialog.getCierreAnormalPanel().setEnabled(false);
+		setEnableAnormalControls(false);
+		
 		cierreCajaDialog.getUsuarioAutorizo().setModel(getAdministradores());
 		cierreCajaDialog.setVisible(true);
+	}
+
+	private void setEnableAnormalControls(boolean d) {
+		cierreCajaDialog.getDiferencia().setEnabled(d);
+		cierreCajaDialog.getObservaciones().setEnabled(d);
+		cierreCajaDialog.getUsuarioAutorizo().setEnabled(d);
+		cierreCajaDialog.getGeneraFrase().setEnabled(d);
+		cierreCajaDialog.getFrase().setEnabled(d);
+		cierreCajaDialog.getToken().setEnabled(d);
 	}
 	
 	private void buscarSaldoFinalEstimado(){
@@ -86,6 +96,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 					cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));		
 					logger.debug("buscarSaldoFinalEstimado:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
 				}catch(IOException ioe){
+					logger.error("buscarSaldoFinalEstimado: error al consultar el saldo.", ioe);
 					JOptionPane.showMessageDialog(cierreCajaDialog, "NO SE PUEDE OBTENER EL SALDO FINAL ESTIMADO", "CIERRE CAJA", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -97,7 +108,11 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == cierreCajaDialog.getSaldoFinal()) {
 			saldoFinal_focusLost();
-		} if (e.getSource() == cierreCajaDialog.getAceptar()) {
+		} else if (e.getSource() == cierreCajaDialog.getAceptar()) {
+			aceptar_ActionPerformed();
+		} else if (e.getSource() == cierreCajaDialog.getToken()) {
+			aceptar_ActionPerformed();
+		} else if (e.getSource() == cierreCajaDialog.getObservaciones()) {
 			aceptar_ActionPerformed();
 		} else if (e.getSource() == cierreCajaDialog.getCancelar()) {
 			cancelar_ActionPerformed();
@@ -221,10 +236,11 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 				grave =false;
 			}
 			
-			if( !cierreCajaDialog.getCierreAnormalPanel().isEnabled()) {
-				cierreCajaDialog.getCierreAnormalPanel().setEnabled(true);
-				throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getObservaciones());
-			} else {
+			setEnableAnormalControls(true);
+			
+			if( cierreCajaDialog.getObservaciones().getText().trim().length() < 10) {
+				throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN COHERENTE DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getObservaciones());
+			} else {				
 				observaciones = cierreCajaDialog.getObservaciones().getText().trim();
 				
 				if(observaciones.length() > 0 ){
@@ -262,6 +278,8 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 					}
 				}
 			}
+		} else {
+			setEnableAnormalControls(false);
 		}
 	}
 
@@ -290,6 +308,15 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 			logger.debug("getAdministradores:\t->U:"+u+", ADMIN?"+u.getPlaysAsAdmin()+", Perfiles:"+u.getPerfiles());
 			if(u.getPlaysAsAdmin()) {
 				v.add(u);
+			} else {
+				logger.debug("getAdministradores:\t-> FUCKING FIX ?");
+				final List<String> perfiles = u.getPerfiles();
+				for(String p: perfiles){
+					if(u.getA()!=0  &&  (p.equalsIgnoreCase(Constants.PERFIL_ADMIN)||p.equalsIgnoreCase(Constants.PERFIL_ROOT)) ){
+						logger.debug("getAdministradores:\t\t-> FUCKING FIX : OK ADD:"+u);
+						v.add(u);
+					}
+				}
 			}
 		}
 		

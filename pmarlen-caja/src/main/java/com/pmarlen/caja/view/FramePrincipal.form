@@ -59,7 +59,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="ventaModoMenu">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F3"/>
+                  <KeyStroke key="F9"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Agregar/Checar"/>
               </Properties>

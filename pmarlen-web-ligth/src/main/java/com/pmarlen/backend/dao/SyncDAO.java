@@ -12,6 +12,7 @@ import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.quickviews.ClienteQuickView;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
+import com.pmarlen.backend.model.quickviews.UsuarioQuickView;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.I;
@@ -118,7 +119,12 @@ public class SyncDAO {
 			inventarioSucursalList.add(new I(bigI));
 		}
 		s.setInventarioSucursalList(inventarioSucursalList);
-		s.setUsuarioQVList(UsuarioDAO.getInstance().findAll());
+		final ArrayList<UsuarioQuickView> usuariosList = UsuarioDAO.getInstance().findAll();
+		logger.debug("syncTransaction: usuariosList=");		
+		for(UsuarioQuickView u: usuariosList){
+			logger.debug("\tsyncTransaction: USUARIO="+u);
+		}
+		s.setUsuarioQVList(usuariosList);
 		ArrayList<ClienteQuickView> clientesQVList = ClienteDAO.getInstance().findAll();
 		ArrayList<Cliente> clientesList = new ArrayList<Cliente>();
 		clientesList.addAll(clientesQVList);

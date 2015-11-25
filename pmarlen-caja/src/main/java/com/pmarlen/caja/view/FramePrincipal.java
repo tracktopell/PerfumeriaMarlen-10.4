@@ -265,7 +265,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         ventaTerminarMenu.setText("Terminar");
         ventaMenu.add(ventaTerminarMenu);
 
-        ventaModoMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
+        ventaModoMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
         ventaModoMenu.setText("Agregar/Checar");
         ventaMenu.add(ventaModoMenu);
 

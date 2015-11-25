@@ -605,6 +605,10 @@ public class MemoryDAO {
 				logger.debug("readLocally: --------------- LOADING All Objects in Memory ------------");
 				almacenList = paqueteSinc.getAlmacenList();
 				usuarioList = paqueteSinc.getUsuarioList();
+				logger.debug("readLocally: usuarioList:");
+				for(U u:usuarioList){
+					logger.debug("\treadLocally: usuarioList: U:"+u.getE()+", perfiles:"+u.getPerfiles()+" a:"+u.getA());
+				}
 				clienteList = paqueteSinc.getClienteList();
 				metodoDePagoList = paqueteSinc.getMetodoDePagoList();
 				formaDePagoList = paqueteSinc.getFormaDePagoList();

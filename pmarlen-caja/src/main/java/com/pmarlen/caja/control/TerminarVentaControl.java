@@ -22,6 +22,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -46,6 +47,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	private double subTotal;
 	private double descuento;
 	private double total;
+	private double totalRedondeado;
 	private double recibido;
 	private double cargo;
 	private String autorizacion;
@@ -83,6 +85,11 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		this.terminarVentaDlg.getSubtotal().setText(Constants.dfCurrency.format(subTotal));
 		this.terminarVentaDlg.getDescuento().setText(Constants.dfCurrency.format(descuento));
 		this.terminarVentaDlg.getTotal().setText(Constants.dfCurrency.format(total));
+		try{
+			totalRedondeado = Constants.dfCurrency.parse(Constants.dfCurrency.format(total)).doubleValue();
+		}catch(ParseException pe){
+			totalRedondeado = total;
+		}
 		this.terminarVentaDlg.getSubtotal().setText(Constants.dfCurrency.format(subTotal));
 
 		this.terminarVentaDlg.getCliente().setSelectedIndex(0);
@@ -240,18 +247,19 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 			this.terminarVentaDlg.getCambio().setText(Constants.dfCurrency.format(difReal));
 
 		} else if (mdpSelected.getId() == Constants.ID_MDP_TARJETA) {
+			/*
 			try {
 				cargo = Double.parseDouble(cargoText);
 			} catch (NumberFormatException nfe) {
 				this.terminarVentaDlg.getCargo().setText("");
 				throw new ValidacionCamposException("EL IMORTE DEL CARGO DEBE SER UN IMPORTE DE MONEDA", terminarVentaDlg.getCargo());
 			}
-
-			if (cargo != total) {
+			
+			if (cargo != totalRedondeado) {
 				this.terminarVentaDlg.getCargo().setText("");
 				throw new ValidacionCamposException("EL IMORTE DEL CARGO DEBE SER = AL TOTAL", terminarVentaDlg.getCargo());
 			}
-
+			*/
 			if (autorizacion.length() < 4) {
 				this.terminarVentaDlg.getAutorizacion().setText("");
 				throw new ValidacionCamposException("EL NO. DE AUTORIZACION DEBEN SER >= 4 DIGITOS", terminarVentaDlg.getAutorizacion());
@@ -278,7 +286,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				throw new ValidacionCamposException("EL IMORTE DEL CARGO DEBE SER UN IMPORTE DE MONEDA", terminarVentaDlg.getCargo());
 			}
 
-			double difReal = (recibido + cargo) - total;
+			double difReal = (recibido + cargo) - totalRedondeado;
 
 			if (difReal < 0) {
 				this.terminarVentaDlg.getCargo().setText("");
@@ -436,9 +444,13 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				this.terminarVentaDlg.getCargo().setEnabled(false);
 				this.terminarVentaDlg.getAutorizacion().setEnabled(true);
 			} else if (((MetodoDePago) e.getItem()).getId() == Constants.ID_MDP_TARJETA) {
+				
 				this.terminarVentaDlg.getRecibido().setEnabled(false);
 				this.terminarVentaDlg.getCambio().setEnabled(false);
-				this.terminarVentaDlg.getCargo().setEnabled(true);
+				
+				this.terminarVentaDlg.getCargo().setEnabled(false);
+				this.terminarVentaDlg.getCargo().setText(Constants.dfCurrency.format(total));
+				
 				this.terminarVentaDlg.getAutorizacion().setEnabled(true);
 			} else if (((MetodoDePago) e.getItem()).getId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA) {
 				this.terminarVentaDlg.getRecibido().setEnabled(true);
