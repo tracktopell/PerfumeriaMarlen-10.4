@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -112,6 +113,9 @@ public class ApplicationLogic {
 			URLConnection conn = url.openConnection();
 			conn.setConnectTimeout(5000);
 			is = conn.getInputStream();
+		} catch(FileNotFoundException fnfe){
+			logger.error("SERVER EXIST, BUT Not response from URL:", fnfe);
+			return false;
 		}catch(IOException ioe){
 			logger.error("Can'nt connect:", ioe);
 			return false;

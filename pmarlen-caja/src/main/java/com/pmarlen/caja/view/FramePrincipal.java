@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
  */
 public class FramePrincipal extends javax.swing.JFrame {
 	private static Logger logger = Logger.getLogger(FramePrincipal.class.getName());
+	private static int prevStatus = -1;
 	/**
 	 * Creates new form FramePrincipal
 	 */
@@ -506,40 +507,67 @@ public class FramePrincipal extends javax.swing.JFrame {
 	
 	public void updateStatus(){
 		int s= MemoryDAO.getSyncPollState();
+		
+		if(prevStatus == -1){
+			prevStatus = s;
+		}
+		
 		if(s == MemoryDAO.SYNC_STATE_BEFORE_RUNNING) {
-			statusConeccion.setForeground(Color.GRAY);
+			if(prevStatus >= MemoryDAO.SYNC_STATE_IO_ERROR){
+				statusConeccion.setBackground(Color.RED);
+			} else {
+				statusConeccion.setBackground(Color.YELLOW);
+			}
+			statusConeccion.setBackground(Color.YELLOW);
 			statusConeccion.setText("..PREPARADO");
 		} else if(s == MemoryDAO.SYNC_STATE_BEFORE_CONNECTING) {
-			statusConeccion.setForeground(Color.YELLOW);
+			if(prevStatus >= MemoryDAO.SYNC_STATE_IO_ERROR){
+				statusConeccion.setBackground(Color.RED);
+			} else {
+				statusConeccion.setBackground(Color.YELLOW);
+			}
 			statusConeccion.setText("..CONECTANDO DT");
 		} else if(s == MemoryDAO.SYNC_STATE_BEFORE_CONNECTINGLIVE) {
-			statusConeccion.setForeground(Color.YELLOW);
+			if(prevStatus >= MemoryDAO.SYNC_STATE_IO_ERROR){
+				statusConeccion.setBackground(Color.RED);
+			} else {
+				statusConeccion.setBackground(Color.YELLOW);
+			}
 			statusConeccion.setText("..CONECTANDO SL");
 		} else if(s == MemoryDAO.SYNC_STATE_BEFORE_DOWNLOADED ) {
-			statusConeccion.setForeground(Color.DARK_GRAY);
-			statusConeccion.setText("OK DESCARGADO");
+			statusConeccion.setBackground(Color.GREEN);
+			statusConeccion.setText("DATOS DESCARGADOS");
 		} else if(s == MemoryDAO.SYNC_STATE_READ ) {
-			statusConeccion.setForeground(Color.GREEN);
-			statusConeccion.setText("DATOS CARGADOS");
+			statusConeccion.setBackground(Color.GREEN);
+			statusConeccion.setText("EN LINEA / DATOS");
 		} else if(s == MemoryDAO.SYNC_STATE_IMLIVE ) {
-			statusConeccion.setForeground(Color.BLUE);
-			statusConeccion.setText("EN LINEA");
+			statusConeccion.setBackground(Color.GREEN);
+			statusConeccion.setText("EN LINEA / REGISTRO");
+		} else if(s == MemoryDAO.SYNC_STATE_SERVER_4XX ) {
+			statusConeccion.setBackground(Color.RED);
+			statusConeccion.setText("ERROR SERV 4XX");
+		} else if(s == MemoryDAO.SYNC_STATE_SERVER_5XX ) {
+			statusConeccion.setBackground(Color.RED);
+			statusConeccion.setText("ERROR SERV 5XX");
+		} else if(s == MemoryDAO.SYNC_STATE_CONNECTION ) {
+			statusConeccion.setBackground(Color.RED);
+			statusConeccion.setText("NO RED/SERVIDOR");
 		} else if(s == MemoryDAO.SYNC_STATE_IO_ERROR ) {
-			statusConeccion.setForeground(Color.CYAN);
+			statusConeccion.setBackground(Color.RED);
 			statusConeccion.setText("ERROR E/S");
 		} else if(s == MemoryDAO.SYNC_STATE_ERROR) {
-			statusConeccion.setForeground(Color.RED);
-			statusConeccion.setText("ERROR DE DATOS");
+			statusConeccion.setBackground(Color.RED);
+			statusConeccion.setText("ERROR GRAVE");
 		} else {
-			statusConeccion.setForeground(Color.DARK_GRAY);
-			statusConeccion.setText("???");
+			statusConeccion.setBackground(Color.GRAY);
+			statusConeccion.setText("ERROR ???");
 		}
 		
 		statusConeccion.setToolTipText("STATUS:"+s);				
 	}
 	
 	public void updateStatusWest(String info){
-		statusConeccion.setForeground(Color.DARK_GRAY);
+		//statusConeccion.set_Foreground(Color.DARK_GRAY);
 		statusWest.setText(info);		
 	}
 	

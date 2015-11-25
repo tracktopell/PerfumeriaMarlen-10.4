@@ -62,7 +62,10 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 			
 			return;
 		}
-		
+		if(MemoryDAO.getPaqueteSinc()==null){
+			JOptionPane.showMessageDialog(dialogLogin, "NO SE HA PODIDO CONECTAR LA 1RA VEZ PARA DESCARGAR DATOS\nVERIFIQUE LA CONECCIÓN A INTERNET Y AL SERVIDOR", "ENTRAR", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		if(!autheticate()){
 			dialogLogin.getPassword().setText("");
 			javax.swing.UIManager.put("OptionPane.font", new FontUIResource(new java.awt.Font("Tahoma", 0, 24))); 			
@@ -76,8 +79,6 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 			}
 		} else {
 			leggedIn = true;
-			
-			//JOptionPane.showMessageDialog(dialogLogin, "¡ BIENVENIDO "+logged.getN().toUpperCase()+" !", "ENTRAR", JOptionPane.INFORMATION_MESSAGE);
 			
 			ApplicationLogic.getInstance().setLogged(logged);
 			dialogLogin.dispose();

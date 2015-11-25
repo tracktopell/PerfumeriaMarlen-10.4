@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -138,13 +139,17 @@ public class MemoryDAO {
 	public static SyncDTOPackage getPaqueteSinc() {
 		logger.debug("getPaqueteSinc:paqueteSinc="+paqueteSinc);
 		if(paqueteSinc == null ){
-			try {
-				if(!exsistPackage()){
-					download();
-				}
+//			try {
+//				if(!exsistPackage()){
+//					download();
+//				}
+//				readLocally();
+//			}catch(IOException ioe){
+//				logger.error("getPaqueteSinc: getting paqueteSinc:",ioe);
+//			}
+			
+			if(exsistPackage()){
 				readLocally();
-			}catch(IOException ioe){
-				logger.error("getPaqueteSinc: getting paqueteSinc:",ioe);
 			}
 		}
 		return paqueteSinc;
@@ -175,12 +180,17 @@ public class MemoryDAO {
 	public final static int SYNC_STATE_READ                  = 3;
 	public final static int SYNC_STATE_BEFORE_CONNECTINGLIVE = 4;
 	public final static int SYNC_STATE_IMLIVE                = 5;
-	public final static int SYNC_STATE_IO_ERROR              = 6;
-	public final static int SYNC_STATE_ERROR                 = 10;
+	public final static int SYNC_STATE_IO_ERROR              = 20;	
+	public final static int SYNC_STATE_SERVER_4XX            = 21;
+	public final static int SYNC_STATE_SERVER_5XX            = 22;
+	public final static int SYNC_STATE_CONNECTION            = 23;
+	public final static int SYNC_STATE_ERROR                 = 99;
 	
-	private static long timeSleep = 15000L;
+	private final static long TIMESLEEP_MS        = 1000L;
+	private final static int  DOWNLOADPERIOD_SECS = 30;
+	private final static int  IMALIVEPERIOD_SECS  = 10;
 	
-	public static void getPaqueteSyncPoll(){
+	public static void getPaqueteSyncPoll() {
 		
 		logger.debug("getPaqueteSyncPoll:");
 		ESFileSystemJsonDAO.laod();
@@ -188,43 +198,55 @@ public class MemoryDAO {
 		syncPollState = SYNC_STATE_BEFORE_RUNNING;
 		while(runnigPool){
 			logger.debug("getPaqueteSyncPoll:\t----------------->> while running, download");
-			if(xt%6==0){
+			if(xt % DOWNLOADPERIOD_SECS == 0){
 				try {
 					syncPollState = SYNC_STATE_BEFORE_CONNECTING;
-					logger.debug("getPaqueteSyncPoll: --> download ? syncPollState="+syncPollState);
+					logger.debug("getPaqueteSyncPoll: -->  [  DOWNLOAD  ] syncPollState="+syncPollState);
 					download();
 					syncPollState = SYNC_STATE_BEFORE_DOWNLOADED;
 					logger.debug("getPaqueteSyncPoll:\t----------------->> OK, downloded, read locally, syncPollState="+syncPollState);
 					readLocally();
 					syncPollState = SYNC_STATE_READ;
+				}catch(ConnectException ce){
+					logger.debug("getPaqueteSyncPoll: after call iamalive:",ce);
+					syncPollState = SYNC_STATE_CONNECTION;					
+				}catch(FileNotFoundException fnfe){
+					logger.debug("getPaqueteSyncPoll: after call downoload, readLocally:",fnfe);
+					syncPollState = SYNC_STATE_SERVER_4XX;					
 				}catch(IOException e){
-					logger.debug("getPaqueteSyncPoll:IOException:-> downoload",e);
+					logger.debug("getPaqueteSyncPoll: after call downoload, readLocally:",e);
 					syncPollState = SYNC_STATE_IO_ERROR;					
 				}catch(Exception e){
-					logger.error("getPaqueteSyncPoll:Exception: ->downoload",e);
+					logger.error("getPaqueteSyncPoll: after call downoload, readLocally:",e);
 					syncPollState = SYNC_STATE_ERROR;
 				}
 
-			} else {
+			} else if(xt % IMALIVEPERIOD_SECS == 0){
 				try {					
 					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
-					logger.debug("getPaqueteSyncPoll: --> iamalive ?syncPollState="+syncPollState);
+					logger.debug("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
 					iamalive();
 					logger.debug("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
 					syncPollState = SYNC_STATE_IMLIVE;
+				}catch(ConnectException ce){
+					logger.debug("getPaqueteSyncPoll: after call iamalive:",ce);
+					syncPollState = SYNC_STATE_CONNECTION;					
+				}catch(FileNotFoundException fnfe){
+					logger.debug("getPaqueteSyncPoll: after call iamalive:",fnfe);
+					syncPollState = SYNC_STATE_SERVER_4XX;					
 				}catch(IOException e){
-					logger.debug("getPaqueteSyncPoll:IOException:-> imlive:",e);
-					syncPollState = SYNC_STATE_IO_ERROR;
+					logger.debug("getPaqueteSyncPoll: after call iamalive:",e);
+					syncPollState = SYNC_STATE_IO_ERROR;					
 				}catch(Exception e){
-					logger.error("getPaqueteSyncPoll:Exception: -> imlive:",e);
+					logger.error("getPaqueteSyncPoll: after call iamalive:",e);
 					syncPollState = SYNC_STATE_ERROR;
 				}
 
 			}
 			
 			try {
-				logger.debug("getPaqueteSyncPoll:\t----------------->> while running, sleep for "+timeSleep+" ms .., syncPollState="+syncPollState);
-				Thread.sleep(timeSleep);
+				logger.debug("getPaqueteSyncPoll:\t----------------->> while running, sleep for "+TIMESLEEP_MS+" ms .., syncPollState="+syncPollState);
+				Thread.sleep(TIMESLEEP_MS);
 			}catch(Exception e){
 				logger.debug("getPaqueteSyncPoll:->sleep ? ",e);
 			}
@@ -332,16 +354,13 @@ public class MemoryDAO {
 			logger.trace("download:+T3 = "+(t3-t2));					
 			logger.trace("download:+T4 = "+(t4-t3));			
 		} catch (ClientHandlerException e) {
-			logger.debug("download:ClientHandlerException Cause:="+e.getCause().getClass(),e);
+			logger.debug("download:ClientHandlerException Cause:="+e.getCause().getClass());
 			if(e.getCause() instanceof ConnectException){
-				throw new IOException("AQUI ESTAS PERRA 2 :->ConnectException",e.getCause());
+				throw (ConnectException)e.getCause();
 			} else {
 				throw new IOException("No se puede leer el RestService:"+e.getMessage());
 			}
-		} catch (Exception e) {
-			logger.error("download: Exception: e.class="+e.getClass(),e);
-			throw new IOException("Error en RestService:"+e.getMessage());
-		} 
+		}
 	}
 
 	private static IAmAliveDTORequest buildIAmALivePackageDTO() {
@@ -486,15 +505,12 @@ public class MemoryDAO {
 				logger.trace("iamalive:+T4 = "+(t4-t3));
 			}
 		} catch (ClientHandlerException e) {
-			logger.debug("iamalive:ClientHandlerException Cause:="+e.getCause().getClass(),e);
+			//logger.debug("iamalive:ClientHandlerException Cause:="+e.getCause().getClass());
 			if(e.getCause() instanceof ConnectException){
-				throw new IOException("AQUI ESTAS PERRA:->ConnectException",e.getCause());
+				throw (ConnectException)e.getCause();
 			} else {
 				throw new IOException("No se puede leer el RestService:"+e.getMessage());
 			}
-		} catch (Exception e) {
-			logger.error("iamalive: Exception: e.class="+e.getClass(),e);
-			throw new IOException("Error en RestService:"+e.getMessage());
 		}
 	}
 
