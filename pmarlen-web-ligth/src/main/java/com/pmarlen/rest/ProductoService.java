@@ -25,7 +25,7 @@ public class ProductoService {
 	private final static Logger logger = Logger.getLogger(ProductoService.class.getName());
 	
 	@GET
-	@Path("/info/{frase:[0-9]+}")
+	@Path("/info/{codigoBarras:[0-9]+}")
 	@Produces(MediaType.TEXT_PLAIN + ";charset=" + encodingUTF8)
 	public String info(@PathParam("codigoBarras") String codigoBarras) throws WebApplicationException {
 		EntradaSalidaDetalleQuickView p = null;
@@ -35,7 +35,7 @@ public class ProductoService {
 			if(p == null){
 				throw new DAOException("NOT FOUND:"+codigoBarras);
 			}
-			info = p.getProductoNombre()+"|"+p.getProductoPresentacion()+"|"+Constants.dfCurrency.format(p.getApPrecio());
+			info = "NOMBRE:"+p.getProductoNombre()+"\nPRESENTACIÓN:"+p.getProductoPresentacion()+"\nPRECIO:"+Constants.dfCurrency.format(p.getApPrecio());
 		} catch(DAOException de){		
 			logger.error ("info", de);
 			throw new WebApplicationException(de, Response.Status.NOT_FOUND);

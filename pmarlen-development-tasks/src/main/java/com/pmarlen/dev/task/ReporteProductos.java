@@ -75,7 +75,7 @@ public class ReporteProductos {
 		for(Object[] arr: productos){
 			String cb=arr[0].toString();
 			String cb_ean13=null;
-			File imgFile=new File("/Users/alfredo/Dropbox/multimedia/imgs_productos/min/jpg/MIN_"+cb+"_01.jpg");
+			File imgFile=new File("/usr/local/pmarlen_multimedio/imgs_productos/min_jpg/"+cb+"_01.jpg");
 			
 			if(r.nextInt(100)%5==0 && imgFile.exists()){
 				
