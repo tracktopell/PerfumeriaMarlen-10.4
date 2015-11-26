@@ -59,7 +59,7 @@ public class ApplicationLogic {
 	private String versionRead;
 	private static ApplicationLogic instance;
 	private U logged;
-	private Almacen almacen;
+	private Almacen almacen;	
 	private HashMap<Integer,Almacen> tipoAlmacen;
 	private CorteCajaDTO corteCajaDTO;
 
@@ -114,12 +114,16 @@ public class ApplicationLogic {
 			conn.setConnectTimeout(5000);
 			is = conn.getInputStream();
 		} catch(FileNotFoundException fnfe){
-			logger.error("SERVER EXIST, BUT Not response from URL:", fnfe);
+			logger.error("needsUpdateApplciation: 404:" + fnfe);
 			return false;
-		}catch(IOException ioe){
-			logger.error("Can'nt connect:", ioe);
+		} catch(IOException ioe){
+			logger.error("needsUpdateApplciation: No se puede coenctar:"+ ioe);
+			return false;
+		} catch(Exception e){
+			logger.error("needsUpdateApplciation: Error grave:", e);
 			return false;
 		}
+		
 		br = new BufferedReader(new InputStreamReader(is));
 		String lineRead = null;
 		try{
@@ -144,6 +148,7 @@ public class ApplicationLogic {
 				}
 			}			
 		} catch(IOException ioe){
+			logger.error("needsUpdateApplciation: ERROR EN LA LECTURA:",ioe);
 			return false;
 		}
 		
@@ -364,8 +369,8 @@ public class ApplicationLogic {
 	boolean isPrintingEnabled() {
 		return printingEnabled;
 	}
-
-	public void setTipoAlmacen(List<Almacen> almacenList) {
+	
+	public void setAlmacen(List<Almacen> almacenList) {
 		if(this.tipoAlmacen == null) {			
 			this.tipoAlmacen = new HashMap<>();
 		}
@@ -376,15 +381,12 @@ public class ApplicationLogic {
 			}
 		}
 	}
+	
 
 	public HashMap<Integer, Almacen> getTipoAlmacen() {
 		return tipoAlmacen;
 	}
-
-	public void setAlmacen(int ta) {
-		this.almacen = this.tipoAlmacen.get(ta);
-	}
-
+	
 	public Almacen getAlmacen() {
 		return almacen;
 	}

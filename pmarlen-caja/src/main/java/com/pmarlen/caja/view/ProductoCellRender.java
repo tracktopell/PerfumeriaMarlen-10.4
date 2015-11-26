@@ -1,6 +1,8 @@
 package com.pmarlen.caja.view;
 
 import com.pmarlen.backend.model.Producto;
+import com.pmarlen.caja.model.PedidoVentaDetalleTableItem;
+import com.pmarlen.model.Constants;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.DecimalFormat;
@@ -78,20 +80,36 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		ProductoCellRender pcr= new ProductoCellRender();
 		
-		Producto p=(Producto)value;
+		PedidoVentaDetalleTableItem dvti = (PedidoVentaDetalleTableItem)value;
+		Producto p=dvti.getProducto();
 		
 		pcr.codigoBarrasLabel.setText(p.getCodigoBarras().toUpperCase());
+		Color almacenColor = fgc;
+		if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+			pcr.codigoBarrasLabel.setText("["+p.getCodigoBarras().toUpperCase()+"]");
+			almacenColor = fgc;
+		} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
+			pcr.codigoBarrasLabel.setText("("+p.getCodigoBarras().toUpperCase()+")");
+			almacenColor = Color.RED;
+		} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
+			pcr.codigoBarrasLabel.setText("{"+p.getCodigoBarras().toUpperCase()+"}");
+			almacenColor = Color.GRAY;
+		}
+		
 		pcr.nombreLabel.setText(p.getNombre().toUpperCase());		
 		pcr.descripcionLabel.setText(p.getPresentacion().toUpperCase());
 		pcr.precioLabel.setText(p.getContenido()+p.getUnidadMedida());
 		
-		if(isSelected){			
+		if(isSelected){
 			pcr.setBackground(sbgc!=null?sbgc:Color.MAGENTA);
-			pcr.setForeground(sfgc!=null?sbgc:Color.BLACK);			
+			//pcr.setForeground(sfgc!=null?sbgc:Color.BLACK);			
 		} else {
 			pcr.setBackground(bgc!=null?bgc:Color.WHITE);
-			pcr.setForeground(fgc!=null?bgc:Color.BLACK);
+			//pcr.setForeground(fgc!=null?bgc:Color.BLACK);
 		}
+		
+		pcr.setForeground(almacenColor);			
+		
 		if(hasFocus){			
 			pcr.setBorder(new LineBorder(sbgc!=null?sbgc:Color.MAGENTA, 1, false));
 		}

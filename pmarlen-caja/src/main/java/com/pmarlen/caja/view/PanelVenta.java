@@ -16,10 +16,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import org.apache.log4j.Logger;
@@ -49,24 +51,35 @@ public class PanelVenta extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tipoAlmacen = new javax.swing.ButtonGroup();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         codigoBuscar = new javax.swing.JTextField();
+        desdeLinea = new javax.swing.JRadioButton();
+        desdeOportunidad = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel12 = new javax.swing.JPanel();
-        labelTotal1 = new javax.swing.JLabel();
-        numArt = new javax.swing.JTextField();
-        jPanel6 = new javax.swing.JPanel();
-        labelTotal = new javax.swing.JLabel();
-        total = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         terminar = new javax.swing.JButton();
         chechar = new javax.swing.JButton();
         cancelar = new javax.swing.JButton();
         splitPanel = new javax.swing.JSplitPane();
+        jPanel13 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         detalleVentaJTable = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel14 = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
+        labelTotal1 = new javax.swing.JLabel();
+        numArt = new javax.swing.JTextField();
+        jPanel6 = new javax.swing.JPanel();
+        labelTotal = new javax.swing.JLabel();
+        subtotal = new javax.swing.JTextField();
+        jPanel15 = new javax.swing.JPanel();
+        labelDescuento = new javax.swing.JLabel();
+        descuento = new javax.swing.JTextField();
+        jPanel16 = new javax.swing.JPanel();
+        labelTotal3 = new javax.swing.JLabel();
+        total = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         imgProducto = new javax.swing.JLabel();
         infoColsPanel = new javax.swing.JPanel();
@@ -92,37 +105,20 @@ public class PanelVenta extends javax.swing.JPanel {
         codigoBuscar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jPanel2.add(codigoBuscar);
 
+        tipoAlmacen.add(desdeLinea);
+        desdeLinea.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        desdeLinea.setSelected(true);
+        desdeLinea.setText(" DE LINEA [ F5 ]");
+        jPanel2.add(desdeLinea);
+
+        tipoAlmacen.add(desdeOportunidad);
+        desdeOportunidad.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        desdeOportunidad.setText("OPORTUNIDAD [ F6 ]");
+        jPanel2.add(desdeOportunidad);
+
         add(jPanel2, java.awt.BorderLayout.NORTH);
 
-        jPanel3.setLayout(new java.awt.GridLayout(2, 1));
-
-        jPanel1.setLayout(new java.awt.GridLayout(1, 2));
-
-        labelTotal1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        labelTotal1.setText("# ART. :");
-        jPanel12.add(labelTotal1);
-
-        numArt.setEditable(false);
-        numArt.setColumns(4);
-        numArt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        numArt.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel12.add(numArt);
-
-        jPanel1.add(jPanel12);
-
-        labelTotal.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        labelTotal.setText("Total :");
-        jPanel6.add(labelTotal);
-
-        total.setEditable(false);
-        total.setColumns(8);
-        total.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel6.add(total);
-
-        jPanel1.add(jPanel6);
-
-        jPanel3.add(jPanel1);
+        jPanel3.setLayout(new java.awt.GridLayout(1, 1));
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 5));
 
@@ -144,8 +140,10 @@ public class PanelVenta extends javax.swing.JPanel {
 
         add(jPanel3, java.awt.BorderLayout.SOUTH);
 
-        splitPanel.setDividerLocation(500);
+        splitPanel.setDividerLocation(700);
         splitPanel.setOneTouchExpandable(true);
+
+        jPanel13.setLayout(new java.awt.BorderLayout());
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(500, 200));
 
@@ -154,7 +152,73 @@ public class PanelVenta extends javax.swing.JPanel {
         detalleVentaJTable.setRowHeight(28);
         jScrollPane1.setViewportView(detalleVentaJTable);
 
-        splitPanel.setLeftComponent(jScrollPane1);
+        jPanel13.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jPanel1.setLayout(new java.awt.GridLayout(3, 1));
+
+        jPanel14.setLayout(new javax.swing.BoxLayout(jPanel14, javax.swing.BoxLayout.LINE_AXIS));
+
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        labelTotal1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal1.setText("# ART. :");
+        jPanel12.add(labelTotal1);
+
+        numArt.setEditable(false);
+        numArt.setColumns(4);
+        numArt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        numArt.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel12.add(numArt);
+
+        jPanel14.add(jPanel12);
+
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 0));
+
+        labelTotal.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal.setText("Subtotal :");
+        jPanel6.add(labelTotal);
+
+        subtotal.setEditable(false);
+        subtotal.setColumns(10);
+        subtotal.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        subtotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel6.add(subtotal);
+
+        jPanel14.add(jPanel6);
+
+        jPanel1.add(jPanel14);
+
+        jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 0));
+
+        labelDescuento.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelDescuento.setText("-Descuento :");
+        jPanel15.add(labelDescuento);
+
+        descuento.setEditable(false);
+        descuento.setColumns(10);
+        descuento.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        descuento.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel15.add(descuento);
+
+        jPanel1.add(jPanel15);
+
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 0));
+
+        labelTotal3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal3.setText("Total :");
+        jPanel16.add(labelTotal3);
+
+        total.setEditable(false);
+        total.setColumns(10);
+        total.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel16.add(total);
+
+        jPanel1.add(jPanel16);
+
+        jPanel13.add(jPanel1, java.awt.BorderLayout.SOUTH);
+
+        splitPanel.setLeftComponent(jPanel13);
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setPreferredSize(new java.awt.Dimension(180, 10));
@@ -226,6 +290,9 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JButton cancelar;
     private javax.swing.JButton chechar;
     private javax.swing.JTextField codigoBuscar;
+    private javax.swing.JTextField descuento;
+    private javax.swing.JRadioButton desdeLinea;
+    private javax.swing.JRadioButton desdeOportunidad;
     private javax.swing.JTable detalleVentaJTable;
     private javax.swing.JLabel imgProducto;
     private javax.swing.JPanel infoColsPanel;
@@ -234,6 +301,10 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -245,14 +316,18 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelCodigoBarras;
     private javax.swing.JLabel labelContenido;
+    private javax.swing.JLabel labelDescuento;
     private javax.swing.JLabel labelNombre;
     private javax.swing.JLabel labelPrecio;
     private javax.swing.JLabel labelPresentacion;
     private javax.swing.JLabel labelTotal;
     private javax.swing.JLabel labelTotal1;
+    private javax.swing.JLabel labelTotal3;
     private javax.swing.JTextField numArt;
     private javax.swing.JSplitPane splitPanel;
+    private javax.swing.JTextField subtotal;
     private javax.swing.JButton terminar;
+    private javax.swing.ButtonGroup tipoAlmacen;
     private javax.swing.JTextField total;
     // End of variables declaration//GEN-END:variables
 
@@ -298,6 +373,30 @@ public class PanelVenta extends javax.swing.JPanel {
 		return total;
 	}
 
+	public JTextField getSubtotal() {
+		return subtotal;
+	}
+
+	public JTextField getDescuento() {
+		return descuento;
+	}
+
+	public JLabel getLabelDescuento() {
+		return labelDescuento;
+	}
+
+	public JRadioButton getDesdeLinea() {
+		return desdeLinea;
+	}
+
+	public JRadioButton getDesdeOportunidad() {
+		return desdeOportunidad;
+	}
+
+	public ButtonGroup getTipoAlmacen() {
+		return tipoAlmacen;
+	}
+	
 	public JTextField getNumArt() {
 		return numArt;
 	}

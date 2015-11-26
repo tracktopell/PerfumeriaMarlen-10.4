@@ -35,8 +35,10 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -113,6 +115,19 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		if (detalleVentaTableItemList.size() > 0) {
 			detalleVentaTableItemList.clear();
 		}
+		
+		panelVenta.getTipoAlmacen().clearSelection();
+		
+		panelVenta.getDesdeLinea().setSelected(true);
+		panelVenta.getDesdeOportunidad().setSelected(false);
+		
+		final Enumeration<AbstractButton> eta = panelVenta.getTipoAlmacen().getElements();
+		logger.debug("estadoInicial:panelVenta.getTipoAlmacen().getElements():");
+		while(eta.hasMoreElements()){
+			final AbstractButton bm = eta.nextElement();
+			logger.debug("\testadoInicial:bm:"+bm);
+		}
+		
 		panelVenta.getDetalleVentaJTable().updateUI();
 		panelVenta.resetInfoForProducto(null,0);
 		estadoChecando = false;		
@@ -144,6 +159,15 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		List<I> encontrados=new ArrayList<I>();
 		StringBuilder sbNoEncontrados=new StringBuilder();
 		I productoEncontrado = null;
+		I productoEncontradoSinExistencia = null;
+		
+		logger.debug("\tcodigoBuscar_ActionPerformed: panelVenta.getTipoAlmacen="+panelVenta.getTipoAlmacen());
+		
+		int tipoAlmacenSeleccionado =	panelVenta.getDesdeLinea().isSelected()			?	Constants.ALMACEN_PRINCIPAL:
+										panelVenta.getDesdeOportunidad().isSelected()	?	Constants.ALMACEN_OPORTUNIDAD:
+																							Constants.ALMACEN_PRINCIPAL;
+		logger.debug("\tcodigoBuscar_ActionPerformed: tipoAlmacenSeleccionado="+tipoAlmacenSeleccionado);
+		
 		for(String lineCB: linesCBArr){
 			logger.debug("\tcodigoBuscar_ActionPerformed:line->"+lineCB+"<-");
 			String[] codesCB = lineCB.split("\\s");
@@ -162,38 +186,46 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		
 		if(encontrados.size() > 0) {
 			productoEncontrado =  null;
+			productoEncontradoSinExistencia = null;
 			for(I i:encontrados){
 				productoEncontrado = i;
 				
 				if(!estadoChecando){
-					int ta=ApplicationLogic.getInstance().getAlmacen().getTipoAlmacen();
+					
 					ESD esd = new ESD();
-
-					esd.setA(ApplicationLogic.getInstance().getAlmacen().getId());
-					esd.setC(ta);				
-					if(ta == Constants.ALMACEN_PRINCIPAL) {
+					esd.setA(tipoAlmacenSeleccionado);
+					esd.setC(1);
+					boolean existencia=false;
+					if(tipoAlmacenSeleccionado == Constants.ALMACEN_PRINCIPAL && productoEncontrado.getA1c() > 0) {
 						esd.setP(productoEncontrado.getA1p());
-					} else if(ta == Constants.ALMACEN_REGALIAS) {
+						existencia = true;
+					} else if(tipoAlmacenSeleccionado == Constants.ALMACEN_REGALIAS && productoEncontrado.getaRc()> 0) {
 						esd.setP(productoEncontrado.getaRp());
-					} else if(ta == Constants.ALMACEN_OPORTUNIDAD) {
+						existencia = true;
+					} else if(tipoAlmacenSeleccionado == Constants.ALMACEN_OPORTUNIDAD && productoEncontrado.getaOc()> 0) {
 						esd.setP(productoEncontrado.getaOp());
+						existencia = true;
 					} else {
-
+						throw new IllegalStateException("NO HAY TIPO ALMACEN SELECCIONADO: ta"+tipoAlmacenSeleccionado);
 					}
-					esd.setCb(productoEncontrado.getCb());
-					PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, ta);
-					int idx = 0;
+					
+					if(existencia) {
+						esd.setCb(productoEncontrado.getCb());
+						PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, tipoAlmacenSeleccionado);
+						int idx = 0;
+						idx = detalleVentaTableItemList.size();
+						detalleVentaTableItemList.add(detalleVentaTableItemNuevo);
 
-					idx = detalleVentaTableItemList.size();
-					detalleVentaTableItemList.add(detalleVentaTableItemNuevo);
-	
-					panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx, idx);
-					panelVenta.getDetalleVentaJTable().updateUI();
-					renderTotal();
+						panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx, idx);
+						panelVenta.getDetalleVentaJTable().updateUI();
+						renderTotal();
+					} else {
+						productoEncontradoSinExistencia = productoEncontrado;
+					}
 				}
 			}
 			panelVenta.getCodigoBuscar().setText("");
-			panelVenta.resetInfoForProducto(productoEncontrado.reverse(),1);
+			panelVenta.resetInfoForProducto(productoEncontrado.reverse(),tipoAlmacenSeleccionado);
 		}
 		
 		final String noEncotrados = sbNoEncontrados.toString().trim();
@@ -222,6 +254,15 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			}.start();
 		}
 		
+		if(!estadoChecando && productoEncontradoSinExistencia!=null) {
+			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(),
+					"ESTE PRODUCTO ["+productoEncontradoSinExistencia.getCb()+"] NO TIENE EXISTENCIA SUFICIENTE", 
+					"AGREGAR PRODUCTO",
+					JOptionPane.WARNING_MESSAGE);
+
+			panelVenta.getCodigoBuscar().requestFocus();
+		}
+		
 	}
 
 	void terminar_ActionPerformed() {
@@ -238,7 +279,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 
 		try {
 			TerminarVentaDlg tvDlg = new TerminarVentaDlg(FramePrincipalControl.getInstance().getFramePrincipal(), true);
-			TerminarVentaControl tvdControl = new TerminarVentaControl(tvDlg, total, 0.0, total,detalleVentaTableItemList);
+			TerminarVentaControl tvdControl = new TerminarVentaControl(tvDlg, totalBruto, 0.0, totalBruto,detalleVentaTableItemList);
 
 			tvdControl.estadoInicial();
 			
@@ -286,10 +327,10 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 
 	private void actualizarEstadoChecado() {
 		if(estadoChecando) {
-			panelVenta.getChechar().setText("AGREGAR [ F3 ]");			
+			panelVenta.getChechar().setText("AGREGAR [ F9 ]");			
 			panelVenta.getCodigoBuscar().setBackground(Color.YELLOW);
 		} else {
-			panelVenta.getChechar().setText("CHECAR [ F3 ]");
+			panelVenta.getChechar().setText("CHECAR [ F9 ]");
 			panelVenta.getCodigoBuscar().setBackground(Color.WHITE);
 		}
 	}
@@ -300,10 +341,13 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		renderTotal();
 	}
 	
+	double totalBruto = 0.0;
 	double total = 0.0;
 	private void renderTotal() {
-		total = 0.0;
+		totalBruto = 0.0;
 		
+		boolean descuentoMayoreoHabilitado = MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=null && MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=0;
+		logger.debug("descuentoMayoreoHabilitado:"+descuentoMayoreoHabilitado);
 		if (detalleVentaTableItemList.size() > 0) {
 			FramePrincipalControl.getInstance().setEnabledVentasMenus(true);
 
@@ -314,13 +358,46 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			this.panelVenta.getTerminar().setEnabled(false);
 			this.panelVenta.getCancelar().setEnabled(false);
 		}
+		
 		int np=0;
+		int npDescontables = 0;
+		int npFijas = 0;
+		boolean descuentoAplicado = false;
+		double descuentoFactor    = 0.0;
+		double descuentoCalculado = 0.0;
+		
+		double totalBrutoDescontable = 0.0;
+		double totalBrutoFijo        = 0.0;
+		
 		for (PedidoVentaDetalleTableItem dvti : detalleVentaTableItemList) {
-			np += dvti.getPvd().getC();
-			total += dvti.getI();
+			if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+				totalBrutoDescontable += dvti.getI();
+				npDescontables += dvti.getPvd().getC();
+			} else {
+				totalBrutoFijo        += dvti.getI();
+				npFijas += dvti.getPvd().getC();
+			}
 		}
-		panelVenta.getNumArt().setText(String.valueOf(np));
-		panelVenta.getTotal().setText(df.format(total));
+		np = npDescontables + npFijas;
+		totalBruto = totalBrutoDescontable + totalBrutoFijo;
+		
+		if(descuentoMayoreoHabilitado){
+			if(totalBrutoDescontable >= 10.00 || npDescontables>= 12){
+				descuentoFactor = 0.1;
+				descuentoAplicado = true;
+			}
+		}
+		descuentoCalculado = totalBrutoDescontable * descuentoFactor;
+		total = totalBrutoDescontable - descuentoCalculado + totalBrutoFijo;
+		
+		panelVenta.getNumArt()    .setText(String.valueOf(np));
+		logger.debug("renderTotal:("+totalBrutoDescontable+"+"+totalBrutoFijo+")="+totalBruto);
+		logger.debug("renderTotal:-"+descuentoCalculado);
+		logger.debug("renderTotal:="+total);
+		panelVenta.getSubtotal()  .setToolTipText(df.format(totalBrutoDescontable) + "+"+df.format(totalBrutoFijo) + " = " +df.format(totalBruto));
+		panelVenta.getSubtotal()  .setText(df.format(totalBruto));
+		panelVenta.getDescuento() .setText(df.format(descuentoCalculado));
+		panelVenta.getTotal()     .setText(df.format(total));
 	}
 
 	@Override
@@ -417,7 +494,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		logger.debug("imprimirTicket: venta.getEs().getIr()="+venta.getEs().getIr());
 		
 		extraInformation.put("recibimos", Constants.dfCurrency.format(venta.getEs().getIr()));
-		extraInformation.put("cambio"   , Constants.dfCurrency.format(total - venta.getEs().getIr()));
+		extraInformation.put("cambio"   , Constants.dfCurrency.format(totalBruto - venta.getEs().getIr()));
 
 		boolean printed = false;
 		try {

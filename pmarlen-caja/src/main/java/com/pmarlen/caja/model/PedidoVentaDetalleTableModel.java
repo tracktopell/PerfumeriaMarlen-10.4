@@ -17,7 +17,7 @@ public class PedidoVentaDetalleTableModel implements TableModel{
 		"#", "Producto", "Precio", "Importe"
 	};
 	private static Class[] columnClasses = new Class [] {
-			Integer.class,Producto.class,String.class,String.class,String.class,Double.class,Double.class
+			Integer.class,PedidoVentaDetalleTableItem.class,String.class,String.class,String.class,Double.class,Double.class
 	};
 	
 	private ArrayList<PedidoVentaDetalleTableItem> detalleVentaTableItemList;
@@ -60,7 +60,7 @@ public class PedidoVentaDetalleTableModel implements TableModel{
 		if(columnIndex == 0)
 			return dvti.getPvd().getC();
 		else if(columnIndex == 1)
-			return dvti.getProducto();
+			return dvti;
 		else if(columnIndex == 2)
 			return dvti.getPrecioVenta();
 		else if(columnIndex == 3)
