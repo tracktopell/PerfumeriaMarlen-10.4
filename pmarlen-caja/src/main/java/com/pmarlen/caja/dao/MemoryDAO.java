@@ -783,5 +783,44 @@ public class MemoryDAO {
 	public static boolean isEnviandoCierreCorrectmente() {
 		return enviandoCierreCorrectmente;
 	}
+
+	public static U getUsuario(String e) {
+		final List<U> ul = getPaqueteSinc().getUsuarioList();
+		for(U u:ul){
+			if(u.getE().equalsIgnoreCase(e)){
+				return u;
+			}
+		}
+		return null;
+	}
 	
+	public static Cliente getCliente(int clienteId) {
+		final List<Cliente> cl = getPaqueteSinc().getClienteList();
+		for(Cliente c:cl){
+			if(c.getId() == clienteId){
+				return c;
+			}
+		}
+		return null;
+	}
+
+	public static FormaDePago getFormaDePago(int formaDePagoId) {
+		final List<FormaDePago> fpL = getPaqueteSinc().getFormaDePagoList();
+		for(FormaDePago fp:fpL){
+			if(fp.getId() == formaDePagoId){
+				return fp;
+			}
+		}
+		return null;
+	}
+	
+	public static MetodoDePago getMetodoDePago(int metodoDePagoId) {
+		final List<MetodoDePago> mpL = getPaqueteSinc().getMetodoDePagoList();
+		for(MetodoDePago mp:mpL){
+			if(mp.getId() == metodoDePagoId){
+				return mp;
+			}
+		}
+		return null;
+	}
 }

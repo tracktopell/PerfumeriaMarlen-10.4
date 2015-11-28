@@ -12,8 +12,7 @@ public class ES_ESD {
 	private List<ESD> esdList;
 
 	public ES_ESD() {
-		this.es = new ES();
-		this.esdList = new ArrayList<ESD>();
+		this.es = new ES();		
 	}
 
 	public ES_ESD(ES es, List<ESD> esd) {

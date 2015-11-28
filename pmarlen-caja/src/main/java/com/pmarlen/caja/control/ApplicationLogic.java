@@ -5,9 +5,8 @@
 package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Almacen;
-import com.pmarlen.backend.model.ConfiguracionSistema;
-import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.caja.dao.MemoryDAO;
+import com.pmarlen.caja.model.VentaSesion;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.U;
@@ -62,6 +61,7 @@ public class ApplicationLogic {
 	private Almacen almacen;	
 	private HashMap<Integer,Almacen> tipoAlmacen;
 	private CorteCajaDTO corteCajaDTO;
+	private	VentaSesion ventaSesion;
 
 	private ApplicationLogic(){
 		corteCajaDTO = new CorteCajaDTO();
@@ -422,4 +422,12 @@ public class ApplicationLogic {
 		
 		return saldoFinalEstimado;
 	}
+
+	public VentaSesion getVentaSesion() {
+		if(ventaSesion == null){
+			ventaSesion = new VentaSesion();
+		}
+		return ventaSesion;
+	}
+	
 }

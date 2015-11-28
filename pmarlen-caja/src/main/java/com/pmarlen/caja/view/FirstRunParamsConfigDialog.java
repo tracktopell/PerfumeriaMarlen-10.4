@@ -26,10 +26,10 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
 		super("PM Caja >> Inicialización");
 		initComponents();
 		Object[] sucs=new Sucursal[]{
-			new Sucursal(2, "SAN MARTÍN"),
-			new Sucursal(3, "TECAMAC"),
-			new Sucursal(4, "OJO DE AGUA"),
-			new Sucursal(5, "LOS REYES")
+			new Sucursal(2, "SUC#1 SAN MARTÍN"),
+			new Sucursal(3, "SUC#2 TECAMAC"),
+			new Sucursal(4, "SUC#3 OJO DE AGUA"),
+			new Sucursal(5, "SUC#4 LOS REYES")
 		};
 		Object[] cajas=new Caja[]{
 			new Caja(1, "CAJA #1"),

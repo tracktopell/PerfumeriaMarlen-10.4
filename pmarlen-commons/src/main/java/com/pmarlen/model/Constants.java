@@ -99,6 +99,9 @@ public class Constants {
 	public static final SimpleDateFormat sdfLogDate    = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	public static final SimpleDateFormat sdfLogTS      = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 	public static final SimpleDateFormat sdfLogFile    = new SimpleDateFormat("yyyyMMdd_HHmmss");
+	public static final SimpleDateFormat sdfShortDateTime  = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+	public static final SimpleDateFormat sdfShortDate  = new SimpleDateFormat("yyyy/MM/dd");
+	public static final SimpleDateFormat sdfShortTime  = new SimpleDateFormat("HH:mm");
 	public static final SimpleDateFormat sdfThinDate   = new SimpleDateFormat("yyyyMMddHHmmss");
 	
 	
@@ -116,6 +119,7 @@ public class Constants {
 	public static final int ID_MDP_TARJETA = 2;
 	public static final int ID_MDP_EFECTIVO_Y_TARJETA = 7;
 	public static final int ID_FDP_1SOLA_E = 1;
+	public static final double FACTOR_DES_MAYSUC = 0.1;
 
 	public static Properties getPro() {
 		if(pro == null){

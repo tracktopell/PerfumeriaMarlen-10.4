@@ -1,42 +1,31 @@
 package com.pmarlen.caja.control;
 
-import com.google.gson.Gson;
-import com.pmarlen.backend.model.EntradaSalidaDetalle;
-import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
-import com.pmarlen.businesslogic.GeneradorNumTicket;
 import com.pmarlen.businesslogic.reports.TextReporter;
-import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
+import com.pmarlen.caja.Main;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.ImporteCellRender;
 import com.pmarlen.caja.model.PedidoVentaDetalleTableItem;
 import com.pmarlen.caja.model.PedidoVentaDetalleTableModel;
+import com.pmarlen.caja.model.VentaSesion;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.ProductoCellRender;
 import com.pmarlen.caja.view.TerminarVentaDlg;
 import com.pmarlen.model.Constants;
+import com.pmarlen.model.JarpeReportsInfoDTO;
 import com.pmarlen.model.OSValidator;
-import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.I;
-import com.pmarlen.ticket.TicketPrinteService;
-import com.pmarlen.ticket.bluetooth.TicketBlueToothPrinter;
 import com.pmarlen.ticket.systemprinter.SendFileToSystemPrinter;
-import com.pmarlen.ticket.systemprinter.TicketSystemPrinter;
 import com.pmarlen.ticket.systemprinter.UnixSendToLP;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
@@ -55,17 +44,17 @@ import org.apache.log4j.Logger;
 public class PanelVentaControl implements ActionListener, TableModelListener, MouseListener {
 	private static Logger logger = Logger.getLogger(PanelVentaControl.class.getName());
 	private PanelVenta panelVenta;
-	private ArrayList<PedidoVentaDetalleTableItem> detalleVentaTableItemList;
-	private DecimalFormat df;
-	private TicketPrinteService ticketPrinteService;
 	private boolean estadoChecando = false;
-	private ES_ESD venta;
+	private PedidoVentaDetalleTableModel pvdTM;
+	private ES_ESD esesdLAstForPrint;
 	
 	public PanelVentaControl(PanelVenta panelVenta) {
 		this.panelVenta = panelVenta;
-		PedidoVentaDetalleTableModel x = (PedidoVentaDetalleTableModel) this.panelVenta.getDetalleVentaJTable().getModel();
-		x.addTableModelListener(this);
-		logger.debug("->>table columns=" + panelVenta.getDetalleVentaJTable().getColumnCount());
+		
+		pvdTM = new PedidoVentaDetalleTableModel();
+		this.panelVenta.getDetalleVentaJTable().setModel(pvdTM);
+		pvdTM.addTableModelListener(this);
+		logger.debug("PanelVentaControl: table columns=" + panelVenta.getDetalleVentaJTable().getColumnCount());
 
 		Color bgc= panelVenta.getDetalleVentaJTable().getBackground();
 		Color fgc= panelVenta.getDetalleVentaJTable().getForeground();
@@ -98,42 +87,27 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			}
 		});
 
-		detalleVentaTableItemList = (x).getDetalleVentaTableItemList();
-
 		this.panelVenta.getCodigoBuscar().addActionListener(this);
 		this.panelVenta.getTerminar().addActionListener(this);
 		this.panelVenta.getCancelar().addActionListener(this);
 		this.panelVenta.getChechar().addActionListener(this);
-
-		df = new DecimalFormat("$ ###,###,##0.00");
-		
-		ticketPrinteService = TicketSystemPrinter.getInstance();
-		ticketPrinteService.setApplicationLogic(ApplicationLogic.getInstance());
 	}
 
-	public void estadoInicial() {
-		if (detalleVentaTableItemList.size() > 0) {
-			detalleVentaTableItemList.clear();
-		}
+	public void estadoInicial() {		
 		
-		panelVenta.getTipoAlmacen().clearSelection();
+		ApplicationLogic.getInstance().getVentaSesion().nuevaSesionVenta();
+		pvdTM.setDetalleVentaTableItemList(ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList());
 		
+		panelVenta.getTipoAlmacen().clearSelection();		
 		panelVenta.getDesdeLinea().setSelected(true);
-		panelVenta.getDesdeOportunidad().setSelected(false);
-		
-		final Enumeration<AbstractButton> eta = panelVenta.getTipoAlmacen().getElements();
-		logger.debug("estadoInicial:panelVenta.getTipoAlmacen().getElements():");
-		while(eta.hasMoreElements()){
-			final AbstractButton bm = eta.nextElement();
-			logger.debug("\testadoInicial:bm:"+bm);
-		}
-		
+		panelVenta.getDesdeOportunidad().setSelected(false);		
 		panelVenta.getDetalleVentaJTable().updateUI();
 		panelVenta.resetInfoForProducto(null,0);
 		estadoChecando = false;		
 		actualizarEstadoChecado();
 		renderTotal();
-		this.panelVenta.getCodigoBuscar().requestFocus();
+		panelVenta.getCodigoBuscar().setText("");
+		panelVenta.getCodigoBuscar().requestFocus();
 	}
 
 	@Override
@@ -169,16 +143,16 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		logger.debug("\tcodigoBuscar_ActionPerformed: tipoAlmacenSeleccionado="+tipoAlmacenSeleccionado);
 		
 		for(String lineCB: linesCBArr){
-			logger.debug("\tcodigoBuscar_ActionPerformed:line->"+lineCB+"<-");
+			logger.trace("\tcodigoBuscar_ActionPerformed:line->"+lineCB+"<-");
 			String[] codesCB = lineCB.split("\\s");
 			for(String cdLineCB: codesCB){
-				logger.debug("\t\tcodigoBuscar_ActionPerformed:code->"+cdLineCB+"<-");
+				logger.trace("\t\tcodigoBuscar_ActionPerformed:code->"+cdLineCB+"<-");
 				productoEncontrado = MemoryDAO.fastSearchProducto(cdLineCB);
 				if(productoEncontrado == null){
-					logger.debug("\t\t\tcodigoBuscar_ActionPerformed:producto no encontrado:"+cdLineCB);
+					logger.trace("\t\t\tcodigoBuscar_ActionPerformed:producto no encontrado:"+cdLineCB);
 					sbNoEncontrados.append(cdLineCB).append(" ");
 				} else {
-					logger.debug("\t\t\tcodigoBuscar_ActionPerformed:producto encontrado:"+productoEncontrado);
+					logger.trace("\t\t\tcodigoBuscar_ActionPerformed:producto encontrado:"+productoEncontrado);
 					encontrados.add(productoEncontrado);
 				}
 			}
@@ -212,18 +186,19 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					if(existencia) {
 						esd.setCb(productoEncontrado.getCb());
 						PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, tipoAlmacenSeleccionado);
-						int idx = 0;
-						idx = detalleVentaTableItemList.size();
-						detalleVentaTableItemList.add(detalleVentaTableItemNuevo);
-
-						panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx, idx);
-						panelVenta.getDetalleVentaJTable().updateUI();
-						renderTotal();
+						logger.debug("\t\t=> + "+esd.getC()+" x "+esd.getCb()+" ("+tipoAlmacenSeleccionado+")");
+						ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().add(detalleVentaTableItemNuevo);
 					} else {
 						productoEncontradoSinExistencia = productoEncontrado;
 					}
 				}
 			}
+			panelVenta.getDetalleVentaJTable().updateUI();
+			renderTotal();
+			int idx = 0;
+			idx = ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().size();
+			panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx-1, idx-1);
+			
 			panelVenta.getCodigoBuscar().setText("");
 			panelVenta.resetInfoForProducto(productoEncontrado.reverse(),tipoAlmacenSeleccionado);
 		}
@@ -266,8 +241,8 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 
 	void terminar_ActionPerformed() {
-		logger.info("terminar_ActionPerformed()");
-		if (detalleVentaTableItemList.size() == 0) {
+		logger.info("[USER]->terminar_ActionPerformed");
+		if (ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().size() == 0) {
 			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(),
 					"Cuando termine de agregar más productos, podra terminar esta venta", "Terminar Venta",
 					JOptionPane.WARNING_MESSAGE);
@@ -279,21 +254,22 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 
 		try {
 			TerminarVentaDlg tvDlg = new TerminarVentaDlg(FramePrincipalControl.getInstance().getFramePrincipal(), true);
-			TerminarVentaControl tvdControl = new TerminarVentaControl(tvDlg, totalBruto, 0.0, totalBruto,detalleVentaTableItemList);
+			TerminarVentaControl tvdControl = new TerminarVentaControl(tvDlg);
 
 			tvdControl.estadoInicial();
 			
 			if(!tvdControl.isCierreCorrecto()){
 				return;
 			}
-			logger.info("terminar_ActionPerformed(): IMPRIMIENDO ...");
-			venta = tvdControl.venta;
+			logger.debug("terminar_ActionPerformed(): Generando DTO Venta");
+			esesdLAstForPrint = ApplicationLogic.getInstance().getVentaSesion().getVenta();
+			logger.debug("terminar_ActionPerformed(): TICKET:"+esesdLAstForPrint.getEs().getNt());
 			
 			if (ApplicationLogic.getInstance().isPrintingEnabled()) {
 				new Thread() {
 					@Override
 					public void run() {
-						logger.info("terminar_ActionPerformed(): despues de cerrar dialogo:");
+						logger.debug("terminar_ActionPerformed(): despues de cerrar dialogo:");
 						imprimirTicket();
 					}
 				}.start();
@@ -309,9 +285,10 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			panelVenta.getCodigoBuscar().requestFocus();
 		}
 	}
-
+	
+	
 	void cancelar_ActionPerformed() {
-		logger.info("=>cancelar_ActionPerformed()");
+		logger.info("[USER]->cancelar_ActionPerformed()");
 		int r = JOptionPane.showConfirmDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "¿Cancelar la Venta Actual?", "Venta", JOptionPane.YES_NO_OPTION);
 		if (r == JOptionPane.YES_OPTION) {
 			estadoInicial();
@@ -326,6 +303,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 
 	private void actualizarEstadoChecado() {
+		logger.info("[USER]->actualizarEstadoChecado="+estadoChecando);
 		if(estadoChecando) {
 			panelVenta.getChechar().setText("AGREGAR [ F9 ]");			
 			panelVenta.getCodigoBuscar().setBackground(Color.YELLOW);
@@ -341,69 +319,29 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		renderTotal();
 	}
 	
-	double totalBruto = 0.0;
-	double total = 0.0;
 	private void renderTotal() {
-		totalBruto = 0.0;
-		
-		boolean descuentoMayoreoHabilitado = MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=null && MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=0;
-		logger.debug("descuentoMayoreoHabilitado:"+descuentoMayoreoHabilitado);
-		if (detalleVentaTableItemList.size() > 0) {
-			FramePrincipalControl.getInstance().setEnabledVentasMenus(true);
-
-			this.panelVenta.getTerminar().setEnabled(true);
-			this.panelVenta.getCancelar().setEnabled(true);
-		} else {
-			FramePrincipalControl.getInstance().setEnabledVentasMenus(false);
-			this.panelVenta.getTerminar().setEnabled(false);
-			this.panelVenta.getCancelar().setEnabled(false);
-		}
-		
-		int np=0;
-		int npDescontables = 0;
-		int npFijas = 0;
-		boolean descuentoAplicado = false;
-		double descuentoFactor    = 0.0;
-		double descuentoCalculado = 0.0;
-		
-		double totalBrutoDescontable = 0.0;
-		double totalBrutoFijo        = 0.0;
-		
-		for (PedidoVentaDetalleTableItem dvti : detalleVentaTableItemList) {
-			if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
-				totalBrutoDescontable += dvti.getI();
-				npDescontables += dvti.getPvd().getC();
-			} else {
-				totalBrutoFijo        += dvti.getI();
-				npFijas += dvti.getPvd().getC();
-			}
-		}
-		np = npDescontables + npFijas;
-		totalBruto = totalBrutoDescontable + totalBrutoFijo;
-		
-		if(descuentoMayoreoHabilitado){
-			if(totalBrutoDescontable >= 10.00 || npDescontables>= 12){
-				descuentoFactor = 0.1;
-				descuentoAplicado = true;
-			}
-		}
-		descuentoCalculado = totalBrutoDescontable * descuentoFactor;
-		total = totalBrutoDescontable - descuentoCalculado + totalBrutoFijo;
-		
-		panelVenta.getNumArt()    .setText(String.valueOf(np));
-		logger.debug("renderTotal:("+totalBrutoDescontable+"+"+totalBrutoFijo+")="+totalBruto);
-		logger.debug("renderTotal:-"+descuentoCalculado);
-		logger.debug("renderTotal:="+total);
-		panelVenta.getSubtotal()  .setToolTipText(df.format(totalBrutoDescontable) + "+"+df.format(totalBrutoFijo) + " = " +df.format(totalBruto));
-		panelVenta.getSubtotal()  .setText(df.format(totalBruto));
-		panelVenta.getDescuento() .setText(df.format(descuentoCalculado));
-		panelVenta.getTotal()     .setText(df.format(total));
+		ApplicationLogic.getInstance().getVentaSesion().calcularTotales();
+		panelVenta.getNumArt()    .setText(String.valueOf(ApplicationLogic.getInstance().getVentaSesion().getNumElemVta()));
+		panelVenta.getNumArt()    .setToolTipText(ApplicationLogic.getInstance().getVentaSesion().getNumElemSinDescVta()+"+"+ApplicationLogic.getInstance().getVentaSesion().getNunElemDescontablesVta());
+		final String stTT = Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotalBrutoDescontable()) + " + "+
+				Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotalBrutoFijo()) + " = " +
+				Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotalBruto());
+		panelVenta.getSubtotal()  .setToolTipText(
+				stTT);
+		panelVenta.getSubtotal()  .setText(Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotalBruto()));
+		panelVenta.getDescuento() .setText(Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getDescuentoCalculado()));
+		panelVenta.getDescuento() .setToolTipText(Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotalBrutoDescontable())+" * "+
+				Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getDescuentoFactor()));
+		panelVenta.getTotal()     .setText(Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotal()));
+		logger.debug("renderTotal:subTotal = "+stTT);
+		logger.debug("renderTotal:descuento= "+ApplicationLogic.getInstance().getVentaSesion().getDescuentoCalculado());
+		logger.debug("renderTotal:="+Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotal())+" => "+ApplicationLogic.getInstance().getVentaSesion().getTotalRedondeado2Dec());
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == panelVenta.getDetalleVentaJTable()) {
-			//logger.debug("->>mouseClicked:"+e.getClickCount()+" "+panelVenta.getDetalleVentaJTable().getSelectedRow()+","+panelVenta.getDetalleVentaJTable().getSelectedColumn());
+			logger.info("[USER]->mouseClicked:"+e.getClickCount()+" "+panelVenta.getDetalleVentaJTable().getSelectedRow()+","+panelVenta.getDetalleVentaJTable().getSelectedColumn());
 			if (e.getClickCount() == 2 && panelVenta.getDetalleVentaJTable().getSelectedColumn() == 0) {
 				editarCantidad(panelVenta.getDetalleVentaJTable().getSelectedRow());
 			}
@@ -414,7 +352,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		int sr = panelVenta.getDetalleVentaJTable().getSelectedRow();
 		logger.debug("=>Selected:sr=" + sr);
 		if(sr != -1){
-			PedidoVentaDetalleTableItem pvdti = detalleVentaTableItemList.get(sr);
+			PedidoVentaDetalleTableItem pvdti = ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().get(sr);
 			panelVenta.resetInfoForProducto((InventarioSucursalQuickView)pvdti.getProducto(),pvdti.getTipoAlmacen());
 		} else {
 			panelVenta.resetInfoForProducto(null,0);
@@ -438,7 +376,8 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 
 	private void editarCantidad(int selectedRow) {
-		final PedidoVentaDetalleTableItem dvti = detalleVentaTableItemList.get(selectedRow);
+		logger.info("[USER]->editarCantidad:selectedRow="+selectedRow);
+		final PedidoVentaDetalleTableItem dvti = ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().get(selectedRow);
 		int cantidad = dvti.getPvd().getC();		
 		ESD pvd = dvti.getPvd();		
 		InventarioSucursalQuickView p = (InventarioSucursalQuickView)dvti.getProducto();
@@ -464,7 +403,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			} else if (nuevaCantidad > max) {
 				JOptionPane.showMessageDialog(panelVenta, "No puede agregegar > "+max, "Modificar", JOptionPane.WARNING_MESSAGE);
 			} else if(nuevaCantidad == 0){
-				detalleVentaTableItemList.remove(selectedRow);
+				ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().remove(selectedRow);
 				panelVenta.getDetalleVentaJTable().updateUI();
 				renderTotal();
 			}
@@ -476,7 +415,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	void ventaeliminarProdMenu() {
 		int selectedRow = panelVenta.getDetalleVentaJTable().getSelectedRow();
 		if (selectedRow >= 0) {
-			detalleVentaTableItemList.remove(selectedRow);
+			ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().remove(selectedRow);
 			panelVenta.getDetalleVentaJTable().updateUI();
 			renderTotal();
 
@@ -490,40 +429,36 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 
 	void imprimirTicket() {
-		HashMap<String, String> extraInformation = new HashMap<String, String>();
-		logger.debug("imprimirTicket: venta.getEs().getIr()="+venta.getEs().getIr());
 		
-		extraInformation.put("recibimos", Constants.dfCurrency.format(venta.getEs().getIr()));
-		extraInformation.put("cambio"   , Constants.dfCurrency.format(totalBruto - venta.getEs().getIr()));
-
 		boolean printed = false;
 		try {
-			ArrayList<EntradaSalidaDetalle> pvdList = new ArrayList<EntradaSalidaDetalle>();
-			for(ESD esd:venta.getEsdList()){
-				pvdList.add(esd.reverse());
+			if(Main.dinamicDebug){
+				TextReporter.DEBUG = true;
+			} else {
+				TextReporter.DEBUG = false;
 			}
 			
-			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:venta.getEs().reverse()="+venta.getEs().reverse());
-			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:pvdList="+pvdList);
-			logger.debug("->imprimirTicket:ticketPrinteService.generateTicket:extraInformation="+extraInformation);
 			
 			TextReporter.setColumns(MemoryDAO.getTextSystemPrinterColumns());
-			
-			String fileTicket = TextReporter.generateTicket(venta.getEs().reverse(), pvdList, extraInformation);
+			//logger.debug("->ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList()="+ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList());			
+			//logger.debug("->ticketPrinteService:esesd.getEs()="+esesd.getEs());
+			//logger.debug("->ticketPrinteService:esesd.getEsdList()="+esesd.getEsdList());
+			final JarpeReportsInfoDTO infoDTOTicket = VentaSesion.generaJarpeReportsInfoDTOTicket(esesdLAstForPrint);
+			logger.debug("->ticketPrinteService:fileTicket="+infoDTOTicket);
+			String fileTicket = TextReporter.generateTicketTXT(infoDTOTicket);
 			
 			logger.debug("->ticketPrinteService:fileTicket="+fileTicket);
 			
-			//SendFileToSystemPrinter.printFile(fileTicket);
-			logger.info("imprimirTicket:ticketFileName:"+fileTicket);
+			logger.debug("imprimirTicket:ticketFileName:"+fileTicket);
 		
-			logger.info("imprimirTicket:OSValidator.isUnix()?:"+OSValidator.isUnix());
-			logger.info("imprimirTicket:OSValidator.isMac():"+OSValidator.isMac());
+			logger.debug("imprimirTicket:OSValidator.isUnix()?:"+OSValidator.isUnix());
+			logger.debug("imprimirTicket:OSValidator.isMac():"+OSValidator.isMac()); 
 
 			if(OSValidator.isUnix() || OSValidator.isMac()){
-				logger.info("imprimirTicket: calling UnixSendToLP.printFile");
+				logger.debug("imprimirTicket: calling UnixSendToLP.printFile");
 				UnixSendToLP.printFile((String)fileTicket);
 			}else{
-				logger.info("imprimirTicket: calling SendFileToSystemPrinter.printFile");
+				logger.debug("imprimirTicket: calling SendFileToSystemPrinter.printFile");
 				SendFileToSystemPrinter.printFile((String)fileTicket);
 			}
 			
@@ -537,8 +472,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 				logger.debug("ERROR AL IMPRIMIR");
 				//t.printStackTrace(System.err);
 				JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error grave al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
-			}
-			venta = null;
+			}			
 		}
 	}
 }

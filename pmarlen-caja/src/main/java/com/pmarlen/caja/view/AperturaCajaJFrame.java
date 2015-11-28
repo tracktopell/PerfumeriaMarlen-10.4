@@ -57,7 +57,7 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("SALDO INICIAL :");
-        jLabel2.setPreferredSize(new java.awt.Dimension(300, 25));
+        jLabel2.setPreferredSize(new java.awt.Dimension(250, 25));
         jPanel2.add(jLabel2);
 
         saldoInicial.setColumns(6);
@@ -70,11 +70,11 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
 
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("OBSERVACIONES AL ABRIR :");
-        jLabel6.setPreferredSize(new java.awt.Dimension(300, 25));
+        jLabel6.setPreferredSize(new java.awt.Dimension(250, 25));
         jPanel6.add(jLabel6);
 
         observaciones.setColumns(30);
-        observaciones.setRows(3);
+        observaciones.setRows(2);
         jScrollPane1.setViewportView(observaciones);
 
         jPanel6.add(jScrollPane1);
@@ -94,7 +94,7 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
 
         getContentPane().add(jPanel9, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(767, 364));
+        setSize(new java.awt.Dimension(651, 249));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

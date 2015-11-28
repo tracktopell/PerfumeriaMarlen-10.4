@@ -22,12 +22,16 @@ public class PedidoVentaDetalleTableModel implements TableModel{
 	
 	private ArrayList<PedidoVentaDetalleTableItem> detalleVentaTableItemList;
 	private ArrayList<TableModelListener> tableModelListenerList;
-	
-	public PedidoVentaDetalleTableModel(){
-		tableModelListenerList = new ArrayList<TableModelListener> ();
-		detalleVentaTableItemList = new ArrayList<PedidoVentaDetalleTableItem> (); 
-	}
 
+	public PedidoVentaDetalleTableModel() {
+		this.tableModelListenerList    = new ArrayList<TableModelListener>();
+		this.detalleVentaTableItemList = new ArrayList<PedidoVentaDetalleTableItem>();
+	}
+	
+	public void setDetalleVentaTableItemList(ArrayList<PedidoVentaDetalleTableItem> _dtl) {
+		this.detalleVentaTableItemList = _dtl;		
+	}
+	
 	@Override
 	public int getRowCount() {
 		return detalleVentaTableItemList.size();

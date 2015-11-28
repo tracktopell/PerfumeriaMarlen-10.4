@@ -123,6 +123,7 @@ public class FramePrincipalControl implements ActionListener{
 				logger.debug("estadoInicial():updateStatusWest()");
 				updateStatusWest();
 				framePrincipal.setExtendedState( framePrincipal.getExtendedState()|JFrame.MAXIMIZED_BOTH );
+				panelVentaControl.estadoInicial();
 				logger.debug("estadoInicial():END");
 			}
 		});

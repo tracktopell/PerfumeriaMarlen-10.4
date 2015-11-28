@@ -1,12 +1,18 @@
 package com.pmarlen.backend.model.quickviews;
 
 import com.pmarlen.backend.model.Cliente;
+import com.pmarlen.model.Constants;
 
 /**
  *
  * @author alfredo
  */
 public class ClienteQuickView extends Cliente{
+
+	public ClienteQuickView() {
+		super();
+	}
+	
 	public String getDireccion() {
 		StringBuilder sb = new StringBuilder();
 		

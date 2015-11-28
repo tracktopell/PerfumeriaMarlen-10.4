@@ -29,7 +29,7 @@ public class Main {
 	private static boolean singleInstanceRunning = false;
 	private static Logger logger = Logger.getLogger(Main.class.getName());
 	//public static final String INTELBTH = "intelbth";
-	private static boolean dinamicDebug=false;
+	public static boolean dinamicDebug=false;
 	/**
 	 * @param args the command line arguments
 	 */

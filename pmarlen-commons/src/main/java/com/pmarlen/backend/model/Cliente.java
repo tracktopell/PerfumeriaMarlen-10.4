@@ -1,6 +1,8 @@
 
 package com.pmarlen.backend.model;
 
+import com.pmarlen.model.Constants;
+
 
 /**
  * Class for mapping DTO Entity of Table Cliente.
@@ -126,6 +128,7 @@ public class Cliente implements java.io.Serializable {
      * Default Constructor
      */
     public Cliente() {
+		this.id=Constants.ID_CLIENTE_MOSTRADOR;
     }
 
     /** 

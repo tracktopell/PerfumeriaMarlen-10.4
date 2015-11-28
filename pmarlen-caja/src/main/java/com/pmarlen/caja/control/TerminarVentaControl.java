@@ -7,6 +7,7 @@ import com.pmarlen.businesslogic.GeneradorNumTicket;
 import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.PedidoVentaDetalleTableItem;
+import com.pmarlen.caja.model.VentaSesion;
 import com.pmarlen.caja.view.CierreCajaJFrame;
 import com.pmarlen.caja.view.TerminarVentaDlg;
 import com.pmarlen.model.Constants;
@@ -44,22 +45,13 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	private TerminarVentaDlg terminarVentaDlg;
 	private double diferencia;
 	private boolean cierreCorrecto;
-	private double subTotal;
-	private double descuento;
-	private double total;
 	private double totalRedondeado;
 	private double recibido;
 	private double cargo;
+	private VentaSesion ventaSesion;
 	private String autorizacion;
-	ArrayList<PedidoVentaDetalleTableItem> pvd;
-	ES_ESD venta;
-
-	public TerminarVentaControl(TerminarVentaDlg terminarVentaDlg, double subTotal, double descuento, double total, ArrayList<PedidoVentaDetalleTableItem> pvd) {
+	public TerminarVentaControl(TerminarVentaDlg terminarVentaDlg) {
 		this.terminarVentaDlg = terminarVentaDlg;
-		this.subTotal = subTotal;
-		this.descuento = descuento;
-		this.total = total;
-		this.pvd = pvd;
 
 		this.terminarVentaDlg.getCliente().setModel(getClientes());
 		this.terminarVentaDlg.getMetodoDePago().setModel(getMetodosDePago());
@@ -82,16 +74,13 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	}
 
 	public void estadoInicial() {
-		this.terminarVentaDlg.getSubtotal().setText(Constants.dfCurrency.format(subTotal));
-		this.terminarVentaDlg.getDescuento().setText(Constants.dfCurrency.format(descuento));
-		this.terminarVentaDlg.getTotal().setText(Constants.dfCurrency.format(total));
-		try{
-			totalRedondeado = Constants.dfCurrency.parse(Constants.dfCurrency.format(total)).doubleValue();
-		}catch(ParseException pe){
-			totalRedondeado = total;
-		}
-		this.terminarVentaDlg.getSubtotal().setText(Constants.dfCurrency.format(subTotal));
-
+		ventaSesion = ApplicationLogic.getInstance().getVentaSesion();
+		
+		this.terminarVentaDlg.getSubtotal().setText(Constants.df2Decimal.format(ventaSesion.getTotalBruto()));
+		this.terminarVentaDlg.getDescuento().setText(Constants.df2Decimal.format(ventaSesion.getDescuentoCalculado()));
+		this.terminarVentaDlg.getTotal().setText(Constants.df2Decimal.format(ventaSesion.getTotal()));
+		totalRedondeado = ventaSesion.getTotalRedondeado2Dec();		
+		
 		this.terminarVentaDlg.getCliente().setSelectedIndex(0);
 		this.terminarVentaDlg.getMetodoDePago().setSelectedIndex(0);
 
@@ -162,36 +151,21 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	}
 
 	private void registrarVenta() {
-
-		final ArrayList<ESD> detalleVentaList = new ArrayList<ESD>();
-
-		for (PedidoVentaDetalleTableItem dvil : pvd) {
-			detalleVentaList.add(dvil.getPvd());
-		}
-		int cteId = 1;
-		int formaPagoId = 1;
-		String numTicket = GeneradorNumTicket.getNumTicket(MemoryDAO.getSucursalId(), MemoryDAO.getNumCaja(), cteId, total);
-		venta = new ES_ESD();
-
-		venta.getEs().setTm(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
-		venta.getEs().setJ(MemoryDAO.getNumCaja());
-		venta.getEs().setC(getClienteId());
-		venta.getEs().setFc(System.currentTimeMillis());
-		venta.getEs().setFp(formaPagoId);
-		venta.getEs().setIr(getRecibido());
-		venta.getEs().setMp(getMetodoDePagoId());
-		venta.getEs().setAmc(getAutorizacion());
-		venta.getEs().setI(Constants.IVA);
-		venta.getEs().setS(MemoryDAO.getSucursalId());
-		venta.getEs().setNt(numTicket);
-		venta.getEsdList().addAll(detalleVentaList);
-		venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getE());
-
-		logger.debug("terminar_ActionPerformed:before commit, venta=" + venta);
-
-		ESFileSystemJsonDAO.commit(venta);
+		
+		String numTicket = GeneradorNumTicket.getNumTicket(ventaSesion.getVenta().getEs().getS(), ventaSesion.getVenta().getEs().getJ(), ventaSesion.getVenta().getEs().getC(), ventaSesion.getTotalRedondeado2Dec());
+		logger.debug("registrarVenta:numTicket="+numTicket);
+		
+		ventaSesion.getVenta().getEs().setNt(numTicket);
+		ventaSesion.getVenta().getEs().setC(getClienteId());
+		ventaSesion.getVenta().getEs().setFp(Constants.ID_FDP_1SOLA_E);
+		ventaSesion.getVenta().getEs().setMp(((MetodoDePago)terminarVentaDlg.getMetodoDePago().getSelectedItem()).getId());
+		ventaSesion.getVenta().getEs().setIr(recibido);
+		ventaSesion.getVenta().getEs().setAmc(autorizacion);
+		
+		ESFileSystemJsonDAO.commit(ventaSesion.getVenta());
 
 		//JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Se guardo Correctamente, ...Imprimiendo ticket", "Venta", JOptionPane.INFORMATION_MESSAGE);
+		
 		cierreCorrecto = true;
 	}
 
@@ -236,7 +210,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				throw new ValidacionCamposException("EL IMORTE RECIBIDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.01 A $99,999.99", terminarVentaDlg.getRecibido());
 			}
 
-			double difReal = recibido - total;
+			double difReal = recibido - ventaSesion.getTotalRedondeado2Dec();
 
 			if (difReal < 0) {
 				this.terminarVentaDlg.getRecibido().setText("");
@@ -449,7 +423,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				this.terminarVentaDlg.getCambio().setEnabled(false);
 				
 				this.terminarVentaDlg.getCargo().setEnabled(false);
-				this.terminarVentaDlg.getCargo().setText(Constants.dfCurrency.format(total));
+				this.terminarVentaDlg.getCargo().setText(Constants.df2Decimal.format(ventaSesion.getTotalRedondeado2Dec()));
 				
 				this.terminarVentaDlg.getAutorizacion().setEnabled(true);
 			} else if (((MetodoDePago) e.getItem()).getId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA) {

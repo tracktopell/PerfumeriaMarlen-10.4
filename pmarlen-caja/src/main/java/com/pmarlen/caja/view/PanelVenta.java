@@ -148,7 +148,6 @@ public class PanelVenta extends javax.swing.JPanel {
         jScrollPane1.setPreferredSize(new java.awt.Dimension(500, 200));
 
         detalleVentaJTable.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        detalleVentaJTable.setModel(new com.pmarlen.caja.model.PedidoVentaDetalleTableModel());
         detalleVentaJTable.setRowHeight(28);
         jScrollPane1.setViewportView(detalleVentaJTable);
 
@@ -469,7 +468,7 @@ public class PanelVenta extends javax.swing.JPanel {
 		try{			
 			String fileNaeImage = getImagesDir()+imagePath+"/NWM_"+p.getCodigoBarras()+"_01.png";
 			fileImage = new File(fileNaeImage);
-			logger.debug("getProductoImageIcon(" + p +"): fileNaeImage="+fileNaeImage);
+			logger.trace("getProductoImageIcon(" + p +"): fileNaeImage="+fileNaeImage);
 			if(fileImage.exists() && fileImage.canRead()) {
 				logger.trace("=>getProductoImageIcon: fileImage:" + fileImage+", size:"+fileImage.length()+" bytes");
 				productoImageIcon = new ImageIcon(ImageIO.read(new FileInputStream(fileImage)));
@@ -477,7 +476,7 @@ public class PanelVenta extends javax.swing.JPanel {
 				throw new FileNotFoundException("Image not found for :"+p.getCodigoBarras()+", fileImage:"+fileImage);
 			}
 		} catch(FileNotFoundException fnfe){
-			logger.debug("getProductoImageIcon(" + p +"): Not fount:"+fnfe.getMessage()+" =>> DEFAULT !");
+			logger.trace("getProductoImageIcon(" + p +"): Not fount:"+fnfe.getMessage()+" =>> DEFAULT !");
 			productoImageIcon = getDefaultProductoImageIcon();
 		} catch(Exception e){
 			logger.error("getProductoImageIcon("+p.getCodigoBarras()+"):Reading Image File:",e);
