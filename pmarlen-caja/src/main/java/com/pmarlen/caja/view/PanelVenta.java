@@ -57,6 +57,7 @@ public class PanelVenta extends javax.swing.JPanel {
         codigoBuscar = new javax.swing.JTextField();
         desdeLinea = new javax.swing.JRadioButton();
         desdeOportunidad = new javax.swing.JRadioButton();
+        desdeRegalias = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         terminar = new javax.swing.JButton();
@@ -108,13 +109,18 @@ public class PanelVenta extends javax.swing.JPanel {
         tipoAlmacen.add(desdeLinea);
         desdeLinea.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         desdeLinea.setSelected(true);
-        desdeLinea.setText(" DE LINEA [ F5 ]");
+        desdeLinea.setText("1RA LINEA [F5]");
         jPanel2.add(desdeLinea);
 
         tipoAlmacen.add(desdeOportunidad);
         desdeOportunidad.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        desdeOportunidad.setText("OPORTUNIDAD [ F6 ]");
+        desdeOportunidad.setText("OPORTUNIDAD[F6]");
         jPanel2.add(desdeOportunidad);
+
+        tipoAlmacen.add(desdeRegalias);
+        desdeRegalias.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        desdeRegalias.setText("REGALIAS[F7]");
+        jPanel2.add(desdeRegalias);
 
         add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -292,6 +298,7 @@ public class PanelVenta extends javax.swing.JPanel {
     private javax.swing.JTextField descuento;
     private javax.swing.JRadioButton desdeLinea;
     private javax.swing.JRadioButton desdeOportunidad;
+    private javax.swing.JRadioButton desdeRegalias;
     private javax.swing.JTable detalleVentaJTable;
     private javax.swing.JLabel imgProducto;
     private javax.swing.JPanel infoColsPanel;
@@ -392,6 +399,10 @@ public class PanelVenta extends javax.swing.JPanel {
 		return desdeOportunidad;
 	}
 
+	public JRadioButton getDesdeRegalias() {
+		return desdeRegalias;
+	}
+	
 	public ButtonGroup getTipoAlmacen() {
 		return tipoAlmacen;
 	}

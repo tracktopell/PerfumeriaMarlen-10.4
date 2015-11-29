@@ -36,7 +36,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jPanel6 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        cliente = new javax.swing.JComboBox();
+        cleinteNombre = new javax.swing.JTextField();
         jPanel10 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         metodoDePago = new javax.swing.JComboBox();
@@ -72,33 +72,44 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("CLIENTE :");
-        jLabel4.setPreferredSize(new java.awt.Dimension(180, 20));
+        jLabel4.setPreferredSize(new java.awt.Dimension(280, 26));
         jPanel8.add(jLabel4);
-        jPanel8.add(cliente);
+
+        cleinteNombre.setEditable(false);
+        cleinteNombre.setColumns(18);
+        cleinteNombre.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        cleinteNombre.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel8.add(cleinteNombre);
 
         jPanel6.add(jPanel8);
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("MÉTODO DE PAGO :");
-        jLabel6.setPreferredSize(new java.awt.Dimension(180, 20));
+        jLabel6.setPreferredSize(new java.awt.Dimension(280, 26));
         jPanel10.add(jLabel6);
+
+        metodoDePago.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jPanel10.add(metodoDePago);
 
         jPanel6.add(jPanel10);
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("SUBTOTAL :");
-        jLabel1.setPreferredSize(new java.awt.Dimension(180, 20));
+        jLabel1.setPreferredSize(new java.awt.Dimension(280, 26));
         jPanel3.add(jLabel1);
 
         subtotal.setEditable(false);
         subtotal.setColumns(6);
+        subtotal.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         subtotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel3.add(subtotal);
 
@@ -106,13 +117,15 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("DESCUENTO :");
-        jLabel2.setPreferredSize(new java.awt.Dimension(180, 20));
+        jLabel2.setPreferredSize(new java.awt.Dimension(280, 26));
         jPanel4.add(jLabel2);
 
         descuento.setEditable(false);
         descuento.setColumns(6);
+        descuento.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         descuento.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel4.add(descuento);
 
@@ -120,13 +133,15 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("TOTAL :");
-        jLabel3.setPreferredSize(new java.awt.Dimension(180, 20));
+        jLabel3.setPreferredSize(new java.awt.Dimension(280, 26));
         jPanel5.add(jLabel3);
 
         total.setEditable(false);
         total.setColumns(6);
+        total.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel5.add(total);
 
@@ -134,22 +149,27 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel8.setText("RECIBIDO :");
-        jLabel8.setPreferredSize(new java.awt.Dimension(180, 20));
+        jLabel8.setPreferredSize(new java.awt.Dimension(280, 26));
         jPanel14.add(jLabel8);
 
         recibido.setColumns(6);
+        recibido.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         recibido.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel14.add(recibido);
 
+        cambioLbl.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         cambioLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         cambioLbl.setText("CAMBIO :");
-        cambioLbl.setPreferredSize(new java.awt.Dimension(150, 20));
+        cambioLbl.setPreferredSize(new java.awt.Dimension(250, 26));
         jPanel14.add(cambioLbl);
 
         cambio.setEditable(false);
         cambio.setColumns(6);
+        cambio.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        cambio.setForeground(new java.awt.Color(0, 153, 51));
         cambio.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel14.add(cambio);
 
@@ -157,22 +177,25 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel7.setText("CARGO A TARJETA :");
-        jLabel7.setPreferredSize(new java.awt.Dimension(180, 20));
+        jLabel7.setPreferredSize(new java.awt.Dimension(280, 26));
         jPanel12.add(jLabel7);
 
         cargo.setColumns(6);
+        cargo.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         cargo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel12.add(cargo);
 
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel9.setText("NO. AUTORIZACIÓN :");
-        jLabel9.setPreferredSize(new java.awt.Dimension(150, 20));
+        jLabel9.setPreferredSize(new java.awt.Dimension(250, 26));
         jPanel12.add(jLabel9);
 
         autorizacion.setColumns(6);
-        autorizacion.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
+        autorizacion.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jPanel12.add(autorizacion);
 
         jPanel6.add(jPanel12);
@@ -183,15 +206,17 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 50, 5));
 
+        aceptar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         aceptar.setText("ACEPTAR");
         jPanel2.add(aceptar);
 
+        cancelar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         cancelar.setText("CANCELAR");
         jPanel2.add(cancelar);
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(909, 362));
+        setSize(new java.awt.Dimension(985, 467));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -244,7 +269,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
     private javax.swing.JLabel cambioLbl;
     private javax.swing.JButton cancelar;
     private javax.swing.JTextField cargo;
-    private javax.swing.JComboBox cliente;
+    private javax.swing.JTextField cleinteNombre;
     private javax.swing.JTextField descuento;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -277,11 +302,8 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 		return cambio;
 	}
 
-	/**
-	 * @return the cliente
-	 */
-	public javax.swing.JComboBox getCliente() {
-		return cliente;
+	public JTextField getCleinteNombre() {
+		return cleinteNombre;
 	}
 
 	/**

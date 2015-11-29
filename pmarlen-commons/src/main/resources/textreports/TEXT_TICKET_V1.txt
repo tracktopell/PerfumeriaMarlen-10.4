@@ -16,7 +16,7 @@ FECHA VTA.:${fecha.creado,l,16,F}
       CAJA:${sucursal.caja.creo,l,3,F}
    CLIENTE:${cliente.racSoc,l,-11,F}
 ${=,l,100%,C}
-#{pvd.cant,r,5,L} #{pvd.producto.cb,r,15,F} #{pvd.producto.nombre,l,-18,R}
+#{pvd.cant,r,5,L} #{pvd.producto.cb,r,15,F} #{pvd.producto.nombre,l,-22,R}
       X  #{pvd.precio,r,9,F} #{pvd.imp,r,15,R}
 ${-,l,100%,C}
 ${fot.neTotElem,r,5,L} ${fot.neTotElemL,l,14,F}
@@ -28,15 +28,15 @@ ${fot.neTotElem,r,5,L} ${fot.neTotElemL,l,14,F}
              RECIBIDO : ${fot.impRecib,r,15,R}
              SU CAMBIO: ${fot.cambio,r,15,R}
 
-${fot.totLetra1,l,-2,C}
-${fot.totLetra2,l,-2,C}
-${fot.totLetra3,l,-2,C}
+${fot.totLetra1,l,100%,C}
+${fot.totLetra2,l,100%,C}
+${fot.totLetra3,l,100%,C}
 
-${fot.leyendaNoFiscal,c,-0,C}
+${fot.leyendaNoFiscal,c,100%,C}
 
-${fot.leyenda1,c,-0,C}
-${fot.leyenda2,c,-0,C}
-${fot.leyenda3,c,-0,C}
-${fot.leyenda4,c,-0,C}
+${fot.leyenda1,c,100%,C}
+${fot.leyenda2,c,100%,C}
+${fot.leyenda3,c,100%,C}
+${fot.leyenda4,c,100%,C}
 
 ${-,l,100%,C}

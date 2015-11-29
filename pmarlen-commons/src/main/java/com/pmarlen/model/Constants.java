@@ -117,7 +117,7 @@ public class Constants {
 	public static final int ID_CLIENTE_MOSTRADOR = 1;
 	public static final int ID_MDP_EFECTIVO = 1;
 	public static final int ID_MDP_TARJETA = 2;
-	public static final int ID_MDP_EFECTIVO_Y_TARJETA = 7;
+	public static final int ID_MDP_EFECTIVO_Y_TARJETA = 8;
 	public static final int ID_FDP_1SOLA_E = 1;
 	public static final double FACTOR_DES_MAYSUC = 0.1;
 

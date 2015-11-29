@@ -50,17 +50,19 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ABRIR SESIÓN DE CAJA");
 
-        jPanel1.setLayout(new java.awt.GridLayout(4, 1));
+        jPanel1.setLayout(new java.awt.GridLayout(4, 1, 0, 10));
         jPanel1.add(jPanel11);
 
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("SALDO INICIAL :");
-        jLabel2.setPreferredSize(new java.awt.Dimension(250, 25));
+        jLabel2.setPreferredSize(new java.awt.Dimension(350, 25));
         jPanel2.add(jLabel2);
 
         saldoInicial.setColumns(6);
+        saldoInicial.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         saldoInicial.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel2.add(saldoInicial);
 
@@ -68,12 +70,14 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("OBSERVACIONES AL ABRIR :");
-        jLabel6.setPreferredSize(new java.awt.Dimension(250, 25));
+        jLabel6.setPreferredSize(new java.awt.Dimension(350, 25));
         jPanel6.add(jLabel6);
 
-        observaciones.setColumns(30);
+        observaciones.setColumns(18);
+        observaciones.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         observaciones.setRows(2);
         jScrollPane1.setViewportView(observaciones);
 
@@ -84,17 +88,19 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 100, 20));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 100, 10));
 
+        aceptar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         aceptar.setText("ACEPTAR");
         jPanel9.add(aceptar);
 
+        cancelar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         cancelar.setText("CANCELAR");
         jPanel9.add(cancelar);
 
         getContentPane().add(jPanel9, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(651, 249));
+        setSize(new java.awt.Dimension(777, 305));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

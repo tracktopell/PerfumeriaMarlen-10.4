@@ -53,7 +53,8 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	public TerminarVentaControl(TerminarVentaDlg terminarVentaDlg) {
 		this.terminarVentaDlg = terminarVentaDlg;
 
-		this.terminarVentaDlg.getCliente().setModel(getClientes());
+		//this.terminarVentaDlg.getCliente().setModel(getClientes());
+		this.terminarVentaDlg.getCleinteNombre().setText("CLIENTE DE MOSTRADOR");
 		this.terminarVentaDlg.getMetodoDePago().setModel(getMetodosDePago());
 		this.terminarVentaDlg.getMetodoDePago().addItemListener(this);
 
@@ -81,7 +82,6 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		this.terminarVentaDlg.getTotal().setText(Constants.df2Decimal.format(ventaSesion.getTotal()));
 		totalRedondeado = ventaSesion.getTotalRedondeado2Dec();		
 		
-		this.terminarVentaDlg.getCliente().setSelectedIndex(0);
 		this.terminarVentaDlg.getMetodoDePago().setSelectedIndex(0);
 
 		this.terminarVentaDlg.getRecibido().setEnabled(true);
@@ -156,7 +156,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		logger.debug("registrarVenta:numTicket="+numTicket);
 		
 		ventaSesion.getVenta().getEs().setNt(numTicket);
-		ventaSesion.getVenta().getEs().setC(getClienteId());
+		ventaSesion.getVenta().getEs().setC(Constants.ID_CLIENTE_MOSTRADOR);
 		ventaSesion.getVenta().getEs().setFp(Constants.ID_FDP_1SOLA_E);
 		ventaSesion.getVenta().getEs().setMp(((MetodoDePago)terminarVentaDlg.getMetodoDePago().getSelectedItem()).getId());
 		ventaSesion.getVenta().getEs().setIr(recibido);
@@ -373,21 +373,13 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 
 		for (MetodoDePago mdp : formaDePagoList) {
 			logger.trace("getMetodosDePago:\t 1)for() : mdp=" + mdp);
-			if (mdp.getId() == Constants.ID_MDP_EFECTIVO || mdp.getId() == Constants.ID_MDP_TARJETA) {
+			if (mdp.getId() == Constants.ID_MDP_EFECTIVO || mdp.getId() == Constants.ID_MDP_TARJETA || mdp.getId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA) {
 				v.add(mdp);
 			}
 		}
 		ComboBoxModel m = new DefaultComboBoxModel(v);
 
 		return m;
-	}
-
-	int getClienteId() {
-		logger.debug("getClienteId:terminarVentaDlg=" + terminarVentaDlg);
-		logger.debug("getClienteId:terminarVentaDlg.getCliente()=" + terminarVentaDlg.getCliente());
-		Cliente cteSelected = (Cliente) terminarVentaDlg.getCliente().getSelectedItem();
-		logger.debug("getClienteId:cteSelected.getId()=" + cteSelected.getId());
-		return cteSelected.getId();
 	}
 
 	int getMetodoDePagoId() {

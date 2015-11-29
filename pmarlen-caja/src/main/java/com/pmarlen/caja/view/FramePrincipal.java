@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import org.apache.log4j.Logger;
 
@@ -149,8 +150,11 @@ public class FramePrincipal extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         salirMenu = new javax.swing.JMenuItem();
         ventaMenu = new javax.swing.JMenu();
-        ventaActualMenu = new javax.swing.JMenuItem();
         ventaTerminarMenu = new javax.swing.JMenuItem();
+        ventaActualMenu = new javax.swing.JMenuItem();
+        ventaLineaMenu = new javax.swing.JMenuItem();
+        ventaOportunidadMenu = new javax.swing.JMenuItem();
+        ventaRegaliasMenu = new javax.swing.JMenuItem();
         ventaModoMenu = new javax.swing.JMenuItem();
         ventaCancelarMenu = new javax.swing.JMenuItem();
         ventaeliminarProdMenu = new javax.swing.JMenuItem();
@@ -257,13 +261,25 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         ventaMenu.setText("Venta");
 
+        ventaTerminarMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        ventaTerminarMenu.setText("Terminar");
+        ventaMenu.add(ventaTerminarMenu);
+
         ventaActualMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         ventaActualMenu.setText("Actual");
         ventaMenu.add(ventaActualMenu);
 
-        ventaTerminarMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        ventaTerminarMenu.setText("Terminar");
-        ventaMenu.add(ventaTerminarMenu);
+        ventaLineaMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        ventaLineaMenu.setText("1ra Linea");
+        ventaMenu.add(ventaLineaMenu);
+
+        ventaOportunidadMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        ventaOportunidadMenu.setText("Oportunidad");
+        ventaMenu.add(ventaOportunidadMenu);
+
+        ventaRegaliasMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
+        ventaRegaliasMenu.setText("Regalias");
+        ventaMenu.add(ventaRegaliasMenu);
 
         ventaModoMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
         ventaModoMenu.setText("Agregar/Checar");
@@ -384,8 +400,11 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.ButtonGroup tipoImpresion;
     private javax.swing.JMenuItem ventaActualMenu;
     private javax.swing.JMenuItem ventaCancelarMenu;
+    private javax.swing.JMenuItem ventaLineaMenu;
     private javax.swing.JMenu ventaMenu;
     private javax.swing.JMenuItem ventaModoMenu;
+    private javax.swing.JMenuItem ventaOportunidadMenu;
+    private javax.swing.JMenuItem ventaRegaliasMenu;
     private javax.swing.JMenuItem ventaTerminarMenu;
     private javax.swing.JMenuItem ventaeliminarProdMenu;
     private javax.swing.JMenuItem ventasMenu;
@@ -765,6 +784,16 @@ public class FramePrincipal extends javax.swing.JFrame {
 	public javax.swing.ButtonGroup getTipoImpresion() {
 		return tipoImpresion;
 	}
-	
-}
 
+	public JMenuItem getVentaLineaMenu() {
+		return ventaLineaMenu;
+	}
+
+	public JMenuItem getVentaOportunidadMenu() {
+		return ventaOportunidadMenu;
+	}
+
+	public JMenuItem getVentaRegaliasMenu() {
+		return ventaRegaliasMenu;
+	}
+}

@@ -77,6 +77,12 @@ public class FramePrincipalControl implements ActionListener{
 		
 		framePrincipal.getVentaActualMenu().addActionListener(this);
 		
+		framePrincipal.getVentaLineaMenu().addActionListener(this);
+		
+		framePrincipal.getVentaOportunidadMenu().addActionListener(this);
+		
+		framePrincipal.getVentaRegaliasMenu().addActionListener(this);
+		
 		framePrincipal.getVentaTerminarMenu().addActionListener(this);
 		
 		framePrincipal.getVentaeliminarProdMenu().addActionListener(this);
@@ -177,6 +183,12 @@ public class FramePrincipalControl implements ActionListener{
 			cerrarSesion_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getVentasMenu()){
 			ventasMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getVentaLineaMenu()){
+			ventaLineaMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getVentaOportunidadMenu()){
+			ventaOportunidadMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getVentaRegaliasMenu()){
+			ventaRegaliasMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getSalirMenu()){
 			salirMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getVentaActualMenu()){
@@ -263,6 +275,18 @@ public class FramePrincipalControl implements ActionListener{
 	private void ventasMenu_actionPerformed() {
 		panelVentasControl.estadoInicial();
 		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelVentas");
+	}
+	
+	private void ventaLineaMenu_actionPerformed() {
+		panelVentaControl.ventaLinea();
+	}
+	
+	private void ventaOportunidadMenu_actionPerformed() {
+		panelVentaControl.ventaOportunidad();
+	}
+	
+	private void ventaRegaliasMenu_actionPerformed() {
+		panelVentaControl.ventaRegalias();
 	}
 
 	private void salirMenu_actionPerformed() {

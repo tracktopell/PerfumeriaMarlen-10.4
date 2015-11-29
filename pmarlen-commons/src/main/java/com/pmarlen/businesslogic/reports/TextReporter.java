@@ -518,10 +518,50 @@ public class TextReporter {
 
 		return result;
 	}
+	
+	public static List<String> splitInLinesText(String text, int maxPerColumn,Character fill) {
+		List<String> result = new ArrayList<String>();
+		int lt=text.length(),i1=0,i2=maxPerColumn;
+		String lx= null;
+		StringBuilder fillBuff=null;
+		while(i2<lt){
+			lx= text.substring(i1, i2).trim();
+			if(lx.length() < maxPerColumn && fill != null){
+				fillBuff = new StringBuilder();
+				final int fitTot = maxPerColumn - lx.length();
+				for(int j=0;j< (fitTot);j++){
+					fillBuff.append(fill);
+				}
+				result.add(lx+fillBuff.toString());
+			} else {
+				result.add(lx);
+			}
+			i1=i2;
+			i2+=maxPerColumn;
+		}
+		i2=lt;
+		lx= text.substring(i1, i2).trim();
+		
+		if(lx.length() < maxPerColumn && fill != null){
+			fillBuff = new StringBuilder();
+			final int fitTot = maxPerColumn - lx.length();
+			for(int j=0;j<fitTot;j++){
+				fillBuff.append(fill);
+			}
+			result.add(lx+fillBuff.toString());
+		} else {
+			result.add(lx);
+		}
+		
+		return result;
+	}
 
 	public static void main(String[] args) {
 		
-		DEBUG=true;
+		DEBUG=false;
+		if(args.length ==1){
+			columns = Integer.parseInt(args[0]);
+		}
 		
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		List<HashMap<String, String>> records = new ArrayList<HashMap<String, String>>();
@@ -564,10 +604,10 @@ public class TextReporter {
 		parameters.put("sucursal.caja.creo", "10");
 		parameters.put("cliente.racSoc", "PUBLICO GENERAL");
 		
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 35; i++) {
 			HashMap<String, String> r = new HashMap<String, String>();
 			r.put("pvd.cant", "" + i);
-			r.put("pvd.producto.cb", "09098989" + i);
+			r.put("pvd.producto.cb", "1234567890123" + i);
 			r.put("pvd.producto.nombre", "NOMBRE MUY LARGO PARA IMPRIMIRSE AQUI-" + i);
 			r.put("pvd.precio", "1234" + i + ".99");
 			r.put("pvd.imp", "10234" + i + ".99");
@@ -585,8 +625,8 @@ public class TextReporter {
 		
 		String intDecParts[] = totalXval.split("\\.");            
 		String letrasParteEntera  = NumeroCastellano.numeroACastellano(Long.parseLong(intDecParts[0])).trim();
-		final String importeTotal = "--("+(letrasParteEntera+" Pesos "+intDecParts[1]+" / 100 M.N.").toUpperCase()+")--";
-		List<String> totalLetraLineas = TextReporter.justifyText(importeTotal, TextReporter.columns - 2);
+		final String importeTotal = "("+(letrasParteEntera+" Pesos "+intDecParts[1]+" / 100 M.N.").toUpperCase()+")";
+		List<String> totalLetraLineas = TextReporter.splitInLinesText(importeTotal, TextReporter.columns,'-');
 		
 		parameters.put("fot.totLetra1" , "--");
 		parameters.put("fot.totLetra2" , "-----------------");

@@ -6,6 +6,7 @@ import com.pmarlen.model.Constants;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.DecimalFormat;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellRenderer;
@@ -20,6 +21,14 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
 	private Color fgc;
 	private Color sbgc; 
 	private Color sfgc;
+	
+	private Color princColorSel;
+	private Color princColorNot;
+	private Color oprtColorSel;
+	private Color oprtColorNot;
+	private Color regaColorSel;
+	private Color regaColorNot;
+			
 
 	public void setColors(Color bgc, Color fgc, Color sbgc, Color sfgc) {
 		this.bgc = bgc;
@@ -27,12 +36,31 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
 		this.sbgc = sbgc;
 		this.sfgc = sfgc;		
 	}
+
+	public ProductoCellRender(Color princColorSel, Color princColorNot, Color oprtColorSel, Color oprtColorNot,Color regaColorSel,Color regaColorNot) {
+		this.princColorSel = princColorSel;
+		this.princColorNot = princColorNot;
+		this.oprtColorSel  = oprtColorSel;
+		this.oprtColorNot  = oprtColorNot;
+		this.regaColorSel  = regaColorSel;
+		this.regaColorNot  = regaColorNot;
+	}
 	
 	
+		
 	/**
 	 * Creates new form ProductoCellRender
 	 */
 	public ProductoCellRender() {
+		this.regaColorNot  = new Color(0xFFE2D2);
+		this.princColorNot = new Color(0xE1EFFF);
+		this.oprtColorNot  = new Color(0xE9FFDE);
+		
+		this.regaColorSel  = new Color(0xFF9457);
+		this.princColorSel = new Color(0x61A5F6);
+		this.oprtColorSel  = new Color(0x8CFB56);
+		
+		
 		initComponents();
 	}
 
@@ -83,32 +111,40 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
 		PedidoVentaDetalleTableItem dvti = (PedidoVentaDetalleTableItem)value;
 		Producto p=dvti.getProducto();
 		
-		pcr.codigoBarrasLabel.setText(p.getCodigoBarras().toUpperCase());
-		Color almacenColor = fgc;
-		if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
-			pcr.codigoBarrasLabel.setText("["+p.getCodigoBarras().toUpperCase()+"]");
-			almacenColor = fgc;
-		} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
-			pcr.codigoBarrasLabel.setText("("+p.getCodigoBarras().toUpperCase()+")");
-			almacenColor = Color.RED;
-		} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
-			pcr.codigoBarrasLabel.setText("{"+p.getCodigoBarras().toUpperCase()+"}");
-			almacenColor = Color.GRAY;
-		}
-		
+		pcr.codigoBarrasLabel.setText(p.getCodigoBarras().toUpperCase());		
 		pcr.nombreLabel.setText(p.getNombre().toUpperCase());		
 		pcr.descripcionLabel.setText(p.getPresentacion().toUpperCase());
 		pcr.precioLabel.setText(p.getContenido()+p.getUnidadMedida());
 		
 		if(isSelected){
-			pcr.setBackground(sbgc!=null?sbgc:Color.MAGENTA);
-			//pcr.setForeground(sfgc!=null?sbgc:Color.BLACK);			
+			if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+				pcr.codigoBarrasLabel.setText("["+p.getCodigoBarras().toUpperCase()+"] 1RA LINEA");
+				pcr.setBackground(princColorSel);
+				pcr.setForeground(fgc);
+			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
+				pcr.codigoBarrasLabel.setText("("+p.getCodigoBarras().toUpperCase()+") OPORTUNIDAD");
+				pcr.setBackground(oprtColorSel);
+				pcr.setForeground(fgc);
+			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
+				pcr.codigoBarrasLabel.setText("{"+p.getCodigoBarras().toUpperCase()+"} REGALIAS");
+				pcr.setBackground(regaColorSel);
+				pcr.setForeground(fgc);
+			}
 		} else {
-			pcr.setBackground(bgc!=null?bgc:Color.WHITE);
-			//pcr.setForeground(fgc!=null?bgc:Color.BLACK);
+			if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+				pcr.codigoBarrasLabel.setText("["+p.getCodigoBarras().toUpperCase()+"] 1RA LINEA");
+				pcr.setBackground(princColorNot);
+				pcr.setForeground(fgc);
+			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
+				pcr.codigoBarrasLabel.setText("("+p.getCodigoBarras().toUpperCase()+") OPORTUNIDAD");
+				pcr.setBackground(oprtColorNot);
+				pcr.setForeground(fgc);
+			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
+				pcr.codigoBarrasLabel.setText("{"+p.getCodigoBarras().toUpperCase()+"} REGALIAS");
+				pcr.setBackground(regaColorNot);
+				pcr.setForeground(fgc);
+			}
 		}
-		
-		pcr.setForeground(almacenColor);			
 		
 		if(hasFocus){			
 			pcr.setBorder(new LineBorder(sbgc!=null?sbgc:Color.MAGENTA, 1, false));

@@ -139,6 +139,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		
 		int tipoAlmacenSeleccionado =	panelVenta.getDesdeLinea().isSelected()			?	Constants.ALMACEN_PRINCIPAL:
 										panelVenta.getDesdeOportunidad().isSelected()	?	Constants.ALMACEN_OPORTUNIDAD:
+										panelVenta.getDesdeRegalias().isSelected()		?	Constants.ALMACEN_REGALIAS:
 																							Constants.ALMACEN_PRINCIPAL;
 		logger.debug("\tcodigoBuscar_ActionPerformed: tipoAlmacenSeleccionado="+tipoAlmacenSeleccionado);
 		
@@ -474,5 +475,20 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 				JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error grave al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
 			}			
 		}
+	}
+
+	void ventaLinea() {
+		panelVenta.getDesdeLinea().setSelected(true);
+		panelVenta.getCodigoBuscar().requestFocus();
+	}
+
+	void ventaOportunidad() {
+		panelVenta.getDesdeOportunidad().setSelected(true);
+		panelVenta.getCodigoBuscar().requestFocus();
+	}
+
+	void ventaRegalias() {
+		panelVenta.getDesdeRegalias().setSelected(true);
+		panelVenta.getCodigoBuscar().requestFocus();
 	}
 }

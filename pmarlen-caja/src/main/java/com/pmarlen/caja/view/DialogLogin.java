@@ -57,6 +57,8 @@ public class DialogLogin extends javax.swing.JDialog {
         password = new javax.swing.JPasswordField();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Indentificación de Usuario");
@@ -115,6 +117,12 @@ public class DialogLogin extends javax.swing.JDialog {
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.WEST);
 
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 5));
+        getContentPane().add(jPanel9, java.awt.BorderLayout.EAST);
+
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 10));
+        getContentPane().add(jPanel10, java.awt.BorderLayout.NORTH);
+
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
@@ -124,6 +132,7 @@ public class DialogLogin extends javax.swing.JDialog {
     private javax.swing.JTextField email;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -131,6 +140,7 @@ public class DialogLogin extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JLabel labelContrasena;
     private javax.swing.JLabel labelEmail;
     private javax.swing.JPasswordField password;
