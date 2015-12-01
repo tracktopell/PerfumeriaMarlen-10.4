@@ -7,6 +7,7 @@
 package com.pmarlen.caja.view;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
@@ -33,6 +34,8 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        metodoDePagoLblImg = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -66,7 +69,16 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("TERMINAR VENTA");
 
-        jPanel1.setLayout(new java.awt.GridLayout(1, 1));
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jPanel7.setPreferredSize(new java.awt.Dimension(305, 250));
+        jPanel7.setLayout(new java.awt.GridLayout(1, 1));
+
+        metodoDePagoLblImg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        metodoDePagoLblImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/MetodoPago_Efectivo.png"))); // NOI18N
+        jPanel7.add(metodoDePagoLblImg);
+
+        jPanel1.add(jPanel7, java.awt.BorderLayout.WEST);
 
         jPanel6.setLayout(new java.awt.GridLayout(7, 1));
 
@@ -81,7 +93,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         cleinteNombre.setEditable(false);
         cleinteNombre.setColumns(18);
         cleinteNombre.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        cleinteNombre.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        cleinteNombre.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jPanel8.add(cleinteNombre);
 
         jPanel6.add(jPanel8);
@@ -200,7 +212,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jPanel6.add(jPanel12);
 
-        jPanel1.add(jPanel6);
+        jPanel1.add(jPanel6, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -216,7 +228,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(985, 467));
+        setSize(new java.awt.Dimension(1146, 585));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -288,8 +300,10 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JComboBox metodoDePago;
+    private javax.swing.JLabel metodoDePagoLblImg;
     private javax.swing.JTextField recibido;
     private javax.swing.JTextField subtotal;
     private javax.swing.JTextField total;
@@ -357,5 +371,8 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 	public JTextField getAutorizacion() {
 		return autorizacion;
 	}
-	
+
+	public JLabel getMetodoDePagoLblImg() {
+		return metodoDePagoLblImg;
+	}
 }

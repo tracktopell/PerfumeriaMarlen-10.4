@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -409,20 +410,20 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				this.terminarVentaDlg.getCambio().setEnabled(true);
 				this.terminarVentaDlg.getCargo().setEnabled(false);
 				this.terminarVentaDlg.getAutorizacion().setEnabled(true);
+				this.terminarVentaDlg.getMetodoDePagoLblImg().setIcon(new ImageIcon(getClass().getResource("/images/MetodoPago_Efectivo.png")));
 			} else if (((MetodoDePago) e.getItem()).getId() == Constants.ID_MDP_TARJETA) {
-				
 				this.terminarVentaDlg.getRecibido().setEnabled(false);
 				this.terminarVentaDlg.getCambio().setEnabled(false);
-				
 				this.terminarVentaDlg.getCargo().setEnabled(false);
 				this.terminarVentaDlg.getCargo().setText(Constants.df2Decimal.format(ventaSesion.getTotalRedondeado2Dec()));
-				
 				this.terminarVentaDlg.getAutorizacion().setEnabled(true);
+				this.terminarVentaDlg.getMetodoDePagoLblImg().setIcon(new ImageIcon(getClass().getResource("/images/MetodoPago_VisaMasterCard.png")));
 			} else if (((MetodoDePago) e.getItem()).getId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA) {
 				this.terminarVentaDlg.getRecibido().setEnabled(true);
 				this.terminarVentaDlg.getCambio().setEnabled(false);
 				this.terminarVentaDlg.getCargo().setEnabled(true);
 				this.terminarVentaDlg.getAutorizacion().setEnabled(true);
+				this.terminarVentaDlg.getMetodoDePagoLblImg().setIcon(new ImageIcon(getClass().getResource("/images/MetodoPago_Efectivo_Y_VisaMasterCard.png")));
 			}
 		}
 	}

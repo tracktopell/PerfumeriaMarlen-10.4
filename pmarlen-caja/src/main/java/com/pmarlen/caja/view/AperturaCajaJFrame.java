@@ -34,6 +34,8 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        cajaAbiertaLabel = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -42,7 +44,6 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         observaciones = new javax.swing.JTextArea();
-        jPanel10 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         aceptar = new javax.swing.JButton();
         cancelar = new javax.swing.JButton();
@@ -50,10 +51,18 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ABRIR SESIÓN DE CAJA");
 
-        jPanel1.setLayout(new java.awt.GridLayout(4, 1, 0, 10));
-        jPanel1.add(jPanel11);
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 45));
+
+        cajaAbiertaLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/CajaVacia_1.png"))); // NOI18N
+        jPanel3.add(cajaAbiertaLabel);
+
+        jPanel1.add(jPanel3, java.awt.BorderLayout.WEST);
+
+        jPanel11.setLayout(new java.awt.GridLayout(2, 1));
+
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 40));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -66,9 +75,9 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
         saldoInicial.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel2.add(saldoInicial);
 
-        jPanel1.add(jPanel2);
+        jPanel11.add(jPanel2);
 
-        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 40));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -78,13 +87,14 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
 
         observaciones.setColumns(18);
         observaciones.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        observaciones.setRows(2);
+        observaciones.setRows(3);
         jScrollPane1.setViewportView(observaciones);
 
         jPanel6.add(jScrollPane1);
 
-        jPanel1.add(jPanel6);
-        jPanel1.add(jPanel10);
+        jPanel11.add(jPanel6);
+
+        jPanel1.add(jPanel11, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -100,19 +110,20 @@ public class AperturaCajaJFrame extends javax.swing.JDialog {
 
         getContentPane().add(jPanel9, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(777, 305));
+        setSize(new java.awt.Dimension(1051, 396));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aceptar;
+    private javax.swing.JLabel cajaAbiertaLabel;
     private javax.swing.JButton cancelar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
