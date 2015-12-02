@@ -246,6 +246,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         jPanel3.add(jPanel4, java.awt.BorderLayout.CENTER);
 
+        notificaciones.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         notificaciones.setText("00");
         notificaciones.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         notificaciones.setIconTextGap(0);

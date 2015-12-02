@@ -438,6 +438,9 @@
             </Container>
             <Component class="javax.swing.JButton" name="notificaciones">
               <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Lucida Grande" size="13" style="1"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="00"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="0"/>

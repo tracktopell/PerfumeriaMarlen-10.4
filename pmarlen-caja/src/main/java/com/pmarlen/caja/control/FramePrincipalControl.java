@@ -40,7 +40,7 @@ public class FramePrincipalControl implements ActionListener{
 	private FramePrincipal    framePrincipal;
 	private PanelVentaControl panelVentaControl;
 	private PanelVentasControl panelVentasControl;
-	
+	boolean coloridoNotificacion=true;
 	private static FramePrincipalControl instance;
 	/**
 	 * @return the instance
@@ -170,12 +170,19 @@ public class FramePrincipalControl implements ActionListener{
 				
 				int nsl=ApplicationLogic.getInstance().getNotificacionesSinLeer();
 				boolean nn=ApplicationLogic.getInstance().isNuevaNotificacion();
+				
 				framePrincipal.getNotificaciones().setText(String.valueOf(nsl));
 				if(nn){
-					framePrincipal.getNotificaciones().setForeground(Color.RED);
+					coloridoNotificacion = !coloridoNotificacion;
+					if(coloridoNotificacion){
+						framePrincipal.getNotificaciones().setForeground(Color.RED);
+					}else{
+						framePrincipal.getNotificaciones().setForeground(Color.BLACK);						
+					}
 				} else {
-					framePrincipal.getNotificaciones().setForeground(framePrincipal.getForeground());
+					framePrincipal.getNotificaciones().setForeground(Color.BLACK);
 				}				
+				framePrincipal.getNotificaciones().updateUI();
 			}catch(InterruptedException ie){
 				ie.printStackTrace(System.err);
 				framePrincipal.getStatusCenter().setText("interrupted :(");
@@ -373,7 +380,8 @@ public class FramePrincipalControl implements ActionListener{
 		int nc=0;
 		while(notificaciones.hasNext()){
 			Notificacion nt = notificaciones.next();			
-			sb.append(nt.toString()).append("\n");
+			//sb.append(nt.toString()).append("\n");
+			sb.append(nt.getMensaje()).append("\n");
 			nt.setVista(true);
 			nc++;
 		}
