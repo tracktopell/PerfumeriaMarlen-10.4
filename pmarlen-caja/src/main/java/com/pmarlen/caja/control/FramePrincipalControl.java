@@ -5,6 +5,7 @@
 package com.pmarlen.caja.control;
 
 import com.pmarlen.caja.dao.MemoryDAO;
+import com.pmarlen.caja.model.Notificacion;
 import com.pmarlen.caja.view.AperturaCajaJFrame;
 import com.pmarlen.caja.view.CierreCajaJFrame;
 import com.pmarlen.caja.view.DialogConfiguracionBTImpresora;
@@ -15,6 +16,7 @@ import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.U;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +25,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -90,6 +93,8 @@ public class FramePrincipalControl implements ActionListener{
 		framePrincipal.getVentaCancelarMenu().addActionListener(this);
 		//---------------------------------------------------
 		
+		framePrincipal.getNotificacionesMenu().addActionListener(this);
+		
 		framePrincipal.getNegocioConfigMenu().addActionListener(this);
 		
 		//---------------------------------------------------
@@ -108,6 +113,7 @@ public class FramePrincipalControl implements ActionListener{
 		framePrincipal.getConfigMenu().setEnabled(false);
 		//---------------------------------------------------
 		
+		framePrincipal.getNotificaciones().addActionListener(this);
 		
 	}
 	
@@ -161,6 +167,15 @@ public class FramePrincipalControl implements ActionListener{
 				framePrincipal.getStatusCenter().setText(hora);
 				logger.trace("procesoReloj:->framePrincipal.updateStatus():MemoryDAO.getSyncPollState()="+MemoryDAO.getSyncPollState());
 				framePrincipal.updateStatus();
+				
+				int nsl=ApplicationLogic.getInstance().getNotificacionesSinLeer();
+				boolean nn=ApplicationLogic.getInstance().isNuevaNotificacion();
+				framePrincipal.getNotificaciones().setText(String.valueOf(nsl));
+				if(nn){
+					framePrincipal.getNotificaciones().setForeground(Color.RED);
+				} else {
+					framePrincipal.getNotificaciones().setForeground(framePrincipal.getForeground());
+				}				
 			}catch(InterruptedException ie){
 				ie.printStackTrace(System.err);
 				framePrincipal.getStatusCenter().setText("interrupted :(");
@@ -201,6 +216,8 @@ public class FramePrincipalControl implements ActionListener{
 			ventaeliminarProdMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getVentaCancelarMenu()){
 			ventaCancelarMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getNotificaciones() || e.getSource() == framePrincipal.getNotificacionesMenu()){
+			notificaciones_actionPerformed();
 		} else {
 		}
 		
@@ -349,5 +366,21 @@ public class FramePrincipalControl implements ActionListener{
 			framePrincipal.getStatusWest().setText(MemoryDAO.getCajaGlobalInfo());
 		}		
 	}
-
+	
+	private void notificaciones_actionPerformed(){
+		Iterator<Notificacion> notificaciones = ApplicationLogic.getInstance().getNotificaciones();
+		StringBuilder sb=new StringBuilder("");
+		int nc=0;
+		while(notificaciones.hasNext()){
+			Notificacion nt = notificaciones.next();			
+			sb.append(nt.toString()).append("\n");
+			nt.setVista(true);
+			nc++;
+		}
+		if(nc==0){
+			JOptionPane.showMessageDialog(framePrincipal, "Na hay notificaciones.", "Notificaciones", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(framePrincipal, sb.toString(), "Notificaciones", JOptionPane.WARNING_MESSAGE);
+		}
+	}
 }

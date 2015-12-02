@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
@@ -140,13 +141,16 @@ public class FramePrincipal extends javax.swing.JFrame {
         statusPanel = new javax.swing.JPanel();
         statusWest = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         statusCenter = new javax.swing.JTextField();
         statusConeccion = new javax.swing.JTextField();
+        notificaciones = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         archivoMenu = new javax.swing.JMenu();
         sesionMenu = new javax.swing.JMenuItem();
         ventasMenu = new javax.swing.JMenuItem();
         devolsMenu = new javax.swing.JMenuItem();
+        notificacionesMenu = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         salirMenu = new javax.swing.JMenuItem();
         ventaMenu = new javax.swing.JMenu();
@@ -228,15 +232,25 @@ public class FramePrincipal extends javax.swing.JFrame {
         statusPanel.add(statusWest, java.awt.BorderLayout.CENTER);
 
         jPanel3.setPreferredSize(new java.awt.Dimension(380, 30));
-        jPanel3.setLayout(new java.awt.GridLayout(1, 2));
+        jPanel3.setLayout(new java.awt.BorderLayout(10, 0));
+
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
 
         statusCenter.setEditable(false);
         statusCenter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jPanel3.add(statusCenter);
+        jPanel4.add(statusCenter);
 
         statusConeccion.setEditable(false);
         statusConeccion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jPanel3.add(statusConeccion);
+        jPanel4.add(statusConeccion);
+
+        jPanel3.add(jPanel4, java.awt.BorderLayout.CENTER);
+
+        notificaciones.setText("00");
+        notificaciones.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        notificaciones.setIconTextGap(0);
+        notificaciones.setPreferredSize(new java.awt.Dimension(60, 35));
+        jPanel3.add(notificaciones, java.awt.BorderLayout.EAST);
 
         statusPanel.add(jPanel3, java.awt.BorderLayout.EAST);
 
@@ -252,6 +266,9 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         devolsMenu.setText("H. Devol");
         archivoMenu.add(devolsMenu);
+
+        notificacionesMenu.setText("Notificaciones");
+        archivoMenu.add(notificacionesMenu);
         archivoMenu.add(jSeparator1);
 
         salirMenu.setText("Salir");
@@ -379,11 +396,14 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JMenuItem manualMenu;
+    private javax.swing.JButton notificaciones;
+    private javax.swing.JMenuItem notificacionesMenu;
     private javax.swing.JMenuItem nuevaDevolMenu;
     private javax.swing.JPanel panelSesion;
     private javax.swing.JPanel panelVenta;
@@ -796,4 +816,13 @@ public class FramePrincipal extends javax.swing.JFrame {
 	public JMenuItem getVentaRegaliasMenu() {
 		return ventaRegaliasMenu;
 	}
+
+	public JButton getNotificaciones() {
+		return notificaciones;
+	}
+
+	public JMenuItem getNotificacionesMenu() {
+		return notificacionesMenu;
+	}
+	
 }

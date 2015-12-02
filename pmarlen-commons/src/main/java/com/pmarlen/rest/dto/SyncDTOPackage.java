@@ -22,6 +22,7 @@ public class SyncDTOPackage {
 	public static final int SYNC_FAIL			    = 128;
 	
 	private int     syncDBStatus;
+	private String  currentPMCajaVersion;
 	private List<Integer> listIndexProccessed;
 	private List<I> inventarioSucursalList;
 	private List<U> usuarioList;
@@ -47,6 +48,7 @@ public class SyncDTOPackage {
 	@Override
 	public String toString() {
 		return "SyncDTOPackage{ syncDBStatus=" + syncDBStatus+
+				", currentPMCajaVersion="+currentPMCajaVersion+
 				", listIndexProccessed="+listIndexProccessed+
 				", inventarioSucursalList.length="+inventarioSucursalList.size()+
 				", usuarioList.size="+usuarioList.size()+
@@ -65,9 +67,15 @@ public class SyncDTOPackage {
 	public void setSyncDBStatus(int syncDBStatus) {
 		this.syncDBStatus = syncDBStatus;
 	}
-	
-	
 
+	public String getCurrentPMCajaVersion() {
+		return currentPMCajaVersion;
+	}
+
+	public void setCurrentPMCajaVersion(String currentPMCajaVersion) {
+		this.currentPMCajaVersion = currentPMCajaVersion;
+	}
+	
 	/**
 	 * @return the inventarioSucursalList
 	 */

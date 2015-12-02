@@ -19,11 +19,14 @@ import com.pmarlen.rest.dto.I;
 import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
 import com.tracktopell.jdbc.DataSourceFacade;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import org.apache.log4j.Logger;
 
 /**
@@ -57,6 +60,24 @@ public class SyncDAO {
 		List<ES_ESD> escdList = syncDTORequest.getEscdList();
 		
 		logger.debug("syncTransaction:sucId="+sucId);
+		
+		File filePMCajaLastVersion =  new File("/usr/local/pmcajadist/classes/version.properties");
+		logger.debug("syncTransaction:filePMCajaLastVersion:"+filePMCajaLastVersion);
+		if(filePMCajaLastVersion.exists() && filePMCajaLastVersion.isFile() && filePMCajaLastVersion.canRead()){
+			Properties porpVersionPMCaja = new Properties();
+			try {
+				porpVersionPMCaja.load(new FileInputStream(filePMCajaLastVersion));
+				logger.debug("syncTransaction:porpVersionPMCaja:"+porpVersionPMCaja);				
+				String pmarlencaja_version = porpVersionPMCaja.getProperty("pmarlencaja.version");
+				if(pmarlencaja_version != null){
+					s.setCurrentPMCajaVersion(pmarlencaja_version);
+				}
+			}catch(IOException ioe){
+				logger.debug("syncTransaction:filePMCajaLastVersion:"+filePMCajaLastVersion+": "+ioe);
+				s.setCurrentPMCajaVersion(null);
+			}
+		}
+		
 		
 		if(escdList!=null && escdList.size()>0) {
 			Connection conn = null;

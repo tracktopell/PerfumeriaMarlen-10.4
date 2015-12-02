@@ -6,6 +6,7 @@ package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.caja.dao.MemoryDAO;
+import com.pmarlen.caja.model.Notificacion;
 import com.pmarlen.caja.model.VentaSesion;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
@@ -31,6 +32,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
@@ -62,9 +65,12 @@ public class ApplicationLogic {
 	private HashMap<Integer,Almacen> tipoAlmacen;
 	private CorteCajaDTO corteCajaDTO;
 	private	VentaSesion ventaSesion;
+	private LinkedHashMap<String,Notificacion> notificaciones;
 
 	private ApplicationLogic(){
 		corteCajaDTO = new CorteCajaDTO();
+		notificaciones = new LinkedHashMap<String,Notificacion>();
+		nuevaNotificacion=false;
 	}
 
 	public CorteCajaDTO getCorteCajaDTO() {
@@ -153,6 +159,12 @@ public class ApplicationLogic {
 		}
 		
 		return updateApp;
+	}
+	
+	public int compareRemoteVersion(String remoteCurrentVersion){
+		String currentVersionParts[] = getVersion().split("\\.");
+		String versionReadParts[]    = remoteCurrentVersion.split("\\.");
+		return campareVersions(currentVersionParts, versionReadParts);			
 	}
 	
 	private int campareVersions(String currentVersionParts[],String versionReadParts[]){
@@ -428,6 +440,36 @@ public class ApplicationLogic {
 			ventaSesion = new VentaSesion();
 		}
 		return ventaSesion;
+	}
+	
+	boolean nuevaNotificacion;
+	
+	public void add(Notificacion nuevaNot){
+		if( ! notificaciones.containsKey(nuevaNot.getId()) ){
+			notificaciones.put(nuevaNot.getId(), nuevaNot);
+			nuevaNotificacion = true;
+		}
+	}
+
+	public Iterator<Notificacion> getNotificaciones() {
+		nuevaNotificacion = false;
+		return notificaciones.values().iterator();
+	}
+
+	public boolean isNuevaNotificacion() {
+		return nuevaNotificacion;
+	}
+	
+	public synchronized int getNotificacionesSinLeer(){
+		int  nsl=0;
+		
+		for(Notificacion n:notificaciones.values()){
+			if(n.isVista()){
+				nsl++;
+			}
+		}
+		
+		return nsl;
 	}
 	
 }

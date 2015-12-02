@@ -10,6 +10,7 @@ import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.control.FramePrincipalControl;
+import com.pmarlen.caja.model.Notificacion;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.I;
@@ -572,8 +573,18 @@ public class MemoryDAO {
 			if(jsonContent != null) {
 				logger.trace("readLocally:...OK, JSon parse:");
 				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
-				logger.trace("readLocally:paqueteSinc=->"+paqueteSinc+"<-");
-				logger.trace("readLocally:paqueteSinc=->paqueteSinc.getSyncDBStatus():"+Integer.toBinaryString(paqueteSinc.getSyncDBStatus())+"<-");
+				logger.debug("readLocally:paqueteSinc=->"+paqueteSinc+"<-");
+				logger.debug("readLocally:paqueteSinc:paqueteSinc.getSyncDBStatus():"+Integer.toBinaryString(paqueteSinc.getSyncDBStatus())+"<-");
+				String remoteCurrentPMCajaVersion = paqueteSinc.getCurrentPMCajaVersion();
+				logger.debug("readLocally:paqueteSinc:paqueteSinc.getCurrentPMCajaVersion="+remoteCurrentPMCajaVersion);
+				if(remoteCurrentPMCajaVersion != null){
+					int compare = ApplicationLogic.getInstance().compareRemoteVersion(remoteCurrentPMCajaVersion);
+					logger.debug("readLocally:paqueteSinc:compare="+compare);
+					if(compare < 0){
+						Notificacion nuevaNotificacion=new Notificacion("UP_"+remoteCurrentPMCajaVersion,"HAY UNA NUEVA VERSIÓN:"+remoteCurrentPMCajaVersion+" DEBE REINICIAR.");
+						ApplicationLogic.getInstance().add(nuevaNotificacion);
+					}
+				}
 				
 				if( (paqueteSinc.getSyncDBStatus() & SyncDTOPackage.SYNC_FAIL) == SyncDTOPackage.SYNC_FAIL) {
 					logger.debug("readLocally:paqueteSinc:->SYNC_FAIL:");
