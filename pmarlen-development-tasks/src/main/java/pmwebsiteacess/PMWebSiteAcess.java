@@ -76,7 +76,7 @@ public class PMWebSiteAcess {
 
 			HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
 				public boolean verify(String hostname, SSLSession session) {
-					logger.info("->HostnameVerifier.verify:hostname=" + hostname);
+					logger.debug("->HostnameVerifier.verify:hostname=" + hostname);
 					return true;
 				}
 			});
@@ -95,7 +95,7 @@ public class PMWebSiteAcess {
 		BufferedReader br = null;
 		try {
 			urlEmailList = new URL(URL_LOGIN);
-			logger.info("->main:urlEmailList=" + urlEmailList);
+			logger.debug("->main:urlEmailList=" + urlEmailList);
 //			Authenticator.setDefault(new Authenticator() {
 //				protected PasswordAuthentication getPasswordAuthentication() {
 //					return new PasswordAuthentication("perfumeriamarlen.com.mx", "A9cD0H6NKEuM".toCharArray());
@@ -103,7 +103,7 @@ public class PMWebSiteAcess {
 //			});
 
 			httpConn = (HttpURLConnection) urlEmailList.openConnection();
-			logger.info("->main:httpConn=" + httpConn);
+			logger.debug("->main:httpConn=" + httpConn);
 
 			httpConn.setDoOutput(true);
 			httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -118,7 +118,7 @@ public class PMWebSiteAcess {
 			httpConn.setUseCaches(false);
 			httpConn.setDoInput(true);
 			httpConn.setDoOutput(true);
-			logger.info("--------------------->main:send output");
+			logger.debug("--------------------->main:send output");
 			//Send request
 			DataOutputStream wr = new DataOutputStream(
 					httpConn.getOutputStream());
@@ -127,7 +127,7 @@ public class PMWebSiteAcess {
 			wr.close();
 			is = httpConn.getInputStream();
 			
-			logger.info("--------------------->main:httpConn.getResponseCode()=" + httpConn.getResponseCode());			
+			logger.debug("--------------------->main:httpConn.getResponseCode()=" + httpConn.getResponseCode());			
 			
 			Map<String, List<String>> headerFields = httpConn.getHeaderFields();
 			Iterator<String> itX = headerFields.keySet().iterator();
@@ -136,13 +136,13 @@ public class PMWebSiteAcess {
 			while (itX.hasNext()) {
 				String header = itX.next();
 				List<String> headerValues = headerFields.get(header);
-				logger.info("->main:HEADERS[" + header + "]=[" + headerValues + "]");
+				logger.debug("->main:HEADERS[" + header + "]=[" + headerValues + "]");
 				if(header!=null && header.equalsIgnoreCase("Set-Cookie")){
-					logger.info("->main:===>>headerValues.size="+headerValues.size());
+					logger.debug("->main:===>>headerValues.size="+headerValues.size());
 					for(String cookieValue:headerValues){
 						if(cookieValue.contains("PHPSESSID")){
 							PHPSessionID = cookieValue.substring(cookieValue.indexOf("PHPSESSID="), cookieValue.indexOf("path=")).trim();
-							logger.info("->main:===>>PHPSessionID="+PHPSessionID);
+							logger.debug("->main:===>>PHPSessionID="+PHPSessionID);
 						}
 					}
 					
@@ -154,10 +154,10 @@ public class PMWebSiteAcess {
 			br = new BufferedReader(new InputStreamReader(is));
 			String line = null;
 			for (int nl = 1; ((line = br.readLine()) != null); nl++) {
-				//logger.info("->main:Stream:Line[" + nl + "]->" + line + "<-");
+				//logger.debug("->main:Stream:Line[" + nl + "]->" + line + "<-");
 			}
 			is.close();
-			logger.info("-------------------------------->");
+			logger.debug("-------------------------------->");
 		} catch (MalformedURLException me) {
 			logger.error("la URL esta mal:", me);
 		} catch (Exception ioe) {
@@ -175,7 +175,7 @@ public class PMWebSiteAcess {
 		String result=null;
 		try {
 			urlEmailList = new URL(url);
-			logger.info("->main:urlEmailList=" + urlEmailList);
+			logger.debug("->main:urlEmailList=" + urlEmailList);
 //			Authenticator.setDefault(new Authenticator() {
 //				protected PasswordAuthentication getPasswordAuthentication() {
 //					return new PasswordAuthentication("perfumeriamarlen.com.mx", "A9cD0H6NKEuM".toCharArray());
@@ -183,14 +183,14 @@ public class PMWebSiteAcess {
 //			});
 
 			httpConn = (HttpURLConnection) urlEmailList.openConnection();
-			logger.info("->main:httpConn=" + httpConn);
+			logger.debug("->main:httpConn=" + httpConn);
 
 			httpConn.setRequestMethod("GET");
 			httpConn.setRequestProperty("Cookie", phpSessionId+"; locale=es-ES");
 			httpConn.setDoInput(true);
 			is = httpConn.getInputStream();
 			
-			logger.info("--------------------->main:httpConn.getResponseCode()=" + httpConn.getResponseCode());			
+			logger.debug("--------------------->main:httpConn.getResponseCode()=" + httpConn.getResponseCode());			
 			
 			Map<String, List<String>> headerFields = httpConn.getHeaderFields();
 			Iterator<String> itX = headerFields.keySet().iterator();
@@ -199,13 +199,13 @@ public class PMWebSiteAcess {
 			while (itX.hasNext()) {
 				String header = itX.next();
 				List<String> headerValues = headerFields.get(header);
-				logger.info("->main:HEADERS[" + header + "]=[" + headerValues + "]");
+				logger.debug("->main:HEADERS[" + header + "]=[" + headerValues + "]");
 				if(header!=null && header.equalsIgnoreCase("Set-Cookie")){
-					logger.info("->main:===>>headerValues.size="+headerValues.size());
+					logger.debug("->main:===>>headerValues.size="+headerValues.size());
 					for(String cookieValue:headerValues){
 						if(cookieValue.contains("PHPSESSID")){
 							PHPSessionID = cookieValue.substring(cookieValue.indexOf("PHPSESSID="), cookieValue.indexOf("path=")).trim();
-							logger.info("->main:===>>PHPSessionID="+PHPSessionID);
+							logger.debug("->main:===>>PHPSessionID="+PHPSessionID);
 						}
 					}										
 				}
@@ -214,12 +214,12 @@ public class PMWebSiteAcess {
 			br = new BufferedReader(new InputStreamReader(is));
 			String line = null;
 			for (int nl = 1; ((line = br.readLine()) != null); nl++) {
-				//logger.info("->main:Stream:Line[" + nl + "]->" + line + "<-");				
+				//logger.debug("->main:Stream:Line[" + nl + "]->" + line + "<-");				
 				result = line;
 			}
 			
 			is.close();
-			logger.info("-------------------------------->");
+			logger.debug("-------------------------------->");
 		} catch (MalformedURLException me) {
 			logger.error("la URL esta mal:", me);
 		} catch (Exception ioe) {
@@ -237,7 +237,7 @@ public class PMWebSiteAcess {
 		String result=null;
 		try {
 			urlEmailList = new URL(url);
-			logger.info("->main:urlEmailList=" + urlEmailList);
+			logger.debug("->main:urlEmailList=" + urlEmailList);
 //			Authenticator.setDefault(new Authenticator() {
 //				protected PasswordAuthentication getPasswordAuthentication() {
 //					return new PasswordAuthentication("perfumeriamarlen.com.mx", "A9cD0H6NKEuM".toCharArray());
@@ -245,14 +245,14 @@ public class PMWebSiteAcess {
 //			});
 
 			httpConn = (HttpURLConnection) urlEmailList.openConnection();
-			logger.info("->main:httpConn=" + httpConn);
+			logger.debug("->main:httpConn=" + httpConn);
 
 			httpConn.setRequestMethod("GET");
 			httpConn.setRequestProperty("Cookie", phpSessionId+"; locale=es-ES");
 			httpConn.setDoInput(true);
 			is = httpConn.getInputStream();
 			
-			logger.info("--------------------->main:httpConn.getResponseCode()=" + httpConn.getResponseCode());			
+			logger.debug("--------------------->main:httpConn.getResponseCode()=" + httpConn.getResponseCode());			
 			
 			Map<String, List<String>> headerFields = httpConn.getHeaderFields();
 			Iterator<String> itX = headerFields.keySet().iterator();
@@ -261,13 +261,13 @@ public class PMWebSiteAcess {
 			while (itX.hasNext()) {
 				String header = itX.next();
 				List<String> headerValues = headerFields.get(header);
-				logger.info("->main:HEADERS[" + header + "]=[" + headerValues + "]");
+				logger.debug("->main:HEADERS[" + header + "]=[" + headerValues + "]");
 				if(header!=null && header.equalsIgnoreCase("Set-Cookie")){
-					logger.info("->main:===>>headerValues.size="+headerValues.size());
+					logger.debug("->main:===>>headerValues.size="+headerValues.size());
 					for(String cookieValue:headerValues){
 						if(cookieValue.contains("PHPSESSID")){
 							PHPSessionID = cookieValue.substring(cookieValue.indexOf("PHPSESSID="), cookieValue.indexOf("path=")).trim();
-							logger.info("->main:===>>PHPSessionID="+PHPSessionID);
+							logger.debug("->main:===>>PHPSessionID="+PHPSessionID);
 						}
 					}										
 				}
@@ -276,19 +276,19 @@ public class PMWebSiteAcess {
 			br = new BufferedReader(new InputStreamReader(is));
 			String line = null;
 			for (int nl = 1; ((line = br.readLine()) != null); nl++) {
-				//logger.info("->main:Stream:Line[" + nl + "]->" + line + "<-");
+				//logger.debug("->main:Stream:Line[" + nl + "]->" + line + "<-");
 				if(line.contains("name=\"forgery_protection_token\"")){					
 					int ftBi = line.indexOf("content=")+9;
 					int ftEi = line.indexOf("\"",ftBi+2);
 					if(ftBi > 0 && ftEi >0) {
 						result = line.substring(ftBi,ftEi);
-						logger.info("->forgery_protection_token:->" + result + "<-");
+						logger.debug("->forgery_protection_token:->" + result + "<-");
 					}
 				}
 			}
 			
 			is.close();
-			logger.info("-------------------------------->");
+			logger.debug("-------------------------------->");
 		} catch (MalformedURLException me) {
 			logger.error("la URL esta mal:", me);
 		} catch (Exception ioe) {
@@ -298,48 +298,59 @@ public class PMWebSiteAcess {
 		return result;
 	}
 	
-	public static String saveEdit(String phpSessionId,String id,String name,String password,String forgeryProtectionToken,String url){
-		URL urlEmailList = null;
+	public static int saveEdit(String phpSessionId,String id,String name,String password,String forgeryProtectionToken,String url){
+		URL urlEdit = null;
 		HttpURLConnection httpConn = null;
 		InputStream is = null;
 		BufferedReader br = null;
 		String result=null;
+		int status=-1;
 		try {
-			urlEmailList = new URL(url);
-			logger.info("->saveEdit:urlEmailList=" + urlEmailList);
+			urlEdit = new URL(url);
+			logger.debug("->saveEdit:urlEdit=" + urlEdit);
 //			Authenticator.setDefault(new Authenticator() {
 //				protected PasswordAuthentication getPasswordAuthentication() {
 //					return new PasswordAuthentication("perfumeriamarlen.com.mx", "A9cD0H6NKEuM".toCharArray());
 //				}
 //			})
 
-			httpConn = (HttpURLConnection) urlEmailList.openConnection();
-			logger.info("->saveEdit:httpConn=" + httpConn);
+			httpConn = (HttpURLConnection) urlEdit.openConnection();
+			logger.debug("->saveEdit:httpConn=" + httpConn);
 
-			httpConn.setDoOutput(true);
+			httpConn.setDoOutput(true);			
 			httpConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+			httpConn.setRequestProperty("Cookie", phpSessionId+"; locale=es-ES");
 			httpConn.setRequestMethod("POST");
 			httpConn.setRequestProperty("Cookie", phpSessionId+"; locale=es-ES");
 			
 			String urlParameters
-					=   "general[generalSection][name]="+name+"&" +
-						"general[generalSection][postbox]=0&" +
-						"general[generalSection][postbox]=1&" +
-						"general[generalSection][mboxQuotaValue]=-1&" +
+					=   "general%5BgeneralSection%5D%5Bname%5D="+name+"&" +
+						"general%5BgeneralSection%5D%5Bpostbox%5D=0&" +
+						"general%5BgeneralSection%5D%5Bpostbox%5D=1&" +
+						"general%5BgeneralSection%5D%5BmboxQuotaValue%5D=-1&" +
 						"general-generalSection-mboxQuotaValue-selector=unlimited&" +
-						"general[generalSection][password]="+password+"&" +
-						"general[generalSection][passwordConfirmation]="+password+"&" +
-						//"redirect[redirectSection][enabled]=0&" +
-						//"aliases[aliasesSection][aliasesForm][c210124][aliasName]=&" +
-						//"aliases[aliasesSection][aliasesForm][dynamicSubFormTemplate][aliasName]=&" +
-						//"autoResponder[autoResponderSection][enabled]=0&" +
-						//"autoResponder[autoResponderSection][attachments][dynamicSubFormTemplate][file]=&" +
+						"general%5BgeneralSection%5D%5Bpassword%5D="+password+"&" +
+						"general%5BgeneralSection%5D%5BpasswordConfirmation%5D="+password+"&" +
+						"redirect%5BredirectSection%5D%5Benabled%5D=0&" +
+						"aliases%5BaliasesSection%5D%5BaliasesForm%5D%5Bc210124%5D%5BaliasName%5D=&" +
+						"aliases%5BaliasesSection%5D%5BaliasesForm%5D%5BdynamicSubFormTemplate%5D%5BaliasName%5D=&" +
+						"autoResponder%5BautoResponderSection%5D%5Benabled%5D=0&" +
+						"autoResponder%5BautoResponderSection%5D%5Battachments%5D%5BdynamicSubFormTemplate%5D%5Bfile%5D=&" +
 						"hidden=&" +
 						"forgery_protection_token="+forgeryProtectionToken;
+/*
+general%5BgeneralSection%5D%5Bname%5D=test1&general%5BgeneralSection%5D%5Bpostbox%5D=0&general%5BgeneralSection
+%5D%5Bpostbox%5D=1&general%5BgeneralSection%5D%5BmboxQuotaValue%5D=-1&general-generalSection-mboxQuotaValue-selector
+=unlimited&general%5BgeneralSection%5D%5Bpassword%5D=sdf%24234Tgh67&general%5BgeneralSection%5D%5BpasswordConfirmation
+%5D=sdf%24234Tgh67&redirect%5BredirectSection%5D%5Benabled%5D=0&aliases%5BaliasesSection%5D%5BaliasesForm
+%5D%5Bc151550%5D%5BaliasName%5D=&aliases%5BaliasesSection%5D%5BaliasesForm%5D%5BdynamicSubFormTemplate
+%5D%5BaliasName%5D=&autoResponder%5BautoResponderSection%5D%5Benabled%5D=0&autoResponder%5BautoResponderSection
+%5D%5Battachments%5D%5BdynamicSubFormTemplate%5D%5Bfile%5D=&hidden=&forgery_protection_token=4f7c900
+23dfb3712b787cfbd93b29c2c
+*/
+			//urlParameters = URLEncoder.encode(urlParameters,"UTF-8");
 			
-			urlParameters = URLEncoder.encode(urlParameters,"UTF-8");
-			
-			logger.info("--------------------->params: ->"+urlParameters+"<-("+urlParameters.length()+")");
+			logger.debug("--------------------->params: ->"+urlParameters+"<-("+urlParameters.length()+")");
 			
 			httpConn.setRequestProperty("Content-Length", ""
 					+ Integer.toString(urlParameters.getBytes().length));
@@ -347,7 +358,7 @@ public class PMWebSiteAcess {
 			httpConn.setUseCaches(false);
 			httpConn.setDoInput(true);
 			httpConn.setDoOutput(true);
-			logger.info("--------------------->saveEdit:send output");
+			logger.debug("--------------------->saveEdit:send output");
 			//Send request
 			DataOutputStream wr = new DataOutputStream(
 					httpConn.getOutputStream());
@@ -355,8 +366,8 @@ public class PMWebSiteAcess {
 			wr.flush();
 			wr.close();			
 			is = httpConn.getInputStream();
-			
-			logger.info("--------------------->saveEdit:httpConn.getResponseCode()=" + httpConn.getResponseCode());			
+			status = httpConn.getResponseCode();
+			logger.debug("--------------------->saveEdit:httpConn.getResponseCode()=" + status);
 			
 			Map<String, List<String>> headerFields = httpConn.getHeaderFields();
 			Iterator<String> itX = headerFields.keySet().iterator();
@@ -365,13 +376,13 @@ public class PMWebSiteAcess {
 			while (itX.hasNext()) {
 				String header = itX.next();
 				List<String> headerValues = headerFields.get(header);
-				logger.info("->saveEdit:HEADERS[" + header + "]=[" + headerValues + "]");
+				logger.trace("->saveEdit:HEADERS[" + header + "]=[" + headerValues + "]");
 				if(header!=null && header.equalsIgnoreCase("Set-Cookie")){
-					logger.info("->saveEdit:===>>headerValues.size="+headerValues.size());
+					logger.trace("->saveEdit:===>>headerValues.size="+headerValues.size());
 					for(String cookieValue:headerValues){
 						if(cookieValue.contains("PHPSESSID")){
 							PHPSessionID = cookieValue.substring(cookieValue.indexOf("PHPSESSID="), cookieValue.indexOf("path=")).trim();
-							logger.info("->saveEdit:===>>PHPSessionID="+PHPSessionID);
+							logger.trace("->saveEdit:===>>PHPSessionID="+PHPSessionID);
 						}
 					}										
 				}
@@ -380,18 +391,18 @@ public class PMWebSiteAcess {
 			br = new BufferedReader(new InputStreamReader(is));
 			String line = null;
 			for (int nl = 1; ((line = br.readLine()) != null); nl++) {
-				logger.info("->saveEdit:Stream:Line[" + nl + "]->" + line + "<-");				
+				logger.debug("->saveEdit:Stream:Line[" + nl + "]->" + line + "<-");				
 			}
 			
 			is.close();
-			logger.info("-------------------------------->");
+			logger.debug("-------------------------------->");
 		} catch (MalformedURLException me) {
 			logger.error("la URL esta mal:", me);
 		} catch (Exception ioe) {
 			logger.error("Errror:", ioe);
-		}		
+		}
 		
-		return result;
+		return status;
 	}
 
 	
@@ -401,35 +412,37 @@ public class PMWebSiteAcess {
 			
 			String PHPSessionID = login(USER, PASSWORD);
 			
-			logger.info("->PHPSessionID:"+PHPSessionID);
+			logger.debug("->PHPSessionID:"+PHPSessionID);
 			
 			String json = getEmailList(PHPSessionID,URL_EMAIL_LIST);
 			
 			Gson gson=new Gson();
 			EmailModelDTO x = gson.fromJson(json,EmailModelDTO.class);
 			
-			logger.info("->x="+x);
+			logger.debug("->x="+x);
 			String id=null;
 			String name="test1";
 			String domain = "";
 			if(x != null) {
 				List<Datum> dl = x.getData();
-				for(Datum di: dl){
+				for(Datum di: dl){					
 					if(di.getName().equals(name)){
-						logger.info("\t->["+di.getId()+"] "+di.getName()+"@"+di.getDomainName());
+						logger.debug("\t->[X]["+di.getId()+"] "+di.getName()+"@"+di.getDomainName()+"\tDomainName:"+di.getDomainName()+",DomainId:"+di.getDomainId());
 						id=di.getId();
 						domain=di.getDomainName();
+					}else {
+						logger.debug("\t->   ["+di.getId()+"] "+di.getName()+"@"+di.getDomainName());
 					}
 				}
 			}
 			
-			String forgeryPT = getEditForgeryToken(PHPSessionID,"5814",URL_EMAIL_EDIT);
+			String forgeryPT = getEditForgeryToken(PHPSessionID,id,URL_EMAIL_EDIT);
 			
 			String password = "pwd$" + Long.toHexString(System.currentTimeMillis()).hashCode();
 			password = "qwerty654321";
-			logger.info("\t->["+id+"] "+name+"@"+domain+" new Password:->"+password+"<-");
+			logger.debug("\t->["+id+"] "+name+"@"+domain+" new Password:->"+password+"<-forgeryPT ->"+forgeryPT+"<-");
 			
-			saveEdit(PHPSessionID, id, name, password, forgeryPT, URL_EMAIL_EDIT);
+			saveEdit(PHPSessionID, id, name, password, forgeryPT, URL_EMAIL_EDIT+id);
 			
 		} catch (Exception ioe) {
 			logger.error("Errror:", ioe);
@@ -438,6 +451,7 @@ public class PMWebSiteAcess {
 	private static final String PASSWORD = "A9cD0H6NKEuM";
 	private static final String USER = "perfumeriamarlen.com.mx";
 	private static final String URL_LOGIN = "https://perfumeriamarlen.com.mx:8443/login_up.php3";
+	private static final String URL_EMAIL_LIST1 = "https://perfumeriamarlen.com.mx:8443/smb/email-address/list";
 	private static final String URL_EMAIL_LIST = "https://perfumeriamarlen.com.mx:8443/smb/email-address/list-data/items-per-page/100000";
 	private static final String URL_EMAIL_EDIT = "https://perfumeriamarlen.com.mx:8443/smb/email-address/edit/id/";
 

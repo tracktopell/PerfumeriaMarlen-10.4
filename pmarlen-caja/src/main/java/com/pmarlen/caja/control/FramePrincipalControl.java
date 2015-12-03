@@ -78,7 +78,7 @@ public class FramePrincipalControl implements ActionListener{
 		framePrincipal.getSalirMenu().addActionListener(this);
 		
 		//---------------------------------------------------
-		//framePrincipal.getConeccionMenu().addActionListener(this);
+		framePrincipal.getNuevaDevolMenu().addActionListener(this);
 		
 		framePrincipal.getPreferenciasMenu().addActionListener(this);
 		
@@ -230,6 +230,8 @@ public class FramePrincipalControl implements ActionListener{
 			notificaciones_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getPreferenciasMenu()){
 			preferenciasMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getNuevaDevolMenu()){
+			nuevaDevolMenu_actionPerformed();
 		} else {
 		}
 		
@@ -417,5 +419,9 @@ public class FramePrincipalControl implements ActionListener{
 		ParamsConfigDialog dlg =  new ParamsConfigDialog(framePrincipal);
 		ParamsConfigDialogControl pcd=new ParamsConfigDialogControl(dlg);
 		pcd.estadoInicial();
+	}
+
+	private void nuevaDevolMenu_actionPerformed() {
+		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelDevolucion");		
 	}
 }

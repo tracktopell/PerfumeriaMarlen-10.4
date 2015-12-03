@@ -136,6 +136,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         cerrarSesion = new javax.swing.JButton();
         panelVenta = new PanelVenta();
         panelVentas = new PanelVentas();
+        panelDevolucion = new PanelDevolucion();
         statusPanel = new javax.swing.JPanel();
         statusWest = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
@@ -184,7 +185,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         panels.setLayout(new java.awt.CardLayout());
 
-        panelSesion.setBorder(javax.swing.BorderFactory.createTitledBorder("Sesión"));
+        panelSesion.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sesión", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
         panelSesion.setLayout(new java.awt.BorderLayout());
 
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -213,11 +214,14 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         panels.add(panelSesion, "panelSesion");
 
-        panelVenta.setBorder(javax.swing.BorderFactory.createTitledBorder("Venta Actual"));
+        panelVenta.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Venta Actual", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
         panels.add(panelVenta, "panelVenta");
 
         panelVentas.setBorder(javax.swing.BorderFactory.createTitledBorder("Ventas"));
         panels.add(panelVentas, "panelVentas");
+
+        panelDevolucion.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Devolución de Venta", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
+        panels.add(panelDevolucion, "panelDevolucion");
 
         getContentPane().add(panels, java.awt.BorderLayout.CENTER);
 
@@ -398,6 +402,7 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JButton notificaciones;
     private javax.swing.JMenuItem notificacionesMenu;
     private javax.swing.JMenuItem nuevaDevolMenu;
+    private javax.swing.JPanel panelDevolucion;
     private javax.swing.JPanel panelSesion;
     private javax.swing.JPanel panelVenta;
     private javax.swing.JPanel panelVentas;
