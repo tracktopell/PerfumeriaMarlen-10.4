@@ -138,9 +138,9 @@
             <Property name="text" type="java.lang.String" value="Configuraci&#xf3;n"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="coneccionMenu">
+            <MenuItem class="javax.swing.JMenuItem" name="preferenciasMenu">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Sesi&#xf3;n de Caja"/>
+                <Property name="text" type="java.lang.String" value="Preferencias"/>
               </Properties>
             </MenuItem>
             <Menu class="javax.swing.JMenu" name="impresionMenu">
@@ -148,11 +148,6 @@
                 <Property name="text" type="java.lang.String" value="Impresi&#xf3;n"/>
               </Properties>
               <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="impresionParamMenu">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Parametros"/>
-                  </Properties>
-                </MenuItem>
                 <MenuItem class="javax.swing.JRadioButtonMenuItem" name="impresionSistemaMenu">
                   <Properties>
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">

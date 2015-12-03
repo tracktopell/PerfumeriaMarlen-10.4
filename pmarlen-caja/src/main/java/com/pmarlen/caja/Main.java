@@ -2,11 +2,12 @@ package com.pmarlen.caja;
 
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.control.DialogLoginControl;
-import com.pmarlen.caja.control.FirstRunParamsConfigDialogControl;
 import com.pmarlen.caja.control.FramePrincipalControl;
+import com.pmarlen.caja.control.ParamsConfigDialogControl;
 import com.pmarlen.caja.control.UpadateApplicationJFrameControl;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.view.DialogLogin;
+import com.pmarlen.caja.view.ParamsConfigDialog;
 import com.pmarlen.caja.view.UpadateApplicationJFrame;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -79,23 +80,24 @@ public class Main {
 
 		if (!MemoryDAO.isExsistFile()) {
 			logger.debug("main: 1st Time");
-			FirstRunParamsConfigDialogControl firstRunParamsConfigDialogControl = new FirstRunParamsConfigDialogControl();
-			firstRunParamsConfigDialogControl.estadoInicial();
+			ParamsConfigDialog dlg1stTime =  new ParamsConfigDialog();
+			ParamsConfigDialogControl pcd1stTimeControl=new ParamsConfigDialogControl(dlg1stTime);
+			pcd1stTimeControl.estadoInicial();
 
-			while (firstRunParamsConfigDialogControl.isConfiguring()) {
+			while (pcd1stTimeControl.isConfiguring()) {
 				try {
-					logger.trace("main:configuring");
+					logger.trace("main:configuring, ...wait");
 					Thread.sleep(500);
 				} catch (InterruptedException ie) {
 					logger.trace("main:InterruptedException");
 				}
 			}
-			logger.debug("main:is configuring ?" + firstRunParamsConfigDialogControl.isConfiguring());
-			if (!firstRunParamsConfigDialogControl.getParamatersConfigured()) {
-				logger.info("[USER]->!firstRunParamsConfigDialogControl.getParamatersConfigured()" );
+			logger.debug("main:is configuring ?" + pcd1stTimeControl.isConfiguring());
+			if (!pcd1stTimeControl.getParamatersConfigured()) {
+				logger.info("[USER]->!pcd1stTimeControl.getParamatersConfigured()" );
 				System.exit(2);
 			}
-			firstRunParamsConfigDialogControl = null;
+			pcd1stTimeControl = null;
 		}
 		
 		if (ApplicationLogic.getInstance().needsUpdateApplciation()) {

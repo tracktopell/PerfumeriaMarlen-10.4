@@ -8,23 +8,35 @@ package com.pmarlen.caja.view;
 
 import com.pmarlen.caja.model.Caja;
 import com.pmarlen.caja.model.Sucursal;
-import javax.imageio.ImageIO;
+import java.awt.Frame;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 
 /**
  *
  * @author alfredo
  */
-public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
+public class ParamsConfigDialog extends javax.swing.JDialog{
 
 	/**
 	 * Creates new form FirstRunParamsConfigDialog
 	 */
-	public FirstRunParamsConfigDialog() {
-		super("PM Caja >> Inicialización");
+	public ParamsConfigDialog() {
+		super();
+		//setModal(true);
 		initComponents();
+		setTitle("CONFIGURACIÓN INICIAL");
+		initSesionObjects();
+	}
+
+	public ParamsConfigDialog(Frame owner) {
+		super(owner,"PREFERECIAS");
+		setModal(true);
+		initComponents();
+		initSesionObjects();
+	}
+
+	private void initSesionObjects() {
 		Object[] sucs=new Sucursal[]{
 			new Sucursal(2, "SUC#1 SAN MARTÍN"),
 			new Sucursal(3, "SUC#2 TECAMAC"),
@@ -45,6 +57,7 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
 		caja.setModel(new DefaultComboBoxModel(cajas));
 	}
 
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -54,6 +67,12 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        guardar = new javax.swing.JButton();
+        cancelar = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
         centerPanel = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -61,22 +80,36 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         port = new javax.swing.JTextField();
+        jPanel8 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         dropBoxDir = new javax.swing.JTextField();
+        jPanel9 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         sucursal = new javax.swing.JComboBox();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         caja = new javax.swing.JComboBox();
-        jPanel1 = new javax.swing.JPanel();
-        guardar = new javax.swing.JButton();
-        cancelar = new javax.swing.JButton();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        guardar.setText("GUARDAR");
+        jPanel1.add(guardar);
+
+        cancelar.setText("CANCELAR");
+        jPanel1.add(cancelar);
+
+        getContentPane().add(jPanel1, java.awt.BorderLayout.SOUTH);
+
+        jPanel7.setPreferredSize(new java.awt.Dimension(200, 10));
+        jPanel7.setLayout(new java.awt.BorderLayout());
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Configuraciones.png"))); // NOI18N
+        jPanel7.add(jLabel6, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(jPanel7, java.awt.BorderLayout.WEST);
 
         centerPanel.setLayout(new java.awt.GridLayout(5, 1));
 
@@ -104,6 +137,10 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
 
         centerPanel.add(jPanel3);
 
+        jTabbedPane1.addTab("SERVIDOR", centerPanel);
+
+        jPanel8.setLayout(new java.awt.GridLayout(4, 1));
+
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -114,7 +151,11 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
         dropBoxDir.setColumns(20);
         jPanel4.add(dropBoxDir);
 
-        centerPanel.add(jPanel4);
+        jPanel8.add(jPanel4);
+
+        jTabbedPane1.addTab("DROPBOX", jPanel8);
+
+        jPanel9.setLayout(new java.awt.GridLayout(4, 1));
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
@@ -124,7 +165,7 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
         jPanel5.add(jLabel4);
         jPanel5.add(sucursal);
 
-        centerPanel.add(jPanel5);
+        jPanel9.add(jPanel5);
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
@@ -134,39 +175,15 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
         jPanel6.add(jLabel5);
         jPanel6.add(caja);
 
-        centerPanel.add(jPanel6);
+        jPanel9.add(jPanel6);
 
-        getContentPane().add(centerPanel, java.awt.BorderLayout.CENTER);
+        jTabbedPane1.addTab("SESIÓN", jPanel9);
 
-        guardar.setText("GUARDAR");
-        jPanel1.add(guardar);
-
-        cancelar.setText("CANCELAR");
-        jPanel1.add(cancelar);
-
-        getContentPane().add(jPanel1, java.awt.BorderLayout.SOUTH);
-
-        jPanel7.setPreferredSize(new java.awt.Dimension(200, 10));
-        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 10));
-
-        jLabel6.setIcon(getImageIcon());
-        jPanel7.add(jLabel6);
-
-        getContentPane().add(jPanel7, java.awt.BorderLayout.WEST);
+        getContentPane().add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-	ImageIcon getImageIcon(){
-		ImageIcon icon = null;
-		try{
-			icon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/images/install.png")));
-		} catch(Exception e){
-		
-		}
-		return icon;
-	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox caja;
@@ -187,6 +204,9 @@ public class FirstRunParamsConfigDialog extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField port;
     private javax.swing.JTextField server;
     private javax.swing.JComboBox sucursal;

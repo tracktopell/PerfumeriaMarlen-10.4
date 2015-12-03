@@ -12,6 +12,7 @@ import com.pmarlen.caja.view.DialogConfiguracionBTImpresora;
 import com.pmarlen.caja.view.FramePrincipal;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.PanelVentas;
+import com.pmarlen.caja.view.ParamsConfigDialog;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.U;
@@ -77,6 +78,9 @@ public class FramePrincipalControl implements ActionListener{
 		framePrincipal.getSalirMenu().addActionListener(this);
 		
 		//---------------------------------------------------
+		//framePrincipal.getConeccionMenu().addActionListener(this);
+		
+		framePrincipal.getPreferenciasMenu().addActionListener(this);
 		
 		framePrincipal.getVentaActualMenu().addActionListener(this);
 		
@@ -94,8 +98,6 @@ public class FramePrincipalControl implements ActionListener{
 		//---------------------------------------------------
 		
 		framePrincipal.getNotificacionesMenu().addActionListener(this);
-		
-		framePrincipal.getNegocioConfigMenu().addActionListener(this);
 		
 		//---------------------------------------------------
 		framePrincipal.addComponentListener(new ComponentAdapter() {
@@ -116,27 +118,28 @@ public class FramePrincipalControl implements ActionListener{
 		framePrincipal.getNotificaciones().addActionListener(this);
 		
 	}
-	
+	private static int nei=0;
 	public void estadoInicial() {
+		logger.debug("estadoInicial("+(nei++)+")");
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				logger.debug("estadoInicial():START");
+				logger.debug("\testadoInicial():START");
 				CorteCajaDTO lastSavedCC = ApplicationLogic.getInstance().getLastSavedCC();
 				if(lastSavedCC != null && lastSavedCC.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA){
 					abrirSesionNueva();
 					final long dt = System.currentTimeMillis() - lastSavedCC.getFecha();					
-					logger.debug("estadoInicial(): APERTURA DE CAJA YA INICIADA: DIFF lastSavedCC:"+Constants.getDiff(dt)+" ( "+System.currentTimeMillis()+"-"+lastSavedCC.getFecha()+" = "+dt+ ")");
+					logger.debug("\testadoInicial(): APERTURA DE CAJA YA INICIADA: DIFF lastSavedCC:"+Constants.getDiff(dt)+" ( "+System.currentTimeMillis()+"-"+lastSavedCC.getFecha()+" = "+dt+ ")");
 				} else {
 					((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
-					logger.debug("estadoInicial(): NUEVA SESION");
+					logger.debug("\testadoInicial(): NUEVA SESION");
 				}
-				logger.debug("estadoInicial():setVisible(true) --------------------------------------[    V E N T A N A     V I S I B L E ]-----------------------------------");
+				logger.debug("\testadoInicial():setVisible(true) --------------------------------------[    V E N T A N A     V I S I B L E ]-----------------------------------");
 				framePrincipal.setVisible(true);
-				logger.debug("estadoInicial():updateStatusWest()");
+				logger.debug("\testadoInicial():updateStatusWest()");
 				updateStatusWest();
 				framePrincipal.setExtendedState( framePrincipal.getExtendedState()|JFrame.MAXIMIZED_BOTH );
 				panelVentaControl.estadoInicial();
-				logger.debug("estadoInicial():END");
+				logger.debug("\testadoInicial():END");
 			}
 		});
 	}
@@ -225,6 +228,8 @@ public class FramePrincipalControl implements ActionListener{
 			ventaCancelarMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getNotificaciones() || e.getSource() == framePrincipal.getNotificacionesMenu()){
 			notificaciones_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getPreferenciasMenu()){
+			preferenciasMenu_actionPerformed();
 		} else {
 		}
 		
@@ -238,7 +243,7 @@ public class FramePrincipalControl implements ActionListener{
 	}
 	
 	private void abrirSesion_actionPerformed() {
-		logger.info("[USER]->abrirSesion_actionPerformed():");
+		logger.info("[USER]->abrirSesion_actionPerformed:");
 		acDlg = new AperturaCajaJFrame(framePrincipal);
 		acc =  new AperturaCajaControl(acDlg);
 		new Thread(){
@@ -259,6 +264,7 @@ public class FramePrincipalControl implements ActionListener{
 	}
 
 	private void cerrarSesion_actionPerformed() {
+		logger.info("[USER]->cerrarSesion_actionPerformed:");
 		//JOptionPane.showMessageDialog(framePrincipal, "NO IMPLEMENTADO", "CERRAR", JOptionPane.ERROR_MESSAGE);
 		CierreCajaJFrame cierreCajaDialog = new CierreCajaJFrame(framePrincipal);
 		CierreCajaControl cierreCajaControl = new CierreCajaControl(cierreCajaDialog);
@@ -338,14 +344,21 @@ public class FramePrincipalControl implements ActionListener{
 	}
 	
 	public void enableAndDisableAdminControls() {
+		
 		U u = ApplicationLogic.getInstance().getLogged();
+		logger.debug("enableAndDisableAdminControls: u:"+u+", u.getPlaysAsAdmin():"+u.getPlaysAsAdmin());
+		
 		if(u.getPlaysAsAdmin()) {
 			eanbleAdminControls();
 		}
 		final List<String> pl = u.getPerfiles();
-		logger.debug("enableAndDisableAdminControls:");
+		
 		for(String  p: pl){
 			logger.debug("enableAndDisableAdminControls:\t->Perfil:"+p);
+			if(p.equalsIgnoreCase(Constants.PERFIL_ROOT) || p.equalsIgnoreCase(Constants.PERFIL_ADMIN)){
+				logger.debug("\tenableAndDisableAdminControls:->Fucking Forced? ("+(!u.getPlaysAsAdmin())+"): enableAndDisableAdminControls:\t->Perfil:"+p);
+				eanbleAdminControls();
+			}
 		}
 		logger.debug("enableAndDisableAdminControls:CorteCajaDTO:"+ApplicationLogic.getInstance().getCorteCajaDTO());		
 	}
@@ -353,6 +366,7 @@ public class FramePrincipalControl implements ActionListener{
 	private void eanbleAdminControls(){
 		logger.debug("eanbleAdminControls():");
 		framePrincipal.getConfigMenu().setEnabled(true);
+		framePrincipal.getPreferenciasMenu().setEnabled(true);
 	}
 	
 	public void setEnabledVentasMenus(boolean e){		
@@ -375,6 +389,7 @@ public class FramePrincipalControl implements ActionListener{
 	}
 	
 	private void notificaciones_actionPerformed(){
+		logger.info("[USER]->notificaciones_actionPerformed:");
 		Iterator<Notificacion> notificaciones = ApplicationLogic.getInstance().getNotificaciones();
 		StringBuilder sb=new StringBuilder("");
 		int nc=0;
@@ -385,10 +400,22 @@ public class FramePrincipalControl implements ActionListener{
 			nt.setVista(true);
 			nc++;
 		}
+		logger.debug("notificaciones_actionPerformed:nc="+nc);
 		if(nc==0){
 			JOptionPane.showMessageDialog(framePrincipal, "Na hay notificaciones.", "Notificaciones", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			JOptionPane.showMessageDialog(framePrincipal, sb.toString(), "Notificaciones", JOptionPane.WARNING_MESSAGE);
 		}
+	}
+
+	private void coneccionMenu_actionPerformed() {
+		logger.info("[USER]->coneccionMenu_actionPerformed:");		
+	}
+	
+	private void preferenciasMenu_actionPerformed(){
+		logger.info("[USER]->preferenciasMenu_actionPerformed:");
+		ParamsConfigDialog dlg =  new ParamsConfigDialog(framePrincipal);
+		ParamsConfigDialogControl pcd=new ParamsConfigDialogControl(dlg);
+		pcd.estadoInicial();
 	}
 }

@@ -62,13 +62,12 @@ public class FramePrincipal extends javax.swing.JFrame {
 		this.cerrarSesion.setVisible(false);
 		
 		this.cancelarDevolMenu.setEnabled(false);		
-		this.coneccionMenu.setEnabled(false);
+		this.preferenciasMenu.setEnabled(false);
 		this.configMenu.setEnabled(false);
 		this.devolMenu.setEnabled(false);
 		this.devolsMenu.setEnabled(false);
 		this.impresionBluetothMenu.setEnabled(false);
-		this.impresionMenu.setEnabled(false);
-		this.impresionParamMenu.setEnabled(false);
+		this.impresionMenu.setEnabled(false);		
 		this.impresionPruebaMenu.setEnabled(false);
 		this.impresionSistemaMenu.setEnabled(false);
 		this.nuevaDevolMenu.setEnabled(false);
@@ -100,12 +99,11 @@ public class FramePrincipal extends javax.swing.JFrame {
 		this.cerrarSesion.setVisible(true);
 		
 		this.cancelarDevolMenu.setEnabled(true);		
-		this.coneccionMenu.setEnabled(true);
+		this.preferenciasMenu.setEnabled(false);
 		this.devolMenu.setEnabled(true);
 		this.devolsMenu.setEnabled(true);
 		this.impresionBluetothMenu.setEnabled(true);
-		this.impresionMenu.setEnabled(true);
-		this.impresionParamMenu.setEnabled(true);
+		this.impresionMenu.setEnabled(true);		
 		this.impresionPruebaMenu.setEnabled(true);
 		this.impresionSistemaMenu.setEnabled(true);
 		this.nuevaDevolMenu.setEnabled(true);
@@ -167,9 +165,8 @@ public class FramePrincipal extends javax.swing.JFrame {
         terminarDevolMenu = new javax.swing.JMenuItem();
         cancelarDevolMenu = new javax.swing.JMenuItem();
         configMenu = new javax.swing.JMenu();
-        coneccionMenu = new javax.swing.JMenuItem();
+        preferenciasMenu = new javax.swing.JMenuItem();
         impresionMenu = new javax.swing.JMenu();
-        impresionParamMenu = new javax.swing.JMenuItem();
         impresionSistemaMenu = new javax.swing.JRadioButtonMenuItem();
         impresionBluetothMenu = new javax.swing.JRadioButtonMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
@@ -328,13 +325,10 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         configMenu.setText("Configuración");
 
-        coneccionMenu.setText("Sesión de Caja");
-        configMenu.add(coneccionMenu);
+        preferenciasMenu.setText("Preferencias");
+        configMenu.add(preferenciasMenu);
 
         impresionMenu.setText("Impresión");
-
-        impresionParamMenu.setText("Parametros");
-        impresionMenu.add(impresionParamMenu);
 
         tipoImpresion.add(impresionSistemaMenu);
         impresionSistemaMenu.setSelected(true);
@@ -382,7 +376,6 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu archivoMenu;
     private javax.swing.JMenuItem cancelarDevolMenu;
     private javax.swing.JButton cerrarSesion;
-    private javax.swing.JMenuItem coneccionMenu;
     private javax.swing.JMenu configMenu;
     private javax.swing.JMenu devolMenu;
     private javax.swing.JMenuItem devolsMenu;
@@ -390,7 +383,6 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JRadioButtonMenuItem impresionBluetothMenu;
     private javax.swing.JMenu impresionMenu;
-    private javax.swing.JMenuItem impresionParamMenu;
     private javax.swing.JMenuItem impresionPruebaMenu;
     private javax.swing.JRadioButtonMenuItem impresionSistemaMenu;
     private javax.swing.JMenuBar jMenuBar1;
@@ -411,6 +403,7 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel panelVentas;
     private javax.swing.JPanel panels;
     private javax.swing.JMenuItem portalMenu;
+    private javax.swing.JMenuItem preferenciasMenu;
     private javax.swing.JMenuItem salirMenu;
     private javax.swing.JMenuItem sesionMenu;
     private javax.swing.JTextField statusCenter;
@@ -513,14 +506,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 	 */
 	public javax.swing.JPanel getPanelVentas() {
 		return panelVentas;
-	}
-	
-	/**
-	 * @return the negocioConfigMenu
-	 */
-	public javax.swing.JMenuItem getNegocioConfigMenu() {
-		return coneccionMenu;
-	}
+	}	
 
 	/**
 	 * @return the configMenu
@@ -674,13 +660,6 @@ public class FramePrincipal extends javax.swing.JFrame {
 	}
 
 	/**
-	 * @return the coneccionMenu
-	 */
-	public javax.swing.JMenuItem getConeccionMenu() {
-		return coneccionMenu;
-	}
-
-	/**
 	 * @return the devolMenu
 	 */
 	public javax.swing.JMenu getDevolMenu() {
@@ -720,13 +699,6 @@ public class FramePrincipal extends javax.swing.JFrame {
 	 */
 	public javax.swing.JMenu getImpresionMenu() {
 		return impresionMenu;
-	}
-
-	/**
-	 * @return the impresionParamMenu
-	 */
-	public javax.swing.JMenuItem getImpresionParamMenu() {
-		return impresionParamMenu;
 	}
 
 	/**
@@ -825,5 +797,10 @@ public class FramePrincipal extends javax.swing.JFrame {
 	public JMenuItem getNotificacionesMenu() {
 		return notificacionesMenu;
 	}
+
+	public JMenuItem getPreferenciasMenu() {
+		return preferenciasMenu;
+	}
+	
 	
 }
