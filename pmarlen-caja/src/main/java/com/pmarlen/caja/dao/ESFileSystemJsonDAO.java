@@ -65,8 +65,8 @@ public class ESFileSystemJsonDAO {
 		persist();
 	}
 	
-	static void reset(){
-		logger.debug("reset:");
+	static void old_reset(){
+		logger.debug("old_reset:");
 		Date now=new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
 		
@@ -75,9 +75,18 @@ public class ESFileSystemJsonDAO {
 		
 		boolean r = origFile.renameTo(backupFile);
 		
-		logger.debug("reset: backup file ?"+r);
+		logger.debug("old_reset: backup file ?"+r);
 				
 		esList.clear();
+	}
+	
+	static void reset(){
+		logger.debug("reset:"+esList.getClass());
+		for(ES_ESD e: esList) {
+			if(e.getS()==ES_ESD.STATUS_SYNC_LOCAL){
+				e.setS(ES_ESD.STATUS_SYNC_SENT);
+			}
+		}
 	}
 	
 	static void laod(){

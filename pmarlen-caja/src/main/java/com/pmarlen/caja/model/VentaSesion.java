@@ -127,6 +127,12 @@ public class VentaSesion {
 			venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getE());		
 			
 			calcularTotales();
+			
+			venta.getEs().setStot(totalBruto);
+			venta.getEs().setDesc(descuentoCalculado);
+			venta.getEs().setTot(total);
+			venta.getEs().setnElem(numElemVta);
+			
 		}
 		return venta;
 	}

@@ -8,11 +8,16 @@ import java.util.List;
  * @author alfredo
  */
 public class ES_ESD {
+	public static final byte STATUS_SYNC_LOCAL=0;
+	public static final byte STATUS_SYNC_SENT =1;
+	public static final byte STATUS_SYNC_ERROR=2;
+	private int s;
 	private ES es;
 	private List<ESD> esdList;
 
 	public ES_ESD() {
-		this.es = new ES();		
+		this.es = new ES();
+		this.s  = STATUS_SYNC_LOCAL;
 	}
 
 	public ES_ESD(ES es, List<ESD> esd) {
@@ -48,5 +53,12 @@ public class ES_ESD {
 	public void setEsdList(List<ESD> esd) {
 		this.esdList = esd;
 	}
-	
+
+	public void setS(int s) {
+		this.s = s;
+	}
+
+	public int getS() {
+		return s;
+	}
 }

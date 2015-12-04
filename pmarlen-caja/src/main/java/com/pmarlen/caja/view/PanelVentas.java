@@ -35,7 +35,6 @@ public class PanelVentas extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        ventasJTable.setModel(new VentaTableModel());
         jScrollPane1.setViewportView(ventasJTable);
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);

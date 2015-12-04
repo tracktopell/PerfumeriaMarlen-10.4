@@ -26,7 +26,13 @@ public class ES {
 	private double ir;
 	private String amc;
 	private int pdc;	
-	private int pde;	
+	private int pde;
+	
+	private double stot;
+	private double desc;
+	private double tot;
+	private int    nElem;
+	
 	public EntradaSalida reverse(){
 		EntradaSalida es = new EntradaSalida();
 		es.setTipoMov(tm);
@@ -238,5 +244,61 @@ public class ES {
 	 */
 	public void setPde(int pde) {
 		this.pde = pde;
+	}
+
+	/**
+	 * @return the stot
+	 */
+	public double getStot() {
+		return stot;
+	}
+
+	/**
+	 * @param stot the stot to set
+	 */
+	public void setStot(double stot) {
+		this.stot = stot;
+	}
+
+	/**
+	 * @return the desc
+	 */
+	public double getDesc() {
+		return desc;
+	}
+
+	/**
+	 * @param desc the desc to set
+	 */
+	public void setDesc(double desc) {
+		this.desc = desc;
+	}
+
+	/**
+	 * @return the tot
+	 */
+	public double getTot() {
+		return tot;
+	}
+
+	/**
+	 * @param tot the tot to set
+	 */
+	public void setTot(double tot) {
+		this.tot = tot;
+	}
+
+	/**
+	 * @return the nElem
+	 */
+	public int getnElem() {
+		return nElem;
+	}
+
+	/**
+	 * @param nElem the nElem to set
+	 */
+	public void setnElem(int nElem) {
+		this.nElem = nElem;
 	}
 }

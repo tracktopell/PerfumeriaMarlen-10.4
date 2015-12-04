@@ -6,6 +6,8 @@ package com.pmarlen.caja.model;
 
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
+import com.pmarlen.model.Constants;
+import com.pmarlen.rest.dto.ES_ESD;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,28 +24,30 @@ import javax.swing.table.TableModel;
 public class VentaTableModel implements TableModel{
 	
 	private static String[] columnNames = new String [] {
-			"No", "Fecha", "Importe"
+			"TICKET","# ELEMENTOS" ,"FECHA", "SUBTOTAL","DESCUENTO","TOTAL"
 	};
 	private static Class[] columnClasses = new Class [] {
-			Integer.class,Date.class,BigDecimal.class
+			String.class,Integer.class,String.class,String.class,String.class,String.class
 	};
 	
-	private List<EntradaSalidaQuickView> ventaList;
-	private Hashtable<Integer,Double> ventaImporteList;
+	private List<ES_ESD> ventaList;
 	
 	private List<TableModelListener> tableModelListenerList;
 	
 	public VentaTableModel(){
-		this.ventaList = new ArrayList<EntradaSalidaQuickView>();
+		this.ventaList = new ArrayList<ES_ESD>();
 		tableModelListenerList = new ArrayList<TableModelListener> ();
 	}
 	
-	public VentaTableModel(List<EntradaSalidaQuickView> ventaList,Hashtable<Integer,Double> ventaImporteList){
+	public VentaTableModel(List<ES_ESD> ventaList){
 		this.tableModelListenerList = new ArrayList<TableModelListener> ();
 		this.ventaList			= ventaList;
-		this.ventaImporteList	= ventaImporteList;
 	}
 
+	public void setVentaList(List<ES_ESD> ventaList) {
+		this.ventaList = ventaList;
+	}
+	
 	@Override
 	public int getRowCount() {
 		return ventaList.size();
@@ -72,30 +76,25 @@ public class VentaTableModel implements TableModel{
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		final EntradaSalida dvti = ventaList.get(rowIndex);
+		
 		if(columnIndex == 0)
-			return dvti.getId();
+			return ventaList.get(rowIndex).getEs().getNt();
 		else if(columnIndex == 1)
-			return dvti.getFechaCreo();
+			return ventaList.get(rowIndex).getEs().getnElem();
 		else if(columnIndex == 2)
-			//return new Double(-1.0);
-			return new BigDecimal(ventaImporteList.get(dvti.getId()));
+			return Constants.sdfLogFile.format(new Date(ventaList.get(rowIndex).getEs().getFc()));			
+		else if(columnIndex == 3)
+			return Constants.dfCurrency.format(ventaList.get(rowIndex).getEs().getStot());
+		else if(columnIndex == 4)
+			return Constants.dfCurrency.format(ventaList.get(rowIndex).getEs().getDesc());
+		else if(columnIndex == 5)
+			return Constants.dfCurrency.format(ventaList.get(rowIndex).getEs().getTot());
 		else
 			throw new IndexOutOfBoundsException("for column:"+columnIndex);
 	}
 
 	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		/*
-		final Venta dvti = detalleVentaTableItemList.get(rowIndex);
-		
-		if(columnIndex == 0) {
-			dvti.setCantidad((Integer)aValue);
-			callListeners();
-		} else {
-			throw new IndexOutOfBoundsException("for column:"+columnIndex);
-		}
-		*/
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {		
 	}
 
 	@Override
@@ -111,7 +110,7 @@ public class VentaTableModel implements TableModel{
 	/**
 	 * @return the detalleVentaTableItemList
 	 */
-	public List<EntradaSalidaQuickView> getVentaList() {
+	public List<ES_ESD> getVentaList() {
 		return ventaList;
 	}
 
