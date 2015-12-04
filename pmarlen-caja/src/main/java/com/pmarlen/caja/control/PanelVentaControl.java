@@ -444,11 +444,16 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			//logger.debug("->ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList()="+ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList());			
 			//logger.debug("->ticketPrinteService:esesd.getEs()="+esesd.getEs());
 			//logger.debug("->ticketPrinteService:esesd.getEsdList()="+esesd.getEsdList());
+			if(Main.dinamicTrace){
+				TextReporter.DEBUG =true;
+			} else {
+				TextReporter.DEBUG =false;
+			}
+			logger.debug("ticketPrinteService:esesdLAstForPrint.getEs().getNt()="+esesdLAstForPrint.getEs().getNt());
 			final JarpeReportsInfoDTO infoDTOTicket = VentaSesion.generaJarpeReportsInfoDTOTicket(esesdLAstForPrint);
-			logger.debug("->ticketPrinteService:fileTicket="+infoDTOTicket);
-			String fileTicket = TextReporter.generateTicketTXT(infoDTOTicket);
-			
-			logger.debug("->ticketPrinteService:fileTicket="+fileTicket);
+			logger.debug("ticketPrinteService:fileTicket="+infoDTOTicket);			
+			String fileTicket = TextReporter.generateTicketTXT(infoDTOTicket);			
+			logger.debug("ticketPrinteService:fileTicket="+fileTicket);
 			
 			logger.debug("imprimirTicket:ticketFileName:"+fileTicket);
 		

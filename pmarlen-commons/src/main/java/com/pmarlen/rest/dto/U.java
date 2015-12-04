@@ -146,7 +146,7 @@ public class U {
 
 	@Override
 	public String toString() {
-		return (a==1?"[ ]":"[X]")+n.toUpperCase() + "<"+e+">";
+		return n!=null?n.toUpperCase():null;
 	}
 	
 }

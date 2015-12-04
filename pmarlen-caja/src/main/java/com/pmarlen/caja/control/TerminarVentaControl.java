@@ -152,18 +152,18 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	}
 
 	private void registrarVenta() {
+		final ES_ESD venta = ventaSesion.getVenta();
 		
-		String numTicket = GeneradorNumTicket.getNumTicket(ventaSesion.getVenta().getEs().getS(), ventaSesion.getVenta().getEs().getJ(), ventaSesion.getVenta().getEs().getC(), ventaSesion.getTotalRedondeado2Dec());
-		logger.debug("registrarVenta:numTicket="+numTicket);
+		String numTicket = GeneradorNumTicket.getNumTicket(venta.getEs().getS(), venta.getEs().getJ(), venta.getEs().getC(), ventaSesion.getTotalRedondeado2Dec());
+		logger.debug("registrarVenta:numTicket="+numTicket);		
+		venta.getEs().setNt(numTicket);
+		venta.getEs().setC(Constants.ID_CLIENTE_MOSTRADOR);
+		venta.getEs().setFp(Constants.ID_FDP_1SOLA_E);
+		venta.getEs().setMp(((MetodoDePago)terminarVentaDlg.getMetodoDePago().getSelectedItem()).getId());
+		venta.getEs().setIr(recibido);
+		venta.getEs().setAmc(autorizacion);
 		
-		ventaSesion.getVenta().getEs().setNt(numTicket);
-		ventaSesion.getVenta().getEs().setC(Constants.ID_CLIENTE_MOSTRADOR);
-		ventaSesion.getVenta().getEs().setFp(Constants.ID_FDP_1SOLA_E);
-		ventaSesion.getVenta().getEs().setMp(((MetodoDePago)terminarVentaDlg.getMetodoDePago().getSelectedItem()).getId());
-		ventaSesion.getVenta().getEs().setIr(recibido);
-		ventaSesion.getVenta().getEs().setAmc(autorizacion);
-		
-		ESFileSystemJsonDAO.commit(ventaSesion.getVenta());
+		ESFileSystemJsonDAO.commit(venta);
 
 		//JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Se guardo Correctamente, ...Imprimiendo ticket", "Venta", JOptionPane.INFORMATION_MESSAGE);
 		

@@ -1,22 +1,24 @@
 ${fecha.actual,l,10,L} ${hora.actual,r,10,R}
 
-${sucursal.nombre1,c,-2,R}
-${sucursal.nombre2,c,-2,R}
+${sucursal.nombre1,c,100%,R}
+${sucursal.nombre2,c,100%,R}
 
-${sucursal.direccion1,c,-2,R}
-${sucursal.direccion2,c,-2,R}
-${sucursal.direccion3,c,-2,R}
-${sucursal.direccion4,c,-2,R}
-${sucursal.direccion5,c,-2,R}
-${sucursal.tels,c,-2,R}
+${sucursal.direccion1,c,100%,R}
+?{sucursal.direccion2,c,100%,R}
+?{sucursal.direccion3,c,100%,R}
+?{sucursal.direccion4,c,100%,R}
+?{sucursal.direccion5,c,100%,R}
+?{sucursal.tels,c,100%,C}
 
 ${L.venta.ticket,c,100%,C}
 ${venta.ticket,c,100%,C}
 
 FECHA VTA.:${fecha.creado,l,16,F}
    ATENDIO:${usuario.creo.nombre,l,-11,F}
-      CAJA:${sucursal.caja.creo,l,3,F}
-   CLIENTE:${cliente.racSoc,l,-11,F}
+    CAJA #:${sucursal.caja.creo,l,3,F}
+   CLIENTE:?{cliente.racSoc1,l,-11,F}
+           ?{cliente.racSoc2,l,-11,F}
+           ?{cliente.racSoc3,l,-11,F}
 ${=,l,100%,C}
 #{pvd.cant,r,5,L} #{pvd.producto.cb,r,15,F} #{pvd.producto.nombre,l,-22,R}
       X  #{pvd.precio,r,9,F} #{pvd.imp,r,15,R}
@@ -31,14 +33,13 @@ ${fot.neTotElem,r,5,L} ${fot.neTotElemL,l,14,F}
              SU CAMBIO: ${fot.cambio,r,15,R}
 
 ${fot.totLetra1,l,100%,C}
-${fot.totLetra2,l,100%,C}
-${fot.totLetra3,l,100%,C}
-
+?{fot.totLetra2,l,100%,C}
+?{fot.totLetra3,l,100%,C}
+?{fot.totLetra4,l,100%,C}
 ${fot.leyendaNoFiscal,c,100%,C}
 
-${fot.leyenda1,c,100%,C}
-${fot.leyenda2,c,100%,C}
-${fot.leyenda3,c,100%,C}
-${fot.leyenda4,c,100%,C}
-
+?{fot.leyenda1,c,100%,C}
+?{fot.leyenda2,c,100%,C}
+?{fot.leyenda3,c,100%,C}
+?{fot.leyenda4,c,100%,C}
 ${-,l,100%,C}

@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.pmarlen.businesslogic.reports;
 
-import com.pmarlen.backend.model.EntradaSalida;
-import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.JarpeReportsInfoDTO;
 import java.io.BufferedReader;
@@ -17,18 +11,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * com.pmarlen.businesslogic.reports.TextReporter
  * @author alfredo
  */
 public class TextReporter {
@@ -36,16 +28,18 @@ public class TextReporter {
 	public static int columns = 38;
 
 	public static boolean DEBUG = false;
-
+	
 	static class TextToken {
 
 		String e;
 
 		int i;
 		int l;
-
+		boolean o;
+		
 		public TextToken(String e, int max) {
 			this.e = e;
+			o      = false; // optional
 		}
 
 	}
@@ -67,7 +61,7 @@ public class TextReporter {
 	static abstract class VariableToken extends TextToken {
 
 		private static boolean is1ValidSymbol(char c) {
-			return String.valueOf(c).matches("[^\\$|\\{|\\}|\\,|\\s]");
+			return String.valueOf(c).matches("[^\\$|\\#|\\?|\\{|\\}|\\,|\\s]");
 		}
 
 		String a;
@@ -88,6 +82,7 @@ public class TextReporter {
 			int n;
 			String A;
 			boolean isReg = ess.startsWith("#{");
+			boolean isOpt = ess.startsWith("?{");
 			String es = ess.substring(2, ess.length() - 1);
 
 			String ca[] = es.split(",");
@@ -121,6 +116,7 @@ public class TextReporter {
 			if (DEBUG) {
 				System.out.println("\t\tVariableToken.build: return " + vt.getClass().getSimpleName() + ", vt.e=" + vt.e);
 			}
+			vt.o = isOpt;
 			return vt;
 		}
 
@@ -229,35 +225,10 @@ public class TextReporter {
 		String inThemiddle = null;
 		int cont = 0;
 		String sub = null;
-		/*
-		 for (beginIndex = srcline.indexOf("${", fromIndex); beginIndex >= 0; beginIndex = srcline.indexOf("${", endIndex)) {
-		 if (cont > 0) {
-		 inThemiddle = srcline.substring(endIndex + 1, beginIndex);
-		 if (DEBUG) System.err.println("\tprocessLine[" + cont + "][" + (endIndex + 1) + "][" + beginIndex + "]->" + inThemiddle + "<-");
-				
-		 tokens.add(new StaticTextToken(inThemiddle, maxLineWidth));
-		 }
 
-		 endIndex = srcline.indexOf("}", beginIndex);
-		 sub = srcline.substring(beginIndex, endIndex + 1);
-
-		 inThemiddle = "";
-		 if (DEBUG) System.err.println("\tprocessLine(" + cont + ")[" + beginIndex + "][" + endIndex + "]->" + sub + "<-");
-			
-		 String contentToken = sub.substring(2, sub.length() - 1);
-		 if (DEBUG) System.err.println("\tprocessLine:contentToken->" + contentToken + "<-");
-			
-		 if (contentToken.length() > 1) {
-		 tokens.add(VariableToken.build(contentToken, maxLineWidth));
-		 }
-		 cont++;
-		 }
-		 */
-
-		//String regExp="(\\$|\\#)\\{((\\p{Alnum})+|(-|_|=|#))\\,(r|c|l)\\,(((-)?)\\p{Digit}+|(\\p{Digit}+(%)?))\\,(L|C|R|F)\\}";
-		//String regExp="(\\$|\\#)\\{((\\p{Alnum})+|([^\\$|\\{|\\}|\\,|\\s]))\\,(r|c|l)\\,(((-)?)\\p{Digit}+|(\\p{Digit}+(%)?))\\,(L|C|R|F)\\}";
-		String regExp = "(\\$|\\#)\\{((\\p{Alpha})(\\p{Alnum}|\\.)+|([^\\$|\\{|\\}|\\,|\\s]))\\,(r|c|l)\\,(((-)?)\\p{Digit}+|(\\p{Digit}+(%)?))\\,(L|C|R|F)\\}";
-		//                          (\\p{Alpha})(\\p{Alnum}|\\.)+
+		//String regExp = "(\\$|\\#)\\{((\\p{Alpha})(\\p{Alnum}|\\.)+|([^\\$|\\{|\\}|\\,|\\s]))\\,(r|c|l)\\,(((-)?)\\p{Digit}+|(\\p{Digit}+(%)?))\\,(L|C|R|F)\\}";
+		String regExp = "(\\$|\\?|\\#)\\{((\\p{Alpha})(\\p{Alnum}|\\.)+|([^\\$|\\{|\\}|\\,|\\s]))\\,(r|c|l)\\,(((-)?)\\p{Digit}+|(\\p{Digit}+(%)?))\\,(L|C|R|F)\\}";
+		
 		Pattern pattern = Pattern.compile(regExp);
 
 		Matcher matcher = pattern.matcher(srcline);
@@ -324,7 +295,9 @@ public class TextReporter {
 		int tc = 0;
 		int p = 0;
 		int iter = 0;
+		boolean deleteLine=false;
 		for (TextToken tt : tokens) {
+			ti="";
 			if (DEBUG) {
 				System.err.println("#---[" + iter + "]---");
 			}
@@ -339,18 +312,22 @@ public class TextReporter {
 				if (DEBUG) {
 					System.err.println("p          :->" + p + "<- (1)");
 				}
-			} else if (tt instanceof TextFieldToken && parameters.containsKey(tt.e)) {
-				ti = ((VariableToken) tt).expand(parameters.get(tt.e).toString());
-				tc = ti.length();
-				cc += tc;
-				VariableToken vt = (VariableToken) tt;
-				p = vt.A.equals("L") ? 0
-						: vt.A.equals("R") ? maxLineWidth - tc
-						: vt.A.equals("C") ? (maxLineWidth - tc) / 2
-						: vt.A.equals("F") ? (tb != null ? tb.i + tb.l : 0)
-						: 0;
-				if (DEBUG) {
-					System.err.println("p          :->" + p + "<- (2)");
+			} else if (tt instanceof TextFieldToken ){
+				if(parameters.containsKey(tt.e)) {
+					ti = ((VariableToken) tt).expand(parameters.get(tt.e).toString());
+					tc = ti.length();
+					cc += tc;
+					VariableToken vt = (VariableToken) tt;
+					p = vt.A.equals("L") ? 0
+							: vt.A.equals("R") ? maxLineWidth - tc
+							: vt.A.equals("C") ? (maxLineWidth - tc) / 2
+							: vt.A.equals("F") ? (tb != null ? tb.i + tb.l : 0)
+							: 0;
+					if (DEBUG) {
+						System.err.println("p          :->" + p + "<- (2)");
+					}
+				} else if(tt.o){ // is Optional token line
+					deleteLine = true;
 				}
 			} else if (tt instanceof SymbolToken) {
 				StringBuilder sbst = new StringBuilder();
@@ -401,8 +378,11 @@ public class TextReporter {
 
 			iter++;
 		}
-
-		return fp;
+		if(deleteLine){
+			return null;
+		}else{
+			return fp;
+		}
 	}
 
 	private static void processReport(InputStream isReport, OutputStream os, HashMap<String, Object> parameters, List<HashMap<String, String>> records, int maxLineWidth) {
@@ -453,15 +433,24 @@ public class TextReporter {
 
 			//==================================================================
 			for (String l : preLines) {
-				ps.println(processLine(l, parameters, null, maxLineWidth));
+				final String pl1 = processLine(l, parameters, null, maxLineWidth);
+				if(pl1!=null){
+					ps.println(pl1);
+				}
 			}
 			for (HashMap<String, String> r : records) {
 				for (String l : detailLines) {
-					ps.println(processLine(l, parameters, r, maxLineWidth));
+					final String pl2 = processLine(l, parameters, r, maxLineWidth);
+					if(pl2!=null){
+						ps.println(pl2);
+					}
 				}
 			}
 			for (String l : postLines) {
-				ps.println(processLine(l, parameters, null, maxLineWidth));
+				final String pl3 = processLine(l, parameters, null, maxLineWidth);
+				if(pl3!=null){
+					ps.println(pl3);
+				}
 			}
 
 		} catch (IOException ioe) {
@@ -477,11 +466,11 @@ public class TextReporter {
 	public static String generateTicketTXT(JarpeReportsInfoDTO jrInfo) {
 		Date today = new Date();
 
-		String fileName = "TICKET_NUMTICKET_" + Constants.sdfThinDate.format(today) + ".txt";
+		String fileName = "TICKET_"+jrInfo.getParameters().get("venta.ticket")+"_" + Constants.sdfThinDate.format(today) + ".txt";
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(fileName);
-			processReport(TextReporter.class.getResourceAsStream("/textreports/TEXT_TICKET_V1.txt"), fos, jrInfo.getParameters(), jrInfo.getRecords(), columns);
+			processReport(TextReporter.class.getResourceAsStream("/textreports/TEXT_TICKET_V2.txt"), fos, jrInfo.getParameters(), jrInfo.getRecords(), columns);
 		} catch (IOException ioe) {
 
 		}
@@ -558,7 +547,7 @@ public class TextReporter {
 
 	public static void main(String[] args) {
 		
-		DEBUG=false;
+		DEBUG=true;
 		if(args.length ==1){
 			columns = Integer.parseInt(args[0]);
 		}
@@ -573,7 +562,8 @@ public class TextReporter {
 		
 		
 		final String nombre = "PERFUMERIA MARLEN S.A. DE C.V. CENTRO DE DISTRIBUCIÓN TECAMAC";
-
+		parameters.put("L.venta.ticket"    , "NO. TICKET:");
+		parameters.put("venta.ticket"      , "84879683827497989900100005900");
 		parameters.put("sucursal.nombre", nombre);
 
 		final String nombre1 = nombre.substring(0, nombre.indexOf("S.A. DE C.V.") + 13);
@@ -582,15 +572,15 @@ public class TextReporter {
 		parameters.put("sucursal.nombre1", nombre1);
 		parameters.put("sucursal.nombre2", nombre2);
 		String direccion = "CALLE REFORMA NO. 2, LOCAL 1 COL. CENTRO DE REYES ACOZAC, PLAZA COMERCIAL  “PASAJE REFORMA” MUNICIPIO DE TECÁMAC, ESTADO DE MÉXICO, C.P.L 55755";
-		List<String> direccionList = TextReporter.justifyText(direccion, TextReporter.columns - 2);
+		List<String> direccionList = TextReporter.justifyText(direccion, TextReporter.columns);
 
 		parameters.put("sucursal.direccion", direccion);
 
-		parameters.put("sucursal.direccion1", "--------");
-		parameters.put("sucursal.direccion2", "--------");
-		parameters.put("sucursal.direccion3", "--------");
-		parameters.put("sucursal.direccion4", "--------");
-		parameters.put("sucursal.direccion5", "--------");
+//		parameters.put("sucursal.direccion1", "--------");
+//		parameters.put("sucursal.direccion2", "--------");
+//		parameters.put("sucursal.direccion3", "--------");
+//		parameters.put("sucursal.direccion4", "--------");
+//		parameters.put("sucursal.direccion5", "--------");
 		
 		for (int i = 1; i <= direccionList.size(); i++) {
 			parameters.put("sucursal.direccion" + i, direccionList.get(i - 1));
@@ -603,6 +593,12 @@ public class TextReporter {
 		parameters.put("fecha.creado", Constants.sdfShortTime.format(today));
 		parameters.put("sucursal.caja.creo", "10");
 		parameters.put("cliente.racSoc", "PUBLICO GENERAL");
+		
+		List<String> racSocList = TextReporter.justifyText("PERFUMERIA MARLEN S.A. DE C.V. CENTRO DE DISTRIBUCIÓN TECAMAC", TextReporter.columns - 11);
+		for (int i = 1; i <= direccionList.size(); i++) {
+			parameters.put("cliente.racSoc" + i, direccionList.get(i - 1));
+		}
+		
 		
 		for (int i = 0; i < 35; i++) {
 			HashMap<String, String> r = new HashMap<String, String>();
@@ -618,19 +614,19 @@ public class TextReporter {
 		parameters.put("fot.neTotElemL", "<-- # PRODS.");
 		parameters.put("fot.subTot", "$12,345.56");
 		parameters.put("fot.desc"  , "6789.00");
-		final String totalXval = "985489.65";
+		final String totalXval = "99.65";
 		parameters.put("fot.tot"   , totalXval);
 		parameters.put("fot.impRecib", "6799900.00");
 		parameters.put("fot.cambio", "789.00");
 		
 		String intDecParts[] = totalXval.split("\\.");            
 		String letrasParteEntera  = NumeroCastellano.numeroACastellano(Long.parseLong(intDecParts[0])).trim();
-		final String importeTotal = "("+(letrasParteEntera+" Pesos "+intDecParts[1]+" / 100 M.N.").toUpperCase()+")";
-		List<String> totalLetraLineas = TextReporter.splitInLinesText(importeTotal, TextReporter.columns,'-');
+		final String importeTotal = "**("+(letrasParteEntera+" Pesos "+intDecParts[1]+" / 100 M.N.").toUpperCase()+")**";
+		List<String> totalLetraLineas = TextReporter.splitInLinesText(importeTotal, TextReporter.columns,'*');
 		
-		parameters.put("fot.totLetra1" , "--");
-		parameters.put("fot.totLetra2" , "-----------------");
-		parameters.put("fot.totLetra3" , "-----------------");
+		//parameters.put("fot.totLetra1" , "-----------------");
+		//parameters.put("fot.totLetra2" , "-----------------");
+		//parameters.put("fot.totLetra3" , "-----------------");
 		for (int i = 1; i <= totalLetraLineas.size(); i++) {
 			parameters.put("fot.totLetra" + i, totalLetraLineas.get(i - 1));
 		}

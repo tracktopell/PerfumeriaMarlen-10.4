@@ -24,17 +24,26 @@
 			<artifactId>core</artifactId>
 			<version>${zxing.version}</version>
 		</dependency>
+		
+		<!-- ================= JASPER REPORTS ============ --> 
+		
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>5.5.2</version>
+			<version>${jasperreports.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-fonts</artifactId>
 			<version>${jasperfonts.version}</version>
+		</dependency>	
+		<!--
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version></version>
 		</dependency>
-        
+        -->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
@@ -137,7 +146,30 @@
 					</execution>
 				</executions>
 			</plugin>
-
+													
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>			
+					<execution>
+						<id>clean-my-dirty-space</id>
+						<phase>pre-clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo message="======================= clean-my-dirty-space, in pre-clean phase ==============>>>"/>
+								<delete quiet="true">
+									<fileset dir="${basedir}" includes="TICKET*.txt"/>
+									<fileset dir="${basedir}" includes="system.properties"/>
+								</delete>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

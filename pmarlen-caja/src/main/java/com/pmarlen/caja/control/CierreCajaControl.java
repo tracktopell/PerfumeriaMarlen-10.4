@@ -87,16 +87,17 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	}
 	
 	private void buscarSaldoFinalEstimado(){
-		new Thread(){
+		logger.debug("buscarSaldoFinalEstimado: -->> new Thread().start()");
+		new Thread("RemoteSaldoEstimado"){
 			public void run(){
 				try {
 					saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getSaldoFinalEstimado();
 					cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
 					saldoNeto     = saldoEstimado - saldoInicial;
 					cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));		
-					logger.debug("buscarSaldoFinalEstimado:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
+					logger.debug("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
 				}catch(IOException ioe){
-					logger.error("buscarSaldoFinalEstimado: error al consultar el saldo.", ioe);
+					logger.error("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:: error al consultar el saldo.", ioe);
 					JOptionPane.showMessageDialog(cierreCajaDialog, "NO SE PUEDE OBTENER EL SALDO FINAL ESTIMADO", "CIERRE CAJA", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -305,21 +306,22 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		seleccioneUsuario.setN("-- SELECCIONE --");
 		v.add(seleccioneUsuario);
 		for(U u:usuarioList){
-			logger.debug("getAdministradores:\t->U:"+u+", ADMIN?"+u.getPlaysAsAdmin()+", Perfiles:"+u.getPerfiles());
+			logger.trace("getAdministradores:\t->U:"+u+", ADMIN?"+u.getPlaysAsAdmin()+", Perfiles:"+u.getPerfiles());
 			if(u.getPlaysAsAdmin()) {
 				v.add(u);
 			} else {
-				logger.debug("getAdministradores:\t-> FUCKING FIX ?");
+				logger.trace("getAdministradores:\t-> FUCKING FIX ?");
 				final List<String> perfiles = u.getPerfiles();
 				for(String p: perfiles){
 					if(u.getA()!=0  &&  (p.equalsIgnoreCase(Constants.PERFIL_ADMIN)||p.equalsIgnoreCase(Constants.PERFIL_ROOT)) ){
-						logger.debug("getAdministradores:\t\t-> FUCKING FIX : OK ADD:"+u);
+						logger.trace("getAdministradores:\t\t->OK, LET's FUCKING FIX : ADD: "+u);
 						v.add(u);
+						break;
 					}
 				}
 			}
 		}
-		
+		logger.debug("getAdministradores:v="+v);
 		ComboBoxModel m =  new DefaultComboBoxModel(v);
 		
 		return m;

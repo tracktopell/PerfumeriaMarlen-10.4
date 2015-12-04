@@ -78,6 +78,7 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
         precioLabel = new javax.swing.JLabel();
         codigoBarrasLabel = new javax.swing.JLabel();
 
+        setPreferredSize(new java.awt.Dimension(217, 60));
         setLayout(new java.awt.BorderLayout());
 
         nombreLabel.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N

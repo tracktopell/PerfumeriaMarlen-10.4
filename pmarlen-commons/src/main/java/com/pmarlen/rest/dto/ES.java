@@ -25,7 +25,8 @@ public class ES {
 	private int mp;	
 	private double ir;
 	private String amc;
-	
+	private int pdc;	
+	private int pde;	
 	public EntradaSalida reverse(){
 		EntradaSalida es = new EntradaSalida();
 		es.setTipoMov(tm);
@@ -40,6 +41,8 @@ public class ES {
 		es.setNumeroTicket(nt);
 		es.setAprobacionVisaMastercard(amc);
 		es.setImporteRecibido(ir);
+		es.setPorcentajeDescuentoCalculado(pdc);
+		es.setPorcentajeDescuentoExtra(pde);
 		return es;
 	}
 
@@ -207,5 +210,33 @@ public class ES {
 	 */
 	public void setAmc(String amc) {
 		this.amc = amc;
+	}
+
+	/**
+	 * @return the pdc
+	 */
+	public int getPdc() {
+		return pdc;
+	}
+
+	/**
+	 * @param pdc the pdc to set
+	 */
+	public void setPdc(int pdc) {
+		this.pdc = pdc;
+	}
+
+	/**
+	 * @return the pde
+	 */
+	public int getPde() {
+		return pde;
+	}
+
+	/**
+	 * @param pde the pde to set
+	 */
+	public void setPde(int pde) {
+		this.pde = pde;
 	}
 }

@@ -31,6 +31,7 @@ public class Main {
 	private static Logger logger = Logger.getLogger(Main.class.getName());
 	//public static final String INTELBTH = "intelbth";
 	public static boolean dinamicDebug=false;
+	public static boolean dinamicTrace=false;
 	/**
 	 * @param args the command line arguments
 	 */
@@ -45,6 +46,8 @@ public class Main {
 			System.out.println("main:\t\""+a+"\"");
 			if(a.equals("-debug=true")){
 				dinamicDebug = true;
+			} else if(a.equals("-trace=true")){
+				dinamicTrace = true;
 			}
 			na++;
 		}
@@ -53,6 +56,10 @@ public class Main {
 		if(dinamicDebug){
 			System.out.println("main:->Activating Log4J DEBUG Level.");
 			LogManager.getRootLogger().setLevel(Level.DEBUG);
+		}
+		if(dinamicTrace){
+			System.out.println("main:->Activating Log4J TRACE Level.");
+			LogManager.getRootLogger().setLevel(Level.TRACE);
 		}
 		
 		isSingleInstanceRunning();

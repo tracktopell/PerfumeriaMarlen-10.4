@@ -119,8 +119,10 @@ public class Constants {
 	public static final int ID_MDP_TARJETA = 2;
 	public static final int ID_MDP_EFECTIVO_Y_TARJETA = 8;
 	public static final int ID_FDP_1SOLA_E = 1;
-	public static final double FACTOR_DES_MAYSUC = 0.1;
-
+	public static final double FACTOR_DES_MAYSUC   = 0.05;
+	public static final double FACTOR_DES_MAY2_SUC = 0.1;
+	public static final double IMPORTE_DES_MAY_SUC = 100;
+	public static final double IMPORTE_DES_MAY2_SUC = 200;
 	public static Properties getPro() {
 		if(pro == null){
 			try {

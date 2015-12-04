@@ -49,12 +49,13 @@ public class VentaSesion {
 	//private boolean descuentoMayoreoHabilitado;
 	private double  descuentoCalculado ;
 	private double  descuentoFactor;	
+	private int		porcentajeDescuentoCalculado;
+	private int		porcentajeDescuentoExtra;
 	private int		numElemVta;
 	private int		nunElemDescontablesVta;
 	private int		numElemSinDescVta;
 
-	private String autorizacion;
-	private String numTicket;
+	private String autorizacion;	
 	
 	public VentaSesion(){
 		nuevaSesionVenta();
@@ -86,8 +87,6 @@ public class VentaSesion {
 	
 	public void nuevaSesionVenta() {
 		detalleVentaTableItemList = new ArrayList<PedidoVentaDetalleTableItem>();
-		venta= new ES_ESD();
-		
 		cliente			= new ClienteQuickView	();
 		formaDePago     = new FormaDePago		(Constants.ID_FDP_1SOLA_E);
 		metodoDePago    = new MetodoDePago		(Constants.ID_MDP_EFECTIVO);
@@ -95,35 +94,40 @@ public class VentaSesion {
 		importeRecibido = 0.0;
 		totalBruto		= 0.0;
 		total			= 0.0;
-
+		porcentajeDescuentoCalculado =0;
+		porcentajeDescuentoExtra=0;
+	
 		autorizacion    = null;
-		numTicket       = null;
+		
+		venta			= null;
 	}
 
-	public ES_ESD getVenta() {
-		ES es;
-		
-		ArrayList<ESD> detalleVentaList = new ArrayList<ESD>();
-		for (PedidoVentaDetalleTableItem dvil : detalleVentaTableItemList) {
-			detalleVentaList.add(dvil.getPvd());
-		}
-		venta = new ES_ESD();
+	public ES_ESD getVenta() {		
+		if(venta == null) {
+			ArrayList<ESD> detalleVentaList = new ArrayList<ESD>();
+			for (PedidoVentaDetalleTableItem dvil : detalleVentaTableItemList) {
+				detalleVentaList.add(dvil.getPvd());
+			}
+			venta = new ES_ESD();
 
-		venta.getEs().setTm(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
-		venta.getEs().setJ(MemoryDAO.getNumCaja());
-		venta.getEs().setC(cliente.getId());
-		venta.getEs().setFc(System.currentTimeMillis());
-		venta.getEs().setFp(formaDePago.getId());
-		venta.getEs().setIr(importeRecibido);
-		venta.getEs().setMp(metodoDePago.getId());
-		venta.getEs().setAmc(autorizacion);
-		venta.getEs().setI(Constants.IVA);
-		venta.getEs().setS(MemoryDAO.getSucursalId());
-		venta.getEs().setNt(numTicket);
-		venta.setEsdList(detalleVentaList);
-		venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getE());		
-		calcularTotales();
-		
+			venta.getEs().setTm(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
+			venta.getEs().setJ(MemoryDAO.getNumCaja());
+			venta.getEs().setC(cliente.getId());
+			venta.getEs().setFc(System.currentTimeMillis());
+			venta.getEs().setFp(formaDePago.getId());
+			venta.getEs().setIr(importeRecibido);
+			venta.getEs().setPdc(porcentajeDescuentoCalculado);
+			venta.getEs().setPde(porcentajeDescuentoExtra);
+			venta.getEs().setIr(importeRecibido);
+			venta.getEs().setMp(metodoDePago.getId());
+			venta.getEs().setAmc(autorizacion);
+			venta.getEs().setI(Constants.IVA);
+			venta.getEs().setS(MemoryDAO.getSucursalId());
+			venta.setEsdList(detalleVentaList);
+			venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getE());		
+			
+			calcularTotales();
+		}
 		return venta;
 	}
 
@@ -142,6 +146,7 @@ public class VentaSesion {
 		total = 0.0;
 		totalBrutoFijo=0.0;
 		totalBrutoDescontable=0.0;
+		porcentajeDescuentoCalculado = 0;
 		for (PedidoVentaDetalleTableItem dvti : detalleVentaTableItemList) {
 			if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
 				totalBrutoDescontable += dvti.getI();
@@ -154,9 +159,16 @@ public class VentaSesion {
 		numElemVta = nunElemDescontablesVta + numElemSinDescVta;
 		totalBruto = totalBrutoDescontable + totalBrutoFijo;
 		
-		if(MemoryDAO.getSucursal()!= null &&(MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=null && MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=0)){
-			if(totalBrutoDescontable >= 10.00 || nunElemDescontablesVta>= 12){
+		if(		MemoryDAO.getSucursal()!= null &&
+				(	MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=null && 
+					MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=0)){
+			if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY_SUC && totalBrutoDescontable < Constants.IMPORTE_DES_MAY2_SUC && nunElemDescontablesVta< 12){
 				descuentoFactor   = Constants.FACTOR_DES_MAYSUC;
+				porcentajeDescuentoCalculado     = 5;
+				descuentoAplicado = true;
+			} else if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY_SUC || nunElemDescontablesVta>= 12){
+				descuentoFactor   = Constants.FACTOR_DES_MAY2_SUC;
+				porcentajeDescuentoCalculado     = 10;
 				descuentoAplicado = true;
 			}
 		}
@@ -214,28 +226,20 @@ public class VentaSesion {
 		HashMap<String, Object> parameters = new HashMap<String, Object> (); 
 		List<HashMap<String, String>> records=new ArrayList<HashMap<String, String>>();
 		
-		parameters.put("L.venta.ticket"    , "# TICKET:");
+		parameters.put("L.venta.ticket"    , "NO. TICKET:");
 		parameters.put("venta.ticket"      , ventax.getEs().getNt());
 		parameters.put("sucursal.nombre"   , MemoryDAO.getSucursal().getNombre());
 		
 		final String nombre1 = MemoryDAO.getSucursal().getNombre().substring(0, MemoryDAO.getSucursal().getNombre().indexOf("S.A. DE C.V.")+13);
 		final String nombre2 = MemoryDAO.getSucursal().getNombre().substring(MemoryDAO.getSucursal().getNombre().indexOf("S.A. DE C.V.")+13);
 		
-		
-		
 		parameters.put("sucursal.nombre1"  , nombre1);
 		parameters.put("sucursal.nombre2"  , nombre2);
 		
-		List<String> direccionList = TextReporter.justifyText(MemoryDAO.getSucursal().getDireccion(), TextReporter.columns-2);
+		List<String> direccionList = TextReporter.justifyText(MemoryDAO.getSucursal().getDireccion(), TextReporter.columns);
 		
 		parameters.put("sucursal.direccion", MemoryDAO.getSucursal().getDireccion());
 		
-		parameters.put("sucursal.direccion1", "--------");
-		parameters.put("sucursal.direccion2", "--------");
-		parameters.put("sucursal.direccion3", "--------");
-		parameters.put("sucursal.direccion4", "--------");
-		parameters.put("sucursal.direccion5", "--------");
-
 		for(int i=1;i<=direccionList.size();i++){
 			parameters.put("sucursal.direccion"+i, direccionList.get(i-1));
 		}
@@ -265,6 +269,10 @@ public class VentaSesion {
 		parameters.put("cliente.rfc"  , cte.getRfc());
 		parameters.put("cliente.estab", cte.getNombreEstablecimiento());
 		parameters.put("cliente.racSoc", cte.getRazonSocial());
+		List<String> racSocList = TextReporter.justifyText(cte.getRazonSocial(), TextReporter.columns - 11);
+		for (int i = 1; i <= racSocList.size(); i++) {
+			parameters.put("cliente.racSoc" + i, racSocList.get(i - 1));
+		}
 		parameters.put("cliente.cirFac", cte.getDireccionFacturacion());
 		
 		parameters.put("formaDePago.desc",MemoryDAO.getFormaDePago(ventax.getEs().getFp()));
@@ -336,18 +344,18 @@ public class VentaSesion {
 		String letrasParteEntera  = NumeroCastellano.numeroACastellano(Long.parseLong(intDecParts[0])).trim();
 		parameters.put("fot.leyendaNoFiscal" , "ESTO NO ES UN COMPROBANTE FISCAL");
 		
-		parameters.put("fot.totLetra"		,"--("+(letrasParteEntera+" Pesos "+intDecParts[1]+"/100 M.N.").toUpperCase()+")--");
-		final String importeTotal = "--("+(letrasParteEntera+" Pesos "+intDecParts[1]+" / 100 M.N.").toUpperCase()+")--";
-		List<String> totalLetraLineas = TextReporter.justifyText(importeTotal, TextReporter.columns - 2);
+		parameters.put("fot.totLetra"		,"**("+(letrasParteEntera+" Pesos "+intDecParts[1]+"/100 M.N.").toUpperCase()+")**");
+		final String importeTotal = "**("+(letrasParteEntera+" Pesos "+intDecParts[1]+" / 100 M.N.").toUpperCase()+")**";
+		List<String> totalLetraLineas = TextReporter.splitInLinesText(importeTotal, TextReporter.columns,'*');
 		
-		parameters.put("fot.totLetra1" , "--");
-		parameters.put("fot.totLetra2" , "-----------------");
-		parameters.put("fot.totLetra3" , "-----------------");
+		//parameters.put("fot.totLetra1" , "-----------------");
+		//parameters.put("fot.totLetra2" , "-----------------");
+		//parameters.put("fot.totLetra3" , "-----------------");
 		for (int i = 1; i <= totalLetraLineas.size(); i++) {
 			parameters.put("fot.totLetra" + i, totalLetraLineas.get(i - 1));
 		}
 		
-		parameters.put("fot.leyendaNoFiscal" , "ESTO NO ES UN COMPROVANTE FISCAL");
+		parameters.put("fot.leyendaNoFiscal" , "ESTE NO ES UN COMPROBANTE FISCAL");
 		parameters.put("fot.leyenda1" , "¡ LE AGRADECEMOS SU COMPRA !");
 		parameters.put("fot.leyenda2" , "VUELVA PRONTO");		
 		parameters.put("fot.leyenda3" , "http://perfumeriamarlen.com.mx");		

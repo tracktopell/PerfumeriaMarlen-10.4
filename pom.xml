@@ -46,8 +46,8 @@
 		<logback.version>1.1.2</logback.version>
 		<junit.version>4.11</junit.version>
 		<derby.version>10.10.2.0</derby.version>
-		<jasperreports.version>5.5.2</jasperreports.version>
-		<jasperfonts.version>4.0.0</jasperfonts.version>
+		<jasperreports.version>6.2.0</jasperreports.version>
+		<jasperfonts.version>6.0.0</jasperfonts.version>
 		<zxing.version>3.0.1</zxing.version>
 		<groovy.version>2.3.0</groovy.version>
 		
