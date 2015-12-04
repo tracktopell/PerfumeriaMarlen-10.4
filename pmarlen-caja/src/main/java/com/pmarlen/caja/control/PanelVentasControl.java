@@ -1,8 +1,6 @@
 package com.pmarlen.caja.control;
 
 import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
-import com.pmarlen.caja.model.FechaCellRender;
-import com.pmarlen.caja.model.ImporteCellRender;
 import com.pmarlen.caja.model.VentaTableModel;
 import com.pmarlen.caja.view.PanelVentas;
 import java.awt.event.ActionEvent;
@@ -14,6 +12,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import org.apache.log4j.Logger;
 
 /**
@@ -35,17 +34,28 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 		ventasTM.addTableModelListener( this);
 		panelVentas.getVentasJTable().addMouseListener(this);
 		panelVentas.getVentasJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+		rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		panelVentas.getVentasJTable().getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		panelVentas.getVentasJTable().getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+		panelVentas.getVentasJTable().getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
+		panelVentas.getVentasJTable().getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
+		//panelVentas.getVentasJTable().getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
+		//panelVentas.getVentasJTable().getColumnModel().getColumn(5).setCellRenderer(rightRenderer);
+		panelVentas.getVentasJTable().getColumnModel().getColumn(6).setCellRenderer(rightRenderer);
+		panelVentas.getVentasJTable().getColumnModel().getColumn(7).setCellRenderer(rightRenderer);
+		panelVentas.getVentasJTable().getColumnModel().getColumn(8).setCellRenderer(rightRenderer);
 		logger.debug("->>table columns="+panelVentas.getVentasJTable().getColumnCount());
-		
-		//importeCellRender = new ImporteCellRender();
-		//fechaCellRender = new FechaCellRender();
-		
-		//importeCellRender.setHorizontalAlignment(SwingConstants.RIGHT);		
 	}
 	
 	public void refrescar() {		
 		final int tw = panelVentas.getVentasJTable().getWidth();
-		int[] cws = new int[]{10,10,20,20,20,20};
+		int[] cws = new int[]{5,15,5,5,10,30,10,10,10};
 		int cw;
 		logger.debug("->panelVentas.getVentasJTable().getSize()="+tw);
 		int i=0;
@@ -54,10 +64,7 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 			logger.trace("->\tpanelVentas.getVentasJTable().column["+i+"] PreferredWidth:"+cw);
 		
 			panelVentas.getVentasJTable().getColumnModel().getColumn(i++).setPreferredWidth(cw);
-		}
-		
-		//panelVentas.getVentasJTable().getColumnModel().getColumn(1).setCellRenderer(fechaCellRender);		
-		//panelVentas.getVentasJTable().getColumnModel().getColumn(2).setCellRenderer(importeCellRender);		
+		}		
 	}
 	
 	public void estadoInicial(){

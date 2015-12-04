@@ -6,23 +6,20 @@
 package com.pmarlen.caja.dao;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.I;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
@@ -81,7 +78,13 @@ public class ESFileSystemJsonDAO {
 	}
 	
 	static void reset(){
-		logger.debug("reset:"+esList.getClass());
+		logger.debug("reset: esList.getClass():"+esList.getClass()+", esList="+esList.getClass());
+		Iterator ix = esList.iterator();
+		int ixc=0;
+		while(ix.hasNext()){
+			logger.debug("reset:-> esList["+ixc+"]: class:"+ix.next().getClass());
+			ixc++;
+		}
 		for(ES_ESD e: esList) {
 			if(e.getS()==ES_ESD.STATUS_SYNC_LOCAL){
 				e.setS(ES_ESD.STATUS_SYNC_SENT);
@@ -96,8 +99,11 @@ public class ESFileSystemJsonDAO {
 			Gson gson=new Gson();
 			try {
 				FileReader fr = new FileReader(fileToLoad);
-				logger.debug("\tReading");
-				esList.addAll(gson.fromJson(fr, esList.getClass()));
+				logger.debug("\tReading:");
+				//final ArrayList fromJson = gson.fromJson(fr, esList.getClass());
+				final ArrayList fromJson = gson.fromJson(fr, new TypeToken<ArrayList<ES_ESD>>(){}.getType());
+				logger.debug("\t\tRead:fromJson="+fromJson);
+				esList.addAll(fromJson);
 				logger.debug("\tOK, esList.size="+esList.size());				
 			}catch(IOException ioe){
 				logger.error("load, fail:",ioe);

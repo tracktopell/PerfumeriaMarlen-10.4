@@ -24,10 +24,10 @@ import javax.swing.table.TableModel;
 public class VentaTableModel implements TableModel{
 	
 	private static String[] columnNames = new String [] {
-			"TICKET","# ELEMENTOS" ,"FECHA", "SUBTOTAL","DESCUENTO","TOTAL"
+			"S","TICKET","#CAJA","# ELEMENTOS","FECHA","ATENDIO","SUBTOTAL","DESCUENTO","TOTAL"
 	};
 	private static Class[] columnClasses = new Class [] {
-			String.class,Integer.class,String.class,String.class,String.class,String.class
+			String.class,String.class,String.class,Integer.class,String.class,String.class,String.class,String.class,String.class
 	};
 	
 	private List<ES_ESD> ventaList;
@@ -76,19 +76,29 @@ public class VentaTableModel implements TableModel{
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
+		final ES_ESD xr = ventaList.get(rowIndex);
 		
 		if(columnIndex == 0)
-			return ventaList.get(rowIndex).getEs().getNt();
+			return	xr.getS()==ES_ESD.STATUS_SYNC_LOCAL?"LOCAL"		:
+					xr.getS()==ES_ESD.STATUS_SYNC_SENT ?"ENVIADO"	:
+					xr.getS()==ES_ESD.STATUS_SYNC_ERROR?"ERROR"		:
+														("("+xr.getS()+")?");
 		else if(columnIndex == 1)
-			return ventaList.get(rowIndex).getEs().getnElem();
+			return xr.getEs().getNt();
 		else if(columnIndex == 2)
-			return Constants.sdfLogFile.format(new Date(ventaList.get(rowIndex).getEs().getFc()));			
+			return xr.getEs().getJ();
 		else if(columnIndex == 3)
-			return Constants.dfCurrency.format(ventaList.get(rowIndex).getEs().getStot());
+			return xr.getEs().getnElem();
 		else if(columnIndex == 4)
-			return Constants.dfCurrency.format(ventaList.get(rowIndex).getEs().getDesc());
+			return Constants.sdfShortDateTime.format(new Date(xr.getEs().getFc()));			
 		else if(columnIndex == 5)
-			return Constants.dfCurrency.format(ventaList.get(rowIndex).getEs().getTot());
+			return xr.getEs().getU();
+		else if(columnIndex == 6)
+			return Constants.dfCurrency.format(xr.getEs().getStot());
+		else if(columnIndex == 7)
+			return Constants.dfCurrency.format(xr.getEs().getDesc());
+		else if(columnIndex == 8)
+			return Constants.dfCurrency.format(xr.getEs().getTot());
 		else
 			throw new IndexOutOfBoundsException("for column:"+columnIndex);
 	}

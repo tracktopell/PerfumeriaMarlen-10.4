@@ -96,6 +96,7 @@ public class Constants {
 	public static final DecimalFormat df2Decimal        = new DecimalFormat("###########0.00");
 	public static final DecimalFormat dfLongDecimal    = new DecimalFormat("###########0.000000");
 
+	public static final SimpleDateFormat sdfHmnDate    = new SimpleDateFormat("yyyy/MMM/dd HH:mm");
 	public static final SimpleDateFormat sdfLogDate    = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	public static final SimpleDateFormat sdfLogTS      = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 	public static final SimpleDateFormat sdfLogFile    = new SimpleDateFormat("yyyyMMdd_HHmmss");

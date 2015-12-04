@@ -571,7 +571,7 @@ public class MemoryDAO {
 			zf.close();
 			logger.debug("readLocally:After read zip");
 			if(jsonContent != null) {
-				logger.trace("readLocally:...OK, JSon parse:");
+				logger.debug("readLocally:...OK, JSon parse:");
 				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
 				logger.debug("readLocally:paqueteSinc=->"+paqueteSinc+"<-");
 				logger.debug("readLocally:paqueteSinc:paqueteSinc.getSyncDBStatus():"+Integer.toBinaryString(paqueteSinc.getSyncDBStatus())+"<-");
@@ -594,10 +594,10 @@ public class MemoryDAO {
 						logger.debug("readLocally:paqueteSinc=->SYNC_FAIL_JDBC:");
 					}
 				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_OK) {
-					logger.trace("readLocally:paqueteSinc:->SYNC_OK");
-					ESFileSystemJsonDAO.reset();								
+					logger.debug("readLocally:paqueteSinc:->SYNC_OK");
+					ESFileSystemJsonDAO.reset();					
 				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_EMPTY_TRANSACTION) {
-					logger.trace("readLocally:paqueteSinc:->SYNC_EMPTY_TRANSACTION");
+					logger.debug("readLocally:paqueteSinc:->SYNC_EMPTY_TRANSACTION");
 				}
 				
 				List<I> lp = paqueteSinc.getInventarioSucursalList();
