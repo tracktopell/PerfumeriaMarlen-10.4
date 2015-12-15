@@ -250,6 +250,45 @@ public class VentaSesion {
 			parameters.put("sucursal.direccion"+i, direccionList.get(i-1));
 		}
 		
+		String[] txtLogo={  "          ##########          " ,
+							"       ###          ###       " ,
+							"    ###                ##     " ,
+							"   ##                    ##   " ,
+							"  ##  PPPPPPP           ...#  " ,
+							" ##  P  PP  PPP        ·   .# " ,
+							"##   P  PP   PP       ·    · #" ,
+							"#     P PP  PPP  MMM   MMMM. #" ,
+							"#       PPPPP     MMM  MMM   #" ,
+							"#       PP        MMM MMMM   #" ,
+							"#       PP        MM M  MM   #" ,
+							"##   . PPPP       MM    MM   #" ,
+							" #  ·.    PP      MM    MM  ##" ,
+							" ## ···          MMMMM  MMM## " ,
+							"  ## ····                 ##  " ,
+							"   ##  ··················##   " ,
+							"     ### ·DISTRUBUCIONES#     " ,
+							"        ###         ###       " ,
+							"           #########          "};
+		
+		String[] txtLogo2={ "           #########          " ,
+							"      ###             ###     " ,
+							"   ##                    ##   " ,
+							"  ##   PPPPPP           ...#  " ,
+							" ##  P  PP  PPP        ·   .# " ,
+							"##   P  PP   PP       ·    · #" ,
+							"#     P PP  PPP  MMM   MMMM. #" ,
+							"#       PPPPP     MMM  MMM   #" ,
+							"#       PP        MM M  MM   #" ,
+							"#    . PPPP       MM    MM   #" ,
+							" #  ·.    PP      MM    MM  ##" ,
+							" ## ···          MMMMM  MMM## " ,
+							"   ##  ··················##   " ,
+							"     ### ·DISTRUBUCIONES#     " ,
+							"           #########          "};		
+
+		for (int i = 1; i <= txtLogo.length; i++) {
+			parameters.put("logo.line" + i, txtLogo[i - 1]);
+		}
 		parameters.put("sucursal.tels", "TELS.:"+MemoryDAO.getSucursal().getTelefonos());
 		
 		
@@ -300,7 +339,7 @@ public class VentaSesion {
 			
 			importeBrutoX = esd.getC()*esd.getP();
 			
-			if(esd.getA() == Constants.ALMACEN_PRINCIPAL){
+			if(esd.getTa() == Constants.ALMACEN_PRINCIPAL){
 				totalBrutoDescontableX  += importeBrutoX;
 				nunElemDescontablesX    += esd.getC();
 			} else {

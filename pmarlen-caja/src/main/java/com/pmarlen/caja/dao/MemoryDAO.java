@@ -308,7 +308,7 @@ public class MemoryDAO {
 			IAmAliveDTORequest iAmAliveDTORequest = buildIAmALivePackageDTO();
 			
 			syncDTORequest.setiAmAliveDTORequest(iAmAliveDTORequest);			
-			syncDTORequest.setEscdList(ESFileSystemJsonDAO.getEsList());
+			syncDTORequest.setEscdList(ESFileSystemJsonDAO.getEsListNotSent());
 			
 			logger.debug("download:-->> building: SyncDTORequest="+syncDTORequest+", before send.");
 			
@@ -683,12 +683,13 @@ public class MemoryDAO {
 	
 	private static String userAgentExpression;
 	private static final String corteCajaDTOjsonFile = "CorteCajaDTO.json";
+	private static final String aperturaCajaDTOjsonFile = "AperturaCajaDTO.json";
 	
-	public static CorteCajaDTO _getCorteCaja(){
+	public static CorteCajaDTO getAperturaCaja(){
 		CorteCajaDTO cc=null;
-		File fileToLoad = new File(corteCajaDTOjsonFile);
+		File fileToLoad = new File(aperturaCajaDTOjsonFile);
 		if(fileToLoad.exists() ){
-			logger.debug("getCorteCaja:File found:"+corteCajaDTOjsonFile);
+			logger.debug("getCorteCaja:File found:"+aperturaCajaDTOjsonFile);
 			Gson gson=new Gson();
 			try {
 				FileReader fr = new FileReader(fileToLoad);
@@ -698,10 +699,30 @@ public class MemoryDAO {
 				logger.error("getCorteCaja: fail:",ioe);
 			}
 		} else {
-			logger.debug("getCorteCaja:File NOT found:"+corteCajaDTOjsonFile);
-			cc= new CorteCajaDTO();
+			logger.debug("getCorteCaja:File NOT found:"+aperturaCajaDTOjsonFile);
+			cc= null;
 		}
 		return cc;
+	}
+	
+	public static void saveAperturaCajaDTO(CorteCajaDTO cc){
+		logger.debug("saveAperturaCajaDTO: CorteCajaDTO="+cc);
+		Gson gson=new Gson();
+		String jsonAllES = gson.toJson(cc);
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter(aperturaCajaDTOjsonFile);
+			fw.write(jsonAllES);
+			fw.flush();
+			fw.close();
+			
+			File x=new File(aperturaCajaDTOjsonFile);
+			
+			logger.debug("saveAperturaCajaDTO: created file="+x.getAbsolutePath()+" ? "+x.exists()+", size="+x.length());
+			
+		}catch(IOException ioe){
+			logger.error("saveAperturaCajaDTO:Error to write",ioe);
+		}	
 	}
 	
 	public static void saveCorteCajaDTO(CorteCajaDTO cc){
@@ -748,12 +769,12 @@ public class MemoryDAO {
 	
 	public static CorteCajaDTO readLastSavedCorteCajaDTO(){
 		logger.debug("readLastSavedCorteCajaDTO: ");
-		final String backupFaileName = "CorteCajaDTO.json";
+		
 		Gson gson=new Gson();
 		CorteCajaDTO cc = null;
 		
 		try {			
-			cc = gson.fromJson(new FileReader(backupFaileName), CorteCajaDTO.class);		
+			cc = gson.fromJson(new FileReader(corteCajaDTOjsonFile), CorteCajaDTO.class);		
 			logger.debug("readLastSavedCorteCajaDTO: cc="+cc);
 		}catch(IOException ioe){
 			logger.debug("readLastSavedCorteCajaDTO: No existe el archivo:"+ioe.getMessage());
@@ -761,7 +782,22 @@ public class MemoryDAO {
 		return cc;
 	}
 
-	public static double getSaldoEstimado() throws IOException{
+	public static CorteCajaDTO readLastSavedAperturaCajaDTO(){
+		logger.debug("readLastSavedCorteCajaDTO: ");
+		
+		Gson gson=new Gson();
+		CorteCajaDTO cc = null;
+		
+		try {			
+			cc = gson.fromJson(new FileReader(aperturaCajaDTOjsonFile), CorteCajaDTO.class);		
+			logger.debug("readLastSavedCorteCajaDTO: cc="+cc);
+		}catch(IOException ioe){
+			logger.debug("readLastSavedCorteCajaDTO: No existe el archivo:"+ioe.getMessage());
+		}
+		return cc;
+	}
+
+	public static double getRemoteSaldoEstimado() throws IOException{
 		double saldoEstimado = 0.0;
 		
 		URL url = null;
@@ -769,15 +805,15 @@ public class MemoryDAO {
 		
 		try {
 			url = new URL(getServerContext()+uriSaldoEstimado+"/"+getSucursalId()+"/"+getNumCaja());
-			logger.debug("getSaldoEstimado: url::"+url);
+			logger.debug("getRemoteSaldoEstimado: url::"+url);
 			is = url.openConnection().getInputStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			saldoEstimado = Double.parseDouble(br.readLine());
-			logger.debug("getSaldoEstimado: saldoEstimado="+saldoEstimado);
+			logger.debug("getRemoteSaldoEstimado: saldoEstimado="+saldoEstimado);
 			is.close();
 		}catch(Exception e){
-			logger.error("getSaldoEstimado: error", e);
-			throw new IOException("No se puede Obtener el saldo:"+e.getMessage());
+			logger.error("getRemoteSaldoEstimado: error", e);
+			throw new IOException("No se puede Obtener Remotamente el saldo:"+e.getMessage());
 		}
 		return saldoEstimado;
 	}

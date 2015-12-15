@@ -1,5 +1,6 @@
 package com.pmarlen.caja.control;
 
+import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.businesslogic.reports.TextReporter;
 import com.pmarlen.caja.Main;
@@ -20,15 +21,18 @@ import com.pmarlen.rest.dto.I;
 import com.pmarlen.ticket.systemprinter.SendFileToSystemPrinter;
 import com.pmarlen.ticket.systemprinter.UnixSendToLP;
 import java.awt.Color;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
-import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
@@ -136,7 +140,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		I productoEncontradoSinExistencia = null;
 		
 		logger.debug("\tcodigoBuscar_ActionPerformed: panelVenta.getTipoAlmacen="+panelVenta.getTipoAlmacen());
-		
+		int contAgregados=0;
 		int tipoAlmacenSeleccionado =	panelVenta.getDesdeLinea().isSelected()			?	Constants.ALMACEN_PRINCIPAL:
 										panelVenta.getDesdeOportunidad().isSelected()	?	Constants.ALMACEN_OPORTUNIDAD:
 										panelVenta.getDesdeRegalias().isSelected()		?	Constants.ALMACEN_REGALIAS:
@@ -154,7 +158,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					sbNoEncontrados.append(cdLineCB).append(" ");
 				} else {
 					logger.trace("\t\t\tcodigoBuscar_ActionPerformed:producto encontrado:"+productoEncontrado);
-					encontrados.add(productoEncontrado);
+					encontrados.add(productoEncontrado);					
 				}
 			}
 		}
@@ -162,13 +166,13 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		if(encontrados.size() > 0) {
 			productoEncontrado =  null;
 			productoEncontradoSinExistencia = null;
+			final HashMap<Integer, Almacen> tipoAlmacen = ApplicationLogic.getInstance().getTipoAlmacen();
 			for(I i:encontrados){
 				productoEncontrado = i;
-				
 				if(!estadoChecando){
-					
 					ESD esd = new ESD();
-					esd.setA(tipoAlmacenSeleccionado);
+					esd.setTa(tipoAlmacenSeleccionado);					
+					esd.setA(tipoAlmacen.get(tipoAlmacenSeleccionado).getId());
 					esd.setC(1);
 					boolean existencia=false;
 					if(tipoAlmacenSeleccionado == Constants.ALMACEN_PRINCIPAL && productoEncontrado.getA1c() > 0) {
@@ -187,19 +191,23 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					if(existencia) {
 						esd.setCb(productoEncontrado.getCb());
 						PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, tipoAlmacenSeleccionado);
-						logger.debug("\t\t=> + "+esd.getC()+" x "+esd.getCb()+" ("+tipoAlmacenSeleccionado+")");
+						logger.debug("\t\t=> + "+esd.getC()+" x "+esd.getCb()+"("+tipoAlmacenSeleccionado+") ["+esd.getA()+"]");
 						ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().add(detalleVentaTableItemNuevo);
+						contAgregados++;
 					} else {
 						productoEncontradoSinExistencia = productoEncontrado;
 					}
 				}
 			}
-			panelVenta.getDetalleVentaJTable().updateUI();
-			renderTotal();
-			int idx = 0;
-			idx = ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().size();
-			panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx-1, idx-1);
-			
+			if(contAgregados>0){
+				panelVenta.getDetalleVentaJTable().updateUI();
+				int idx = 0;
+				idx = ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().size()-1;
+				
+				renderTotal();			
+				panelVenta.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(idx, idx);
+				scrollToVisible(panelVenta.getDetalleVentaJTable(),idx,1);
+			}
 			panelVenta.getCodigoBuscar().setText("");
 			panelVenta.resetInfoForProducto(productoEncontrado.reverse(),tipoAlmacenSeleccionado);
 		}
@@ -237,9 +245,32 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					JOptionPane.WARNING_MESSAGE);
 
 			panelVenta.getCodigoBuscar().requestFocus();
-		}
-		
+		}		
 	}
+	
+	public void scrollToVisible(JTable table, int rowIndex, int vColIndex) {
+        if (!(table.getParent() instanceof JViewport)) {
+            return;
+        }
+        JViewport viewport = (JViewport)table.getParent();
+
+        // This rectangle is relative to the table where the
+        // northwest corner of cell (0,0) is always (0,0).
+        Rectangle rect = table.getCellRect(rowIndex, vColIndex, true);
+
+        // The location of the viewport relative to the table
+        Point pt = viewport.getViewPosition();
+
+        // Translate the cell location so that it is relative
+        // to the view, assuming the northwest corner of the
+        // view is (0,0)
+        rect.setLocation(rect.x-pt.x, rect.y-pt.y);
+
+        table.scrollRectToVisible(rect);
+
+        // Scroll the area into view
+        //viewport.scrollRectToVisible(rect);
+    }
 
 	void terminar_ActionPerformed() {
 		logger.info("[USER]->terminar_ActionPerformed");

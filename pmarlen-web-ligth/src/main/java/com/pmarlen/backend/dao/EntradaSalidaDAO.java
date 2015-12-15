@@ -734,7 +734,7 @@ public class EntradaSalidaDAO {
 	
 	public Double findSaldoEstimadoSucursalCajaVentas(int sucursalId,int caja,int corteCajaId)throws DAOException{
 		Double saldoEstimado=null;
-		logger.debug("findSaldoEstimadoSucursalCajaVentas(sucursalId="+sucursalId+",caja="+caja+")");
+		logger.debug("findSaldoEstimadoSucursalCajaVentas(sucursalId="+sucursalId+",caja="+caja+",corteCajaId="+corteCajaId+")");
 		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -767,6 +767,7 @@ public class EntradaSalidaDAO {
 						"AND    CC.ID           = ?\n" +
 						"AND    ES.FECHA_CREO   >= CC.FECHA\n" +
 						"ORDER BY ES.ID,ESD.ID";
+			logger.debug("findSaldoEstimadoSucursalCajaVentas: query:"+q);
 			int ci=1;
 			ps = conn.prepareStatement(q);
 			
@@ -800,7 +801,7 @@ public class EntradaSalidaDAO {
 
 	public Double findSaldoEstimadoSucursalCajaDevol(int sucursalId,int caja,int corteCajaId)throws DAOException{
 		Double saldoEstimado=null;
-		logger.debug("findSaldoEstimadoSucursalCajaVentas(sucursalId="+sucursalId+",caja="+caja+")");
+		logger.debug("findSaldoEstimadoSucursalCajaDevol(sucursalId="+sucursalId+",caja="+caja+",corteCajaId="+corteCajaId+")");
 		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -833,6 +834,7 @@ public class EntradaSalidaDAO {
 						"AND    CC.ID           = ?\n" +
 						"AND    ES.FECHA_CREO   >= CC.FECHA\n" +
 						"ORDER BY ES.ID,ESD.ID;";
+			logger.debug("findSaldoEstimadoSucursalCajaDevol: query:"+q);
 			int ci=1;
 			ps = conn.prepareStatement(q);
 			
@@ -866,7 +868,7 @@ public class EntradaSalidaDAO {
 
 	public int insertPedidoVentaSucursal(Connection conn, EntradaSalida x, List<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
 		
-		logger.debug("insertPedidoVentaSucursal:TESTING: EntradaSalida: INSERT FECHA:"+x.getFechaCreo());
+		logger.debug("insertPedidoVentaSucursal:TESTING: EntradaSalida: INSERT FECHA:"+x.getFechaCreo()+", SUCURSAL:"+x.getSucursalId()+", CAJA:"+x.getCaja()+", TICKET:"+x.getNumeroTicket());
 		for(EntradaSalidaDetalle esd: pvdList){
 			logger.debug("insertPedidoVentaSucursal:\tTESTING: INSERT & COMMIT, DISCOUNT="+esd.getCantidad()+" x "+esd.getProductoCodigoBarras()+"["+esd.getAlmacenId()+"]");
 		}
@@ -973,7 +975,7 @@ public class EntradaSalidaDAO {
 					cant = pvd.getCantidad();
 					psESD.setInt(1, cant);
 				}
-				logger.info("->tipomov="+x.getTipoMov()+", cant="+cant);
+				logger.info("->tipomov="+x.getTipoMov()+", producto="+pvd.getProductoCodigoBarras()+", almacen="+pvd.getAlmacenId()+", cant="+cant);
 				psESD.setString(2, pvd.getProductoCodigoBarras());
 				psESD.setInt(3, pvd.getAlmacenId());
 
@@ -986,7 +988,7 @@ public class EntradaSalidaDAO {
 				psMHP.setInt(ci++, x.getTipoMov());
 				psMHP.setInt(ci++, pvd.getCantidad());
 				psMHP.setObject(ci++, null);
-				psMHP.setObject(ci++, null);
+				psMHP.setObject(ci++, pvd.getPrecioVenta());
 				psMHP.setString(ci++, x.getUsuarioEmailCreo());
 				psMHP.setString(ci++, pvd.getProductoCodigoBarras());
 				psMHP.setInt   (ci++, x.getId());

@@ -9,6 +9,7 @@ import com.pmarlen.backend.model.EntradaSalidaDetalle;
 public class ESD {
 	private String cb;
 	private int a;
+	private int ta;
 	private int c;
 	private double p;
 	
@@ -46,18 +47,26 @@ public class ESD {
 		this.cb = cb;
 	}
 
-	/**
-	 * @return the a
-	 */
+	public void setA(int a) {
+		this.a = a;
+	}
+
 	public int getA() {
 		return a;
 	}
+	
+	/**
+	 * @return the ta
+	 */
+	public int getTa() {
+		return ta;
+	}
 
 	/**
-	 * @param a the a to set
+	 * @param a the ta to set
 	 */
-	public void setA(int a) {
-		this.a = a;
+	public void setTa(int a) {
+		this.ta = a;
 	}
 
 	/**

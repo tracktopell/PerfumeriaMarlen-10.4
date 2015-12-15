@@ -427,10 +427,10 @@ public class ApplicationLogic {
 		MemoryDAO.backupCorteCajaDTO(corteCajaDTO);
 	}	
 
-	double getSaldoFinalEstimado() throws IOException{
+	double getRemoteSaldoFinalEstimado() throws IOException{
 		double  saldoFinalEstimado = 0.0;
 		
-		saldoFinalEstimado = MemoryDAO.getSaldoEstimado();
+		saldoFinalEstimado = MemoryDAO.getRemoteSaldoEstimado();
 		
 		return saldoFinalEstimado;
 	}

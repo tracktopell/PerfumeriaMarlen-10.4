@@ -43,18 +43,18 @@ public class ESFileSystemJsonDAO {
 					tm <=Constants.TIPO_MOV_ENTRADA_ALMACEN_TRASPASO){
 			add = 1;
 		}
-		
+		logger.debug("\tcommit:TICKET:"+escd.getEs().getNt());
 		for(ESD d:escd.getEsdList()){
 			I p = MemoryDAO.fastSearchProducto(d.getCb());
 			
-			if(d.getA()== Constants.ALMACEN_PRINCIPAL){
+			if(d.getTa()== Constants.ALMACEN_PRINCIPAL){
 				p.setA1c(p.getA1c() * d.getC() * add);
-			} else if(d.getA() == Constants.ALMACEN_REGALIAS){
+			} else if(d.getTa() == Constants.ALMACEN_REGALIAS){
 				p.setaRc(p.getaRc()* d.getC() * add);
-			} else if(d.getA() == Constants.ALMACEN_OPORTUNIDAD){
+			} else if(d.getTa() == Constants.ALMACEN_OPORTUNIDAD){
 				p.setaOc(p.getaOc()* d.getC() * add);
 			}
-			
+			logger.debug("\tcommit:"+d.getC()+" x "+d.getCb()+"["+d.getTa()+"]");
 		}
 		
 		esList.add(escd);
@@ -140,5 +140,17 @@ public class ESFileSystemJsonDAO {
 	public static ArrayList<ES_ESD> getEsList() {
 		return esList;
 	}
-	
+
+	public static ArrayList<ES_ESD> getEsListNotSent() {
+		ArrayList<ES_ESD> nsList=new ArrayList<ES_ESD>();
+		
+		for(ES_ESD e: esList){
+			if(e.getS()==ES_ESD.STATUS_SYNC_LOCAL){
+				nsList.add(e);
+			}
+		}
+		
+		return nsList;
+	}
+
 }

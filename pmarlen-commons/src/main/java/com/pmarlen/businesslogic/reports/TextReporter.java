@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  */
 public class TextReporter {
 
-	public static int columns = 38;
+	public static int columns = 32;
 
 	public static boolean DEBUG = false;
 	
@@ -575,17 +575,50 @@ public class TextReporter {
 		List<String> direccionList = TextReporter.justifyText(direccion, TextReporter.columns);
 
 		parameters.put("sucursal.direccion", direccion);
-
-//		parameters.put("sucursal.direccion1", "--------");
-//		parameters.put("sucursal.direccion2", "--------");
-//		parameters.put("sucursal.direccion3", "--------");
-//		parameters.put("sucursal.direccion4", "--------");
-//		parameters.put("sucursal.direccion5", "--------");
-		
 		for (int i = 1; i <= direccionList.size(); i++) {
 			parameters.put("sucursal.direccion" + i, direccionList.get(i - 1));
 		}
 
+		String[] txtLogo={  "          ##########          " ,
+							"       ###          ###       " ,
+							"    ###                ##     " ,
+							"   ##                    ##   " ,
+							"  ##  PPPPPPP           ...#  " ,
+							" ##  P  PP  PPP        ·   .# " ,
+							"##   P  PP   PP       ·    · #" ,
+							"#     P PP  PPP  MMM   MMMM. #" ,
+							"#       PPPPP     MMM  MMM   #" ,
+							"#       PP        MMM MMMM   #" ,
+							"#       PP        MM M  MM   #" ,
+							"##   . PPPP       MM    MM   #" ,
+							" #  ·.    PP      MM    MM  ##" ,
+							" ## ···          MMMMM  MMM## " ,
+							"  ## ····                 ##  " ,
+							"   ##  ··················##   " ,
+							"     ### ·DISTRUBUCIONES#     " ,
+							"        ###         ###       " ,
+							"           #########          "};
+		
+		String[] txtLogo2={ "           #########          " ,
+							"      ###             ###     " ,
+							"   ##                    ##   " ,
+							"  ##   PPPPPP           ...#  " ,
+							" ##  P  PP  PPP        ·   .# " ,
+							"##   P  PP   PP       ·    · #" ,
+							"#     P PP  PPP  MMM   MMMM. #" ,
+							"#       PPPPP     MMM  MMM   #" ,
+							"#       PP        MM M  MM   #" ,
+							"#    . PPPP       MM    MM   #" ,
+							" #  ·.    PP      MM    MM  ##" ,
+							" ## ···          MMMMM  MMM## " ,
+							"   ##  ··················##   " ,
+							"     ### ·DISTRUBUCIONES#     " ,
+							"           #########          "};		
+
+		for (int i = 1; i <= txtLogo.length; i++) {
+			parameters.put("logo.line" + i, txtLogo[i - 1]);
+		}
+		
 		parameters.put("sucursal.tels", "TELS.:" + "55-5936-2597");
 
 		parameters.put("fecha.creado", Constants.sdfShortTime.format(today));
@@ -634,8 +667,8 @@ public class TextReporter {
 		parameters.put("fot.leyendaNoFiscal" , "ESTO NO ES UN COMPROBANTE FISCAL");
 		parameters.put("fot.leyenda1" , "¡ LE AGRADECEMOS SU COMPRA !");
 		parameters.put("fot.leyenda2" , "VUELVA PRONTO");		
-		parameters.put("fot.leyenda3" , "http://perfumeriamarlen.com.mx");		
-		parameters.put("fot.leyenda4" , "http://facebook.com/PerfumeriaMarlen");
+		parameters.put("fot.leyenda3" , "perfumeriamarlen.com.mx");		
+		parameters.put("fot.leyenda4" , "facebook.com/PerfumeriaMarlen");
 
 		System.out.println("TextReporter:DEBUG?" + DEBUG);
 		JarpeReportsInfoDTO jrInfo = new JarpeReportsInfoDTO(parameters, records);

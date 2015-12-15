@@ -1,9 +1,13 @@
 package com.pmarlen.caja.control;
 
+import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.view.CierreCajaJFrame;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.GeneradorDeToken;
+import com.pmarlen.rest.dto.CorteCajaDTO;
+import com.pmarlen.rest.dto.ES;
+import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.U;
 import java.awt.Color;
 import java.awt.HeadlessException;
@@ -13,6 +17,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
@@ -59,7 +64,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	
 	public void estadoInicial(){
 		saldoInicial  = ApplicationLogic.getInstance().getCorteCajaDTO().getSaldoInicial().doubleValue();
-		//saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getSaldoFinalEstimado();
+		//saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getRemoteSaldoFinalEstimado();
 		saldoEstimado = saldoInicial;
 		buscarSaldoFinalEstimado();
 		saldoNeto     = saldoEstimado - saldoInicial;
@@ -90,12 +95,43 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		logger.debug("buscarSaldoFinalEstimado: -->> new Thread().start()");
 		new Thread("RemoteSaldoEstimado"){
 			public void run(){
-				try {
-					saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getSaldoFinalEstimado();
+				try {					
+					final CorteCajaDTO aperturaCajaDTO = MemoryDAO.readLastSavedAperturaCajaDTO();
+					logger.debug("buscarSaldoFinalEstimado: [LOCAL] corteCajaDTO="+aperturaCajaDTO);
+					
+					if(aperturaCajaDTO != null){
+						logger.debug("buscarSaldoFinalEstimado: [LOCAL] searching :");
+						final ArrayList<ES_ESD> esList = ESFileSystemJsonDAO.getEsList();
+						double ttX = 0.0;
+						for(ES_ESD esesd: esList){
+							if(esesd.getEs().getFc()>=aperturaCajaDTO.getFecha()){
+								final ES es = esesd.getEs(); 
+								final int tm=es.getTm();
+								int add = 0;
+		
+								if(	tm == Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA ){
+									add = +1;
+								} else if(	tm ==Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION){
+									add = -1;
+								}
+								double rxTx = (es.getTot())*add;
+								ttX += rxTx;
+								logger.debug("\tbuscarSaldoFinalEstimado: [LOCAL] + "+rxTx);
+							}
+						}
+						logger.debug("buscarSaldoFinalEstimado:  [LOCAL] Suma:"+ttX);
+						
+						saldoEstimado = saldoInicial + ttX;						
+						saldoNeto     = saldoEstimado - saldoInicial;
+						
+						logger.debug("buscarSaldoFinalEstimado[LOCAL]:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
+					} else {					
+						saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getRemoteSaldoFinalEstimado();
+						saldoNeto     = saldoEstimado - saldoInicial;
+						logger.debug("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
+					}
 					cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
-					saldoNeto     = saldoEstimado - saldoInicial;
-					cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));		
-					logger.debug("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
+					cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));
 				}catch(IOException ioe){
 					logger.error("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:: error al consultar el saldo.", ioe);
 					JOptionPane.showMessageDialog(cierreCajaDialog, "NO SE PUEDE OBTENER EL SALDO FINAL ESTIMADO", "CIERRE CAJA", JOptionPane.ERROR_MESSAGE);

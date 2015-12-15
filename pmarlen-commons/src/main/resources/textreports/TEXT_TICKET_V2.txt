@@ -1,5 +1,23 @@
 ${fecha.actual,l,10,L} ${hora.actual,r,10,R}
-
+${logo.line1,c,100%,R}
+${logo.line2,c,100%,R}
+${logo.line3,c,100%,R}
+${logo.line4,c,100%,R}
+${logo.line5,c,100%,R}
+${logo.line6,c,100%,R}
+${logo.line7,c,100%,R}
+${logo.line8,c,100%,R}
+${logo.line9,c,100%,R}
+${logo.line10,c,100%,R}
+?{logo.line12,c,100%,R}
+?{logo.line13,c,100%,R}
+?{logo.line14,c,100%,R}
+?{logo.line15,c,100%,R}
+?{logo.line16,c,100%,R}
+?{logo.line17,c,100%,R}
+?{logo.line18,c,100%,R}
+?{logo.line19,c,100%,R}
+?{logo.line20,c,100%,R}
 ${sucursal.nombre1,c,100%,R}
 ${sucursal.nombre2,c,100%,R}
 

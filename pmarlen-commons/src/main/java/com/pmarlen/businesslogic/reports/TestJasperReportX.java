@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import net.sf.jasperreports.engine.*;
@@ -61,6 +62,18 @@ public class TestJasperReportX {
 				jasperReport = (JasperReport)JRLoader.loadObject(compiledReportPathFile);
 				logger.info("Ok, JasperReport, loaded from:"+compiledReportPath);
 			}
+			
+//			Class jrClass =jasperReport.getClass();
+//			try {
+//				logger.info("JasperReport Reflection making accesible :");
+//				final Field jrCfliend = jrClass.getField("pageHeight");
+//				jrCfliend.setAccessible(true);
+//				logger.info("JasperReport Reflection making accesible : OK done.");
+//				jrCfliend.set(jasperReport, 500);
+//				logger.info("JasperReport Reflection making accesible : Assigned value.");
+//			}catch(Exception e){
+//				logger.error("JasperReport Reflection making accesible :", e);
+//			}
 			
 			logger.info("Ok, JasperReport Ready, filling.");
 			

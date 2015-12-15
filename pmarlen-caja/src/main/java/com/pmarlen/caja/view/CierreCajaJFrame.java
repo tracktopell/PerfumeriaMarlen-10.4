@@ -168,7 +168,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jLabel6.setPreferredSize(new java.awt.Dimension(400, 25));
         jPanel6.add(jLabel6);
 
-        observaciones.setColumns(20);
+        observaciones.setColumns(18);
         observaciones.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
         jPanel6.add(observaciones);
 
@@ -240,7 +240,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 
         getContentPane().add(jPanel13);
 
-        setSize(new java.awt.Dimension(1183, 575));
+        setSize(new java.awt.Dimension(1119, 574));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

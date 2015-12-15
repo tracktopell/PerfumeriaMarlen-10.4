@@ -107,7 +107,7 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 		ApplicationLogic.getInstance().getCorteCajaDTO().setSaldoFinal(null);		
 		ApplicationLogic.getInstance().getCorteCajaDTO().setComentarios(observaciones);
 		
-		MemoryDAO.saveCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
+		MemoryDAO.saveAperturaCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
 		MemoryDAO.backupCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
 		
 		aperturaCorrecta=true;

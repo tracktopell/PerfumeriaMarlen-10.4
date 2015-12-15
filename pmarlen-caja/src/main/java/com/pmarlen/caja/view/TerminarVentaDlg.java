@@ -55,11 +55,13 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jPanel14 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         recibido = new javax.swing.JTextField();
+        jPanel12 = new javax.swing.JPanel();
         cambioLbl = new javax.swing.JLabel();
         cambio = new javax.swing.JTextField();
-        jPanel12 = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         cargo = new javax.swing.JTextField();
+        jPanel11 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         autorizacion = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
@@ -80,7 +82,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jPanel1.add(jPanel7, java.awt.BorderLayout.WEST);
 
-        jPanel6.setLayout(new java.awt.GridLayout(7, 1));
+        jPanel6.setLayout(new java.awt.GridLayout(9, 1));
 
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
@@ -172,45 +174,53 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         recibido.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel14.add(recibido);
 
+        jPanel6.add(jPanel14);
+
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
         cambioLbl.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         cambioLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         cambioLbl.setText("CAMBIO :");
-        cambioLbl.setPreferredSize(new java.awt.Dimension(250, 26));
-        jPanel14.add(cambioLbl);
+        cambioLbl.setPreferredSize(new java.awt.Dimension(280, 26));
+        jPanel12.add(cambioLbl);
 
         cambio.setEditable(false);
         cambio.setColumns(6);
         cambio.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         cambio.setForeground(new java.awt.Color(0, 153, 51));
         cambio.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel14.add(cambio);
+        jPanel12.add(cambio);
 
-        jPanel6.add(jPanel14);
+        jPanel6.add(jPanel12);
 
-        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel7.setText("CARGO A TARJETA :");
         jLabel7.setPreferredSize(new java.awt.Dimension(280, 26));
-        jPanel12.add(jLabel7);
+        jPanel9.add(jLabel7);
 
         cargo.setColumns(6);
         cargo.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         cargo.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel12.add(cargo);
+        jPanel9.add(cargo);
+
+        jPanel6.add(jPanel9);
+
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel9.setText("NO. AUTORIZACIÓN :");
-        jLabel9.setPreferredSize(new java.awt.Dimension(250, 26));
-        jPanel12.add(jLabel9);
+        jLabel9.setPreferredSize(new java.awt.Dimension(280, 26));
+        jPanel11.add(jLabel9);
 
         autorizacion.setColumns(6);
         autorizacion.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jPanel12.add(autorizacion);
+        jPanel11.add(autorizacion);
 
-        jPanel6.add(jPanel12);
+        jPanel6.add(jPanel11);
 
         jPanel1.add(jPanel6, java.awt.BorderLayout.CENTER);
 
@@ -228,7 +238,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(1146, 585));
+        setSize(new java.awt.Dimension(1007, 459));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -250,6 +260,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
@@ -259,6 +270,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JComboBox metodoDePago;
     private javax.swing.JLabel metodoDePagoLblImg;
     private javax.swing.JTextField recibido;
