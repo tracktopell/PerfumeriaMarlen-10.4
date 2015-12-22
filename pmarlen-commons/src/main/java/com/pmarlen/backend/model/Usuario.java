@@ -31,7 +31,16 @@ public class Usuario implements java.io.Serializable {
     * password
     */
     private String password;
+	
+	/**
+	 * clave
+	 */
+	private Integer clave;
 
+	/**
+	 * email alternativo
+	 */
+	private String emailAlternativo;
     /** 
      * Default Constructor
      */
@@ -81,7 +90,22 @@ public class Usuario implements java.io.Serializable {
         this.password = v;
     }
 
+	public Integer getClave() {
+		return clave;
+	}
 
+	public void setClave(Integer clave) {
+		this.clave = clave;
+	}
+
+	public String getEmailAlternativo() {
+		return emailAlternativo;
+	}
+
+	public void setEmailAlternativo(String emailAlternativo) {
+		this.emailAlternativo = emailAlternativo;
+	}
+	
     @Override
     public int hashCode() {
         int hash = 0;

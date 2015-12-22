@@ -5,12 +5,19 @@ import com.pmarlen.backend.dao.DAOException;
 import com.pmarlen.backend.dao.EntradaSalidaDAO;
 import com.pmarlen.backend.dao.SyncDAO;
 import com.pmarlen.backend.model.CorteCaja;
+import com.pmarlen.backend.model.EntradaSalida;
+import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
+import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
+import com.pmarlen.rest.dto.ES;
+import com.pmarlen.rest.dto.ESD;
+import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,8 +29,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -119,6 +124,37 @@ public class SyncService {
 		}
 		return saldoEstimado;
 	}
+	
+	@GET
+	@Path("/ticket/{ticket:[0-9]+}")
+	@Produces(MediaType.APPLICATION_JSON + ";charset=" + encodingUTF8)
+	public ES_ESD getTicket(@PathParam("ticket") String ticket) throws WebApplicationException {
+		
+		ES_ESD esesd = null;
+		try {
+			esesd = null;
+			int esId = EntradaSalidaDAO.getInstance().getIdForTicket(ticket);
+			if(esId<0){
+				throw new DAOException("NO EXISTRE EL TICKET:"+ticket);
+			}
+			EntradaSalidaQuickView entradaSalida = EntradaSalidaDAO.getInstance().findBy(new EntradaSalida(esId));
+			ArrayList<EntradaSalidaDetalleQuickView> esdqvList = EntradaSalidaDAO.getInstance().findAllESDByEntradaSalida(esId);
+			ES es = new ES(entradaSalida);
+			List<ESD> esdList=new ArrayList<ESD>();
+			int ne=0;
+			for(EntradaSalidaDetalleQuickView esdqv: esdqvList){
+				ne+=esdqv.getCantidad();
+				esdList.add(new ESD(esdqv));
+			}
+			es.setnElem(ne);
+			esesd = new ES_ESD(es, esdList);			
+		}catch(DAOException de){
+			logger.error("getTicket", de);
+			throw new WebApplicationException(de, Response.Status.NOT_FOUND);
+		}
+		return esesd;
+	}
+
 	public void setHttpRequest(HttpServletRequest httpRequest) {
 		this.httpRequest = httpRequest;
 	}

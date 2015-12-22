@@ -21,25 +21,42 @@
 						<tr>
 							<td>COLOR</td><td>ESTADO</td>
 						</tr>
-							<tr><td style="background: #E6EBE6"></td><td>CAPTURADO</td></tr>
-							<tr><td style="background: #B2B2FF"></td><td>SINCRONIZADO</td></tr>
-							<tr><td style="background: #FFFF00"></td><td>VERIFICADO</td></tr>
-							<tr><td style="background: #CC66FF"></td><td>SURTIDO</td></tr>
-							<tr><td style="background: #000099"></td><td>FACTURADO</td></tr>
-							<tr><td style="background: #33CCFF"></td><td>REMISIONADO</td></tr>
-							<tr><td style="background: #669999"></td><td>ENVIADO</td></tr>
-							<tr><td style="background: #66FF99"></td><td>ENTREGADO</td></tr>
-							<tr><td style="background: #FFCC99"></td><td>DEVUELTO</td></tr>
-							<tr><td style="background: #CCFF66"></td><td>VENDIDO_SUCURSAL</td></tr>
-							<tr><td style="background: #99CC00"></td><td>FACTURADO_SUCURSAL</td></tr>
-							<tr><td style="background: #FF6600"></td><td>DEVUELTO_SUCURSAL</td></tr>
-							<tr><td style="background: #009999"></td><td>PAGADO</td></tr>
-							<tr><td style="background: #FF0000"></td><td>CANCELADO</td></tr>												
+						<tr><td style="background: #E6EBE6"></td><td>CAPTURADO</td></tr>
+						<tr><td style="background: #B2B2FF"></td><td>SINCRONIZADO</td></tr>
+						<tr><td style="background: #FFFF00"></td><td>VERIFICADO</td></tr>
+						<tr><td style="background: #CC66FF"></td><td>SURTIDO</td></tr>
+						<tr><td style="background: #000099"></td><td>FACTURADO</td></tr>
+						<tr><td style="background: #33CCFF"></td><td>REMISIONADO</td></tr>
+						<tr><td style="background: #669999"></td><td>ENVIADO</td></tr>
+						<tr><td style="background: #66FF99"></td><td>ENTREGADO</td></tr>
+						<tr><td style="background: #FFCC99"></td><td>DEVUELTO</td></tr>
+						<tr><td style="background: #CCFF66"></td><td>VENDIDO_SUCURSAL</td></tr>
+						<tr><td style="background: #99CC00"></td><td>FACTURADO_SUCURSAL</td></tr>
+						<tr><td style="background: #FF6600"></td><td>DEVUELTO_SUCURSAL</td></tr>
+						<tr><td style="background: #009999"></td><td>PAGADO</td></tr>
+						<tr><td style="background: #FF0000"></td><td>CANCELADO</td></tr>												
 					</table>
 				</h:panelGroup>
 
 				<h:panelGroup>
-							
+					<p:outputLabel for="basic" value="BASIC THEME:" /> 
+					<p:themeSwitcher id="basic" style="width:165px">
+						<f:selectItem itemLabel="Choose Theme" itemValue="" />
+						<f:selectItems value="[afterdark, afternoon, afterwork, aristo, black-tie, blitzer, bluesky, bootstrap, casablanca, cupertino, cruze, dark-hive, delta, dot-luv, eggplant, excite-bike, flick, glass-x, home, hot-sneaks, humanity, le-frog, midnight, mint-choc, overcast, pepper-grinder, redmond, rocket, sam, smoothness, south-street, start, sunny, swanky-purse, trontastic, ui-darkness, ui-lightness, vader]" var="theme" itemLabel="" itemValue=""/>
+					</p:themeSwitcher>
+					<p:outputLabel for="basic" value="ADVANCED THEME:" /> 
+					<p:themeSwitcher id="advanced" style="width:165px" effect="fade" var="t">
+						<f:selectItem itemLabel="Choose Theme" itemValue="" />
+						<f:selectItems value="[afterdark, afternoon, afterwork, aristo, black-tie, blitzer, bluesky, bootstrap, casablanca, cupertino, cruze, dark-hive, delta, dot-luv, eggplant, excite-bike, flick, glass-x, home, hot-sneaks, humanity, le-frog, midnight, mint-choc, overcast, pepper-grinder, redmond, rocket, sam, smoothness, south-street, start, sunny, swanky-purse, trontastic, ui-darkness, ui-lightness, vader]" var="theme" itemLabel="" itemValue="" />
+
+						<p:column>
+							<h:outputText styleClass="ui-theme ui-theme-" style="display-block" />
+						</p:column>
+
+						<p:column>
+
+						</p:column>
+					</p:themeSwitcher>
 				</h:panelGroup>
 
 			</h:panelGrid>

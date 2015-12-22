@@ -173,7 +173,10 @@ public class EntradaSalidaDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			final String query = "SELECT	ES.ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,\n"
+			final String query = "SELECT	ES.ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,"
+					+ "ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,"
+					+ "ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
+					+ "ES.SUB_TOTAL_NG,ES.SUB_TOTAL_GR,ES.TOTAL,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -228,7 +231,11 @@ public class EntradaSalidaDAO {
 				x.setCondicionesDePago((String) rs.getObject("CONDICIONES_DE_PAGO"));
 				x.setNumDeCuenta((String) rs.getObject("NUM_DE_CUENTA"));
 				x.setAutorizaDescuento((Integer) rs.getObject("AUTORIZA_DESCUENTO"));
-
+				x.setSubTotalGR((Double) rs.getObject("SUB_TOTAL_NG"));
+				x.setSubTotalNG((Double) rs.getObject("SUB_TOTAL_NG"));
+				x.setTotal     ((Double) rs.getObject("TOTAL"));
+				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
+				
 				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
 				x.setEstadoDescripcion((String) rs.getObject("E_DESCRIPCION"));
 				x.setUsuarioNombreCompleto((String) rs.getObject("U_NOMBRE_COMPLETO"));
@@ -330,7 +337,7 @@ public class EntradaSalidaDAO {
 			conn = getConnection();
 			
 			ps = conn.prepareStatement(
-					"SELECT   P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,AP.PRECIO,AP.CANTIDAD,AP.UBICACION,ESD.ID AS ESD_ID,A.ID AS ALMACEN_ID,A.TIPO_ALMACEN,ESD.CANTIDAD AS CANTIDAD_ESD,ESD.PRECIO_VENTA\n"
+					"SELECT   P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,AP.PRECIO,AP.CANTIDAD,AP.UBICACION,ESD.ID AS ESD_ID,A.ID AS ALMACEN_ID,A.TIPO_ALMACEN,ESD.CANTIDAD AS CANTIDAD_ESD,ESD.PRECIO_VENTA,ESD.DEV\n"
 					+ "FROM   ENTRADA_SALIDA ES,\n"
 					+ "       ENTRADA_SALIDA_DETALLE ESD,\n"
 					+ "       PRODUCTO P,\n"
@@ -361,6 +368,7 @@ public class EntradaSalidaDAO {
 				x.setProductoContenido(rs.getString("CONTENIDO"));
 				x.setProductoUnidadMedida(rs.getString("UNIDAD_MEDIDA"));
 				x.setPrecioVenta(rs.getDouble("PRECIO_VENTA"));
+				x.setDev(rs.getString("DEV"));				
 				x.setProductoUnidadEmpaque(rs.getString("UNIDAD_EMPAQUE"));
 				x.setProductoUnidadesPorCaja(rs.getString("UNIDADES_X_CAJA"));
 				x.setCantidad(rs.getInt("CANTIDAD_ESD"));
@@ -369,7 +377,7 @@ public class EntradaSalidaDAO {
 				x.setApTipoAlmacen(rs.getInt("TIPO_ALMACEN"));
 				x.setApCantidad(rs.getInt("CANTIDAD"));
 				x.setApUbicacion(rs.getString("UBICACION"));
-
+				
 				x.setRowId(ct++);
 				
 				logger.info("\t==>>"+x.getCantidad()+" X ["+x.getProductoCodigoBarras()+"] @ "+x.getAlmacenId()+" ("+x.getProductoUnidadEmpaque()+":"+x.getProductoContenido()+" "+x.getProductoUnidadMedida()+")["+x.getProductoUnidadesPorCaja()+"]");
@@ -419,7 +427,8 @@ public class EntradaSalidaDAO {
 		try {
 			conn = getConnection();
 			
-			String q="SELECT	ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,\n"
+			String q="SELECT	ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
+					+ "ES.SUB_TOTAL_NG,ES.SUB_TOTAL_GR,ES.TOTAL,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -490,7 +499,11 @@ public class EntradaSalidaDAO {
 				x.setCondicionesDePago((String) rs.getObject("CONDICIONES_DE_PAGO"));
 				x.setNumDeCuenta((String) rs.getObject("NUM_DE_CUENTA"));
 				x.setAutorizaDescuento((Integer) rs.getObject("AUTORIZA_DESCUENTO"));
-
+				x.setSubTotalGR((Double) rs.getObject("SUB_TOTAL_NG"));
+				x.setSubTotalNG((Double) rs.getObject("SUB_TOTAL_NG"));
+				x.setTotal     ((Double) rs.getObject("TOTAL"));
+				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
+				
 				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
 				x.setEstadoDescripcion((String) rs.getObject("E_DESCRIPCION"));
 				x.setUsuarioNombreCompleto((String) rs.getObject("U_NOMBRE_COMPLETO"));
@@ -554,7 +567,8 @@ public class EntradaSalidaDAO {
 		try {
 			conn = getConnection();
 			
-			String q="SELECT	ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,\n"
+			String q="SELECT	ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
+					+ "ES.SUB_TOTAL_NG,ES.SUB_TOTAL_GR,ES.TOTAL,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -662,7 +676,11 @@ public class EntradaSalidaDAO {
 				x.setCondicionesDePago((String) rs.getObject("CONDICIONES_DE_PAGO"));
 				x.setNumDeCuenta((String) rs.getObject("NUM_DE_CUENTA"));
 				x.setAutorizaDescuento((Integer) rs.getObject("AUTORIZA_DESCUENTO"));
-
+				x.setSubTotalGR((Double) rs.getObject("SUB_TOTAL_NG"));
+				x.setSubTotalNG((Double) rs.getObject("SUB_TOTAL_NG"));
+				x.setTotal     ((Double) rs.getObject("TOTAL"));
+				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
+				
 				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
 				x.setEstadoDescripcion((String) rs.getObject("E_DESCRIPCION"));
 				x.setUsuarioNombreCompleto((String) rs.getObject("U_NOMBRE_COMPLETO"));
@@ -866,11 +884,58 @@ public class EntradaSalidaDAO {
 		return saldoEstimado;
 	}
 
-	public int insertPedidoVentaSucursal(Connection conn, EntradaSalida x, List<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
+	public int getIdForTicket(String ticket) throws DAOException{
+		int id=-1;
+		PreparedStatement ps = null;
+		Connection conn = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT ID,SUCURSAL_ID,NUMERO_TICKET FROM ENTRADA_SALIDA WHERE NUMERO_TICKET=?");
+			ps.setString(1, ticket);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				id=rs.getInt("Id");
+			}
+			rs.close();
+		} catch (SQLException ex) {			
+			throw new DAOException("getIdForTicket:" + ex.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+					ps.close();
+					conn.close();
+				} catch (SQLException ex) {
+					logger.error("getIdForTicket:clossing:", ex);
+				}
+			}
+		}
+
+		return id;
+	}
+	
+	public int getIdForTicket(Connection conn,String ticket) throws DAOException{
+		int id=-1;
+		try{
+			PreparedStatement ps = conn.prepareStatement("SELECT ID,SUCURSAL_ID,NUMERO_TICKET FROM ENTRADA_SALIDA WHERE NUMERO_TICKET=?");
+			ps.setString(1, ticket);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				id=rs.getInt("Id");
+			}
+			rs.close();
+		} catch (SQLException ex) {			
+			throw new DAOException("getIdForTicket:" + ex.getMessage());
+		}
+		return id;
+	}
+	
+	public int insertEntradaSalidaSucursal(Connection conn, EntradaSalida x, List<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
 		
-		logger.debug("insertPedidoVentaSucursal:TESTING: EntradaSalida: INSERT FECHA:"+x.getFechaCreo()+", SUCURSAL:"+x.getSucursalId()+", CAJA:"+x.getCaja()+", TICKET:"+x.getNumeroTicket());
+		logger.debug("insertEntradaSalidaSucursal:TESTING: EntradaSalida: INSERT FECHA:"+x.getFechaCreo()+", SUCURSAL:"+x.getSucursalId()+", CAJA:"+x.getCaja()+", TICKET:"+x.getNumeroTicket());
 		for(EntradaSalidaDetalle esd: pvdList){
-			logger.debug("insertPedidoVentaSucursal:\tTESTING: INSERT & COMMIT, DISCOUNT="+esd.getCantidad()+" x "+esd.getProductoCodigoBarras()+"["+esd.getAlmacenId()+"]");
+			logger.debug("insertEntradaSalidaSucursal:\tTESTING: INSERT & COMMIT, DISCOUNT="+esd.getCantidad()+" x "+esd.getProductoCodigoBarras()+"["+esd.getAlmacenId()+"]");
 		}
 		
 		int r=-1;
@@ -919,26 +984,45 @@ public class EntradaSalidaDAO {
 			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA) "
 					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int rESD = 0;
-			for (EntradaSalidaDetalle pvd : pvdList) {
+			for (EntradaSalidaDetalle esd1 : pvdList) {
 				int ciESD = 1;
 
 				psESD.clearParameters();
 				psESD.clearWarnings();
 
 				psESD.setInt(ciESD++, x.getId());
-				if (pvd.getProductoCodigoBarras() == null) {
+				if (esd1.getProductoCodigoBarras() == null) {
 					psESD.setObject(ciESD++, null);
 				} else {
-					psESD.setString(ciESD++, pvd.getProductoCodigoBarras());
+					psESD.setString(ciESD++, esd1.getProductoCodigoBarras());
 				}
-				psESD.setInt(ciESD++, pvd.getAlmacenId());
-				psESD.setInt(ciESD++, pvd.getCantidad());
-				psESD.setDouble(ciESD++, pvd.getPrecioVenta());
+				psESD.setInt(ciESD++, esd1.getAlmacenId());
+				psESD.setInt(ciESD++, esd1.getCantidad());
+				psESD.setDouble(ciESD++, esd1.getPrecioVenta());
 
 				rESD += psESD.executeUpdate();
 			}
 			psESD.close();
+			
+			logger.debug("x.getEsIdDev():"+x.getEsIdDev());
+			if(tipoMov == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION && x.getEsIdDev()!=null){
+				psESD = conn.prepareStatement("UPDATE ENTRADA_SALIDA_DETALLE SET DEV='S' WHERE ENTRADA_SALIDA_ID=? AND CODIGO_BARRAS=?");
+				int rESDd=0;
+				for (EntradaSalidaDetalle esd2 : pvdList) {
+					int iESDd = 1;
 
+					psESD.clearParameters();
+					psESD.clearWarnings();
+
+					psESD.setInt	(iESDd++, x.getEsIdDev());
+					psESD.setString	(iESDd++, esd2.getProductoCodigoBarras());
+					
+					rESDd += psESD.executeUpdate();
+				}
+				psESD.close();
+				logger.debug("rESDd="+rESDd);
+			}
+			
 			psESE = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_ESTADO(ENTRADA_SALIDA_ID,ESTADO_ID,FECHA,USUARIO_EMAIL,COMENTARIOS) "
 					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int[] estados = new int[]{Constants.ESTADO_CAPTURADO, Constants.ESTADO_VENDIDO_SUCURSAL};

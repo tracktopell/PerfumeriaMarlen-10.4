@@ -2,6 +2,8 @@ package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
+import com.pmarlen.businesslogic.LogicaFinaciera;
+import com.pmarlen.businesslogic.TotalesCalculados;
 import com.pmarlen.businesslogic.reports.TextReporter;
 import com.pmarlen.caja.Main;
 import com.pmarlen.caja.dao.MemoryDAO;
@@ -295,6 +297,10 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			}
 			logger.debug("terminar_ActionPerformed(): Generando DTO Venta");
 			esesdLAstForPrint = ApplicationLogic.getInstance().getVentaSesion().getVenta();
+			
+			//TotalesCalculados ct = LogicaFinaciera.calculaTotales(esesdLAstForPrint.getEs(), esesdLAstForPrint.getEsdList(), true, 0.0);
+			//logger.info("terminar_ActionPerformed:-->>LogicaFinaciera.calculaTotales: TotalesCalculados:\n"+ct);
+			
 			logger.debug("terminar_ActionPerformed(): TICKET:"+esesdLAstForPrint.getEs().getNt());
 			
 			if (ApplicationLogic.getInstance().isPrintingEnabled()) {

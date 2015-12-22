@@ -168,13 +168,13 @@ public class VentaSesion {
 		if(		MemoryDAO.getSucursal()!= null &&
 				(	MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=null && 
 					MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=0)){
-			if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY_SUC && totalBrutoDescontable < Constants.IMPORTE_DES_MAY2_SUC && nunElemDescontablesVta< 12){
-				descuentoFactor   = Constants.FACTOR_DES_MAYSUC;
-				porcentajeDescuentoCalculado     = 5;
-				descuentoAplicado = true;
-			} else if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY_SUC || nunElemDescontablesVta>= 12){
+			if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY_SUC || nunElemDescontablesVta>= 12){
 				descuentoFactor   = Constants.FACTOR_DES_MAY2_SUC;
 				porcentajeDescuentoCalculado     = 10;
+				descuentoAplicado = true;
+			} else if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY_SUC && totalBrutoDescontable < Constants.IMPORTE_DES_MAY2_SUC){
+				descuentoFactor   = Constants.FACTOR_DES_MAYSUC;
+				porcentajeDescuentoCalculado     = 5;
 				descuentoAplicado = true;
 			}
 		}
@@ -305,7 +305,7 @@ public class VentaSesion {
 		parameters.put("usuario.creo.email", uc.getE());
 		parameters.put("L.usuario.creo.nombre", "ATENDIO:");
 		parameters.put("usuario.creo.nombre", uc.getN());
-		
+		parameters.put("usuario.creo.clave", String.valueOf(uc.getC()));
 		parameters.put("usuario.imprimio.email" , ApplicationLogic.getInstance().getLogged().getE());
 		parameters.put("usuario.imprimio.nombre", ApplicationLogic.getInstance().getLogged().getN());
 		parameters.put("sucursal.caja.actual", MemoryDAO.getNumCaja());

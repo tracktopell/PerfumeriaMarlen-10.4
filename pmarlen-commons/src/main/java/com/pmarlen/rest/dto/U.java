@@ -13,6 +13,7 @@ public class U {
 	private String e;
 	private int a;
 	private String n;
+	private int    c;
 	private String p;
 	private List<String> perfiles;
 	
@@ -31,6 +32,7 @@ public class U {
 		this();
 		this.e = uqv.getEmail();
 		this.a = uqv.getAbilitado();
+		this.c = uqv.getClave();
 		this.n = uqv.getNombreCompleto();
 		this.p = uqv.getPassword();
 		this.setPerfiles(uqv.getRoleList());
@@ -65,7 +67,21 @@ public class U {
 	public void setA(int a) {
 		this.a = a;
 	}
+	
+	/**
+	 * @return the c
+	 */
+	public int getC() {
+		return c;
+	}
 
+	/**
+	 * @param c the c to set
+	 */
+	public void setC(int c) {
+		this.c = c;
+	}
+	
 	/**
 	 * @return the n
 	 */
@@ -148,5 +164,4 @@ public class U {
 	public String toString() {
 		return n!=null?n.toUpperCase():null;
 	}
-	
 }

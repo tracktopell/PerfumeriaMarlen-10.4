@@ -1,4 +1,5 @@
-# make init_DB_TEST MYSQL_ROOT_PASSWORD=xxxxxx
+
+# make preparePM104_DEVE MYSQL_ROOT_PASSWORD=xxxxxx
 
 resetDB_test:createB_test
 	if [ `find . -name PM*.tgz|wc -l` -gt 0 ]; then rm PM*.*; fi;
@@ -24,3 +25,8 @@ createB_test:
 
 createB_prod:
 	make -C ../pmarlen-commons/db_resources init_DB_PROD MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD)
+
+preparePM104_DEVE:
+	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD) PMDB104_DEVE  < /usr/local/pmarlen_mysqldump/PMDB103_PROD_mysqldump_LAST.sql	
+	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD) PMDB104_DEVE  < ../pmarlen-commons/db_resources/sql/MIGRATION.mysql.sql
+	mvn exec:java -Dexec.mainClass=com.pmarlen.migration.PrepareDataForTest_PM104 -Dexec.args="root root jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8"

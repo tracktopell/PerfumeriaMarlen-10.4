@@ -41,6 +41,11 @@ public class EntradaSalidaDetalle implements java.io.Serializable {
     * precio venta
     */
     private double precioVenta;
+	
+	/**
+	 * entrada salida dev
+	 */
+	private String  dev;
 
     /** 
      * Default Constructor
@@ -107,6 +112,13 @@ public class EntradaSalidaDetalle implements java.io.Serializable {
         this.precioVenta = v;
     }
 
+	public String getEsIdDev() {
+		return dev;
+	}
+
+	public void setDev(String dev) {
+		this.dev = dev;
+	}
 
     @Override
     public int hashCode() {

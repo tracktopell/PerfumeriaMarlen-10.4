@@ -71,7 +71,7 @@ public class UsuarioDAO {
 		try {
 			conn = getConnection();
 			ps = conn.prepareStatement(
-					"SELECT   U.EMAIL,U.ABILITADO,U.NOMBRE_COMPLETO,U.PASSWORD,UP.PERFIL\n" +
+					"SELECT   U.EMAIL,U.ABILITADO,U.NOMBRE_COMPLETO,U.PASSWORD,U.CLAVE,U.EMAIL_ALTERNATIVO,UP.PERFIL\n" +
 					"FROM     USUARIO_PERFIL UP,USUARIO U\n" +
 					"WHERE    U.EMAIL = UP.EMAIL\n" +
 					"     AND U.EMAIL = ?\n" +		
@@ -84,6 +84,8 @@ public class UsuarioDAO {
 			String nombreCompleto=null;
 			String password=null;
 			Integer abilitado = null;
+			Integer clave = null;
+			String emailAlternativo = null;
 			logger.trace("============================================>");
 			while(rs.next()) {
 				email			= (String)rs.getObject("EMAIL");
@@ -91,7 +93,9 @@ public class UsuarioDAO {
 				nombreCompleto	= (String)rs.getObject("NOMBRE_COMPLETO");
 				password		= (String)rs.getObject("PASSWORD");
 				abilitado		= (Integer)rs.getObject("ABILITADO");
-				logger.trace("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado);
+				clave			= (Integer)rs.getObject("CLAVE");
+				emailAlternativo= (String)rs.getObject("EMAIL_ALTERNATIVO");
+				logger.trace("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado+","+clave+","+emailAlternativo);
 				if(x == null){
 					// NUEVO
 					x = new UsuarioQuickView();					
@@ -106,7 +110,78 @@ public class UsuarioDAO {
 				x.setAbilitado(abilitado);
 				x.setNombreCompleto(nombreCompleto);
 				x.setPassword(password);
+				x.setClave(clave);
+				x.setEmailAlternativo(emailAlternativo);
+				x.addPerfil(perfil);
+			}
+			logger.trace("<============================================");
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return x;
+	}
+	
+    public UsuarioQuickView findByClave(Integer c) throws DAOException, EntityNotFoundException{
+		UsuarioQuickView x = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement(
+					"SELECT   U.EMAIL,U.ABILITADO,U.NOMBRE_COMPLETO,U.PASSWORD,U.CLAVE,U.EMAIL_ALTERNATIVO,UP.PERFIL\n" +
+					"FROM     USUARIO_PERFIL UP,USUARIO U\n" +
+					"WHERE    U.EMAIL = UP.EMAIL\n" +
+					"     AND U.CLAVE = ?\n" +		
+					"ORDER BY U.NOMBRE_COMPLETO");
+			ps.setInt(1,c);
+			rs = ps.executeQuery();
+			
+			String email = null;
+			String perfil=null;
+			String nombreCompleto=null;
+			String password=null;
+			Integer abilitado = null;
+			int clave;
+			String emailAlternativo = null;
+			logger.trace("============================================>");
+			while(rs.next()) {
+				email			= (String)rs.getObject("EMAIL");
+				perfil			= (String)rs.getObject("PERFIL");
+				nombreCompleto	= (String)rs.getObject("NOMBRE_COMPLETO");
+				password		= (String)rs.getObject("PASSWORD");
+				abilitado		= (Integer)rs.getObject("ABILITADO");
+				clave			= (Integer)rs.getObject("CLAVE");
+				emailAlternativo= (String)rs.getObject("EMAIL_ALTERNATIVO");
+				logger.trace("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado+","+clave+","+emailAlternativo);
+				if(x == null){
+					// NUEVO
+					x = new UsuarioQuickView();					
+				} else if(x.getEmail().equalsIgnoreCase(email)){
+					// EL MISMO EMAIL
+				} else {
+					// CAMBIO EMAIL					
+					x = new UsuarioQuickView();			
+				}
 				
+				x.setEmail(email);
+				x.setAbilitado(abilitado);
+				x.setNombreCompleto(nombreCompleto);
+				x.setPassword(password);
+				x.setClave(clave);
+				x.setEmailAlternativo(emailAlternativo);
 				x.addPerfil(perfil);
 			}
 			logger.trace("<============================================");
@@ -141,7 +216,7 @@ public class UsuarioDAO {
 		try {
 			conn = getConnection();
 			ps = conn.prepareStatement(
-					"SELECT   U.EMAIL,U.ABILITADO,U.NOMBRE_COMPLETO,U.PASSWORD,UP.PERFIL\n" +
+					"SELECT   U.EMAIL,U.ABILITADO,U.NOMBRE_COMPLETO,U.PASSWORD,U.CLAVE,U.EMAIL_ALTERNATIVO,UP.PERFIL\n" +
 					"FROM     USUARIO_PERFIL UP,USUARIO U\n" +
 					"WHERE    1=1\n"+
 					"AND U.EMAIL = UP.EMAIL\n" +	
@@ -155,6 +230,8 @@ public class UsuarioDAO {
 			String nombreCompleto=null;
 			String password=null;
 			Integer abilitado = null;
+			Integer clave = null;
+			String emailAlternativo = null;
 			logger.trace("============================================>");
 			while(rs.next()) {
 				email			= (String)rs.getObject("EMAIL");
@@ -162,7 +239,9 @@ public class UsuarioDAO {
 				nombreCompleto	= (String)rs.getObject("NOMBRE_COMPLETO");
 				password		= (String)rs.getObject("PASSWORD");
 				abilitado		= (Integer)rs.getObject("ABILITADO");
-				logger.trace("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado);
+				clave			= (Integer)rs.getObject("CLAVE");
+				emailAlternativo= (String)rs.getObject("EMAIL_ALTERNATIVO");
+				logger.trace("->"+email+","+perfil+","+nombreCompleto+","+password+","+abilitado+","+clave+","+emailAlternativo);
 				if(x == null){
 					// NUEVO
 					x = new UsuarioQuickView();					
@@ -178,7 +257,8 @@ public class UsuarioDAO {
 				x.setAbilitado(abilitado);
 				x.setNombreCompleto(nombreCompleto);
 				x.setPassword(password);
-				
+				x.setClave(clave);
+				x.setEmailAlternativo(emailAlternativo);
 				x.addPerfil(perfil);
 			}
 			if(x != null){
@@ -211,7 +291,7 @@ public class UsuarioDAO {
 		try {
 			conn = getConnection();
 			ps = conn.prepareStatement(
-					"SELECT   U.EMAIL,U.ABILITADO,U.NOMBRE_COMPLETO,U.PASSWORD\n" +
+					"SELECT   U.EMAIL,U.ABILITADO,U.NOMBRE_COMPLETO,U.PASSWORD,U.CLAVE,U.EMAIL_ALTERNATIVO\n" +
 					"FROM     USUARIO U\n" +
 					"ORDER BY U.NOMBRE_COMPLETO");
 			
@@ -221,20 +301,24 @@ public class UsuarioDAO {
 			String nombreCompleto=null;
 			String password=null;
 			Integer abilitado = null;
-
+			Integer clave = null;
+			String emailAlternativo = null;
 			while(rs.next()) {
 				email			= (String)rs.getObject("EMAIL");
 				abilitado		= (Integer)rs.getObject("ABILITADO");
 				nombreCompleto	= (String)rs.getObject("NOMBRE_COMPLETO");				
 				password		= (String)rs.getObject("PASSWORD");
-				
+				abilitado		= (Integer)rs.getObject("ABILITADO");
+				clave			= (Integer)rs.getObject("CLAVE");
 				x = new Usuario();					
 				
 				x.setEmail(email);
 				x.setAbilitado(abilitado);
 				x.setNombreCompleto(nombreCompleto);
 				x.setPassword(password);
-				
+				x.setAbilitado(abilitado);
+				x.setClave(clave);
+				x.setEmailAlternativo(emailAlternativo);
 				r.add(x);
 			}
 			
@@ -263,7 +347,25 @@ public class UsuarioDAO {
 		Connection conn = null;
 		try {
 			conn = getConnectionCommiteable();
-			ps = conn.prepareStatement("INSERT INTO USUARIO(EMAIL,ABILITADO,NOMBRE_COMPLETO,PASSWORD) "+
+			
+			ps = conn.prepareStatement("SELECT * FROM USUARIO WHERE CLAVE=?");
+			
+			boolean encontrado = true;
+			ResultSet rsc = null;
+			int clave = 0;
+			while(encontrado){
+				ps.clearParameters();
+				ps.clearParameters();
+				clave = 1000 + (int)(Math.random()*9000);
+				ps.setInt(1, clave);
+				rsc = ps.executeQuery();
+				encontrado = rsc.next();
+				rsc.close();
+				rsc = null;
+			}
+			
+			
+			ps = conn.prepareStatement("INSERT INTO USUARIO(EMAIL,ABILITADO,NOMBRE_COMPLETO,PASSWORD,CLAVE,EMAIL_ALTERNATIVO) "+
 					" VALUES(?,?,?,?)");			
 			
 			int ci=1;
@@ -272,6 +374,8 @@ public class UsuarioDAO {
 			ps.setObject(ci++,x.getAbilitado());
 			ps.setObject(ci++,x.getNombreCompleto());
 			ps.setObject(ci++,x.getPassword());
+			ps.setObject(ci++,clave);
+			ps.setObject(ci++,x.getEmailAlternativo());
 			
 			r = ps.executeUpdate();
 			ps.close();
@@ -314,14 +418,14 @@ public class UsuarioDAO {
 		return r;
 	}
 
-	public int update(UsuarioQuickView x) throws DAOException {		
+	public int update(UsuarioQuickView x) throws DAOException {
 		PreparedStatement ps = null;
 		PreparedStatement psUP = null;
 		int r= -1;
 		Connection conn = null;
 		try {
 			conn = getConnectionCommiteable();
-			ps = conn.prepareStatement("UPDATE USUARIO SET ABILITADO=?,NOMBRE_COMPLETO=?,PASSWORD=? "+
+			ps = conn.prepareStatement("UPDATE USUARIO SET ABILITADO=?,NOMBRE_COMPLETO=?,PASSWORD=?,EMAIL_ALTERNATIVO=? "+
 					" WHERE EMAIL=?");
 			psUP = conn.prepareStatement("DELETE FROM USUARIO_PERFIL WHERE EMAIL=?");
 			
@@ -330,7 +434,7 @@ public class UsuarioDAO {
 			ps.setObject(ci++,x.getAbilitado());
 			ps.setObject(ci++,x.getNombreCompleto());
 			ps.setObject(ci++,x.getPassword());
-			ps.setObject(ci++,x.getEmail());
+			ps.setObject(ci++,x.getEmailAlternativo());
 			
 			r = ps.executeUpdate();
 			

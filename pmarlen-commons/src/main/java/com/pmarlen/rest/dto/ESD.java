@@ -12,6 +12,7 @@ public class ESD {
 	private int ta;
 	private int c;
 	private double p;
+	private String dev;
 	
 	public EntradaSalidaDetalle reverse(){
 		EntradaSalidaDetalle esd=new EntradaSalidaDetalle();
@@ -19,6 +20,7 @@ public class ESD {
 		esd.setAlmacenId(a);
 		esd.setCantidad(c);
 		esd.setPrecioVenta(p);
+		esd.setDev(dev);
 		return esd;
 	}
 

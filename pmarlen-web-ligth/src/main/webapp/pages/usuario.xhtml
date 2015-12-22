@@ -51,7 +51,8 @@
 							<p:column rowspan="2" headerText="" width="5%" />
 							<p:column rowspan="2" headerText="EMAIL"  width="25%"/>
 							<p:column rowspan="2" headerText="NOMBRE COMPLETO" width="25%" />
-							<p:column rowspan="2" headerText="ABILITADO"  width="10%"/>							
+							<p:column rowspan="2" headerText="CLAVE"  width="5%"/>
+							<p:column rowspan="2" headerText="HABILITADO"  width="5%"/>
 							<p:column rowspan="1" colspan="6" headerText="PERFILES"  />
 						</p:row>
 						<p:row>							
@@ -107,6 +108,10 @@
 
 					<p:column sortBy="#{usuario.nombreCompleto}">
 						<h:outputText value="#{usuario.nombreCompleto}" />
+					</p:column>
+					
+					<p:column sortBy="#{usuario.clave}">
+						<h:outputText value="#{usuario.clave}" />
 					</p:column>
 					
 					<p:column sortBy="#{usuario.abilitado}">

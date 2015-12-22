@@ -117,6 +117,17 @@ public class EntradaSalida implements java.io.Serializable {
     */
     private Integer autorizaDescuento;
 
+	/**
+	 * entrada salida dev
+	 */
+	private Integer   esIdDev;
+	
+	private Double subTotalNG;
+	
+	private Double subTotalGR;
+
+	private Double total;
+	
     /** 
      * Default Constructor
      */
@@ -302,7 +313,62 @@ public class EntradaSalida implements java.io.Serializable {
         this.autorizaDescuento = v;
     }
 
+	/**
+	 * @return the esIdDev
+	 */
+	public Integer getEsIdDev() {
+		return esIdDev;
+	}
 
+	/**
+	 * @param esIdDev the esIdDev to set
+	 */
+	public void setEsIdDev(Integer esIdDev) {
+		this.esIdDev = esIdDev;
+	}
+
+	/**
+	 * @return the subTotalNG
+	 */
+	public Double getSubTotalNG() {
+		return subTotalNG;
+	}
+
+	/**
+	 * @param subTotalNG the subTotalNG to set
+	 */
+	public void setSubTotalNG(Double subTotalNG) {
+		this.subTotalNG = subTotalNG;
+	}
+
+	/**
+	 * @return the subTotalGR
+	 */
+	public Double getSubTotalGR() {
+		return subTotalGR;
+	}
+
+	/**
+	 * @param subTotalGR the subTotalGR to set
+	 */
+	public void setSubTotalGR(Double subTotalGR) {
+		this.subTotalGR = subTotalGR;
+	}
+
+	
+	/**
+	 * @return the total
+	 */
+	public Double getTotal() {
+		return total;
+	}
+
+	/**
+	 * @param total the total to set
+	 */
+	public void setTotal(Double total) {
+		this.total = total;
+	}
     @Override
     public int hashCode() {
         int hash = 0;

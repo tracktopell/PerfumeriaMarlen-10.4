@@ -3,35 +3,26 @@ package com.pmarlen.jsf;
 import com.pmarlen.backend.dao.ClienteDAO;
 import com.pmarlen.backend.dao.DAOException;
 import com.pmarlen.backend.dao.EntradaSalidaDAO;
-import com.pmarlen.backend.dao.EntradaSalidaDetalleDAO;
 import com.pmarlen.backend.dao.FormaDePagoDAO;
 import com.pmarlen.backend.dao.MetodoDePagoDAO;
 import com.pmarlen.backend.dao.ProductoDAO;
 import com.pmarlen.backend.dao.SucursalDAO;
 import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.EntradaSalida;
-import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
-import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.quickviews.ClienteQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
-import com.pmarlen.businesslogic.reports.GeneradorImpresionPedidoVenta;
+import com.pmarlen.businesslogic.LogicaFinaciera;
+import com.pmarlen.businesslogic.TotalesCalculados;
 import com.pmarlen.model.Constants;
-import com.pmarlen.web.common.view.messages.Messages;
 import com.pmarlen.web.security.managedbean.SessionUserMB;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import javax.annotation.PostConstruct;
@@ -40,15 +31,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
-import javax.print.attribute.standard.Severity;
-import javax.servlet.ServletContext;
 import org.apache.commons.beanutils.BeanUtils;
 import org.primefaces.event.ReorderEvent;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 @ManagedBean(name="editarPedidoVentaMB")
@@ -526,9 +512,16 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void actualizarTotales(){
-		logger.trace("actualizarTotales, forzar hay cambio");
+		logger.trace("actualizarTotales:forzar hay cambio");
 		hayCambios=true;
 		entradaSalidaFooter.calculaParaFacturaTotalesDesde(entradaSalida, entityList);
+		logger.info("actualizarTotales:entradaSalida.getSucursalId()="+entradaSalida);
+		if(entradaSalida!=null){
+			logger.info("actualizarTotales:-->>LogicaFinaciera.calculaTotales: entradaSalida.getAutorizaDescuento()="+entradaSalida.getAutorizaDescuento()+", descExtra="+entradaSalida.getPorcentajeDescuentoExtra());
+			TotalesCalculados ct = LogicaFinaciera.calculaTotales(entradaSalida, entityList, false, 0.0, entradaSalida.getSucursalId()==1?0:1);
+			logger.info("actualizarTotales:-->>LogicaFinaciera.calculaTotales: TotalesCalculados:\n"+ct);
+		}
+		
 	}
 	
 	public void actualizarTabla(){

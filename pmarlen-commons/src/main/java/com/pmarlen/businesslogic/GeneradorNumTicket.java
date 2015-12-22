@@ -31,17 +31,26 @@ public class GeneradorNumTicket{
         //return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + String.valueOf(bigLongT - l2);
 		return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + df2Tot.format(total).replace(".", "");
     }
+	
+    public static String getNumTicket(Date d,int sucId,int caja,int clienteId,double total){
+		StringBuilder sb= new StringBuilder();		
+		sb.append(sdf.format(d));
+		sb.append(df2Id.format(sucId));
+		sb.append(df2Id.format(caja));
+		sb.append(df2Id.format(Math.random()*100.0));
+		
+		long l1=Long.parseLong(sb.toString());
+		long l2=Long.parseLong(df2Tot.format(total).replace(".", ""));
+		
+        //return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + String.valueOf(bigLongT - l2);
+		return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + df2Tot.format(total).replace(".", "");
+    }
 
     public static void main(String args[]){
-        System.out.println("call1 ->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));    
-		System.out.println("call2 ->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));
-		System.out.println("call3 ->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));
-		System.out.println("call4 ->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));
-		System.out.println("call5 ->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));
-		System.out.println("call6 ->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));
-		System.out.println("call7 ->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));
-		System.out.println("call8 ->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));
-		System.out.println("call9 ->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));
-		System.out.println("call10->"+getNumTicket(Integer.parseInt(args[0]),Integer.parseInt(args[1]),1,234.56));
+        long t1= System.currentTimeMillis();
+		
+		System.out.println("T1="+t1);
+		long t2 = t1/1000;
+		System.out.println("T1="+t2);
     }
 }

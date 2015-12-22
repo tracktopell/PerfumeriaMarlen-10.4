@@ -623,6 +623,7 @@ public class TextReporter {
 
 		parameters.put("fecha.creado", Constants.sdfShortTime.format(today));
 		parameters.put("usuario.creo.nombre", "USUARIO NOMBRE PATERNO MATERNO");
+		parameters.put("usuario.creo.clave", "1234");
 		parameters.put("fecha.creado", Constants.sdfShortTime.format(today));
 		parameters.put("sucursal.caja.creo", "10");
 		parameters.put("cliente.racSoc", "PUBLICO GENERAL");

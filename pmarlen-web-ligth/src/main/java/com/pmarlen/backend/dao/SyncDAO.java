@@ -13,6 +13,7 @@ import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.quickviews.ClienteQuickView;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.backend.model.quickviews.UsuarioQuickView;
+import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.I;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import org.apache.log4j.Logger;
@@ -57,8 +59,7 @@ public class SyncDAO {
 	public SyncDTOPackage syncTransaction(SyncDTORequest syncDTORequest) throws DAOException{
 		SyncDTOPackage s= new SyncDTOPackage();
 		int sucId=syncDTORequest.getiAmAliveDTORequest().getSucursalId();
-		List<ES_ESD> escdList = syncDTORequest.getEscdList();
-		
+		List<ES_ESD> escdList = syncDTORequest.getEscdList();		
 		logger.debug("syncTransaction:sucId="+sucId);
 		
 		File filePMCajaLastVersion =  new File("/usr/local/pmcajadist/classes/version.properties");
@@ -82,12 +83,32 @@ public class SyncDAO {
 		if(escdList!=null && escdList.size()>0) {
 			Connection conn = null;
 			logger.debug("syncTransaction:---------------- PROCESSING Sent : List<ES_ESD> escdList.size="+escdList.size());
+			
+			LinkedHashMap<String,ES_ESD> escdMap=new LinkedHashMap<String,ES_ESD>();
+			for(ES_ESD esesd: escdList){
+				escdMap.put(esesd.getEs().getNt(),esesd);
+			}
+			
 			try {
 				conn = getConnectionCommiteable();
 				logger.debug("syncTransaction:BEGIN TRANSACTION");
 				int indexProccessing=0;
+				
+				List<ES_ESD> escdListVtas = new ArrayList<ES_ESD>();
+				List<ES_ESD> escdListDevs = new ArrayList<ES_ESD>();
+				
 				for(ES_ESD escd: escdList){
+					int tipoMov = escd.getEs().getTm();
+					if(tipoMov == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION){
+						escdListVtas.add(escd);
+					} else {
+						escdListDevs.add(escd);
+					}
+				}
+				
+				for(ES_ESD escd: escdListVtas){	
 					EntradaSalida es = escd.getEs().reverse();
+					
 					List<EntradaSalidaDetalle> esdList = new ArrayList<EntradaSalidaDetalle>();
 					List<ESD> esdl = escd.getEsdList();
 					logger.debug("syncTransaction:\tprepare esdList:");
@@ -96,9 +117,33 @@ public class SyncDAO {
 					}
 					logger.debug("syncTransaction:\tprepare for insertPedidoVentaSucursal:");
 					s.processingES(indexProccessing++);
-					EntradaSalidaDAO.getInstance().insertPedidoVentaSucursal(conn,es,esdList);
+					EntradaSalidaDAO.getInstance().insertEntradaSalidaSucursal(conn,es,esdList);
 					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:");
 				}
+				
+				for(ES_ESD escd: escdListDevs){
+					
+					final String esTicketDev = escd.getEs().getEsTicketDev();
+					EntradaSalida es = escd.getEs().reverse();
+					
+					if(esTicketDev!=null){						
+						int esIdDev = EntradaSalidaDAO.getInstance().getIdForTicket(conn, esTicketDev);						
+						es.setEsIdDev(esIdDev);
+					}
+					
+					List<EntradaSalidaDetalle> esdList = new ArrayList<EntradaSalidaDetalle>();
+					List<ESD> esdl = escd.getEsdList();
+					logger.debug("syncTransaction:\tprepare esdList:");
+					for(ESD esd: esdl){
+						esdList.add(esd.reverse());
+					}
+					logger.debug("syncTransaction:\tprepare for insertPedidoVentaSucursal:");
+					s.processingES(indexProccessing++);
+					EntradaSalidaDAO.getInstance().insertEntradaSalidaSucursal(conn,es,esdList);
+					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:");
+				}
+				
+				
 				logger.debug("syncTransaction:END");
 				logger.debug("syncTransaction:COMMIT TRANSACTION");
 				conn.commit();

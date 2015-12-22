@@ -26,12 +26,12 @@ public class ES {
 	private double ir;
 	private String amc;
 	private int pdc;	
-	private int pde;
-	
+	private int pde;	
 	private double stot;
 	private double desc;
 	private double tot;
-	private int    nElem;
+	private int    nElem;	
+	private String esTicketDev;
 	
 	public EntradaSalida reverse(){
 		EntradaSalida es = new EntradaSalida();
@@ -55,6 +55,27 @@ public class ES {
 	public ES() {
 	}
 	
+	public ES(EntradaSalida x) {
+		this.tm = x.getTipoMov();
+		this.s = x.getSucursalId();
+		this.fc = x.getFechaCreo().getTime();
+		this.u = x.getUsuarioEmailCreo();
+		this.c = x.getClienteId();
+		this.fp = x.getFormaDePagoId();
+		this.j = x.getCaja();
+		this.i = x.getImporteRecibido();
+		this.nt = x.getNumeroTicket();
+		this.mp = x.getMetodoDePagoId();
+		this.ir = x.getImporteRecibido();
+		this.amc = x.getAprobacionVisaMastercard();
+		this.pdc = x.getPorcentajeDescuentoCalculado();
+		this.pde = x.getPorcentajeDescuentoExtra();
+//		this.stot = 0;
+//		this.desc = 0;
+//		this.tot = x.getTotal();
+//		this.nElem = 0;
+//		this.esTicketDev = null;
+	}
 
 	/**
 	 * @return the tm
@@ -301,4 +322,13 @@ public class ES {
 	public void setnElem(int nElem) {
 		this.nElem = nElem;
 	}
+
+	public void setEsTicketDev(String esTicketDev) {
+		this.esTicketDev = esTicketDev;
+	}
+
+	public String getEsTicketDev() {
+		return esTicketDev;
+	}
+
 }
