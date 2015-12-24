@@ -182,12 +182,8 @@ public class PrepareDataForTest_PM104 {
 
 				TotalesCalculados ct = LogicaFinaciera.calculaTotales(factorIVA, numProds, subTotal1ra, 0.0, 0.0, autorizaDesc, factorDescExtra, redondea, importeRecibido, 0.0, LogicaFinaciera.CALCULO_DESC_ALMACEN);
 				//calculaTotales(double factorIva,int numProd1ra,double st1ra,double stOpo,double stReg,boolean descunetoHabilitado, double factorDescExtra,boolean redondear, double recibidoEfectivo,double recibidoTarjeta,int estrategiaDesc)
-				if (esArr[6] == null) {
-					numeroTicket = GeneradorNumTicket.getNumTicket(fecha, adv, adv, i, tot);
-				} else {
-
-				}
-
+				numeroTicket = GeneradorNumTicket.getNumTicket(fecha, 1, 1);
+				
 				queryUpdate = "UPDATE ENTRADA_SALIDA SET TOTAL=" + Constants.df2Decimal.format(ct.getTotalFinal()) + ",TOTAL_COBRADO=" + Constants.df2Decimal.format(ct.getTotalCobrar()) + 
 						",ELEM_DET=" + numDet + ",TOT_PRODS=" + numProds + ",SUB_TOTAL_1RA=" + Constants.df2Decimal.format(subTotal) +
 						" WHERE ID=" + id;
