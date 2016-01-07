@@ -366,7 +366,7 @@ public class UsuarioDAO {
 			
 			
 			ps = conn.prepareStatement("INSERT INTO USUARIO(EMAIL,ABILITADO,NOMBRE_COMPLETO,PASSWORD,CLAVE,EMAIL_ALTERNATIVO) "+
-					" VALUES(?,?,?,?)");			
+					" VALUES(?,?,?,?,?,?)");			
 			
 			int ci=1;
 

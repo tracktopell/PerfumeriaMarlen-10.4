@@ -177,17 +177,25 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					esd.setA(tipoAlmacen.get(tipoAlmacenSeleccionado).getId());
 					esd.setC(1);
 					boolean existencia=false;
+					
+					if(		productoEncontrado.getA1c() <= 0 ||
+							productoEncontrado.getaRc() <= 0 ||
+							productoEncontrado.getaOc() <= 0    ) {
+						throw new IllegalStateException("NO HAY CANTIDAD SUFICIENTE EN ALMACEN PARA ="+productoEncontrado.getCb());
+					}
+					
+					
 					if(tipoAlmacenSeleccionado == Constants.ALMACEN_PRINCIPAL && productoEncontrado.getA1c() > 0) {
 						esd.setP(productoEncontrado.getA1p());
 						existencia = true;
-					} else if(tipoAlmacenSeleccionado == Constants.ALMACEN_REGALIAS && productoEncontrado.getaRc()> 0) {
+					} else if(tipoAlmacenSeleccionado == Constants.ALMACEN_REGALIAS ) {
 						esd.setP(productoEncontrado.getaRp());
 						existencia = true;
-					} else if(tipoAlmacenSeleccionado == Constants.ALMACEN_OPORTUNIDAD && productoEncontrado.getaOc()> 0) {
+					} else if(tipoAlmacenSeleccionado == Constants.ALMACEN_OPORTUNIDAD ) {
 						esd.setP(productoEncontrado.getaOp());
 						existencia = true;
 					} else {
-						throw new IllegalStateException("NO HAY TIPO ALMACEN SELECCIONADO: ta"+tipoAlmacenSeleccionado);
+						throw new IllegalStateException("NO HAY TIPO ALMACEN SELECCIONADO: tipoAlmacenSeleccionado="+tipoAlmacenSeleccionado);
 					}
 					
 					if(existencia) {

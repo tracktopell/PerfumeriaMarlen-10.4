@@ -74,16 +74,19 @@ public class PrepareDataForTest_PM104 {
 				}
 				for (Object[] almaArr : resultAllAlmacenes) {
 
-					int cantidadNueva = 200 + r.nextInt(1000);
+					int cantidadNueva = (int)(r.nextDouble()*500);
 					Integer almacenId = (Integer) almaArr[0];
 					Integer tipoAlmacen = (Integer) almaArr[1];
+					if(precio == null){
+						precio = r.nextDouble()*200;
+					}
 					Double precioAct = precio;
 					if (tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD) {
 						precioAct = precio * 0.6;
 					}
 
 					if (executeDirectUpdate(newDBConnection, "UPDATE ALMACEN_PRODUCTO SET CANTIDAD=" + cantidadNueva + ",PRECIO=" + precioAct + " WHERE ALMACEN_ID=" + almacenId + " AND PRODUCTO_CODIGO_BARRAS='" + codigoBarras + "'") == 0) {
-						executeDirectUpdate(newDBConnection, "INSERT INTO ALMACEN_PRODUCTO VALUES(" + almacenId + ",'" + codigoBarras + "'," + cantidadNueva + "," + precioAct + ",NULL)");
+						executeDirectUpdate(newDBConnection, "INSERT INTO ALMACEN_PRODUCTO (ALMACEN_ID,PRODUCTO_CODIGO_BARRAS,CANTIDAD,PRECIO) VALUES(" + almacenId + ",'" + codigoBarras + "'," + cantidadNueva + "," + precioAct + ")");
 					}
 				}
 

@@ -122,9 +122,11 @@ public class EntradaSalida implements java.io.Serializable {
 	 */
 	private Integer   esIdDev;
 	
-	private Double subTotalNG;
+	private Double subTotal1ra;
 	
-	private Double subTotalGR;
+	private Double subTotalOpo;
+	
+	private Double subTotalReg;
 
 	private Double total;
 	
@@ -326,35 +328,6 @@ public class EntradaSalida implements java.io.Serializable {
 	public void setEsIdDev(Integer esIdDev) {
 		this.esIdDev = esIdDev;
 	}
-
-	/**
-	 * @return the subTotalNG
-	 */
-	public Double getSubTotalNG() {
-		return subTotalNG;
-	}
-
-	/**
-	 * @param subTotalNG the subTotalNG to set
-	 */
-	public void setSubTotalNG(Double subTotalNG) {
-		this.subTotalNG = subTotalNG;
-	}
-
-	/**
-	 * @return the subTotalGR
-	 */
-	public Double getSubTotalGR() {
-		return subTotalGR;
-	}
-
-	/**
-	 * @param subTotalGR the subTotalGR to set
-	 */
-	public void setSubTotalGR(Double subTotalGR) {
-		this.subTotalGR = subTotalGR;
-	}
-
 	
 	/**
 	 * @return the total
@@ -369,6 +342,49 @@ public class EntradaSalida implements java.io.Serializable {
 	public void setTotal(Double total) {
 		this.total = total;
 	}
+
+	/**
+	 * @return the subTotal1ra
+	 */
+	public Double getSubTotal1ra() {
+		return subTotal1ra;
+	}
+
+	/**
+	 * @param subTotal1ra the subTotal1ra to set
+	 */
+	public void setSubTotal1ra(Double subTotal1ra) {
+		this.subTotal1ra = subTotal1ra;
+	}
+
+	/**
+	 * @return the subTotalOpo
+	 */
+	public Double getSubTotalOpo() {
+		return subTotalOpo;
+	}
+
+	/**
+	 * @param subTotalOpo the subTotalOpo to set
+	 */
+	public void setSubTotalOpo(Double subTotalOpo) {
+		this.subTotalOpo = subTotalOpo;
+	}
+
+	/**
+	 * @return the subTotalReg
+	 */
+	public Double getSubTotalReg() {
+		return subTotalReg;
+	}
+
+	/**
+	 * @param subTotalReg the subTotalReg to set
+	 */
+	public void setSubTotalReg(Double subTotalReg) {
+		this.subTotalReg = subTotalReg;
+	}
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -396,5 +412,5 @@ public class EntradaSalida implements java.io.Serializable {
     @Override
     public String toString() {
         return "com.pmarlen.backend.model.EntradaSalida[id = "+id+ "]";
-    }
+    }	
 }

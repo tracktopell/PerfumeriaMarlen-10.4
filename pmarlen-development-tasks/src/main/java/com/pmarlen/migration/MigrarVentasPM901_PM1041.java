@@ -8,6 +8,8 @@ package com.pmarlen.migration;
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.businesslogic.GeneradorNumTicket;
+import com.pmarlen.businesslogic.LogicaFinaciera;
+import com.pmarlen.businesslogic.TotalesCalculados;
 import com.pmarlen.model.Constants;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -38,168 +40,223 @@ import java.util.Set;
 public class MigrarVentasPM901_PM1041 {
 
 	private static Connection newDBConnection = null;
-	
+
 	private static Connection derbyDBConnection = null;
 
 	private static boolean debug = false;
 
-	private static String usrNewDB   = null;
-	private static String pwdNewDB   = null;
-	private static String urlNewDB   = null;
+	private static String usrNewDB = null;
+	private static String pwdNewDB = null;
+	private static String urlNewDB = null;
 
-	private static String usrDerbyDB   = null;
-	private static String pwdDerbyDB   = null;
-	private static String urlDerbyDB   = null;
-	
-	
-	private static int    sucursalId = 0;
+	private static String usrDerbyDB = null;
+	private static String pwdDerbyDB = null;
+	private static String urlDerbyDB = null;
+
+	private static int sucursalId = 0;
+
 	public static void main(String[] args) {
-		
 
 		usrNewDB = args[0];
 		pwdNewDB = args[1];
 		urlNewDB = args[2];
-		sucursalId = Integer.parseInt(args[3]);		
+		sucursalId = Integer.parseInt(args[3]);
 		usrDerbyDB = args[4];
 		pwdDerbyDB = args[5];
 		urlDerbyDB = args[6];
 
-		System.out.println("---------------------- MigrarVentasPM901_PM1041 (Suc:"+sucursalId+") -----------------------");
-		
-		debug = true;
-		
-		
+		System.out.println("---------------------- MigrarVentasPM901_PM1041 (Suc:" + sucursalId + ") -----------------------");
+
+		debug = false;
+
 		connectToDerbyDB();
-		
+
 		connectToNewDBTransactional();
 
 		try {
 			long t1, t2, t3, T;
-			
-			
-			
+
 			System.out.println("---------------------- HOMOGENIZANDO PRODUCTOS -----------------------");
-			
-			List<Object[]> resultPM901Productos = executeQuery(derbyDBConnection, 
-					"SELECT P.CODIGO_BARRAS,I.NOMBRE AS INDUSTRIA,L.NOMBRE AS LINEA,M.NOMBRE AS MARCA,UPPER(P.NOMBRE) AS P_NOMBRE,UPPER(P.PRESENTACION),P.CODIGO_BARRAS AS ABREBIATURA,P.UNIDADES_POR_CAJA,P.CONTENIDO,P.UNIDAD_MEDIDA,'PZ' AS UNIDAD_EMPAQUE,P.COSTO,P.COSTO_VENTA\n" +
-					"FROM   PRODUCTO P,ALMACEN_PRODUCTO AP,MARCA M,LINEA L,INDUSTRIA I\n" +
-					"WHERE  1=1\n" +
-					"AND    P.MARCA_ID = M.ID\n" +
-					"AND    M.LINEA_ID=L.ID\n" +
-					"AND    M.INDUSTRIA_ID=I.ID\n" +
-					"AND    P.ID = AP.PRODUCTO_ID\n" +
-					"AND    AP.ALMACEN_ID=3\n" +
-					"ORDER BY INDUSTRIA,LINEA,MARCA,P_NOMBRE,PRESENTACION,CODIGO_BARRAS");
-			
-			LinkedHashMap<String,String> productos=new LinkedHashMap<String,String>();
-			
-			List<Object[]> resultAllProductos = executeQuery(newDBConnection, "SELECT CODIGO_BARRAS,NOMBRE,PRESENTACION,INDUSTRIA,LINEA,MARCA FROM PRODUCTO");
-			for(Object[] ap:resultAllProductos){
-				String cb = (String)ap[0];
-				String prod2String = Arrays.asList(ap).toString();
-				productos.put(cb, prod2String);
-				System.out.println("->Producto["+cb+"]:"+prod2String);
-			}
-			
-			System.out.println("->Productos:"+productos.size());
-			
-			PreparedStatement psInsertProd = newDBConnection.prepareStatement(
-					"INSERT INTO PRODUCTO(CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA)"
-							+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
-			int migrated=0;
-			for(Object[] aaDerby: resultPM901Productos){
-				String oldCB = (String)aaDerby[0];
-				
-				if(!productos.containsKey(oldCB)){
-					
-					System.out.println("IMPORT=>"+Arrays.asList(aaDerby));
-					executeUpdate(psInsertProd,aaDerby);
-					migrated++;
+			List<Object[]> resultAllAlmacenes = executeQuery(newDBConnection, "SELECT TIPO_ALMACEN,ID,SUCURSAL_ID FROM ALMACEN");
+
+			HashMap<Integer, Integer> almacen = new HashMap<Integer, Integer>();
+			for (Object[] arr : resultAllAlmacenes) {
+				Integer sucId = (Integer) arr[2];
+				if (sucId.intValue() == sucursalId) {
+					almacen.put((Integer) arr[0], (Integer) arr[1]);
 				}
 			}
-			newDBConnection.commit();
-			
-			System.out.println("->Productos Importados:"+migrated);
-			
-			
-			System.exit(1);
-			
-			LinkedHashMap<String,List<Integer>> productosNoEncotrados= new LinkedHashMap<String,List<Integer>>();
 
-			List<Object[]> resultAllAlmacenes = executeQuery(newDBConnection, "SELECT TIPO_ALMACEN,ID FROM ALMACEN WHERE SUCURSAL_ID="+sucursalId);
+			List<Object[]> resultPM901Productos = executeQuery(derbyDBConnection,
+					"SELECT P.CODIGO_BARRAS,I.NOMBRE AS INDUSTRIA,L.NOMBRE AS LINEA,M.NOMBRE AS MARCA,UPPER(P.NOMBRE) AS P_NOMBRE,UPPER(P.PRESENTACION),P.CODIGO_BARRAS AS ABREBIATURA,P.UNIDADES_POR_CAJA,P.CONTENIDO,P.UNIDAD_MEDIDA,'PZ' AS UNIDAD_EMPAQUE,P.COSTO,P.COSTO_VENTA\n"
+					+ "FROM   PRODUCTO P,ALMACEN_PRODUCTO AP,MARCA M,LINEA L,INDUSTRIA I\n"
+					+ "WHERE  1=1\n"
+					+ "AND    P.MARCA_ID = M.ID\n"
+					+ "AND    M.LINEA_ID=L.ID\n"
+					+ "AND    M.INDUSTRIA_ID=I.ID\n"
+					+ "AND    P.ID = AP.PRODUCTO_ID\n"
+					+ "AND    AP.ALMACEN_ID=3\n"
+					+ "ORDER BY INDUSTRIA,LINEA,MARCA,P_NOMBRE,PRESENTACION,CODIGO_BARRAS");
 
-			HashMap<Integer,Integer> almacen=new HashMap<Integer,Integer>();
-			for(Object[] arr: resultAllAlmacenes){
-				almacen.put((Integer)arr[0],(Integer)arr[1]);
+			LinkedHashMap<String, String> productos = new LinkedHashMap<String, String>();
+
+			List<Object[]> resultAllProductos = executeQuery(newDBConnection, "SELECT CODIGO_BARRAS,NOMBRE,PRESENTACION,INDUSTRIA,LINEA,MARCA FROM PRODUCTO");
+			for (Object[] ap : resultAllProductos) {
+				String cb = (String) ap[0];
+				String prod2String = Arrays.asList(ap).toString();
+				productos.put(cb, prod2String);
+				//System.out.println("->Producto[" + cb + "]:" + prod2String);
 			}
+
+			System.out.println("->Productos:" + productos.size());
+
+			PreparedStatement psInsertProd = newDBConnection.prepareStatement(
+					"INSERT INTO PRODUCTO(CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA)"
+					+ " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			
+			PreparedStatement psUpdateAlmProd = newDBConnection.prepareStatement(
+					"UPDATE ALMACEN_PRODUCTO SET CANTIDAD=?,PRECIO=? "
+							+ "WHERE ALMACEN_ID=? AND PRODUCTO_CODIGO_BARRAS=?", Statement.RETURN_GENERATED_KEYS);
+
+			PreparedStatement psInsertAlmProd = newDBConnection.prepareStatement(
+					"INSERT INTO ALMACEN_PRODUCTO(ALMACEN_ID,PRODUCTO_CODIGO_BARRAS,CANTIDAD,PRECIO)"
+					+ " VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+			int migrated = 0;
+			int carx=0;
+			for (Object[] aaDerby : resultPM901Productos) {
+				String oldCB = (String) aaDerby[0];
+
+				if (!productos.containsKey(oldCB)) {
+					//System.out.println("IMPORT=>" + Arrays.asList(aaDerby));
+					psInsertProd.clearParameters();
+					executeUpdate(psInsertProd, aaDerby);
+					migrated++;
+				}
+
+				for(Object[] arrAlm : resultAllAlmacenes) {
+					
+					psUpdateAlmProd.clearParameters();
+					Object[] arrUpdateAlmProd = new Object[]{0, aaDerby[12],arrAlm[1], aaDerby[0]};
+					psUpdateAlmProd.setObject(1, 0);
+					psUpdateAlmProd.setObject(2, 0);
+					psUpdateAlmProd.setObject(3, arrAlm[1]);
+					psUpdateAlmProd.setObject(4, aaDerby[0]);
+					
+					int a=psUpdateAlmProd.executeUpdate();
+					if(a!=0){
+						//System.out.println("AP a.1=" +a); 
+					} else {
+						psInsertAlmProd.clearParameters();
+						psInsertAlmProd.setObject(1, arrAlm[1]);
+						psInsertAlmProd.setObject(2, aaDerby[0]);
+						psInsertAlmProd.setObject(3, 0);
+						psInsertAlmProd.setObject(4, aaDerby[12]);
+						
+						a=psInsertAlmProd.executeUpdate();
+						
+						//System.out.println("AP a.2=" +a); 
+					} 
+				}
+				System.out.print("--->> REVISANDO PRODUCTOS DERBY: ("+(migrated)+"/"+(carx++)+")\r");
+				newDBConnection.commit();
+			}
+			System.out.println("");
+			System.out.println("==>> TERMINADO");
+			resultAllProductos = executeQuery(newDBConnection, "SELECT CODIGO_BARRAS,NOMBRE,PRESENTACION,INDUSTRIA,LINEA,MARCA FROM PRODUCTO");
+			for (Object[] ap : resultAllProductos) {
+				String cb = (String) ap[0];
+				String prod2String = Arrays.asList(ap).toString();
+				productos.put(cb, prod2String);
+				//System.out.println("->AHORA Producto[" + cb + "]:" + prod2String);
+			}
+
+			System.out.println("->Productos AHORA :" + productos.size());
+
+			String queryVentasPM901 = 
+					"SELECT PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA\n" +
+					"FROM   PEDIDO_VENTA PV,PEDIDO_VENTA_DETALLE PVD,PEDIDO_VENTA_ESTADO PVE,PRODUCTO P,ALMACEN A\n" +
+					"WHERE  1=1\n" +
+					"AND    PV.ID=PVD.PEDIDO_VENTA_ID\n" +
+					"AND    PV.ID=PVE.PEDIDO_VENTA_ID\n" +
+					"AND    PVD.PRODUCTO_ID=P.ID\n" +
+					"AND    PV.ALMACEN_ID=A.ID\n" +
+					"ORDER BY PVE.FECHA";
+			System.out.println("--->> QUERY VENTAS:");
+			ResultSet ventasRS = derbyDBConnection.createStatement().executeQuery(queryVentasPM901);
 			
 			
-			
-			String line=null;
+			LinkedHashMap<String, List<Integer>> productosNoEncotrados = new LinkedHashMap<String, List<Integer>>();
+
+			String line = null;
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-			
+
 			EntradaSalida pv = null;
-			List<EntradaSalidaDetalle> pvdList=null;
+			List<EntradaSalidaDetalle> pvdList = null;
 			EntradaSalidaDetalle esd = null;
-			Integer pvId=null;
-			Date    fecha = null;
+			Integer pvId = null;
+			Date fecha = null;
 			Integer formaDePagoId = null;
 			Integer clienteId = null;
-			String  usuario=null;
+			String usuario = null;
 			Integer tipoAlmacen = null;
-			Double  factorIVA=null;
-			String  comentariosX=null;
-			String  ticket=null;
-			Integer numCaja=null;
-			Double  recibido=null;
-			Double  descAplicado=null;
+			Double factorIVA = null;
+			String comentariosX = null;
+			String ticket = null;
+			Integer numCaja = null;
+			Double recibido = null;
+			Double descAplicado = null;
 			Integer cantidad;
-			String  codigoBarras=null;
-			Double  precio=null;
-			//debug = true;
+			String codigoBarras = null;
+			Double precio = null;
 			
+			//debug = true;
+
 			int i = 0;
 			int adv = 0;
-			
-			boolean insertES=false;
+
+			boolean insertES = false;
 			long t0 = System.currentTimeMillis();
-			int contCBNoExiste =0;
-			boolean x=false;
-			int tot=0;
-			while( x ){
-				insertES=false;
-				String[] lineArr=line.split("\\|");
-				Object[] arrVals=new Object[lineArr.length];
+			int contCBNoExiste = 0;
+			boolean x = false;
+			int tot = 1;
+			System.out.println("--->> READ RESULT SET:");
+			int numProds=0;
+			while (ventasRS.next()) {
+				insertES = false;
+
+				//PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA
+				//    1              2        3             4              5            6              7                     8            9              10              11
+				pvId  = ventasRS.getInt(1);  
+				fecha = ventasRS.getDate(3); 
+				formaDePagoId = ventasRS.getInt(4);
+				usuario   = ventasRS.getString(5); 
+				clienteId = Constants.ID_CLIENTE_MOSTRADOR;
+				tipoAlmacen = ventasRS.getInt(6);
+				factorIVA = ventasRS.getDouble(7);
+				comentariosX = ventasRS.getString(8);
 				
-				//ID   |ESTADO_ID|FECHA                  |FORMA_DE_PAGO_ID|USUARIO_ID|TIPO_ALMACEN|FACTORIVA|COMENTARIOS|DESCUENTO_APLICADO|CANTIDAD|  CODIGO_BARRAS|PRECIO_VENTA
-				//98304|        1|2012-12-21 09:58:56.521|               1|'hmiranda'|           1|     0.16|       NULL|              NULL|       1|'7501039702956'|         4.9
-				//    0         1                       2                3          4            5          6          7                   8       9              10           11
-				
-				pvId			= new Integer(lineArr[0]);				
-				fecha			= sdf.parse  (lineArr[2]);
-				formaDePagoId	= new Integer(lineArr[3]);
-				usuario			= lineArr[4].replace("'", "");
-				clienteId		= Constants.ID_CLIENTE_MOSTRADOR;
-				tipoAlmacen		= new Integer(lineArr[5]);
-				factorIVA		= new Double (lineArr[6]);
-				if(lineArr[7].equalsIgnoreCase("NULL")){comentariosX = null;} else{comentariosX = lineArr[7];}
-				if(lineArr[8].equalsIgnoreCase("NULL")){descAplicado = null;} else{descAplicado = new Double(lineArr[8]);}
-				cantidad		= new Integer(lineArr[9]);
-				codigoBarras	= lineArr[10].replace("'", "");
-				precio			= new Double(lineArr[11]);
-				if(comentariosX != null){
-					int idxCb=comentariosX.indexOf("<caja>");
-					int idxCe=comentariosX.indexOf("</caja>");
-					int idxRb=comentariosX.indexOf("<recibido>");
-					int idxRe=comentariosX.indexOf("</recibido>");
-				
-					if(idxCb>0 && idxCe > idxCb){
-						numCaja = Integer.parseInt(comentariosX.substring(idxCb+6, idxCe));
-					}else {
+				if (ventasRS.getObject(9) == null) {
+					descAplicado = null;
+				} else {
+					descAplicado = ventasRS.getDouble(9);
+				}
+				cantidad = ventasRS.getInt(10);
+				codigoBarras = ventasRS.getString(11);
+				precio = ventasRS.getDouble(12);
+				if (comentariosX != null) {
+					int idxCb = comentariosX.indexOf("<caja>");
+					int idxCe = comentariosX.indexOf("</caja>");
+					int idxRb = comentariosX.indexOf("<recibido>");
+					int idxRe = comentariosX.indexOf("</recibido>");
+
+					if (idxCb > 0 && idxCe > idxCb) {
+						numCaja = Integer.parseInt(comentariosX.substring(idxCb + 6, idxCe));
+					} else {
 						numCaja = 1;
 					}
-					if(idxRb>0 && idxRe > idxRb){
-						recibido = Double.parseDouble(comentariosX.substring(idxRb+10, idxRe));
+					if (idxRb > 0 && idxRe > idxRb) {
+						recibido = Double.parseDouble(comentariosX.substring(idxRb + 10, idxRe));
 					} else {
 						recibido = null;
 					}
@@ -207,110 +264,121 @@ public class MigrarVentasPM901_PM1041 {
 					numCaja = 1;
 					recibido = null;
 				}
-				
-				if(!productos.containsKey(codigoBarras)){
+
+				if (!productos.containsKey(codigoBarras)) {
 					contCBNoExiste++;
 					List<Integer> pedidosQueTienenProdX = null;
 					pedidosQueTienenProdX = productosNoEncotrados.get(codigoBarras);
-					if(pedidosQueTienenProdX == null){
+					if (pedidosQueTienenProdX == null) {
 						pedidosQueTienenProdX = new ArrayList<Integer>();
 						productosNoEncotrados.put(codigoBarras, pedidosQueTienenProdX);
 					}
-					pedidosQueTienenProdX.add(pvId);				
+					pedidosQueTienenProdX.add(pvId);
 				}
-				
-				
-				ticket = GeneradorNumTicket.getNumTicket(fecha,sucursalId, numCaja);
-				
+
+				ticket = GeneradorNumTicket.getNumTicket(fecha, sucursalId, numCaja);
+
 				esd = new EntradaSalidaDetalle();
-				
+
 				esd.setAlmacenId(almacen.get(tipoAlmacen));
 				esd.setCantidad(cantidad);
 				esd.setProductoCodigoBarras(codigoBarras);
 				esd.setPrecioVenta(precio);
 				esd.setEntradaSalidaId(pvId);
-				
-				if(pv==null || (pv!=null && pv.getId().intValue() != pvId.intValue())){
-					pv       = new EntradaSalida(pvId);
-					pvdList  = new ArrayList<EntradaSalidaDetalle>();
+
+				if (pv == null || (pv != null && pv.getId().intValue() != pvId.intValue())) {
+					pv = new EntradaSalida(pvId);
+					pvdList = new ArrayList<EntradaSalidaDetalle>();
 					insertES = true;
-				} 
+				}
+
+				numProds+=cantidad;
 				
-				pv.setAutorizaDescuento(descAplicado != null? 1: 0);
+				
+				pv.setAutorizaDescuento(descAplicado != null ? 1 : 0);
 				pv.setCaja(numCaja);
 				pv.setSucursalId(sucursalId);
 				pv.setFechaCreo(new Timestamp(fecha.getTime()));
 				pv.setClienteId(clienteId);
-				pv.setComentarios("VENTA SUCURSAL MIGRADO DE PM9.1(USUARIO:"+usuario+")");
+				pv.setComentarios("VENTA SUCURSAL MIGRADO DE PM9.1(USUARIO:" + usuario + ")");
 				pv.setFactorIva(factorIVA);
 				pv.setFormaDePagoId(Constants.ID_FDP_1SOLA_E);
-				pv.setMetodoDePagoId(formaDePagoId==1?Constants.ID_MDP_EFECTIVO:Constants.ID_MDP_TARJETA);
+				pv.setMetodoDePagoId(formaDePagoId == 1 ? Constants.ID_MDP_EFECTIVO : Constants.ID_MDP_TARJETA);
 				pv.setImporteRecibido(recibido);
 				pv.setNumeroTicket(ticket);
 				pv.setUsuarioEmailCreo("sucursalPM901@perfumeriamarlen.com.mx");
 				pv.setTipoMov(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
 				pv.setEstadoId(Constants.ESTADO_VENDIDO_SUCURSAL);
-				
+
 				pvdList.add(esd);
-				
-				if(insertES){
-					simula_insertEntradaSalidaSucursal(newDBConnection, pv, pvdList);
-					insertES=false;
+
+				if (insertES) {
+					insertEntradaSalidaSucursal(newDBConnection, pv, pvdList);
+					insertES = false;
+					numProds=0;
 				}
 				i++;
 				t2 = System.currentTimeMillis();
-				adv = (i * 100) / tot;
-				System.out.print("ADVANCE: \t" + i + "/\t" + tot + "\t:" + adv + " % [ " + enalapsed(t0, t2) + " ] (ERROR CB:"+contCBNoExiste+") \r");
+				
+				System.out.print("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ] (ERROR CB:" + contCBNoExiste + ") \r");
 				//System.out.println("ADVANCE: \t" + i + "/\t" + tot + "\t:" + adv + " % [ " + enalapsed(t0, t2) + " ] {"+cantidad+" x "+codigoBarras+" ("+precio+")}");
-		}
-			
-			if(pv!=null && pvdList.size() > 0){
-				simula_insertEntradaSalidaSucursal(newDBConnection, pv, pvdList);
 			}
-			
-			t3 = System.currentTimeMillis();
-			System.out.print("ADVANCE: \t" + i + "/\t" + tot + "\t:" + adv + " % [ " + enalapsed(t0, t3) + " ] (ERROR CB:"+contCBNoExiste+") \r");
 
-			System.out.println("EXECUTING INSERT ENTRADA_SALIDA:");
-			
-			if(!productosNoEncotrados.isEmpty()){
-				System.out.println("NO ENCOTRADOS:"+productosNoEncotrados.size());
-				Set<String> pcbSet = productosNoEncotrados.keySet();
-				for(String cb: pcbSet){
-				//	System.out.println("\t:["+cb+"]"+productosNoEncotrados.get(cb)+" ?? "+productos.get(cb));
-					System.out.print(",'"+cb+"'");
-				}			
+			if (pv != null && pvdList.size() > 0) {
+				insertEntradaSalidaSucursal(newDBConnection, pv, pvdList);
 			}
+
+			t3 = System.currentTimeMillis();
+			System.out.print("ADVANCE: \t" + i + "/\t" + tot + "\t:" + adv + " % [ " + enalapsed(t0, t3) + " ] (ERROR CB:" + contCBNoExiste + ") \r");
+
+			ventasRS.close();
 			
+			System.out.println("MIGRADO VENTAS:");
+
+			if (!productosNoEncotrados.isEmpty()) {
+				System.out.println("NO ENCOTRADOS:" + productosNoEncotrados.size());
+				Set<String> pcbSet = productosNoEncotrados.keySet();
+				for (String cb : pcbSet) {
+					//	System.out.println("\t:["+cb+"]"+productosNoEncotrados.get(cb)+" ?? "+productos.get(cb));
+					System.out.print(",'" + cb + "'");
+				}
+			}
+
 			System.out.println("=================================== END IMPORT OK =================================");
-			
+
 			System.exit(0);
 		} catch (Exception ex) {
 			ex.printStackTrace(System.err);
 			System.exit(3);
 		}
 	}
-	
+
 	private static int simula_insertEntradaSalidaSucursal(Connection conn, EntradaSalida x, List<EntradaSalidaDetalle> pvdList) throws SQLException {
-		
-		if(debug) System.out.println("insertEntradaSalidaSucursal:TESTING: EntradaSalida: INSERT FECHA:"+x.getFechaCreo()+", SUCURSAL:"+x.getSucursalId()+", CAJA:"+x.getCaja()+", TICKET:"+x.getNumeroTicket());
+
+		if (debug) {
+			System.out.println("insertEntradaSalidaSucursal:TESTING: EntradaSalida: INSERT FECHA:" + x.getFechaCreo() + ", SUCURSAL:" + x.getSucursalId() + ", CAJA:" + x.getCaja() + ", TICKET:" + x.getNumeroTicket());
+		}
 		return 0;
 	}
-	
+
 	private static int insertEntradaSalidaSucursal(Connection conn, EntradaSalida x, List<EntradaSalidaDetalle> pvdList) throws SQLException {
-		
-		if(debug) System.out.println("insertEntradaSalidaSucursal:TESTING: EntradaSalida: INSERT FECHA:"+x.getFechaCreo()+", SUCURSAL:"+x.getSucursalId()+", CAJA:"+x.getCaja()+", TICKET:"+x.getNumeroTicket());
-		for(EntradaSalidaDetalle esd: pvdList){
-			if(debug) System.out.println("insertEntradaSalidaSucursal:\tTESTING: INSERT & COMMIT, DISCOUNT="+esd.getCantidad()+" x "+esd.getProductoCodigoBarras()+"["+esd.getAlmacenId()+"]");
+
+		if (debug) {
+			System.out.println("insertEntradaSalidaSucursal: EntradaSalida: INSERT FECHA:" + x.getFechaCreo() + ", SUCURSAL:" + x.getSucursalId() + ", CAJA:" + x.getCaja() + ", TICKET:" + x.getNumeroTicket());
 		}
-		
-		int r=-1;
+		for (EntradaSalidaDetalle esd : pvdList) {
+			if (debug) {
+				System.out.println("insertEntradaSalidaSucursal:\t INSERT & COMMIT, DISCOUNT=" + esd.getCantidad() + " x " + esd.getProductoCodigoBarras() + "[" + esd.getAlmacenId() + "]");
+			}
+		}
+
+		int r = -1;
 		int tipoMov = x.getTipoMov();
 		PreparedStatement ps = null;
 		PreparedStatement psESE = null;
 		PreparedStatement psESD = null;
 		PreparedStatement psMHP = null;
-		
+
 		try {
 			//Timestamp now = new Timestamp(System.currentTimeMillis());
 			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,METODO_DE_PAGO_ID,FACTOR_IVA,COMENTARIOS,CFD_ID,NUMERO_TICKET,CAJA,IMPORTE_RECIBIDO,APROBACION_VISA_MASTERCARD,PORCENTAJE_DESCUENTO_CALCULADO,PORCENTAJE_DESCUENTO_EXTRA,CONDICIONES_DE_PAGO,NUM_DE_CUENTA,AUTORIZA_DESCUENTO) "
@@ -336,9 +404,11 @@ public class MigrarVentasPM901_PM1041 {
 			ps.setObject(ci++, x.getCondicionesDePago());
 			ps.setObject(ci++, x.getNumDeCuenta());
 			ps.setObject(ci++, x.getAutorizaDescuento());
-			if(debug) System.out.println("->EntradaSalida before Insert:"+x.getId());
-			r = ps.executeUpdate();					
-			
+			if (debug) {
+				System.out.println("->EntradaSalida before Insert:" + x.getId());
+			}
+			r = ps.executeUpdate();
+
 			ResultSet rsk = ps.getGeneratedKeys();
 			if (rsk != null) {
 				while (rsk.next()) {
@@ -346,7 +416,9 @@ public class MigrarVentasPM901_PM1041 {
 				}
 			}
 			ps.close();
-			if(debug) System.out.println("->EntradaSalida after Insert:"+x.getId());
+			if (debug) {
+				System.out.println("->EntradaSalida after Insert:" + x.getId());
+			}
 			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA) "
 					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int rESD = 0;
@@ -369,26 +441,30 @@ public class MigrarVentasPM901_PM1041 {
 				rESD += psESD.executeUpdate();
 			}
 			psESD.close();
-			
-			if(debug) System.out.println("x.getEsIdDev():"+x.getEsIdDev());
-			if(tipoMov == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION && x.getEsIdDev()!=null){
+
+			if (debug) {
+				System.out.println("x.getEsIdDev():" + x.getEsIdDev());
+			}
+			if (tipoMov == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION && x.getEsIdDev() != null) {
 				psESD = conn.prepareStatement("UPDATE ENTRADA_SALIDA_DETALLE SET DEV='S' WHERE ENTRADA_SALIDA_ID=? AND CODIGO_BARRAS=?");
-				int rESDd=0;
+				int rESDd = 0;
 				for (EntradaSalidaDetalle esd2 : pvdList) {
 					int iESDd = 1;
 
 					psESD.clearParameters();
 					psESD.clearWarnings();
 
-					psESD.setInt	(iESDd++, x.getEsIdDev());
-					psESD.setString	(iESDd++, esd2.getProductoCodigoBarras());
-					
+					psESD.setInt(iESDd++, x.getEsIdDev());
+					psESD.setString(iESDd++, esd2.getProductoCodigoBarras());
+
 					rESDd += psESD.executeUpdate();
 				}
 				psESD.close();
-				if(debug) System.out.println("rESDd="+rESDd);
+				if (debug) {
+					System.out.println("rESDd=" + rESDd);
+				}
 			}
-			
+
 			psESE = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_ESTADO(ENTRADA_SALIDA_ID,ESTADO_ID,FECHA,USUARIO_EMAIL,COMENTARIOS) "
 					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int[] estados = new int[]{Constants.ESTADO_CAPTURADO, Constants.ESTADO_VENDIDO_SUCURSAL};
@@ -407,32 +483,34 @@ public class MigrarVentasPM901_PM1041 {
 				rESE += psESE.executeUpdate();
 			}
 			psESE.close();
-			
+
 			psESD = conn.prepareStatement("UPDATE ALMACEN_PRODUCTO SET CANTIDAD = CANTIDAD + ? "
 					+ " WHERE PRODUCTO_CODIGO_BARRAS=? AND ALMACEN_ID=?");
 
 			psMHP = conn.prepareStatement("INSERT INTO MOVIMIENTO_HISTORICO_PRODUCTO(ALMACEN_ID,FECHA,TIPO_MOVIMIENTO,CANTIDAD,COSTO,PRECIO,USUARIO_EMAIL,PRODUCTO_CODIGO_BARRAS,ENTRADA_SALIDA_ID) "
 					+ " VALUES(?,?,?,?,?,?,?,?,?)");
-			
-			int cant=0;
+
+			int cant = 0;
 			for (EntradaSalidaDetalle pvd : pvdList) {
 				psESD.clearParameters();
-				cant=0;
-				if(x.getTipoMov() >= Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA && x.getTipoMov() < Constants.TIPO_MOV_OTRO){
+				cant = 0;
+				if (x.getTipoMov() >= Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA && x.getTipoMov() < Constants.TIPO_MOV_OTRO) {
 					cant = -1 * pvd.getCantidad();
 					psESD.setInt(1, cant);
-				} else if(x.getTipoMov() >= Constants.TIPO_MOV_ENTRADA_ALMACEN_COMPRA &&  x.getTipoMov() < Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA){				
+				} else if (x.getTipoMov() >= Constants.TIPO_MOV_ENTRADA_ALMACEN_COMPRA && x.getTipoMov() < Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA) {
 					cant = pvd.getCantidad();
 					psESD.setInt(1, cant);
 				}
-				if(debug) System.out.println("->tipomov="+x.getTipoMov()+", producto="+pvd.getProductoCodigoBarras()+", almacen="+pvd.getAlmacenId()+", cant="+cant);
+				if (debug) {
+					System.out.println("->tipomov=" + x.getTipoMov() + ", producto=" + pvd.getProductoCodigoBarras() + ", almacen=" + pvd.getAlmacenId() + ", cant=" + cant);
+				}
 				psESD.setString(2, pvd.getProductoCodigoBarras());
 				psESD.setInt(3, pvd.getAlmacenId());
 
 				psESD.executeUpdate();
 
 				psMHP.clearParameters();
-				ci=1;
+				ci = 1;
 				psMHP.setInt(ci++, pvd.getAlmacenId());
 				psMHP.setTimestamp(ci++, x.getFechaCreo());
 				psMHP.setInt(ci++, x.getTipoMov());
@@ -441,7 +519,7 @@ public class MigrarVentasPM901_PM1041 {
 				psMHP.setObject(ci++, pvd.getPrecioVenta());
 				psMHP.setString(ci++, x.getUsuarioEmailCreo());
 				psMHP.setString(ci++, pvd.getProductoCodigoBarras());
-				psMHP.setInt   (ci++, x.getId());
+				psMHP.setInt(ci++, x.getId());
 
 				r = psMHP.executeUpdate();
 			}
@@ -449,13 +527,12 @@ public class MigrarVentasPM901_PM1041 {
 			psMHP.close();
 			conn.commit();
 		} catch (SQLException ex) {
-			System.err.println("En lo mas dificil de sucursales:"+ex);
+			System.err.println("En lo mas dificil de sucursales:" + ex);
 			conn.rollback();
 		}
-		
+
 		return r;
 	}
-	
 
 	private static final DecimalFormat df = new DecimalFormat("00");
 
@@ -517,6 +594,7 @@ public class MigrarVentasPM901_PM1041 {
 			System.exit(2);
 		}
 	}
+
 	private static void connectToDerbyDB() {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
@@ -531,7 +609,8 @@ public class MigrarVentasPM901_PM1041 {
 			ex.printStackTrace(System.err);
 			System.exit(2);
 		}
-	}	
+	}
+
 	private static void connectToNewDBTransactional() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();

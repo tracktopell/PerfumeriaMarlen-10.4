@@ -91,13 +91,14 @@
 								<p:menuitem value="SUB-ALMACEN" url="/pages/pendiente.jsf" icon="ui-icon-arrow-1-se" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}"/>								
 							</p:submenu>
 
-							<p:submenu label="INVENTARIOS" icon="ui-icon-clipboard">
-								<p:menuitem value="PRINCIPAL"   url="/pages/inventarioPrincipal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}"/>
-								<p:menuitem value="CONTEO."     url="/pages/pendiente.jsf" icon="ui-icon-shuffle"/>
-								<p:menuitem value="SUCURSALES " url="/pages/inventarioSucursal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}" />
-							</p:submenu>
-
 						</p:submenu>
+						
+						<p:submenu label="INVENTARIOS" icon="ui-icon-clipboard">
+							<p:menuitem value="PRINCIPAL"   url="/pages/inventarioPrincipal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}"/>
+							<p:menuitem value="CONTEO."     url="/pages/pendiente.jsf" icon="ui-icon-shuffle"/>
+							<p:menuitem value="SUCURSALES " url="/pages/inventarioSucursal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}" />
+						</p:submenu>
+						
 						<!--
 						<p:submenu label="SUCURSALES" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}">
 							<p:submenu label="SÁN MARTÍN" icon="ui-icon-calculator">
@@ -129,21 +130,21 @@
 								<p:menuitem value="CLIENTES"  url="/pages/cliente.jsf" icon="ui-icon-person"/>
 								
 							</p:submenu>
-							
-							<p:submenu label="REPORTES" icon="ui-icon-script">
-								<p:submenu label="VENTAS" icon="ui-icon-check" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
-									<p:menuitem value="X #PEDIDO" url="/pages/pendiente.jsf" icon="ui-icon-star"/>
-									<p:menuitem value="X PRODUCTO" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
-									<p:menuitem value="X LINEA-MARCA" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
-									<p:menuitem value="X PROVEEDOR" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
-								</p:submenu>								
-							</p:submenu>
-							
+														
 							<p:submenu label="SISTEMA" icon="ui-icon-newwin" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
 								<p:menuitem value="USUARIOS" url="/pages/usuario.jsf" icon="ui-icon-person" />
 								<p:menuitem value="SUCURSALES" url="/pages/pendiente.jsf" icon="ui-icon-star" />
 							</p:submenu>
 							
+						</p:submenu>
+						
+						<p:submenu label="REPORTES" icon="ui-icon-script">
+							<p:submenu label="VENTAS" icon="ui-icon-check" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
+								<p:menuitem value="X #PEDIDO" url="/pages/pendiente.jsf" icon="ui-icon-star"/>
+								<p:menuitem value="X PRODUCTO" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
+								<p:menuitem value="X LINEA-MARCA" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
+								<p:menuitem value="X PROVEEDOR" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
+							</p:submenu>								
 						</p:submenu>
 
 						<p:submenu label="CONTROL" icon="ui-icon-locked" rendered="#{sessionUserMB.usuarioAuthenticated.habilitado and sessionUserMB.usuarioAuthenticated.playsAsAdmin}">

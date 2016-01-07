@@ -162,45 +162,29 @@ public class CorteCajaDAO {
 		Integer tipoEvento = null;
 		try {
 			conn = getConnection();
-			StringBuilder sq = new StringBuilder("SELECT TIPO_EVENTO FROM CORTE_CAJA\n");
+			StringBuilder sq = new StringBuilder("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,TIPO_EVENTO,USUARIO_AUTORIZO FROM CORTE_CAJA\n");
 			sq.append("WHERE 1=1\n");
 			sq.append("AND SUCURSAL_ID=?\n");
-			if(x.getCaja() != null){
-				sq.append("AND CAJA=?\n");
-			} else {
-				sq.append("AND CAJA IS NULL\n");
-			}
-			if(x.getUsuarioEmail() != null) {
-				sq.append("AND USUARIO_EMAIL=?\n");
-			} else {
-				sq.append("AND USUARIO_EMAIL IS NULL\n");
-			}
-			sq.append("ORDER BY FECHA DESC");
+			sq.append("AND CAJA=?\n");
+			sq.append("ORDER BY FECHA DESC LIMIT 1");
 			
 			ps = conn.prepareStatement(sq.toString());
 			
 			int param=1;
 			
 			ps.setInt		(param++, x.getSucursalId());
-			if(x.getCaja() != null){
-				ps.setInt		(param++, x.getCaja());
-			} else {
+			ps.setInt		(param++, x.getCaja());
 			
-			}
-			if(x.getUsuarioEmail() != null) {
-				ps.setString	(param++, x.getUsuarioEmail());
-			} else {
-			
-			}
-			
-			logger.debug("countFor: Query:"+sq);
+			logger.debug("ultimoEstadoPara: Query:"+sq);
 			
 			rs = ps.executeQuery();
-			
+			Integer id=null;
 			if(rs.next()) {
-				tipoEvento = rs.getInt(1);
+				id         = rs.getInt("ID");
+				tipoEvento = rs.getInt("TIPO_EVENTO");
+				
 			}
-			logger.debug("countFor: tipoEvento="+tipoEvento);
+			logger.debug("ultimoEstadoPara: id="+id+", tipoEvento="+tipoEvento);
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());
@@ -211,7 +195,7 @@ public class CorteCajaDAO {
 					ps.close();
 					conn.close();
 				}catch(SQLException ex) {
-					logger.error("clossing, SQLException:" + ex.getMessage());
+					logger.error("ultimoEstadoPara: clossing, SQLException:" + ex.getMessage());
 					throw new DAOException("Closing:"+ex.getMessage());
 				}
 			}
@@ -339,7 +323,7 @@ public class CorteCajaDAO {
 		int r = -1;
 		Connection conn = null;
 		try {
-			conn = getConnection();
+			conn = getConnectionCommiteable();
 			ps = conn.prepareStatement("INSERT INTO CORTE_CAJA(FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO,TIPO_EVENTO) "+
 					" VALUES(?,?,?,?,?,?,?,?,?)"
 					,Statement.RETURN_GENERATED_KEYS);			
@@ -362,6 +346,7 @@ public class CorteCajaDAO {
 					x.setId(rsk.getInt(1));
 				}
 			}
+			conn.commit();
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InUpdate:" + ex.getMessage());
@@ -384,7 +369,7 @@ public class CorteCajaDAO {
 		int r= -1;
 		Connection conn = null;
 		try {
-			conn = getConnection();
+			conn = getConnectionCommiteable();
 			ps = conn.prepareStatement("UPDATE CORTE_CAJA SET FECHA=?,SUCURSAL_ID=?,CAJA=?,USUARIO_EMAIL=?,SALDO_INICIAL=?,SALDO_FINAL=?,COMENTARIOS=?,USUARIO_AUTORIZO=?,TIPO_EVENTO=? "+
 					" WHERE ID=?");
 			
@@ -403,6 +388,7 @@ public class CorteCajaDAO {
 			ps.setObject(ci++,x.getId());
 			
 			r = ps.executeUpdate();						
+			conn.commit();
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InUpdate:" + ex.getMessage());
@@ -425,11 +411,12 @@ public class CorteCajaDAO {
 		int r= -1;
 		Connection conn = null;
 		try {
-			conn = getConnection();
+			conn = getConnectionCommiteable();
 			ps = conn.prepareStatement("DELETE FROM CORTE_CAJA WHERE ID=?");
 			ps.setObject(1, x.getId());
 			
-			r = ps.executeUpdate();						
+			r = ps.executeUpdate();
+			conn.commit();
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InUpdate:" + ex.getMessage());

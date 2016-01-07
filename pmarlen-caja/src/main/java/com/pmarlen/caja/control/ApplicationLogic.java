@@ -240,7 +240,7 @@ public class ApplicationLogic {
 				fos.write(buffer, 0, (int)r);
 				fos.flush();
 				long advance = (100L * t) / length;
-				logger.debug("------->> Downloaded:\t [+ "+r+"]( "+t+"/"+length+") : "+advance+" %");
+				logger.trace("------->> Downloading:\t [+ "+r+"]( "+t+"/"+length+") : "+advance+" %");
 				ual.updateProgress((int)advance);
 			}
 			ual.updateProgress(100);

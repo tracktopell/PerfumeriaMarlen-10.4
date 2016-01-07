@@ -29,6 +29,8 @@ createB_prod:
 preparePM104_DEVE:
 	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD) PMDB104_DEVE  < /usr/local/pmarlen_mysqldump/PMDB103_PROD_mysqldump_LAST.sql	
 	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD) PMDB104_DEVE  < ../pmarlen-commons/db_resources/sql/MIGRATION.mysql.sql
-	mvn exec:java -Dexec.mainClass=com.pmarlen.migration.PrepareDataForTest_PM104 -Dexec.args="root root jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8"
-#	mvn exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarVentasPM901_PM1041 -Dexec.args="root root jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8 2 /Users/alfredo/PerfumeriaMarlen_desktop/VENTAS_HASTA_20151231_3.TXT 44263"
-	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarVentasPM901_PM1041 -Dexec.args="root root jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8 2 PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/Users/alfredo/PerfumeriaMarlen_desktop/PMarlen_DB"
+#	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarVentasPM901_PM1041 -Dexec.args="root root jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8 2 PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/Users/alfredo/PM901Sucursales/PMS1/PMarlen_DB"
+#	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarVentasPM901_PM1041 -Dexec.args="root root jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8 3 PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/Users/alfredo/PM901Sucursales/PMS2/PMarlen_DB"
+#	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarVentasPM901_PM1041 -Dexec.args="root root jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8 4 PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/Users/alfredo/PM901Sucursales/PMS3/PMarlen_DB"
+#	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarVentasPM901_PM1041 -Dexec.args="root root jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8 5 PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/Users/alfredo/PM901Sucursales/PMS4/PMarlen_DB"
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.PrepareDataForTest_PM104 -Dexec.args="root root jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8"

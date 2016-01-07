@@ -176,7 +176,7 @@ public class EntradaSalidaDAO {
 			final String query = "SELECT	ES.ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,"
 					+ "ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,"
 					+ "ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_NG,ES.SUB_TOTAL_GR,ES.TOTAL,ES.ES_ID_DEV,\n"
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -231,8 +231,9 @@ public class EntradaSalidaDAO {
 				x.setCondicionesDePago((String) rs.getObject("CONDICIONES_DE_PAGO"));
 				x.setNumDeCuenta((String) rs.getObject("NUM_DE_CUENTA"));
 				x.setAutorizaDescuento((Integer) rs.getObject("AUTORIZA_DESCUENTO"));
-				x.setSubTotalGR((Double) rs.getObject("SUB_TOTAL_NG"));
-				x.setSubTotalNG((Double) rs.getObject("SUB_TOTAL_NG"));
+				x.setSubTotal1ra((Double) rs.getObject("SUB_TOTAL_1RA"));
+				x.setSubTotalOpo((Double) rs.getObject("SUB_TOTAL_OPO"));
+				x.setSubTotalReg((Double) rs.getObject("SUB_TOTAL_REG"));
 				x.setTotal     ((Double) rs.getObject("TOTAL"));
 				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
 				
@@ -428,7 +429,7 @@ public class EntradaSalidaDAO {
 			conn = getConnection();
 			
 			String q="SELECT	ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_NG,ES.SUB_TOTAL_GR,ES.TOTAL,ES.ES_ID_DEV,\n"
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -499,8 +500,9 @@ public class EntradaSalidaDAO {
 				x.setCondicionesDePago((String) rs.getObject("CONDICIONES_DE_PAGO"));
 				x.setNumDeCuenta((String) rs.getObject("NUM_DE_CUENTA"));
 				x.setAutorizaDescuento((Integer) rs.getObject("AUTORIZA_DESCUENTO"));
-				x.setSubTotalGR((Double) rs.getObject("SUB_TOTAL_NG"));
-				x.setSubTotalNG((Double) rs.getObject("SUB_TOTAL_NG"));
+				x.setSubTotal1ra((Double) rs.getObject("SUB_TOTAL_1RA"));
+				x.setSubTotalOpo((Double) rs.getObject("SUB_TOTAL_OPO"));
+				x.setSubTotalReg((Double) rs.getObject("SUB_TOTAL_REG"));
 				x.setTotal     ((Double) rs.getObject("TOTAL"));
 				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
 				
@@ -568,7 +570,7 @@ public class EntradaSalidaDAO {
 			conn = getConnection();
 			
 			String q="SELECT	ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_NG,ES.SUB_TOTAL_GR,ES.TOTAL,ES.ES_ID_DEV,\n"
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -676,8 +678,9 @@ public class EntradaSalidaDAO {
 				x.setCondicionesDePago((String) rs.getObject("CONDICIONES_DE_PAGO"));
 				x.setNumDeCuenta((String) rs.getObject("NUM_DE_CUENTA"));
 				x.setAutorizaDescuento((Integer) rs.getObject("AUTORIZA_DESCUENTO"));
-				x.setSubTotalGR((Double) rs.getObject("SUB_TOTAL_NG"));
-				x.setSubTotalNG((Double) rs.getObject("SUB_TOTAL_NG"));
+				x.setSubTotal1ra((Double) rs.getObject("SUB_TOTAL_1RA"));
+				x.setSubTotalOpo((Double) rs.getObject("SUB_TOTAL_OPO"));
+				x.setSubTotalReg((Double) rs.getObject("SUB_TOTAL_REG"));
 				x.setTotal     ((Double) rs.getObject("TOTAL"));
 				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
 				

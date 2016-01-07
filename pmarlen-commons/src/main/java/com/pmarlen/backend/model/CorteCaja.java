@@ -262,7 +262,7 @@ public class CorteCaja implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "com.pmarlen.backend.model.CorteCaja[id = "+id+ "]";
+        return "com.pmarlen.backend.model.CorteCaja[id = "+id+ ", fecha = "+fecha+", sucursalId="+sucursalId+", caja="+caja+" , usuarioEmail="+usuarioEmail+", saldoInicial="+saldoInicial+", saldoFinal="+saldoFinal+" , tipoEvento="+tipoEvento+"]";
     }
 	
 }
