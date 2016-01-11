@@ -7,6 +7,7 @@ package com.pmarlen.caja.view;
 
 import java.awt.Frame;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 /**
@@ -34,15 +35,20 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jPanel13 = new javax.swing.JPanel();
-        jPanel12 = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
+        aceptar = new javax.swing.JButton();
+        cancelar = new javax.swing.JButton();
+        panelsParametros = new javax.swing.JTabbedPane();
+        cierreNormalPanel = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         saldoInicial = new javax.swing.JTextField();
+        jPanel12 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
+        neto = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         estimado = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        neto = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         saldoFinal = new javax.swing.JTextField();
@@ -64,9 +70,6 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         token = new javax.swing.JTextField();
         resultadoToken = new javax.swing.JLabel();
-        jPanel9 = new javax.swing.JPanel();
-        aceptar = new javax.swing.JButton();
-        cancelar = new javax.swing.JButton();
 
         setTitle("CIERRE DE CAJA");
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.X_AXIS));
@@ -80,14 +83,28 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 
         jPanel13.setLayout(new java.awt.BorderLayout(0, 5));
 
-        jPanel12.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 100, 5));
+
+        aceptar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        aceptar.setText("ACEPTAR");
+        jPanel9.add(aceptar);
+
+        cancelar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        cancelar.setText("CANCELAR");
+        jPanel9.add(cancelar);
+
+        jPanel13.add(jPanel9, java.awt.BorderLayout.SOUTH);
+
+        panelsParametros.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
+
+        cierreNormalPanel.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
 
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("SALDO INICIAL :");
-        jLabel2.setPreferredSize(new java.awt.Dimension(400, 25));
+        jLabel2.setPreferredSize(new java.awt.Dimension(430, 32));
         jPanel2.add(jLabel2);
 
         saldoInicial.setEditable(false);
@@ -96,14 +113,30 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         saldoInicial.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel2.add(saldoInicial);
 
-        jPanel12.add(jPanel2);
+        cierreNormalPanel.add(jPanel2);
+
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel10.setText("SALDO NETO :");
+        jLabel10.setPreferredSize(new java.awt.Dimension(430, 32));
+        jPanel12.add(jLabel10);
+
+        neto.setEditable(false);
+        neto.setColumns(6);
+        neto.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel12.add(neto);
+
+        cierreNormalPanel.add(jPanel12);
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText("IMPORTE ESTIMADO: BRUTO :");
-        jLabel4.setPreferredSize(new java.awt.Dimension(400, 25));
+        jLabel4.setText("IMPORTE ESTIMADO BRUTO :");
+        jLabel4.setPreferredSize(new java.awt.Dimension(430, 32));
         jPanel4.add(jLabel4);
 
         estimado.setEditable(false);
@@ -112,24 +145,14 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         estimado.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel4.add(estimado);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setText("NETO:");
-        jPanel4.add(jLabel1);
-
-        neto.setEditable(false);
-        neto.setColumns(6);
-        neto.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel4.add(neto);
-
-        jPanel12.add(jPanel4);
+        cierreNormalPanel.add(jPanel4);
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("SALDO FINAL :");
-        jLabel3.setPreferredSize(new java.awt.Dimension(400, 25));
+        jLabel3.setText("SALDO TOTAL QUE HAY :");
+        jLabel3.setPreferredSize(new java.awt.Dimension(430, 32));
         jPanel3.add(jLabel3);
 
         saldoFinal.setColumns(6);
@@ -137,11 +160,10 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         saldoFinal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel3.add(saldoFinal);
 
-        jPanel12.add(jPanel3);
+        cierreNormalPanel.add(jPanel3);
 
-        jPanel13.add(jPanel12, java.awt.BorderLayout.PAGE_START);
+        panelsParametros.addTab("NORMAL", cierreNormalPanel);
 
-        cierreAnormalPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "CIERRE CON ANORMALIDADES", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 24))); // NOI18N
         cierreAnormalPanel.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -149,7 +171,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("IMPORTE DIFERENCIA :");
-        jLabel5.setPreferredSize(new java.awt.Dimension(400, 25));
+        jLabel5.setPreferredSize(new java.awt.Dimension(430, 32));
         jPanel5.add(jLabel5);
 
         diferencia.setEditable(false);
@@ -165,10 +187,10 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("JUSTIFICACIÓN DE LA DIFERENCIA :");
-        jLabel6.setPreferredSize(new java.awt.Dimension(400, 25));
+        jLabel6.setPreferredSize(new java.awt.Dimension(430, 32));
         jPanel6.add(jLabel6);
 
-        observaciones.setColumns(18);
+        observaciones.setColumns(15);
         observaciones.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
         jPanel6.add(observaciones);
 
@@ -179,17 +201,17 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel7.setText("AUTORIZÓ DIFERENCIA :");
-        jLabel7.setPreferredSize(new java.awt.Dimension(400, 25));
+        jLabel7.setPreferredSize(new java.awt.Dimension(430, 32));
         jPanel7.add(jLabel7);
 
-        usuarioAutorizo.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        usuarioAutorizo.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jPanel7.add(usuarioAutorizo);
 
         cierreAnormalPanel.add(jPanel7);
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jPanel11.setPreferredSize(new java.awt.Dimension(400, 35));
+        jPanel11.setPreferredSize(new java.awt.Dimension(430, 40));
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 5, 0));
 
         generaFrase.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -211,7 +233,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel8.setText("TOKEN  :");
-        jLabel8.setPreferredSize(new java.awt.Dimension(400, 25));
+        jLabel8.setPreferredSize(new java.awt.Dimension(430, 32));
         jPanel8.add(jLabel8);
 
         token.setColumns(6);
@@ -224,19 +246,9 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 
         cierreAnormalPanel.add(jPanel8);
 
-        jPanel13.add(cierreAnormalPanel, java.awt.BorderLayout.CENTER);
+        panelsParametros.addTab("INCONCISTENCIAS", cierreAnormalPanel);
 
-        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 100, 5));
-
-        aceptar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        aceptar.setText("ACEPTAR");
-        jPanel9.add(aceptar);
-
-        cancelar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        cancelar.setText("CANCELAR");
-        jPanel9.add(cancelar);
-
-        jPanel13.add(jPanel9, java.awt.BorderLayout.SOUTH);
+        jPanel13.add(panelsParametros, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(jPanel13);
 
@@ -248,11 +260,12 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
     private javax.swing.JButton aceptar;
     private javax.swing.JButton cancelar;
     private javax.swing.JPanel cierreAnormalPanel;
+    private javax.swing.JPanel cierreNormalPanel;
     private javax.swing.JTextField diferencia;
     private javax.swing.JTextField estimado;
     private javax.swing.JTextField frase;
     private javax.swing.JButton generaFrase;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -276,6 +289,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JTextField neto;
     private javax.swing.JTextField observaciones;
+    private javax.swing.JTabbedPane panelsParametros;
     private javax.swing.JLabel resultadoToken;
     private javax.swing.JTextField saldoFinal;
     private javax.swing.JTextField saldoInicial;
@@ -370,6 +384,14 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 		return cierreAnormalPanel;
 	}
 
+	public JPanel getCierreNormalPanel() {
+		return cierreNormalPanel;
+	}
+
+	public JTabbedPane getPanelsParametros() {
+		return panelsParametros;
+	}
+	
 	public JTextField getNeto() {
 		return neto;
 	}

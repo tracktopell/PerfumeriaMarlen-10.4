@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+        PM > TOKEN
+    </ui:define>
+	
+    <ui:define name="body-title">
+        <h:outputText value="GENERADOR DE TOKEN"/>
+    </ui:define>
+
+    <ui:define name="body">
+		<h:form id="tokenForm">
+			<h:panelGrid columns="2" cellpadding="0" id="panel2" columnClasses="columnWidth40 rightAlign, columnWidth60 leftAlign" width="100%">
+				<p:outputLabel value="Frase :" />
+				<h:inputText id="frase" value="#{generadorTokenMB.frase}"/>
+
+				<h:commandButton actionListener="#{generadorTokenMB.generarToken()}" value="TOKEN:"/>
+				<h:outputText value="#{generadorTokenMB.token}"/>
+			</h:panelGrid>
+		</h:form>		
+    </ui:define>
+
+</ui:composition>

@@ -55,15 +55,14 @@ import org.apache.log4j.Logger;
  */
 public class MemoryDAO {
 	private static Properties properties = new Properties();
-
-	private static final String uriServiceIAmAlive =               "/rest/iamaliveservice/hello";
+	private static final String uriServiceIAmAlive    = "/rest/iamaliveservice/hello";
+	private static final String uriServiceZipSync     = "/rest/syncservice/sync";
+	private static final String uriSaldoEstimado      = "/rest/syncservice/saldoEstimado";	
+	private static boolean enviandoCierreCaja         = false;
+	private static boolean enviandoCierreCorrectmente = false;	
+	private static final String corteCajaDTOjsonFile    = "CorteCajaDTO.json";
+	//private static final String aperturaCajaDTOjsonFile = "AperturaCajaDTO.json";
 	
-	private static final String uriServiceZipSync =                "/rest/syncservice/sync";
-	
-	private static final String uriSaldoEstimado =                "/rest/syncservice/saldoEstimado";
-	
-	private static boolean enviandoCierreCaja = false;
-	private static boolean enviandoCierreCorrectmente = false;
 	static {
 		properties.put("sucursal","1");
 		properties.put("caja","1");
@@ -680,11 +679,7 @@ public class MemoryDAO {
 			return logged.getE();
 		}
 	}
-	
-	private static String userAgentExpression;
-	private static final String corteCajaDTOjsonFile = "CorteCajaDTO.json";
-	private static final String aperturaCajaDTOjsonFile = "AperturaCajaDTO.json";
-	
+	/*	
 	public static CorteCajaDTO getAperturaCaja(){
 		CorteCajaDTO cc=null;
 		File fileToLoad = new File(aperturaCajaDTOjsonFile);
@@ -724,7 +719,7 @@ public class MemoryDAO {
 			logger.error("saveAperturaCajaDTO:Error to write",ioe);
 		}	
 	}
-	
+	*/
 	public static void saveCorteCajaDTO(CorteCajaDTO cc){
 		logger.debug("saveCorteCajaDTO: CorteCajaDTO="+cc);
 		Gson gson=new Gson();
@@ -758,7 +753,7 @@ public class MemoryDAO {
 			fw.flush();
 			fw.close();
 			
-			File x=new File(corteCajaDTOjsonFile);
+			File x=new File(backupFaileName);
 			
 			logger.debug("backupCorteCajaDTO: created file="+x.getAbsolutePath()+" ? "+x.exists()+", size="+x.length());
 			
@@ -768,7 +763,7 @@ public class MemoryDAO {
 	}
 	
 	public static CorteCajaDTO readLastSavedCorteCajaDTO(){
-		logger.debug("readLastSavedCorteCajaDTO: ");
+		logger.debug("readLastSavedCorteCajaDTO: read from :"+corteCajaDTOjsonFile);
 		
 		Gson gson=new Gson();
 		CorteCajaDTO cc = null;
@@ -781,7 +776,7 @@ public class MemoryDAO {
 		}
 		return cc;
 	}
-
+	/*
 	public static CorteCajaDTO readLastSavedAperturaCajaDTO(){
 		logger.debug("readLastSavedCorteCajaDTO: ");
 		
@@ -796,7 +791,8 @@ public class MemoryDAO {
 		}
 		return cc;
 	}
-
+	*/
+	
 	public static double getRemoteSaldoEstimado() throws IOException{
 		double saldoEstimado = 0.0;
 		

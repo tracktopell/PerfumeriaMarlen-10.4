@@ -143,7 +143,7 @@ public class Main {
 		logger.debug("main:Ready for Preload.");
 		MemoryDAO.preLoad();
 		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();		
-		logger.debug("main:CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
+		logger.debug("main:[*BUG*] CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
 
 		logger.debug("main:======================= S T A R T I N G =======================");
 

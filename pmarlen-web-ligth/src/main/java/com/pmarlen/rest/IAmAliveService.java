@@ -8,6 +8,7 @@ import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
 import com.pmarlen.web.servlet.CajaSessionInfo;
 import com.pmarlen.web.servlet.ContextAndSessionListener;
+import java.util.ArrayList;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -80,23 +81,33 @@ public class IAmAliveService {
 
 	private static void registerCorteCaja(CorteCajaDTO corteCajaDTO) {		
 		CorteCaja cc = corteCajaDTO.reverse();
+		boolean insert=false;
 		try {
 			logger.debug("registerCorteCaja:corteCajaDTO ultimoEstadoPara: (sucursal=" + cc.getSucursalId()+", caja="+cc.getCaja()+")");
-			Integer ultimoEstadoPara = CorteCajaDAO.getInstance().ultimoEstadoPara(cc);
-			logger.debug("registerCorteCaja: ultimoEstadoPara: ultimoEstadoPara="+ultimoEstadoPara);
-			if(ultimoEstadoPara != null){
-				if(ultimoEstadoPara != corteCajaDTO.getTipoEvento()){
-					logger.debug("registerCorteCaja: INSERT ?");
-					CorteCajaDAO.getInstance().insert(cc);
-					logger.debug("registerCorteCaja: NUEVO ESTADO :id="+cc.getId());
+			CorteCaja lastBySucursalCaja = CorteCajaDAO.getInstance().findLastBySucursalCaja(cc);
+			logger.debug("registerCorteCaja: ultimoEstadoPara: ultimoEstadoPara="+lastBySucursalCaja);
+			if(lastBySucursalCaja != null){
+				if(lastBySucursalCaja.getTipoEvento() != corteCajaDTO.getTipoEvento()){
+					logger.debug("registerCorteCaja: OK, INSERT");
+					insert=true;					
 				} else {
 					logger.debug("registerCorteCaja: ESTADO REPETIDO!");
 				}
 			} else {
-				logger.debug("registerCorteCaja: PRIMER ESTADO ?");
-				CorteCajaDAO.getInstance().insert(cc);
-				logger.debug("registerCorteCaja: PRIMER ESTADO :id="+cc.getId());
+				logger.debug("registerCorteCaja: OK, PRIMER ESTADO ?");
+				insert=true;								
 			}
+			if(insert){
+				logger.debug("registerCorteCaja: -->> CorteCajaDAO.getInstance().insert("+cc+");");
+				CorteCajaDAO.getInstance().insert(cc);
+				logger.debug("registerCorteCaja: NUEVO ESTADO :id="+cc.getId());
+				ArrayList<CorteCaja> llBySucCaja = CorteCajaDAO.getInstance().findAllBy(cc.getSucursalId(), cc.getCaja(), null, null);
+				logger.debug("registerCorteCaja: FOR REVIEW LIST: ");
+				for(CorteCaja ccu: llBySucCaja){
+					logger.debug("\tregisterCorteCaja:CorteCaja"+ccu);				
+				}
+				
+			}			
 		} catch(DAOException de){
 			logger.error("registerCorteCaja:", de);
 		}

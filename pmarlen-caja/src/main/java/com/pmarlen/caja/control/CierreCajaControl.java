@@ -43,6 +43,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	private String usuarioAutorizo;
 	private String observaciones;
 	private boolean cierreCorrecto;
+	private boolean hayInconsistencia=false;
 	public static final int OBSERVACIONES_MAX_LENGTH = 255;
 	
 	public CierreCajaControl(CierreCajaJFrame dialogLogin) {
@@ -77,12 +78,29 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		cierreCajaDialog.getAceptar().setEnabled(false);
 		
 		setEnableAnormalControls(false);
+		cierreCajaDialog.getCierreAnormalPanel().setVisible(false);
 		
 		cierreCajaDialog.getUsuarioAutorizo().setModel(getAdministradores());
+		enfocarSaldoFinal();
 		cierreCajaDialog.setVisible(true);
+		
 	}
+	
+	private void enfocarSaldoFinal() {
+		new Thread() {
+			public void run() {
+				try {
+					logger.debug("enfocarSaldoFinal:enfocarSaldoFinal");
+					Thread.sleep(1000);
+					cierreCajaDialog.getSaldoFinal().requestFocus();					
+				} catch (InterruptedException ie) {
+				}
+			}
+		}.start();
+	}
+	
 
-	private void setEnableAnormalControls(boolean d) {
+	private void setEnableAnormalControls(boolean d) {				
 		cierreCajaDialog.getDiferencia().setEnabled(d);
 		cierreCajaDialog.getObservaciones().setEnabled(d);
 		cierreCajaDialog.getUsuarioAutorizo().setEnabled(d);
@@ -96,7 +114,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		new Thread("RemoteSaldoEstimado"){
 			public void run(){
 				try {					
-					final CorteCajaDTO aperturaCajaDTO = MemoryDAO.readLastSavedAperturaCajaDTO();
+					final CorteCajaDTO aperturaCajaDTO = MemoryDAO.readLastSavedCorteCajaDTO();
 					logger.debug("buscarSaldoFinalEstimado: [LOCAL] corteCajaDTO="+aperturaCajaDTO);
 					
 					if(aperturaCajaDTO != null){
@@ -168,9 +186,6 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		}
 		
 		registraCirreCaja();
-		
-		cierreCajaDialog.dispose();
-		cierreCajaDialog = null;
 	}
 	
 	private void generaFrase_ActionPerformed() {
@@ -191,7 +206,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 				if(componentWithError instanceof JTextField) {
 					((JTextField)componentWithError).setText("");
 				}
-				//componentWithError.requestFocus();
+				componentWithError.requestFocus();
 				return false;
 			}
 		}
@@ -241,7 +256,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	@Override
 	public void validate() throws ValidacionCamposException {
 		String saldoFinalValue = cierreCajaDialog.getSaldoFinal().getText().replace("$", "").replace(",", "").trim();
-		
+		hayInconsistencia=false;
 		try {
 			saldoFinal = Double.parseDouble(saldoFinalValue);		
 		} catch(NumberFormatException nfe){
@@ -265,6 +280,8 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 			factorPerdida = (difReal*-1)/saldoNeto;
 			logger.info("validate:factorPerdida="+factorPerdida);
 			
+			cierreCajaDialog.getPanelsParametros().setSelectedComponent(cierreCajaDialog.getCierreAnormalPanel());
+			
 			if(saldoFinal < saldoInicial || factorPerdida<=0.1 || (difReal*-1) > 100.0){
 				cierreCajaDialog.getDiferencia().setBackground(Color.RED);
 				grave =true;
@@ -274,6 +291,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 			}
 			
 			setEnableAnormalControls(true);
+			cierreCajaDialog.getCierreAnormalPanel().setVisible(true);
 			
 			if( cierreCajaDialog.getObservaciones().getText().trim().length() < 10) {
 				throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN COHERENTE DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getObservaciones());
@@ -291,7 +309,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 				}
 			}
 			
-			if(grave){
+			if(grave){				
 				if(cierreCajaDialog.getUsuarioAutorizo().getSelectedIndex()==0){
 					throw new ValidacionCamposException("DEBE ELEGIR QUIÉN AUTORIZARÁ", cierreCajaDialog.getUsuarioAutorizo());	
 				}

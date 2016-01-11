@@ -62,7 +62,8 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		this.terminarVentaDlg.getRecibido().addActionListener(this);
 		this.terminarVentaDlg.getCargo().addActionListener(this);
 		this.terminarVentaDlg.getAutorizacion().addActionListener(this);
-
+		this.terminarVentaDlg.getCalcularCambio().addActionListener(this);
+		
 		//this.terminarVentaDlg.getRecibido().addFocusListener(this);
 		//this.terminarVentaDlg.getCargo().addFocusListener(this);
 		//this.terminarVentaDlg.getAutorizacion().addFocusListener(this);
@@ -78,6 +79,11 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	public void estadoInicial() {
 		ventaSesion = ApplicationLogic.getInstance().getVentaSesion();
 		
+		terminarVentaDlg.getRecibido().setText("0.00");
+		terminarVentaDlg.getCambio().setText("0.00");
+		terminarVentaDlg.getCargo().setText("0.00");
+		terminarVentaDlg.getTerminalTarjeta().setVisible(false);
+
 		this.terminarVentaDlg.getSubtotal().setText(Constants.df2Decimal.format(ventaSesion.getTotalBruto()));
 		this.terminarVentaDlg.getDescuento().setText(Constants.df2Decimal.format(ventaSesion.getDescuentoCalculado()));
 		this.terminarVentaDlg.getTotal().setText(Constants.df2Decimal.format(ventaSesion.getTotal()));
@@ -90,16 +96,25 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		this.terminarVentaDlg.getCargo().setEnabled(false);
 		this.terminarVentaDlg.getAutorizacion().setEnabled(false);
 
+		enfocarRecibido();
+		terminarVentaDlg.setVisible(true);
+	}
+
+	private void enfocarRecibido() {
 		new Thread() {
 			public void run() {
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 					terminarVentaDlg.getRecibido().requestFocus();
+					String r=terminarVentaDlg.getRecibido().getText();					
+					int rp=r.length();
+					terminarVentaDlg.getRecibido().setCaretPosition(0);
+					terminarVentaDlg.getRecibido().setSelectionStart(0);
+					terminarVentaDlg.getRecibido().setSelectionEnd(rp);					
 				} catch (InterruptedException ie) {
 				}
 			}
 		}.start();
-		terminarVentaDlg.setVisible(true);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -109,10 +124,24 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 			cargo_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getAutorizacion()) {
 			autorizacion_ActionPerformed();
+		} else if(e.getSource() == terminarVentaDlg.getCalcularCambio()){
+			calcularCambio_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getAceptar()) {
 			aceptar_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getCancelar()) {
 			cancelar_ActionPerformed();
+		}
+	}
+	
+	private void calcularCambio_ActionPerformed(){
+		logger.info("[USER]->calcularCambio_ActionPerformed()");
+		try {
+			calcularCambio();
+		}catch(ValidacionCamposException ve){			
+			JOptionPane.showMessageDialog(terminarVentaDlg, ve.getMessage(), "CALCULAR CAMBIO", JOptionPane.WARNING_MESSAGE);
+			if(ve.getSource()==null){
+				ve.getSource().requestFocus();
+			}
 		}
 	}
 
@@ -197,29 +226,8 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		String cargoText = terminarVentaDlg.getCargo().getText().replace("$", "").replace(",", "").trim();
 		autorizacion = terminarVentaDlg.getAutorizacion().getText().trim();
 		if (mdpSelected.getId() == Constants.ID_MDP_EFECTIVO) {
-			try {
-				recibido = Double.parseDouble(recibidoText);
-			} catch (NumberFormatException nfe) {
-				this.terminarVentaDlg.getRecibido().setText("");
-				this.terminarVentaDlg.getCambio().setText("");
-				throw new ValidacionCamposException("EL IMORTE RECIBIDO DEBE SER UN IMPORTE DE MONEDA", terminarVentaDlg.getRecibido());
-			}
-
-			if (recibido < 0 || recibido > 100000) {
-				this.terminarVentaDlg.getRecibido().setText("");
-				this.terminarVentaDlg.getCambio().setText("");
-				throw new ValidacionCamposException("EL IMORTE RECIBIDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.01 A $99,999.99", terminarVentaDlg.getRecibido());
-			}
-
-			double difReal = recibido - ventaSesion.getTotalRedondeado2Dec();
-
-			if (difReal < 0) {
-				this.terminarVentaDlg.getRecibido().setText("");
-				this.terminarVentaDlg.getCambio().setText("");
-				throw new ValidacionCamposException("EL IMORTE RECIBIDO DEBE SER >= AL TOTAL", terminarVentaDlg.getRecibido());
-			}
-
-			this.terminarVentaDlg.getCambio().setText(Constants.dfCurrency.format(difReal));
+			
+			calcularCambio();
 
 		} else if (mdpSelected.getId() == Constants.ID_MDP_TARJETA) {
 			/*
@@ -240,6 +248,14 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				throw new ValidacionCamposException("EL NO. DE AUTORIZACION DEBEN SER >= 4 DIGITOS", terminarVentaDlg.getAutorizacion());
 			}
 		} else if (mdpSelected.getId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA) {
+			
+			try {
+				cargo = Double.parseDouble(cargoText);
+			} catch (NumberFormatException nfe) {
+				this.terminarVentaDlg.getCargo().setText("");
+				throw new ValidacionCamposException("EL IMORTE DEL CARGO DEBE SER UN IMPORTE DE MONEDA", terminarVentaDlg.getCargo());
+			}
+			
 			try {
 				recibido = Double.parseDouble(recibidoText);
 			} catch (NumberFormatException nfe) {
@@ -254,12 +270,6 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				throw new ValidacionCamposException("EL IMORTE RECIBIDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.01 A $99,999.99", terminarVentaDlg.getRecibido());
 			}
 
-			try {
-				cargo = Double.parseDouble(cargoText);
-			} catch (NumberFormatException nfe) {
-				this.terminarVentaDlg.getCargo().setText("");
-				throw new ValidacionCamposException("EL IMORTE DEL CARGO DEBE SER UN IMPORTE DE MONEDA", terminarVentaDlg.getCargo());
-			}
 
 			double difReal = (recibido + cargo) - totalRedondeado;
 
@@ -275,6 +285,34 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				throw new ValidacionCamposException("EL NO. DE AUTORIZACION DEBEN SER >= 4 DIGITOS", terminarVentaDlg.getAutorizacion());
 			}
 		}
+	}
+
+	private void calcularCambio() throws ValidacionCamposException {
+		String recibidoText = terminarVentaDlg.getRecibido().getText().replace("$", "").replace(",", "").trim();
+			
+		try {
+			recibido = Double.parseDouble(recibidoText);
+		} catch (NumberFormatException nfe) {
+			this.terminarVentaDlg.getRecibido().setText("0.00");
+			this.terminarVentaDlg.getCambio().setText("0.00");
+			throw new ValidacionCamposException("EL IMORTE RECIBIDO DEBE SER UN IMPORTE DE MONEDA", terminarVentaDlg.getRecibido());
+		}
+
+		if (recibido < 0 || recibido > 100000) {
+			this.terminarVentaDlg.getRecibido().setText("0.00");
+			this.terminarVentaDlg.getCambio().setText("0.00");
+			throw new ValidacionCamposException("EL IMORTE RECIBIDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.01 A $99,999.99", terminarVentaDlg.getRecibido());
+		}
+
+		double difReal = recibido - ventaSesion.getTotalRedondeado2Dec();
+		
+		if (difReal < 0) {
+			this.terminarVentaDlg.getRecibido().setText("0.00");
+			this.terminarVentaDlg.getCambio().setText("0.00");
+			throw new ValidacionCamposException("EL IMORTE RECIBIDO DEBE SER >= AL TOTAL", terminarVentaDlg.getRecibido());
+		}
+		
+		this.terminarVentaDlg.getCambio().setText(Constants.dfCurrency.format(difReal));
 	}
 
 	private void recibido_focusLost() {
@@ -400,9 +438,9 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getSource() == terminarVentaDlg.getMetodoDePago() && e.getStateChange() == ItemEvent.SELECTED) {
 
-			this.terminarVentaDlg.getRecibido().setText("");
-			this.terminarVentaDlg.getCambio().setText("");
-			this.terminarVentaDlg.getCargo().setText("");
+			this.terminarVentaDlg.getRecibido().setText("0.00");
+			this.terminarVentaDlg.getCambio().setText("0.00");
+			this.terminarVentaDlg.getCargo().setText("0.00");
 			this.terminarVentaDlg.getAutorizacion().setText("");
 
 			if (((MetodoDePago) e.getItem()).getId() == Constants.ID_MDP_EFECTIVO) {
@@ -411,6 +449,10 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				this.terminarVentaDlg.getCargo().setEnabled(false);
 				this.terminarVentaDlg.getAutorizacion().setEnabled(true);
 				this.terminarVentaDlg.getMetodoDePagoLblImg().setIcon(new ImageIcon(getClass().getResource("/images/MetodoPago_Efectivo.png")));
+				
+				this.terminarVentaDlg.getCalcularCambio().setEnabled(true);
+				terminarVentaDlg.getTerminalTarjeta().setVisible(false);
+				enfocarRecibido();
 			} else if (((MetodoDePago) e.getItem()).getId() == Constants.ID_MDP_TARJETA) {
 				this.terminarVentaDlg.getRecibido().setEnabled(false);
 				this.terminarVentaDlg.getCambio().setEnabled(false);
@@ -418,12 +460,20 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				this.terminarVentaDlg.getCargo().setText(Constants.df2Decimal.format(ventaSesion.getTotalRedondeado2Dec()));
 				this.terminarVentaDlg.getAutorizacion().setEnabled(true);
 				this.terminarVentaDlg.getMetodoDePagoLblImg().setIcon(new ImageIcon(getClass().getResource("/images/MetodoPago_VisaMasterCard.png")));
+				
+				this.terminarVentaDlg.getCalcularCambio().setEnabled(false);
+				terminarVentaDlg.getTerminalTarjeta().setVisible(true);
+				terminarVentaDlg.getAutorizacion().requestFocus();
 			} else if (((MetodoDePago) e.getItem()).getId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA) {
 				this.terminarVentaDlg.getRecibido().setEnabled(true);
 				this.terminarVentaDlg.getCambio().setEnabled(false);
 				this.terminarVentaDlg.getCargo().setEnabled(true);
 				this.terminarVentaDlg.getAutorizacion().setEnabled(true);
 				this.terminarVentaDlg.getMetodoDePagoLblImg().setIcon(new ImageIcon(getClass().getResource("/images/MetodoPago_Efectivo_Y_VisaMasterCard.png")));
+				
+				this.terminarVentaDlg.getCalcularCambio().setEnabled(false);
+				terminarVentaDlg.getTerminalTarjeta().setVisible(true);
+				enfocarRecibido();
 			}
 		}
 	}

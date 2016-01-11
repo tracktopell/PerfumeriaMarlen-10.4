@@ -56,7 +56,8 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         recibido = new javax.swing.JTextField();
         jPanel12 = new javax.swing.JPanel();
-        cambioLbl = new javax.swing.JLabel();
+        jPanel13 = new javax.swing.JPanel();
+        calcularCambio = new javax.swing.JButton();
         cambio = new javax.swing.JTextField();
         jPanel9 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
@@ -64,6 +65,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jPanel11 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         autorizacion = new javax.swing.JTextField();
+        terminalTarjeta = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         aceptar = new javax.swing.JButton();
         cancelar = new javax.swing.JButton();
@@ -93,7 +95,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jPanel8.add(jLabel4);
 
         cleinteNombre.setEditable(false);
-        cleinteNombre.setColumns(18);
+        cleinteNombre.setColumns(15);
         cleinteNombre.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         cleinteNombre.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jPanel8.add(cleinteNombre);
@@ -178,11 +180,17 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        cambioLbl.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        cambioLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        cambioLbl.setText("CAMBIO :");
-        cambioLbl.setPreferredSize(new java.awt.Dimension(280, 26));
-        jPanel12.add(cambioLbl);
+        jPanel13.setPreferredSize(new java.awt.Dimension(280, 36));
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 0));
+
+        calcularCambio.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
+        calcularCambio.setText("CAMBIO :");
+        calcularCambio.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        calcularCambio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        calcularCambio.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jPanel13.add(calcularCambio);
+
+        jPanel12.add(jPanel13);
 
         cambio.setEditable(false);
         cambio.setColumns(6);
@@ -220,6 +228,9 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         autorizacion.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jPanel11.add(autorizacion);
 
+        terminalTarjeta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/TerminarlVisaMasterCard.gif"))); // NOI18N
+        jPanel11.add(terminalTarjeta);
+
         jPanel6.add(jPanel11);
 
         jPanel1.add(jPanel6, java.awt.BorderLayout.CENTER);
@@ -238,14 +249,14 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(1007, 459));
+        setSize(new java.awt.Dimension(923, 444));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aceptar;
     private javax.swing.JTextField autorizacion;
+    private javax.swing.JButton calcularCambio;
     private javax.swing.JTextField cambio;
-    private javax.swing.JLabel cambioLbl;
     private javax.swing.JButton cancelar;
     private javax.swing.JTextField cargo;
     private javax.swing.JTextField cleinteNombre;
@@ -262,6 +273,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -275,6 +287,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
     private javax.swing.JLabel metodoDePagoLblImg;
     private javax.swing.JTextField recibido;
     private javax.swing.JTextField subtotal;
+    private javax.swing.JLabel terminalTarjeta;
     private javax.swing.JTextField total;
     // End of variables declaration//GEN-END:variables
 
@@ -344,4 +357,13 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 	public JLabel getMetodoDePagoLblImg() {
 		return metodoDePagoLblImg;
 	}
+
+	public JButton getCalcularCambio() {
+		return calcularCambio;
+	}
+
+	public JLabel getTerminalTarjeta() {
+		return terminalTarjeta;
+	}
+	
 }

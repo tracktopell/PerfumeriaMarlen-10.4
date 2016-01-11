@@ -272,12 +272,15 @@ public class FramePrincipalControl implements ActionListener{
 		CierreCajaControl cierreCajaControl = new CierreCajaControl(cierreCajaDialog);
 		cierreCajaControl.estadoInicial();
 		if(cierreCajaControl.isCierreCorrecto()){
-			framePrincipal.dispose();
 			
-			while(MemoryDAO.isEnviandoCierreCaja()) {
+			cierreCajaDialog.dispose();
+			
+			int intentosEnviar=10;
+			int numInt=0;
+			for(numInt=0;MemoryDAO.isEnviandoCierreCaja()&& numInt<intentosEnviar;numInt++) {
 				try {
 					Thread.sleep(1000);
-					logger.debug("ESPERANDO Envio de Cierre de Caja");
+					logger.debug("ESPERANDO["+numInt+"] Envio de Cierre de Caja");
 				}catch(InterruptedException ie){
 					
 				}
@@ -290,6 +293,10 @@ public class FramePrincipalControl implements ActionListener{
 				logger.debug("Envio de Cierre no se envio, :(");
 			}
 			
+			
+			JOptionPane.showMessageDialog(framePrincipal, "La Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
+			
+			framePrincipal.dispose();
 			System.exit(0);
 		} else {
 		

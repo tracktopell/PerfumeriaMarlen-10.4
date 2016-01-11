@@ -410,13 +410,27 @@ public class ApplicationLogic {
 	}
 	
 	public void iniciaAppCorteCajaDTO(){
-		
 		lastSavedCC = MemoryDAO.readLastSavedCorteCajaDTO();
 		
 		getCorteCajaDTO().setCaja(MemoryDAO.getNumCaja());
 		getCorteCajaDTO().setSucursalId(MemoryDAO.getSucursalId());
 		getCorteCajaDTO().setFecha(System.currentTimeMillis());
-		getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AP_INICIADA);
+		if(lastSavedCC != null) {
+			getCorteCajaDTO().setComentarios (lastSavedCC.getComentarios());
+			getCorteCajaDTO().setUsuarioAutorizo(lastSavedCC.getUsuarioAutorizo());
+			getCorteCajaDTO().setUsuarioEmail(lastSavedCC.getUsuarioEmail());
+			if(lastSavedCC.getTipoEvento()==Constants.TIPO_EVENTO_CIERRE){
+				getCorteCajaDTO().setSaldoInicial(null);
+				getCorteCajaDTO().setSaldoFinal  (null);
+			} else {
+				getCorteCajaDTO().setSaldoInicial(lastSavedCC.getSaldoInicial());
+				getCorteCajaDTO().setSaldoFinal  (lastSavedCC.getSaldoFinal());		
+			}
+			getCorteCajaDTO().setTipoEvento(lastSavedCC.getTipoEvento());
+		}
+
+		//getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AP_INICIADA);
+		
 		if(logged!=null) {
 			getCorteCajaDTO().setUsuarioEmail(logged.getE());
 		} else {
