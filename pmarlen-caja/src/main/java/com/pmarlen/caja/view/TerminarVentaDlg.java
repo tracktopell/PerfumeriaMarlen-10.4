@@ -249,7 +249,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(923, 444));
+        setSize(new java.awt.Dimension(987, 486));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

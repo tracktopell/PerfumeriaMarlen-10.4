@@ -188,7 +188,7 @@
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.2</version>
+				<version>2.1</version>
 				<configuration>
 					<url>http://localhost:8070/manager/text</url>
 					<server>tomcat7_test</server>
@@ -245,7 +245,7 @@
 					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.2</version>
+						<version>2.1</version>
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_dev</server>
@@ -280,7 +280,7 @@
 					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.2</version>
+						<version>2.0</version>
 						<configuration>
 							<url>http://localhost:8080/manager/text</url>
 							<server>tomcat7_stage</server>
@@ -315,7 +315,7 @@
 					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.2</version>
+						<version>2.0</version>
 						<configuration>
 							<url>http://localhost:8080/manager/text</url>
 							<server>tomcat7</server>
@@ -350,7 +350,7 @@
 					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.2</version>
+						<version>2.0</version>
 						<configuration>
 							<url>http://localhost:8070/manager/text</url>
 							<server>tomcat7_test</server>
