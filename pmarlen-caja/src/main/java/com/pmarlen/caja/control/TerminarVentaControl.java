@@ -6,25 +6,17 @@ import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.businesslogic.GeneradorNumTicket;
 import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
 import com.pmarlen.caja.dao.MemoryDAO;
-import com.pmarlen.caja.model.PedidoVentaDetalleTableItem;
 import com.pmarlen.caja.model.VentaSesion;
-import com.pmarlen.caja.view.CierreCajaJFrame;
 import com.pmarlen.caja.view.TerminarVentaDlg;
 import com.pmarlen.model.Constants;
-import com.pmarlen.model.GeneradorDeToken;
-import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
-import com.pmarlen.rest.dto.U;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
@@ -183,7 +175,9 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	private void registrarVenta() {
 		final ES_ESD venta = ventaSesion.getVenta();
 		
-		String numTicket = GeneradorNumTicket.getNumTicket(venta.getEs().getS(), venta.getEs().getJ(), venta.getEs().getC(), ventaSesion.getTotalRedondeado2Dec());
+		String numTicket = null;
+		//GeneradorNumTicket.getNumTicket(venta.getEs().getS(), venta.getEs().getJ(), venta.getEs().getC(), ventaSesion.getTotalRedondeado2Dec());
+		numTicket = GeneradorNumTicket.getNumTicket(new Date(venta.getEs().getFc()),venta.getEs().getS(),venta.getEs().getJ());
 		logger.debug("registrarVenta:numTicket="+numTicket);		
 		venta.getEs().setNt(numTicket);
 		venta.getEs().setC(Constants.ID_CLIENTE_MOSTRADOR);

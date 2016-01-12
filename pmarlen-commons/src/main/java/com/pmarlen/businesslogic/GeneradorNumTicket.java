@@ -19,7 +19,7 @@ public class GeneradorNumTicket{
     private static final long bigLong  =  999999999999999999L;
 	private static final long bigLongT =  99999999L;
 	private static final long bigLongT2 = 9999999999999999L;
-	
+	/*
     @Deprecated
 	public static String getNumTicket(int sucId,int caja,int clienteId,double total){
 		StringBuilder sb= new StringBuilder();		
@@ -49,6 +49,7 @@ public class GeneradorNumTicket{
         //return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + String.valueOf(bigLongT - l2);
 		return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + df2Tot.format(total).replace(".", "");
     }
+	*/
 	
 	public static String getNumTicket(Date d,int sucId,int caja){
 		StringBuilder sb= new StringBuilder();		
