@@ -653,6 +653,7 @@ public class PedidoVentaMB{
 	
 	public void guardar() {
 		logger.trace("guardar:");
+		String numTiket =null;
 		try{
 			entradaSalida.setCaja(1);
 			entradaSalida.setFactorIva(Constants.IVA);
@@ -661,7 +662,9 @@ public class PedidoVentaMB{
 			entradaSalida.setSucursalId(sessionUserMB.getSucursalId());
 			entradaSalida.setUsuarioEmailCreo(sessionUserMB.getUsuarioAuthenticated().getEmail());
 			entradaSalida.setAutorizaDescuento(autorizaDescuento?1:0);
-			entradaSalida.setNumeroTicket(GeneradorNumTicket.getNumTicket(1, 1, entradaSalida.getClienteId(), entradaSalidaFooter.getTotal()));
+			numTiket = GeneradorNumTicket.getNumTicket(entradaSalida.getFechaCreo(),entradaSalida.getSucursalId(),entradaSalida.getCaja());
+			logger.trace("guardar:numTiket="+numTiket);
+			entradaSalida.setNumeroTicket(numTiket);
 			EntradaSalidaDAO.getInstance().insertPedidoVenta(entradaSalida,entityList);
 			logger.trace("guardar:entradaSalida.id:"+entradaSalida.getId());
 			
