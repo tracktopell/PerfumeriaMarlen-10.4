@@ -158,12 +158,14 @@
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
-			<!--
 			<resource>
-				<directory>src/main/web/WEB-INF/templates</directory>
+				<directory>src/main/web/WEB-INF/*</directory>
 				<filtering>true</filtering>				
 			</resource>
-			-->
+			<resource>
+				<directory>src/main/web/META-INF/*</directory>
+				<filtering>true</filtering>				
+			</resource>
 		</resources>		
 		
 		<plugins>
@@ -195,7 +197,7 @@
 					<path>/${project.web.context}</path>
 				</configuration>
 			</plugin>
-
+			<!--
 			<plugin> 
 				<artifactId>maven-antrun-plugin</artifactId> 
 				<executions> 
@@ -206,7 +208,7 @@
 							<tasks> 
 								<echo message="======================= filter-web-config-files, in process-resources phase : version_timeStamp=${version_timeStamp}, environment.stage=${environment.stage} ==============>>>"/>								
 								<copy file="target/classes/META-INF/context_environment.xml" tofile="src/main/webapp/META-INF/context.xml" />
-								<copy file="target/classes/WEB-INF/web_environment.xml" tofile="src/main/webapp/WEB-INF/web.xml" />
+								<copy file="target/classes/WEB-INF/web_environment.xml"      tofile="src/main/webapp/WEB-INF/web.xml" />
 							</tasks> 
 						</configuration> 
 						<goals> 
@@ -215,7 +217,7 @@
 					</execution> 
 				</executions> 
 			</plugin>
-
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -227,6 +229,20 @@
 							<directory>${basedir}/src/main/webapp</directory>
 							<includes>
 								<include>WEB-INF/templates/*</include>								
+							</includes>
+						</resource>
+						<resource>
+							<filtering>true</filtering>
+							<directory>${basedir}/src/main/webapp</directory>
+							<includes>
+								<include>WEB-INF/*</include>								
+							</includes>
+						</resource>
+						<resource>
+							<filtering>true</filtering>
+							<directory>${basedir}/src/main/webapp</directory>
+							<includes>
+								<include>META-INF/*</include>								
 							</includes>
 						</resource>
 					</webResources>
