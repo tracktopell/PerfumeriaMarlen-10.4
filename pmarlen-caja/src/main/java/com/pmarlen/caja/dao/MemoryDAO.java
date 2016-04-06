@@ -6,10 +6,7 @@ import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.backend.model.Sucursal;
-import com.pmarlen.backend.model.Usuario;
-import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
 import com.pmarlen.caja.control.ApplicationLogic;
-import com.pmarlen.caja.control.FramePrincipalControl;
 import com.pmarlen.caja.model.Notificacion;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
@@ -37,7 +34,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ConnectException;
-import java.net.MalformedURLException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
@@ -62,7 +59,7 @@ public class MemoryDAO {
 	private static boolean enviandoCierreCorrectmente = false;	
 	private static final String corteCajaDTOjsonFile    = "CorteCajaDTO.json";
 	//private static final String aperturaCajaDTOjsonFile = "AperturaCajaDTO.json";
-	
+	public static final int URL_CONNECTION_TIMEOUT = 5000;	
 	static {
 		properties.put("sucursal","1");
 		properties.put("caja","1");
@@ -802,7 +799,10 @@ public class MemoryDAO {
 		try {
 			url = new URL(getServerContext()+uriSaldoEstimado+"/"+getSucursalId()+"/"+getNumCaja());
 			logger.debug("getRemoteSaldoEstimado: url::"+url);
-			is = url.openConnection().getInputStream();
+			HttpURLConnection conn = (HttpURLConnection)url.openConnection();			
+			conn.setConnectTimeout(URL_CONNECTION_TIMEOUT);			
+			conn.setReadTimeout(URL_CONNECTION_TIMEOUT);			
+			is = conn.getInputStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			saldoEstimado = Double.parseDouble(br.readLine());
 			logger.debug("getRemoteSaldoEstimado: saldoEstimado="+saldoEstimado);

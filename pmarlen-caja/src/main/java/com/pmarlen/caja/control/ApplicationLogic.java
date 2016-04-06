@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -53,6 +52,7 @@ public class ApplicationLogic {
 	private static final String URI_APP_PACKAGE  = "/pmcajaupdate/update.zip";
 	private static final String FILE_APP_PACKAGE = "update.zip";
 	private static final String BACKUP_DIR       = "backup";
+	public  static final int    URL_CONNECTION_TIMEOUT = 5000;
 	private static String _version = null;
 	private static final boolean printingEnabled = true; 
 		
@@ -116,9 +116,10 @@ public class ApplicationLogic {
 		try{
 			url = new URL(MemoryDAO.getServerContext()+URI_VERSION_FILE);
 			logger.debug("url="+url);
-			URLConnection conn = url.openConnection();
-			conn.setConnectTimeout(5000);
-			is = conn.getInputStream();
+			HttpURLConnection conn = (HttpURLConnection)url.openConnection();			
+			conn.setConnectTimeout(URL_CONNECTION_TIMEOUT);			
+			conn.setReadTimeout(URL_CONNECTION_TIMEOUT);			
+			is = conn.getInputStream();			
 		} catch(FileNotFoundException fnfe){
 			logger.error("needsUpdateApplciation: 404:" + fnfe);
 			return false;
@@ -203,7 +204,9 @@ public class ApplicationLogic {
 		
 		try{
 			url = new URL(MemoryDAO.getServerContext()+URI_APP_PACKAGE);
-			conn = (HttpURLConnection)url.openConnection();
+			conn = (HttpURLConnection)url.openConnection();			
+			conn.setConnectTimeout(URL_CONNECTION_TIMEOUT);			
+			conn.setReadTimeout(URL_CONNECTION_TIMEOUT);			
 			long length = conn.getContentLengthLong();
 			is = conn.getInputStream();
 			File lastUpdate = new File(FILE_APP_PACKAGE);
@@ -319,9 +322,13 @@ public class ApplicationLogic {
 	}
 
 	boolean canDownlaodUpdateApplication() {
+		URL  url = null;
+		HttpURLConnection conn = null;			
 		try {
-			URL  url = new URL(MemoryDAO.getServerContext()+URI_APP_PACKAGE);
-			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+			url = new URL(MemoryDAO.getServerContext()+URI_APP_PACKAGE);
+			conn = (HttpURLConnection)url.openConnection();			
+			conn.setConnectTimeout(URL_CONNECTION_TIMEOUT);			
+			conn.setReadTimeout(URL_CONNECTION_TIMEOUT);			
 			int length = conn.getContentLength();
 			if(length > 1024){
 				return true;
@@ -330,7 +337,11 @@ public class ApplicationLogic {
 			}
 		} catch(Exception ex){
 			ex.printStackTrace(System.err);
-			return false;
+			return false;			
+		} finally {
+			if(conn != null){				
+				conn.disconnect();
+			}
 		}
 	}
 	

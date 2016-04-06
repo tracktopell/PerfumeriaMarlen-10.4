@@ -278,15 +278,158 @@ public class ProductoDAO {
 		}
 		return r;
 	}
+	
+	public ArrayList<String> findAllIndustrias() throws DAOException {
+		ArrayList<String> r = new ArrayList<String>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT DISTINCT(INDUSTRIA) FROM PRODUCTO ORDER BY INDUSTRIA");
+			
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				final String industria = (String)rs.getObject("INDUSTRIA");
+				r.add(industria);				
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+	};
 
-    public ArrayList<ProductoQuickView> findAll() throws DAOException {
+	public ArrayList<String> findAllLineas() throws DAOException {
+		ArrayList<String> r = new ArrayList<String>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT DISTINCT(LINEA) FROM PRODUCTO ORDER BY LINEA");
+			
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				final String linea = (String)rs.getObject("LINEA");
+				r.add(linea);				
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+	};
+
+	public ArrayList<String> findAllMarcasByIndustria(String industria) throws DAOException {
+		ArrayList<String> r = new ArrayList<String>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT DISTINCT(MARCA) FROM PRODUCTO WHERE INDUSTRIA = ? ORDER BY MARCA");
+			ps.setString(1, industria);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				final String marca = (String)rs.getObject("MARCA");
+				r.add(marca);				
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;
+	};
+
+	public ArrayList<String> findAllMarcasByLinea(String linea) throws DAOException {
+		ArrayList<String> r = new ArrayList<String>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT DISTINCT(MARCA) FROM PRODUCTO WHERE LINEA = ? ORDER BY MARCA");
+			ps.setString(1, linea);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				final String marca = (String)rs.getObject("MARCA");
+				r.add(marca);				
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;
+	};
+	
+	
+	public ArrayList<ProductoQuickView> findAll() throws DAOException {
+		return findAllByMarca(null); 
+	}
+	
+    public ArrayList<ProductoQuickView> findAllByMarca(String marca) throws DAOException {
 		ArrayList<ProductoQuickView> r = new ArrayList<ProductoQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA FROM PRODUCTO");
+			String q = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA FROM PRODUCTO";
+			
+			if(marca != null && marca.trim().length()>1){
+				q = q + " WHERE MARCA=? ";
+				
+			}
+			
+			ps = conn.prepareStatement(q);
+			if(marca != null && marca.trim().length()>1){
+				ps.setString(1, marca);				
+			}
 			
 			rs = ps.executeQuery();
 			while(rs.next()) {

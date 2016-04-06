@@ -18,32 +18,167 @@
 			<p:layout style="height: 550px;">
 				<p:layoutUnit position="north" >
 					<h:panelGrid columns="2" cellpadding="5" width="100%" columnClasses="columnWidth40 rightAlign, columnWidth60 leftAlign">
-						
+
 						<p:outputLabel for="almacen" value="ALMACÉN :" />
 
-						<p:selectOneRadio id="almacen" value="#{pedidoVentaMB.tipoAlmacen}" style="width:125px">							
-							<f:selectItems  value="#{pedidoVentaMB.tipoAlmacenList}"/>
-							<p:ajax listener="#{pedidoVentaMB.onTipoAlmacenChange}" process="@all" update=":form1"/>
+						<p:selectOneRadio id="almacen" value="#{catalogoProductosMB.tipoAlmacen}" style="width:125px">
+							<f:selectItems  value="#{catalogoProductosMB.tipoAlmacenList}"/>
+							<p:ajax listener="#{catalogoProductosMB.onTipoAlmacenChange}" process="@all" update=":form1"/>
 						</p:selectOneRadio>
 					</h:panelGrid>
 				</p:layoutUnit>
 
 				<p:layoutUnit position="center">
-					<p:tabView style="height: 97%">
+					<p:tabView style="height: 200">
+						<p:ajax event="tabChange" listener="#{catalogoProductosMB.onIndustriaLineaChange}" update=":form1"/>
 						<p:tab title="VER POR INDUSTRIA">
-							<h:panelGrid columns="2" cellpadding="10" width="100%">								
-								<p:dataGrid  var="ind" value="#{productosFunMB.industrias}" columns="4" 
-											rows="12" id="industrias" >
-									<p:commandButton value="${ind}" style="font-size: larger; width: 180px; height: 80px;"/>
-								</p:dataGrid>
+							<h:panelGrid columns="2" cellpadding="10" columnClasses="columnWidth40 rightAlign, columnWidth60 leftAlign" width="100%" >
+								<h:outputText value="INDUSTRIA:" />
+								<h:selectOneMenu value="#{catalogoProductosMB.industria}">
+									<f:selectItems  value="#{catalogoProductosMB.industriasList}" />
+									<p:ajax listener="#{catalogoProductosMB.onIndustriaChange}" process="@all" update=":form1"/>
+								</h:selectOneMenu>
+
+								<h:outputText value="MARCA:" />
+								<h:selectOneMenu value="#{catalogoProductosMB.marcaInd}">
+									<f:selectItems  value="#{catalogoProductosMB.marcasPorIndustriaList}"/>
+									<p:ajax listener="#{catalogoProductosMB.onMarcaIndChange}" process="@all" update=":form1"/>
+								</h:selectOneMenu>
 							</h:panelGrid>
 						</p:tab>
+
 						<p:tab title="VER POR LINEA">
-							<h:panelGrid columns="2" cellpadding="10">
-								<h:outputText value="LINEAS" />
+							<h:panelGrid columns="2" cellpadding="10" columnClasses="columnWidth40 rightAlign, columnWidth60 leftAlign" width="100%" >
+								<h:outputText value="LINEA:" />
+								<h:selectOneMenu value="#{catalogoProductosMB.linea}">
+									<f:selectItems  value="#{catalogoProductosMB.lineasList}"/>
+									<p:ajax listener="#{catalogoProductosMB.onLineaChange}" process="@all" update=":form1"/>
+								</h:selectOneMenu>
+
+								<h:outputText value="MARCA:" />
+								<h:selectOneMenu value="#{catalogoProductosMB.marcaLin}">
+									<f:selectItems  value="#{catalogoProductosMB.marcasPorLineaList}"/>									
+									<p:ajax listener="#{catalogoProductosMB.onMarcaLinChange}" process="@all" update=":form1"/>
+								</h:selectOneMenu>
 							</h:panelGrid>
 						</p:tab>
 					</p:tabView>
+					
+					<h:panelGrid columns="1" cellpadding="5" id="panel" width="100%" rendered="#{not empty catalogoProductosMB.marca}">
+
+						<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
+
+						<p:dataGrid   var="producto" value="#{catalogoProductosMB.entityList}"
+									  columns="3" rows="24" paginator="true" 
+									  id="productoTable"
+									  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{productoCatSimple.sizeList}]"
+									  rowsPerPageTemplate="12,24,40" style="background: none repeat scroll 0 0 #ffffff;">
+
+
+							<h:panelGrid columns="1" style="width:100%">
+								
+								<!--
+								<p:panelGrid columns="2">
+											
+									<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+												cache="true"
+												alt="Producto #{producto.codigoBarras}" 
+												title="Producto #{producto.codigoBarras}"
+												style="cursor:pointer"/>
+								
+
+									<p:panelGrid columns="1">
+										<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
+
+										<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
+
+										<h:outputText value="PRESENTACION:#{producto.presentacion}" />
+
+										<h:outputText value="CONTENIDO:#{producto.contenido} #{producto.unidadMedida}" />
+
+										<h:outputText value="MARCA: #{producto.marca}" />
+
+										<h:outputText value="LINEA: #{producto.linea}" />
+
+									</p:panelGrid>
+								</p:panelGrid>
+								-->
+								<!--
+								<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+												cache="true"
+												alt="Producto #{producto.codigoBarras}" 
+												title="Producto #{producto.codigoBarras}"
+												style="cursor:pointer"/>
+								
+								<p:overlayPanel  id="imgPanel" for="img" showEffect="blind" hideEffect="explode" showEvent="click" hideEvent="mousedown"
+												dismissable="false" showCloseIcon="true">
+									<p:graphicImage value="/multimedio/productos/med/#{producto.codigoBarras}"/>
+									
+								</p:overlayPanel>
+								-->
+								
+								<!--
+								<p:lightBox id="lighbox2" >
+									<h:outputLink value="#">
+										<p:graphicImage id="img2" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+														cache="true"
+														alt="Producto #{producto.codigoBarras}" 
+														title="Producto #{producto.codigoBarras}"
+														style="cursor:pointer"/>
+
+									</h:outputLink>
+
+									<f:facet name="inline">
+										<p:panelGrid columns="2">
+											
+											<p:graphicImage value="/multimedio/productos/med/#{producto.codigoBarras}"/>
+											
+											<p:panelGrid columns="1">
+												<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
+
+												<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
+
+												<h:outputText value="PRESENTACION:#{producto.presentacion}" />
+
+												<h:outputText value="CONTENIDO:#{producto.contenido} #{producto.unidadMedida}" />
+
+												<h:outputText value="MARCA: #{producto.marca}" />
+
+												<h:outputText value="LINEA: #{producto.linea}" />
+
+											</p:panelGrid>
+										</p:panelGrid>
+
+									</f:facet>
+								</p:lightBox>
+								
+								<h:outputText value="#{producto.nombre}/#{producto.presentacion}" />
+								-->
+								
+								<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+											cache="true"
+											alt="Producto #{producto.codigoBarras}" 
+											title="Producto #{producto.codigoBarras}"
+											style="cursor:pointer"/>
+
+								
+								<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
+
+								<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
+
+								<h:outputText value="PRESENTACION:#{producto.presentacion}" />
+
+
+							</h:panelGrid>
+
+
+							<f:facet name="footer">
+								xx-xx
+							</f:facet>
+						</p:dataGrid>
+
+					</h:panelGrid>
+
 				</p:layoutUnit>
 			</p:layout>
 		</h:form>
