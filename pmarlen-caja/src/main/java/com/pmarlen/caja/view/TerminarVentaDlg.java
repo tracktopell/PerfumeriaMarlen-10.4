@@ -167,7 +167,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel8.setText("RECIBIDO :");
+        jLabel8.setText("EFECTIVO RECIB.:");
         jLabel8.setPreferredSize(new java.awt.Dimension(280, 26));
         jPanel14.add(jLabel8);
 
