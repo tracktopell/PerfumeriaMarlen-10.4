@@ -21,6 +21,20 @@ user: #{sessionUserMB.usuarioAuthenticated.nombreCompleto}
 .preferencesPanel{
 }
 
+.titleHeader{
+	font-family: Arial,Helvetica,sans-serif;
+	font-size:12px;
+	color: yellow;
+	line-height: 0.6;
+}
+
+.subtitleHeader{
+	font-family: Arial,Helvetica,sans-serif;
+	font-size:10px;
+	color: yellow;
+	line-height: 0.5;
+}
+
 html { 
   background: url(../images/Fractal_Lion_Stars_BG.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;

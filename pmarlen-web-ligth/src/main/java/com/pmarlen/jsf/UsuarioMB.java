@@ -24,14 +24,17 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 public class UsuarioMB  {
 	private transient final Logger logger = Logger.getLogger(UsuarioMB.class.getSimpleName());
-	List<UsuarioQuickView> entityList;
-	Integer viewRows;
-	UsuarioQuickView selectedEntity;
-	String dialogTitle;
-	boolean checkSameEmailPassword;
-	boolean todos;
-	Integer checkSameEmailPasswordState;
-	int saveMode=0;
+	private List<UsuarioQuickView> entityList;
+	private Integer viewRows;
+	private UsuarioQuickView selectedEntity;
+	private String dialogTitle;
+	private boolean checkSameEmailPassword;
+	private boolean todos;
+	private Integer checkSameEmailPasswordState;
+	private int saveMode=0;
+	private String pwd;
+	private String pwd2;
+	private boolean changePassword;
 	
 	@PostConstruct
     public void init() {
@@ -41,6 +44,7 @@ public class UsuarioMB  {
 		dialogTitle ="USUARIO";
 		saveMode=0;
 		checkSameEmailPasswordState=null;
+		changePassword =  true;
 		todos=false;
     }
 
@@ -79,6 +83,9 @@ public class UsuarioMB  {
 		this.selectedEntity = new UsuarioQuickView();
 		checkSameEmailPassword=false;
 		checkSameEmailPasswordState=null;
+		this.pwd  = null;
+		this.pwd2 = null;
+		changePassword =  true;
 		saveMode=1;
 	}
 	
@@ -92,6 +99,9 @@ public class UsuarioMB  {
 		this.selectedEntity = selectedUsuario;
 		checkSameEmailPassword=false;
 		checkSameEmailPasswordState=null;
+		this.pwd  = null;
+		this.pwd2 = null;
+		changePassword = false;
 		saveMode=2;
 	}
 
@@ -105,34 +115,44 @@ public class UsuarioMB  {
 	
 	public void checkPassword(){
 		checkSameEmailPasswordState=1;
-		logger.trace("checkPassword="+this.selectedEntity.getEmail()+", password->"+this.selectedEntity.getPassword()+"<-");
+		logger.info("checkPassword="+this.pwd);
 		checkSameEmailPassword = EmailChecker.isSameEmailPassword(this.selectedEntity.getEmail(), this.selectedEntity.getPassword());
-		logger.trace("checkSameEmailPassword="+checkSameEmailPassword);
+		
 		if(checkSameEmailPassword){
 			checkSameEmailPasswordState=2;
 		}
 	}
 	
+	public void checkSamePwd(){
+		logger.info("checkPassword: pwd="+pwd+", pwd2="+pwd2);
+		
+		if(!pwd.equals(pwd2)){
+			throw new IllegalStateException("LAS CONTRASEÑAS NO SON LAS MISMAS");
+		}
+	}
+	
 	public void save(){
-		logger.trace("UsuarioMB: save selectedEntity:email:"+selectedEntity.getEmail()+", roles:"+selectedEntity.getRoleList());
+		logger.info("UsuarioMB: save: changePassword="+changePassword+" ,selectedEntity:email:"+selectedEntity.getEmail()+", roles:"+selectedEntity.getRoleList());
 		
 		try{
-			
-			selectedEntity.setPassword(Constants.getMD5Encrypted(selectedEntity.getPassword()));
-			
+			if(changePassword){
+				
+				checkSamePwd();
+				selectedEntity.setPassword(Constants.getMD5Encrypted(pwd));
+			}
 			int u=-1;			
 			if(saveMode == 1){
 				logger.trace("UsuarioMB:insert");
 				u=UsuarioDAO.getInstance().insert(selectedEntity);			
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, dialogTitle, "SE CREÓ CORRECTAMENTE NUEVO CLIENTE"));			
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "AL GURDAR", "SE CREÓ CORRECTAMENTE NUEVO CLIENTE"));			
 			} else if(saveMode == 2){
 				logger.trace("UsuarioMB:update");
 				u=UsuarioDAO.getInstance().update(selectedEntity);
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, dialogTitle, "SE ACTUALIZARÓN CORRECTAMENTE LOS DATOS DEL CLIENTE"));			
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "AL GURDAR", "SE ACTUALIZARÓN CORRECTAMENTE LOS DATOS DEL CLIENTE"));			
 			}
 			reset();
 		} catch(Exception e){
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, dialogTitle, "OCURRIO UN ERROR AL GUARDAR"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "AL GURDAR", "OCURRIO UN ERROR AL GUARDAR:"+e.getMessage()));
 			FacesContext.getCurrentInstance().validationFailed();
 		}
 		
@@ -176,4 +196,67 @@ public class UsuarioMB  {
 	public boolean isTodos() {
 		return todos;
 	}	
+
+	/**
+	 * @return the saveMode
+	 */
+	public int getSaveMode() {
+		return saveMode;
+	}
+
+	/**
+	 * @param saveMode the saveMode to set
+	 */
+	public void setSaveMode(int saveMode) {
+		this.saveMode = saveMode;
+	}
+
+	/**
+	 * @return the pwd
+	 */
+	public String getPwd() {
+		return pwd;
+	}
+
+	/**
+	 * @param pwd the pwd to set
+	 */
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
+	/**
+	 * @return the pwd2
+	 */
+	public String getPwd2() {
+		return pwd2;
+	}
+
+	/**
+	 * @param pwd2 the pwd2 to set
+	 */
+	public void setPwd2(String pwd2) {
+		this.pwd2 = pwd2;
+	}
+
+	/**
+	 * @return the changePassword
+	 */
+	public boolean isChangePassword() {
+		return changePassword;
+	}
+
+	/**
+	 * @param changePassword the changePassword to set
+	 */
+	public void setChangePassword(boolean changePassword) {
+		this.changePassword = changePassword;
+	}
+	
+	public void changePasswordX(){		
+		String msg = "changePasswordX: values pwd=["+pwd+"], pwd2=["+pwd2+"]";
+		logger.info(msg);        
+		this.pwd  = null;
+		this.pwd2 = null;
+	}
 }

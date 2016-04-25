@@ -49,8 +49,8 @@
 					<p:columnGroup type="header">
 						<p:row>
 							<p:column rowspan="2" headerText="" width="5%" />
-							<p:column rowspan="2" headerText="EMAIL"  width="25%"/>
-							<p:column rowspan="2" headerText="NOMBRE COMPLETO" width="25%" />
+							<p:column rowspan="2" headerText="EMAIL"  width="20%"/>
+							<p:column rowspan="2" headerText="NOMBRE COMPLETO" width="20%" />
 							<p:column rowspan="2" headerText="CLAVE"  width="5%"/>
 							<p:column rowspan="2" headerText="HABILITADO"  width="5%"/>
 							<p:column rowspan="1" colspan="6" headerText="PERFILES"  />
@@ -161,7 +161,7 @@
 		</h:form>
 
 		<h:form id="form2">
-			<p:dialog header="#{usuarioMB.dialogTitle}" widgetVar="dlg1" modal="true" width="480" height="290" closable="false" resizable="true">
+			<p:dialog header="#{usuarioMB.dialogTitle}" widgetVar="dlg1" modal="true" width="520" height="380" closable="false" resizable="true">
 				<h:panelGrid columns="1" cellpadding="5" id="dlg1Panel1" width="100%">
 
 					<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" globalOnly="true"/>
@@ -183,9 +183,29 @@
 						<p:inputSwitch id="usuario_habilitado" value="#{usuarioMB.selectedEntity.habilitado}" onLabel="SI" offLabel="NO"/>
 						<p:message   for="usuario_habilitado"  showDetail="true"/>
 						
+						
 						<h:outputLabel value="CONTRASEÑA:" style="font-weight:bold" />
+							
 						<h:panelGroup id="password_panelgroup">
-							<p:password id="usuario_password" value="#{usuarioMB.selectedEntity.password}" size="15" maxlength="32" redisplay="true"/>
+							<h:panelGrid columns="2">
+								<p:selectBooleanCheckbox value="#{usuarioMB.changePassword}" label="CAMBIAR CONTRASEÑA" rendered="#{not usuarioMB.changePassword}">
+									<p:ajax update="password_panelgroup" listener="#{usuarioMB.changePasswordX}"/>
+								</p:selectBooleanCheckbox>
+
+								<h:panelGrid columns="1" rendered="#{usuarioMB.changePassword}">
+									<p:password id="usuario_pwd1" value="#{usuarioMB.pwd}"  size="15" maxlength="32"  
+												feedback="true" redisplay="true" promptLabel="pwd" match="usuario_pwd2" label="Contraseña" />
+									<p:password id="usuario_pwd2" value="#{usuarioMB.pwd2}" size="15" maxlength="32"  
+												feedback="true" redisplay="true" promptLabel="pwd2"                     label="Confirmar contraseña"/>	
+								</h:panelGrid>
+								
+								<h:panelGrid columns="1" rendered="#{not usuarioMB.changePassword}">
+									<p:spacer width="22"/>
+									<p:spacer width="22"/>
+								</h:panelGrid>
+								
+							</h:panelGrid>
+							<!--
 							<p:spacer width="10"/>
 							<p:commandButton	icon="ui-icon-mail-closed" 
 												immediate="false" update="password_panelgroup" process="@form"
@@ -196,8 +216,10 @@
 											rendered="#{not empty usuarioMB.checkSameEmailPasswordState and usuarioMB.checkSameEmailPasswordState eq 1}"/>
 							<h:graphicImage value="/images/passed.png"    title="OK, ES EL MISMO PASSWORD QUE EL SISTEMA DE CORREO" 
 											rendered="#{not empty usuarioMB.checkSameEmailPasswordState and usuarioMB.checkSameEmailPasswordState eq 2}"/>
+							-->
+							
 						</h:panelGroup>
-						<p:message   for="usuario_password"  showDetail="true"/>						
+						<p:message   for="password_panelgroup"  showDetail="true"/>
 						
 						<h:outputLabel value="PERFILES:" style="font-weight:bold" />
 						<p:panelGrid columns="6" id="usuario_perfiles" >
@@ -247,7 +269,7 @@
 									PF('dlg1').hide();
 								}
 							}
-							//
+							//	
 						</script>
 					</h:panelGroup>
 

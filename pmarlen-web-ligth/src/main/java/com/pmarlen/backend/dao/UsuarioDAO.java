@@ -435,7 +435,7 @@ public class UsuarioDAO {
 			ps.setObject(ci++,x.getNombreCompleto());
 			ps.setObject(ci++,x.getPassword());
 			ps.setObject(ci++,x.getEmailAlternativo());
-			
+			ps.setObject(ci++,x.getEmail());
 			r = ps.executeUpdate();
 			
 			psUP.setString(1, x.getEmail());
