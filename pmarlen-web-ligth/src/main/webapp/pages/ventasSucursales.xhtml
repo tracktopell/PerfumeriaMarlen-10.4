@@ -26,6 +26,18 @@
 						<p:ajax listener="#{ventasSucursalesMB.onSucursalChange}" process=":form1:sucursal" update=":form1:"/>
 					</p:selectOneMenu>
 					
+					<p:outputLabel for="intervaloFec" value="INTERVALO DE FECHA :" />
+					
+					<h:panelGroup id="fechas" styleClass="alignTop">
+						<p:selectOneMenu id="intervaloFec" value="#{ventasSucursalesMB.intFechaSelec}" >				
+							<f:selectItems  value="#{ventasSucursalesMB.intervalosFechas}"/>					
+							<p:ajax listener="#{ventasSucursalesMB.onIntervaloFechaChange}" process=":form1:intervaloFec" update=":form1:"/>
+						</p:selectOneMenu>
+						<p:spacer width="5"/>
+						<p:calendar id="fechaInicial" value="#{ventasSucursalesMB.fechaInicial}" showOn="button" pattern="yyyy/MM/dd" size="10"/>
+						<p:calendar id="fechaFinal"   value="#{ventasSucursalesMB.fechaFinal}" showOn="button"   pattern="yyyy/MM/dd" size="10"/>
+					</h:panelGroup>
+					
 				</h:panelGrid>
 
 				<p:dataTable  var="pv" value="#{ventasSucursalesMB.lazyModel}"
@@ -36,7 +48,7 @@
 							  rowsPerPageTemplate="10,25,100">
 					
 					<f:facet name="header">
-						OPCIONES :		
+						OPCIONES :								
 						<p:commandButton value="RECARGAR" actionListener="#{ventasSucursalesMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
 					</f:facet>
 					

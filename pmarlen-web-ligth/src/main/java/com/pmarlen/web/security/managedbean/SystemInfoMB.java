@@ -33,6 +33,7 @@ public class SystemInfoMB  implements Serializable{
 	private static String db        = null;
 	private static String user      = null;
 	private static String password  = null;
+	
 
 	private static Properties prop = new Properties();
 	static{

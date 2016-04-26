@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Mon Apr 25 16:50:30 CDT 2016:
+ Arrancando Derby versión The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instancia a816c00e-0154-4f66-fafb-000006359240 
+en el directorio de base de datos /Users/alfredo/PM901Sucursales/PMS3/PMarlen_DB  con el cargador de clases java.net.URLClassLoader@46c7b4d4
+
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_73-b02
+user.dir=/Users/alfredo/projects/PerfumeriaMarlen-10.4/pmarlen-development-tasks
+derby.system.home=null
+Cargador de clases de base de datos iniciado - derby.database.classpath=''

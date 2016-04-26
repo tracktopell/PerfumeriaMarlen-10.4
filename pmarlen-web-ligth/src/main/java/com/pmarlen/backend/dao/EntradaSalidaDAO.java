@@ -558,10 +558,14 @@ public class EntradaSalidaDAO {
 		}
 		return r;
 	}
-		
+	
 	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(int tipoMov,int sucursalId,boolean active,PagerInfo pagerInfo) throws DAOException {
-		logger.info("->findAllActiveByPage(tipoMov="+tipoMov+",sucursalId="+sucursalId+",active="+active+",pagerInfo.filters="+pagerInfo.getFilters()+")");
-		logger.info("->SARITA ME AYUDO");
+		return findAllActiveByPage(tipoMov,sucursalId,active,pagerInfo,null,null);
+	}	
+	
+	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(int tipoMov,int sucursalId,boolean active,PagerInfo pagerInfo,Timestamp fechaInicial,Timestamp fechaFinal) throws DAOException {
+		logger.info("->findAllActiveByPage(tipoMov="+tipoMov+",sucursalId="+sucursalId+",active="+active+",pagerInfo.filters="+pagerInfo.getFilters()+",fechaInicial="+fechaInicial+",fechaFinal="+fechaFinal+")");
+		
 		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -602,7 +606,8 @@ public class EntradaSalidaDAO {
 					+ "AND       ES.ID        = ESE.ENTRADA_SALIDA_ID\n"
 					+ "AND       ES.ESTADO_ID = ESE.ESTADO_ID\n"		
 					+ "AND       ES.TIPO_MOV  = ?\n"
-					+ "AND       ES.SUCURSAL_ID= ?\n";
+					+ "AND       ES.SUCURSAL_ID= ?\n"
+					+ (fechaInicial!=null && fechaFinal!=null? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n":"");
 			
 			//+ "ORDER BY  ES.ID DESC";
 			Map<String, Object> filters = pagerInfo.getFilters();
@@ -617,14 +622,25 @@ public class EntradaSalidaDAO {
 				q += "ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
 			}
 			
-			logger.info("->QUERY COUNT(tipoMov="+tipoMov+",sucursalId="+sucursalId+"):"+q);
+			//logger.info("\t->QUERY COUNT:"+q);
+			logger.info("\t->QUERY COUNT:");
 			//------------------------------------------------------------------
 			ps = conn.prepareStatement(q);
-			ps.setInt(1, tipoMov);
-			ps.setInt(2, sucursalId);
+			
+			int vs=1;
+			ps.setInt(vs++, tipoMov);
+			ps.setInt(vs++, sucursalId);			
+			
+			if(fechaInicial!=null && fechaFinal!=null){
+				ps.setTimestamp(vs++, fechaInicial);
+				ps.setTimestamp(vs++, fechaFinal);
+			}else{
+				
+			}
+			
 			Map<String, Object> filtersValues = pagerInfo.getFilters();
 			if(filters != null) {
-				int vs=3;
+				
 				for(String k:filtersValues.keySet()){
 					ps.setObject(vs++, filtersValues.get(k));
 				}
@@ -633,21 +649,28 @@ public class EntradaSalidaDAO {
 			rs.last();
 			int size = rs.getRow();
 			rs.beforeFirst();
-			logger.info("->rs.last(): rs.getRow()="+size);
+			logger.info("->rs.last(): rs.getRow()=TotalRowCount="+size);
 			pagerInfo.setTotalRowCount(size);
 			rs.close();
 			ps.close();
 			
 			//------------------------------------------------------------------
 			q +=    "LIMIT "+pagerInfo.getFirst()+","+pagerInfo.getPageSize();
-			logger.info("->QUERY BY PAGE:"+q);
+			//logger.info("\t->QUERY BY PAGE (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"):");
+			logger.info("\t->QUERY BY PAGE (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"):"+q);
 			
 			ps = conn.prepareStatement(q);
-			ps.setInt(1, tipoMov);
-			ps.setInt(2, sucursalId);
+			vs=1;
+			ps.setInt(vs++, tipoMov);
+			ps.setInt(vs++, sucursalId);
 			Map<String, Object> filtersValuesT = pagerInfo.getFilters();
+			if(fechaInicial!=null && fechaFinal!=null){
+				ps.setTimestamp(vs++, fechaInicial);
+				ps.setTimestamp(vs++, fechaFinal);
+			}else{
+				
+			}
 			if(filters != null) {
-				int vs=3;
 				for(String k:filtersValuesT.keySet()){
 					ps.setObject(vs++, filtersValuesT.get(k));
 				}
@@ -718,8 +741,8 @@ public class EntradaSalidaDAO {
 
 				r.add(x);
 			}
-			logger.info("------------------------------");
-			logger.info("->FOUND :"+r.size()+" RECORDS.");
+			logger.info("\t------------------------------");
+			logger.info("\t->READ :"+r.size()+" RECORDS BY PAGE.");
 		} catch (SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());
@@ -730,7 +753,7 @@ public class EntradaSalidaDAO {
 					ps.close();
 					conn.close();
 				} catch (SQLException ex) {
-					logger.error("findAll:clossing:", ex);
+					logger.error("\tfindAll:clossing:", ex);
 				}
 			}
 		}
