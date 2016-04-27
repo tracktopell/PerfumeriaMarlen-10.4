@@ -573,8 +573,9 @@ public class EntradaSalidaDAO {
 		try {
 			conn = getConnection();
 			
-			String q="SELECT	ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.ES_ID_DEV,\n"
+			String fq0 = 
+					",ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -588,8 +589,9 @@ public class EntradaSalidaDAO {
 					+ "COUNT(1) NUM_ELEMENTOS, \n"
 					+ "SUM(ESD.CANTIDAD * ESD.PRECIO_VENTA) AS IMPORTE_BRUTO, \n"
 					+ "ESE.FECHA AS FECHA_ACTUALIZO, \n"		
-					+ "ESE.USUARIO_EMAIL AS USUARIO_ACTUALIZO\n"
-					+ "FROM      ENTRADA_SALIDA_ESTADO  ESE,\n"
+					+ "ESE.USUARIO_EMAIL AS USUARIO_ACTUALIZO\n";
+			String fwq0 =
+					"FROM      ENTRADA_SALIDA_ESTADO  ESE,\n"
 					+ "          ENTRADA_SALIDA_DETALLE ESD,\n"		
 					+ "          ENTRADA_SALIDA         ES\n"
 					+ "LEFT JOIN CFD            CFD ON ES.CFD_ID      = CFD.ID\n"
@@ -609,23 +611,31 @@ public class EntradaSalidaDAO {
 					+ "AND       ES.SUCURSAL_ID= ?\n"
 					+ (fechaInicial!=null && fechaFinal!=null? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n":"");
 			
+			String q0="SELECT	ES.TOTAL"
+					+ fq0
+					+ fwq0;
+			
+			String qT0="SELECT	SUM(ES.TOTAL) AS GRAN_TOTAL "
+					+ fq0
+					+ fwq0;
+			
 			//+ "ORDER BY  ES.ID DESC";
 			Map<String, Object> filters = pagerInfo.getFilters();
 			if(filters != null) {
 				for(String k:filters.keySet()){
-					q += "AND     ES."+k.toUpperCase()+" = ? \n";
+					q0 += "AND     ES."+k.toUpperCase()+" = ? \n";
+					qT0+= "AND     ES."+k.toUpperCase()+" = ? \n";
 				}
 			}
-			q += "GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
+			q0 += "GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
 			
 			if(pagerInfo.getSortField() != null) {
-				q += "ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
+				q0  += "ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
+				qT0 += "ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
 			}
-			
-			//logger.info("\t->QUERY COUNT:"+q);
-			logger.info("\t->QUERY COUNT:");
-			//------------------------------------------------------------------
-			ps = conn.prepareStatement(q);
+			//------------------------------------------------------------------			
+			logger.info("\t->QUERY COUNT:");			
+			ps = conn.prepareStatement(q0);
 			
 			int vs=1;
 			ps.setInt(vs++, tipoMov);
@@ -653,13 +663,46 @@ public class EntradaSalidaDAO {
 			pagerInfo.setTotalRowCount(size);
 			rs.close();
 			ps.close();
+			ps = null;
+			
+			//------
+			logger.info("\t->QUERY TOTAL:");			
+			ps = conn.prepareStatement(qT0);
+			
+			vs=1;
+			ps.setInt(vs++, tipoMov);
+			ps.setInt(vs++, sucursalId);			
+			
+			if(fechaInicial!=null && fechaFinal!=null){
+				ps.setTimestamp(vs++, fechaInicial);
+				ps.setTimestamp(vs++, fechaFinal);
+			}else{
+				
+			}
+			
+			filtersValues = pagerInfo.getFilters();
+			if(filters != null) {	
+				for(String k:filtersValues.keySet()){
+					ps.setObject(vs++, filtersValues.get(k));
+				}
+			}
+			rs = ps.executeQuery();
+			double granTotal = 0.0;
+			while(rs.next()){
+				granTotal = rs.getDouble("GRAN_TOTAL");
+			}
+			logger.info("\t->QUERY TOTAL (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"): granTotal="+granTotal+", Q:"+qT0);
+			
+			rs.close();
+			ps.close();
+			ps = null;
 			
 			//------------------------------------------------------------------
-			q +=    "LIMIT "+pagerInfo.getFirst()+","+pagerInfo.getPageSize();
+			String qR0 = q0 +   "LIMIT "+pagerInfo.getFirst()+","+pagerInfo.getPageSize();
 			//logger.info("\t->QUERY BY PAGE (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"):");
-			logger.info("\t->QUERY BY PAGE (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"):"+q);
+			logger.info("\t->QUERY BY PAGE (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"):"+q0);
 			
-			ps = conn.prepareStatement(q);
+			ps = conn.prepareStatement(qR0);
 			vs=1;
 			ps.setInt(vs++, tipoMov);
 			ps.setInt(vs++, sucursalId);
