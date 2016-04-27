@@ -1,5 +1,5 @@
 
-# make preparePM104_DEVE MYSQL_ROOT_PASSWORD=xxxxxx
+# make mmigrateTo_PM104_DEVE MYSQL_ROOT_PASSWORD=xxxxxx
 
 resetDB_test:createB_test
 	if [ `find . -name PM*.tgz|wc -l` -gt 0 ]; then rm PM*.*; fi;
