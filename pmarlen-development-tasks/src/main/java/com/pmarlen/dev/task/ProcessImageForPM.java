@@ -451,46 +451,46 @@ public class ProcessImageForPM {
 			//System.out.println("\t====>WRITING DEF");
 			nombreArchivoFinal =  cb_n;
 			
-			saveScaledImage   (imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def/def_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
-			saveScaledJPGImage(imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def/def_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
-			saveScaledImage   (imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def/def_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
+			saveScaledImage   (imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
+			saveScaledJPGImage(imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
+			saveScaledImage   (imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
 			nombreArchivoFinal = "NWM_" + cb_n;
-			saveScaledImage   (imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def/def_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
-			saveScaledJPGImage(imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def/def_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
-			saveScaledImage   (imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def/def_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
+			saveScaledImage   (imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
+			saveScaledJPGImage(imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
+			saveScaledImage   (imageWMTransformed, target_defImageWidth, target_defImageHeight, outputPMImagesDir + "/def_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
 			
 			//System.out.println("\t====>WRITING ICO");
 			nombreArchivoFinal =  cb_n;
 			
-			saveScaledImage   (imageWMTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico/ico_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
-			saveScaledJPGImage(imageWMTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico/ico_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
-			saveScaledImage   (imageWMTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico/ico_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
+			saveScaledImage   (imageWMTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
+			saveScaledJPGImage(imageWMTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
+			saveScaledImage   (imageWMTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
 			nombreArchivoFinal = "NWM_" + cb_n;
-			saveScaledImage   (imageTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico/ico_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
-			saveScaledJPGImage(imageTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico/ico_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
-			saveScaledImage   (imageTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico/ico_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
+			saveScaledImage   (imageTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
+			saveScaledJPGImage(imageTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
+			saveScaledImage   (imageTransformed, target_icoImageWidth, target_icoImageHeight, outputPMImagesDir + "/ico_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
 			
 			//System.out.println("\t====>WRITING MED");
 			nombreArchivoFinal =  cb_n;
 			
-			saveScaledImage   (imageWMTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med/med_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
-			saveScaledJPGImage(imageWMTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med/med_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
-			saveScaledImage   (imageWMTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med/med_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
+			saveScaledImage   (imageWMTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
+			saveScaledJPGImage(imageWMTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
+			saveScaledImage   (imageWMTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
 			nombreArchivoFinal = "NWM_" + cb_n;
-			saveScaledImage   (imageTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med/med_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
-			saveScaledJPGImage(imageTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med/med_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
-			saveScaledImage   (imageTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med/med_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
+			saveScaledImage   (imageTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
+			saveScaledJPGImage(imageTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
+			saveScaledImage   (imageTransformed, target_medImageWidth, target_medImageHeight, outputPMImagesDir + "/med_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
 
 			//System.out.println("\t====>WRITING MIN");
 			nombreArchivoFinal =  cb_n;
 			
-			saveScaledImage   (imageWMTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min/min_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
-			saveScaledJPGImage(imageWMTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min/min_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
-			saveScaledImage   (imageWMTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min/min_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
+			saveScaledImage   (imageWMTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
+			saveScaledJPGImage(imageWMTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
+			saveScaledImage   (imageWMTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
 			nombreArchivoFinal = "NWM_" + cb_n;
-			saveScaledImage   (imageTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min/min_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
-			saveScaledJPGImage(imageTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min/min_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
-			saveScaledImage   (imageTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min/min_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
+			saveScaledImage   (imageTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min_gif/" +  nombreArchivoFinal + ".gif", gifImageWriter, gifIWParam, false);
+			saveScaledJPGImage(imageTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min_jpg/" +  nombreArchivoFinal + ".jpg", jpegImageWriter, jpegIWParam);
+			saveScaledImage   (imageTransformed, target_minImageWidth, target_minImageHeight, outputPMImagesDir + "/min_png/" +  nombreArchivoFinal + ".png", pngImageWriter, pngIWParam, false);
 
 		} catch (Exception ex) {
 			System.err.println("("+Thread.currentThread().getName()+")ERROR WRITE:"+ex.getMessage());			

@@ -2,11 +2,9 @@ package com.pmarlen.jsf;
 
 import com.pmarlen.backend.dao.ProductoDAO;
 import com.pmarlen.backend.dao.DAOException;
-import com.pmarlen.backend.dao.UsuarioDAO;
 import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.ProductoQuickView;
 import com.pmarlen.model.Constants;
-import com.pmarlen.web.security.managedbean.SessionUserMB;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name="productoMB")
 @SessionScoped
-public class ProductoMB  {
+public class ProductoMB  implements Serializable {
 	private transient final Logger logger = Logger.getLogger(ProductoMB.class.getSimpleName());
 	List<ProductoQuickView> entityList;
 	Integer viewRows;

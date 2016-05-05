@@ -130,6 +130,23 @@ public class EntradaSalida implements java.io.Serializable {
 
 	private Double total;
 	
+	private Double descuentoAplic;
+	
+	private Double descRedondeo;
+	
+	private Double redondeoHab;
+	
+	private Double totalCobrado;
+	
+	private Double cambio;
+	
+	private Integer pedioSucursal;
+	
+	private Integer elemDet;
+	
+	private Integer totProds;
+	
+	
     /** 
      * Default Constructor
      */
@@ -413,4 +430,116 @@ public class EntradaSalida implements java.io.Serializable {
     public String toString() {
         return "com.pmarlen.backend.model.EntradaSalida[id = "+id+ "]";
     }	
+
+	/**
+	 * @return the descuentoAplic
+	 */
+	public Double getDescuentoAplic() {
+		return descuentoAplic;
+	}
+
+	/**
+	 * @param descuentoAplic the descuentoAplic to set
+	 */
+	public void setDescuentoAplic(Double descuentoAplic) {
+		this.descuentoAplic = descuentoAplic;
+	}
+
+	/**
+	 * @return the descRedondeo
+	 */
+	public Double getDescRedondeo() {
+		return descRedondeo;
+	}
+
+	/**
+	 * @param descRedondeo the descRedondeo to set
+	 */
+	public void setDescRedondeo(Double descRedondeo) {
+		this.descRedondeo = descRedondeo;
+	}
+
+	/**
+	 * @return the redondeoHab
+	 */
+	public Double getRedondeoHab() {
+		return redondeoHab;
+	}
+
+	/**
+	 * @param redondeoHab the redondeoHab to set
+	 */
+	public void setRedondeoHab(Double redondeoHab) {
+		this.redondeoHab = redondeoHab;
+	}
+
+	/**
+	 * @return the totalCobrado
+	 */
+	public Double getTotalCobrado() {
+		return totalCobrado;
+	}
+
+	/**
+	 * @param totalCobrado the totalCobrado to set
+	 */
+	public void setTotalCobrado(Double totalCobrado) {
+		this.totalCobrado = totalCobrado;
+	}
+
+	/**
+	 * @return the cambio
+	 */
+	public Double getCambio() {
+		return cambio;
+	}
+
+	/**
+	 * @param cambio the cambio to set
+	 */
+	public void setCambio(Double cambio) {
+		this.cambio = cambio;
+	}
+
+	/**
+	 * @return the pedioSucursal
+	 */
+	public Integer getPedioSucursal() {
+		return pedioSucursal;
+	}
+
+	/**
+	 * @param pedioSucursal the pedioSucursal to set
+	 */
+	public void setPedioSucursal(Integer pedioSucursal) {
+		this.pedioSucursal = pedioSucursal;
+	}
+
+	/**
+	 * @return the elemDet
+	 */
+	public Integer getElemDet() {
+		return elemDet;
+	}
+
+	/**
+	 * @param elemDet the elemDet to set
+	 */
+	public void setElemDet(Integer elemDet) {
+		this.elemDet = elemDet;
+	}
+
+	/**
+	 * @return the totProds
+	 */
+	public Integer getTotProds() {
+		return totProds;
+	}
+
+	/**
+	 * @param totProds the totProds to set
+	 */
+	public void setTotProds(Integer totProds) {
+		this.totProds = totProds;
+	}
 }

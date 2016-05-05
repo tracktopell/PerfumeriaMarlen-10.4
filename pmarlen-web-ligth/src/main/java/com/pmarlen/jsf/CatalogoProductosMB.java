@@ -5,6 +5,7 @@ import com.pmarlen.backend.dao.DAOException;
 import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.ProductoQuickView;
 import com.pmarlen.model.Constants;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +22,7 @@ import org.primefaces.event.TabChangeEvent;
 
 @ManagedBean(name="catalogoProductosMB")
 @SessionScoped
-public class CatalogoProductosMB  {
+public class CatalogoProductosMB   implements Serializable{
 	private transient final Logger logger = Logger.getLogger(CatalogoProductosMB.class.getSimpleName());
 	List<ProductoQuickView> entityList;
 	Integer viewRows;

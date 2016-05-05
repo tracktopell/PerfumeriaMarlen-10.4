@@ -3,19 +3,14 @@ package com.pmarlen.jsf;
 import com.pmarlen.backend.dao.AlmacenDAO;
 import com.pmarlen.backend.dao.AlmacenProductoDAO;
 import com.pmarlen.backend.dao.DAOException;
-import com.pmarlen.backend.dao.FormaDePagoDAO;
 import com.pmarlen.backend.dao.MovimientoHistoricoProductoDAO;
-import com.pmarlen.backend.dao.ProductoDAO;
 import com.pmarlen.backend.model.Almacen;
-import com.pmarlen.backend.model.FormaDePago;
-import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.AlmacenProductoQuickView;
 import com.pmarlen.backend.model.quickviews.MovimientoHistoricoProductoQuickView;
 import com.pmarlen.model.Constants;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -24,20 +19,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.chart.Axis;
-import org.primefaces.model.chart.AxisType;
-import org.primefaces.model.chart.CategoryAxis;
-import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartModel;
-import org.primefaces.model.chart.LineChartSeries;
 
 @ManagedBean(name="inventarioMB")
 @SessionScoped
-public class InventarioMB  {
+public class InventarioMB   implements Serializable{
 	private List<AlmacenProductoQuickView> entityList;
 	private Integer viewRows;
 	private int     almacenId;

@@ -20,6 +20,7 @@ import com.pmarlen.businesslogic.LogicaFinaciera;
 import com.pmarlen.businesslogic.TotalesCalculados;
 import com.pmarlen.model.Constants;
 import com.pmarlen.web.security.managedbean.SessionUserMB;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +40,7 @@ import org.primefaces.model.StreamedContent;
 
 @ManagedBean(name="editarPedidoVentaMB")
 @SessionScoped
-public class EditarPedidoVentaMB{	
+public class EditarPedidoVentaMB implements Serializable{	
 	protected static transient Logger logger = Logger.getLogger(EditarPedidoVentaMB.class.getName());
 	protected List<SelectItem> resultadoBusquedaList;
 	protected static final int LONG_MIN_DESC_CTE = 60;
@@ -512,16 +513,16 @@ public class EditarPedidoVentaMB{
 	}
 	
 	public void actualizarTotales(){
-		logger.trace("actualizarTotales:forzar hay cambio");
+		logger.trace("actualizarTotales:entradaSalida == null?"+(entradaSalida==null));
 		hayCambios=true;
 		entradaSalidaFooter.calculaParaFacturaTotalesDesde(entradaSalida, entityList);
-		logger.info("actualizarTotales:entradaSalida.getSucursalId()="+entradaSalida);
-		if(entradaSalida!=null){
-			logger.info("actualizarTotales:-->>LogicaFinaciera.calculaTotales: entradaSalida.getAutorizaDescuento()="+entradaSalida.getAutorizaDescuento()+", descExtra="+entradaSalida.getPorcentajeDescuentoExtra());
-			TotalesCalculados ct = LogicaFinaciera.calculaTotales(entradaSalida, entityList, false, 0.0, entradaSalida.getSucursalId()==1?0:1);
-			logger.info("actualizarTotales:-->>LogicaFinaciera.calculaTotales: TotalesCalculados:\n"+ct);
-		}
-		
+		logger.info("actualizarTotales:entradaSalidaFooter="+entradaSalidaFooter);
+//		if(entradaSalida!=null){
+//			logger.info("actualizarTotales:-->>LogicaFinaciera.calculaTotales: entradaSalida.getAutorizaDescuento()="+entradaSalida.getAutorizaDescuento()+", descExtra="+entradaSalida.getPorcentajeDescuentoExtra());
+//			TotalesCalculados ct = LogicaFinaciera.calculaTotales(entradaSalida, entityList, false, 0.0, entradaSalida.getSucursalId()==1?0:1);
+//			
+//			logger.info("actualizarTotales:-->>LogicaFinaciera.calculaTotales: TotalesCalculados:\n"+ct);
+//		}		
 	}
 	
 	public void actualizarTabla(){

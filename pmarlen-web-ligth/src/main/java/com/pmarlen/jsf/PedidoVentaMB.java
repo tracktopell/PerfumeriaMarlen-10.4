@@ -16,6 +16,7 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.businesslogic.GeneradorNumTicket;
 import com.pmarlen.model.Constants;
 import com.pmarlen.web.security.managedbean.SessionUserMB;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +35,7 @@ import org.primefaces.event.ReorderEvent;
 
 @ManagedBean(name="pedidoVentaMB")
 @SessionScoped
-public class PedidoVentaMB{	
+public class PedidoVentaMB  implements Serializable{	
 	protected static transient Logger logger = Logger.getLogger(PedidoVentaMB.class.getName());
 	protected List<SelectItem> resultadoBusquedaList;
 	protected static final int LONG_MIN_DESC_CTE = 60;

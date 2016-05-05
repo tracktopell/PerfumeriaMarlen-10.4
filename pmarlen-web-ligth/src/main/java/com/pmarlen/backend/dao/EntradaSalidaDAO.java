@@ -176,7 +176,7 @@ public class EntradaSalidaDAO {
 			final String query = "SELECT	ES.ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,"
 					+ "ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,"
 					+ "ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.ES_ID_DEV,\n"
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,ES.TOT_PRODS,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -235,6 +235,8 @@ public class EntradaSalidaDAO {
 				x.setSubTotalOpo((Double) rs.getObject("SUB_TOTAL_OPO"));
 				x.setSubTotalReg((Double) rs.getObject("SUB_TOTAL_REG"));
 				x.setTotal     ((Double) rs.getObject("TOTAL"));
+				x.setPedioSucursal((Integer) rs.getObject("PEDIDO_SUCURSAL"));
+				x.setTotProds((Integer) rs.getObject("TOT_PRODS"));
 				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
 				
 				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
@@ -429,7 +431,7 @@ public class EntradaSalidaDAO {
 			conn = getConnection();
 			
 			String q="SELECT	ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.ES_ID_DEV,\n"
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,TOT_PRODS,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -447,7 +449,7 @@ public class EntradaSalidaDAO {
 					+ "FROM      ENTRADA_SALIDA_ESTADO  ESE,\n"
 					+ "          ENTRADA_SALIDA_DETALLE ESD,\n"		
 					+ "          ENTRADA_SALIDA         ES\n"
-					+ "LEFT JOIN CFD            CFD ON ES.CFD_ID      = CFD.ID\n"
+					+ "LEFT JOIN CFD            CFD ON ES.CFD_ID            = CFD.ID\n"
 					+ "LEFT JOIN SUCURSAL       S   ON ES.SUCURSAL_ID       = S.ID\n"
 					+ "LEFT JOIN ESTADO         E   ON ES.ESTADO_ID         = E.ID\n"
 					+ "LEFT JOIN USUARIO        U   ON ES.USUARIO_EMAIL_CREO= U.EMAIL\n"
@@ -504,6 +506,8 @@ public class EntradaSalidaDAO {
 				x.setSubTotalOpo((Double) rs.getObject("SUB_TOTAL_OPO"));
 				x.setSubTotalReg((Double) rs.getObject("SUB_TOTAL_REG"));
 				x.setTotal     ((Double) rs.getObject("TOTAL"));
+				x.setPedioSucursal((Integer) rs.getObject("PEDIDO_SUCURSAL"));
+				x.setPedioSucursal((Integer) rs.getObject("TOT_PRODS"));
 				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
 				
 				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
@@ -575,7 +579,7 @@ public class EntradaSalidaDAO {
 			
 			String fq0 = 
 					",ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.ES_ID_DEV,\n"
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,TOT_PRODS,ES.ES_ID_DEV,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -591,7 +595,7 @@ public class EntradaSalidaDAO {
 					+ "ESE.FECHA AS FECHA_ACTUALIZO, \n"		
 					+ "ESE.USUARIO_EMAIL AS USUARIO_ACTUALIZO\n";
 			String fwq0 =
-					"FROM      ENTRADA_SALIDA_ESTADO  ESE,\n"
+					" FROM       ENTRADA_SALIDA_ESTADO  ESE,\n"
 					+ "          ENTRADA_SALIDA_DETALLE ESD,\n"		
 					+ "          ENTRADA_SALIDA         ES\n"
 					+ "LEFT JOIN CFD            CFD ON ES.CFD_ID      = CFD.ID\n"
@@ -601,7 +605,7 @@ public class EntradaSalidaDAO {
 					+ "LEFT JOIN CLIENTE        C   ON ES.CLIENTE_ID        = C.ID\n"
 					+ "LEFT JOIN FORMA_DE_PAGO  FP  ON ES.FORMA_DE_PAGO_ID  = FP.ID\n"
 					+ "LEFT JOIN METODO_DE_PAGO MP  ON ES.METODO_DE_PAGO_ID = MP.ID\n"
-					+ "WHERE     1=1\n"
+					+ " WHERE    1=1\n"
 					+ (active ? "AND       ES.ESTADO_ID IN (1,2,4,512)\n":
 							    "AND       ES.ESTADO_ID >  4\n" )
 					+ "AND       ES.ID        = ESD.ENTRADA_SALIDA_ID\n"
@@ -611,11 +615,11 @@ public class EntradaSalidaDAO {
 					+ "AND       ES.SUCURSAL_ID= ?\n"
 					+ (fechaInicial!=null && fechaFinal!=null? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n":"");
 			
-			String q0="SELECT	ES.TOTAL"
+			String q0="SELECT	ES.TOTAL "
 					+ fq0
 					+ fwq0;
 			
-			String qT0="SELECT	SUM(ES.TOTAL) AS GRAN_TOTAL "
+			String qT0="SELECT	ES.TOTAL "
 					+ fq0
 					+ fwq0;
 			
@@ -627,11 +631,12 @@ public class EntradaSalidaDAO {
 					qT0+= "AND     ES."+k.toUpperCase()+" = ? \n";
 				}
 			}
-			q0 += "GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
+			q0  += " GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
+			qT0 += " GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
 			
 			if(pagerInfo.getSortField() != null) {
-				q0  += "ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
-				qT0 += "ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
+				q0  += " ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
+				qT0 += " ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
 			}
 			//------------------------------------------------------------------			
 			logger.info("\t->QUERY COUNT:");			
@@ -665,8 +670,8 @@ public class EntradaSalidaDAO {
 			ps.close();
 			ps = null;
 			
-			//------
-			logger.info("\t->QUERY TOTAL:");			
+			//------------------------------------------------------------------
+			logger.debug("\t->QUERY TOTAL Q:"+qT0);
 			ps = conn.prepareStatement(qT0);
 			
 			vs=1;
@@ -687,11 +692,24 @@ public class EntradaSalidaDAO {
 				}
 			}
 			rs = ps.executeQuery();
-			double granTotal = 0.0;
+			
+			double importeBruto    = 0.0;
+			double factorIva       = 0.0;
+			double importeNOGra    = 0.0;
+			int    importeDescCalc = 0;
+			int    porcDescExtra   = 0;
+			logger.debug("\t\t->IMBR\tFACTOR_IVA\tPDESCCALC\tPOCDESCEX");
 			while(rs.next()){
-				granTotal = rs.getDouble("GRAN_TOTAL");
+				
+				importeBruto    = rs.getDouble("IMPORTE_BRUTO");
+				importeNOGra    = rs.getDouble("IMPORTE_BRUTO");
+				factorIva       = rs.getDouble("FACTOR_IVA");
+				importeDescCalc = rs.getInt("PORCENTAJE_DESCUENTO_CALCULADO");
+				porcDescExtra   = rs.getInt("PORCENTAJE_DESCUENTO_EXTRA");
+				
+				logger.debug("\t\t->"+importeBruto+"\t"+factorIva+"\t"+importeDescCalc+"\t"+porcDescExtra);
 			}
-			logger.info("\t->QUERY TOTAL (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"): granTotal="+granTotal+", Q:"+qT0);
+			
 			
 			rs.close();
 			ps.close();
@@ -721,7 +739,7 @@ public class EntradaSalidaDAO {
 			
 			rs = ps.executeQuery();
 			
-			while (rs.next()) {
+			while (rs.next()) {				
 				EntradaSalidaQuickView x = new EntradaSalidaQuickView();				
 				x.setId((Integer) rs.getObject("ES_ID"));
 				x.setTipoMov((Integer) rs.getObject("TIPO_MOV"));
@@ -747,6 +765,8 @@ public class EntradaSalidaDAO {
 				x.setSubTotal1ra((Double) rs.getObject("SUB_TOTAL_1RA"));
 				x.setSubTotalOpo((Double) rs.getObject("SUB_TOTAL_OPO"));
 				x.setSubTotalReg((Double) rs.getObject("SUB_TOTAL_REG"));
+				x.setPedioSucursal((Integer) rs.getObject("PEDIDO_SUCURSAL"));
+				x.setTotProds((Integer) rs.getObject("TOT_PRODS"));
 				x.setTotal     ((Double) rs.getObject("TOTAL"));
 				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
 				
@@ -768,8 +788,11 @@ public class EntradaSalidaDAO {
 				//logger.info("PEDIDO ID:        :\t"+x.getId());
 				//logger.info("IMPORTE BRUTO     :\t"+x.getImporteBruto());
 				//logger.info("IMPORTE NO GRABADO:\t"+x.getImporteNoGravado());
-				if(x.getImporteBruto() !=null && x.getPorcentajeDescuentoCalculado()!=null && x.getPorcentajeDescuentoExtra()!=null){
-					x.setImporteDescuento((x.getImporteNoGravado()* (x.getPorcentajeDescuentoCalculado()+x.getPorcentajeDescuentoExtra()))/100.0);															
+				if(x.getImporteBruto() !=null ){
+					int dtot = 0;
+					dtot += x.getPorcentajeDescuentoCalculado()!=null? x.getPorcentajeDescuentoCalculado(): 0;
+					dtot += x.getPorcentajeDescuentoExtra()    !=null? x.getPorcentajeDescuentoExtra()    : 0;
+					x.setImporteDescuento((x.getImporteNoGravado()*dtot)/100.0);
 				} else {
 					x.setImporteDescuento(0.0);					
 				}

@@ -26,7 +26,7 @@
 		
 		<environment.stage>Development</environment.stage>
 		<environment.log4j.rootLogger>DEBUG</environment.log4j.rootLogger>
-		<environment.webdescriptor.session-timeout>10</environment.webdescriptor.session-timeout>
+		<environment.webdescriptor.session-timeout>20</environment.webdescriptor.session-timeout>
 		<environment.jdbc.url>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
 		<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
 		<environment.jdbc.db>PMDB104_DEVE</environment.jdbc.db>

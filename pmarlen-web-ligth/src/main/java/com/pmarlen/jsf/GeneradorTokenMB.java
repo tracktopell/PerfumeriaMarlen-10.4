@@ -1,6 +1,7 @@
 package com.pmarlen.jsf;
 
 import com.pmarlen.model.GeneradorDeToken;
+import java.io.Serializable;
 import org.apache.log4j.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -8,7 +9,7 @@ import javax.faces.bean.ViewScoped;
 
 @ManagedBean(name="generadorTokenMB")
 @ViewScoped
-public class GeneradorTokenMB  {
+public class GeneradorTokenMB  implements Serializable {
 	
 	private String frase;
 	

@@ -1,13 +1,10 @@
 package com.pmarlen.jsf;
 
-import com.pmarlen.backend.dao.UsuarioDAO;
 import com.pmarlen.backend.dao.DAOException;
 import com.pmarlen.backend.dao.UsuarioDAO;
-import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.UsuarioQuickView;
 import com.pmarlen.model.Constants;
 import com.pmarlen.web.security.managedbean.EmailChecker;
-import com.pmarlen.web.security.managedbean.SessionUserMB;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +19,7 @@ import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name="usuarioMB")
 @SessionScoped
-public class UsuarioMB  {
+public class UsuarioMB  implements Serializable {
 	private transient final Logger logger = Logger.getLogger(UsuarioMB.class.getSimpleName());
 	private List<UsuarioQuickView> entityList;
 	private Integer viewRows;

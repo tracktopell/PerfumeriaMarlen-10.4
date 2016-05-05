@@ -45,6 +45,7 @@ public class EntradaSalidaFooter implements Serializable{
 	}
 	
 	public void calculaTotalesDesde(EntradaSalida pv,ArrayList<? extends EntradaSalidaDetalle> dvpList){
+		logger.debug("calculaTotalesDesde: Suc:"+pv.getSucursalId());
 		reset();
 		double importeReg = 0.0;
 		double importeRegNG = 0.0;
@@ -63,26 +64,39 @@ public class EntradaSalidaFooter implements Serializable{
 		descuentoAplicado =0;
 		importeDescuentoExtra = 0.0;
 		importeDescuentoAplicado = 0.0;
-		if(pv.getAutorizaDescuento()!=null && pv.getAutorizaDescuento().intValue()==1){			
-			if (subTotalBruto >= 5000 && subTotalBruto < 10000) {				
-				descuentoCalculado = 5;
-				importeDescuentoCalculado = (subTotalBruto * descuentoCalculado)/100.0;
-			} else if (subTotalBruto >= 10000) {
-				descuentoCalculado = 10;
-				importeDescuentoCalculado = (subTotalBruto * descuentoCalculado)/100.0;
+		if(pv.getAutorizaDescuento()!=null && pv.getAutorizaDescuento().intValue()==1){
+			
+			Integer pdc = pv.getPorcentajeDescuentoCalculado();
+			Integer pde = pv.getPorcentajeDescuentoExtra();
+			int     pddb = 0;
+			if(pdc !=null){
+				pddb += pdc.intValue();
+				descuentoCalculado = pdc.intValue();
 			}
-			descuentoExtra = pv.getPorcentajeDescuentoExtra();
-			if(descuentoExtra == null){
-				descuentoExtra = 0;
+			if(pde !=null){
+				pddb += pde.intValue();
+				descuentoExtra = pde;
 			}
-			importeDescuentoExtra    = (subTotalBruto * descuentoExtra)/100.0;
-			descuentoAplicado        = descuentoCalculado + descuentoExtra;		
-			importeDescuentoAplicado = importeDescuentoCalculado + importeDescuentoExtra;
+			if(pddb == 0){
+				logger.debug("calculaTotalesDesde: Pedido de Portal ?");
+				if (subTotalBruto >= 5000 && subTotalBruto < 10000) {
+					descuentoCalculado = 5;
+					
+				} else if (subTotalBruto >= 10000) {
+					descuentoCalculado = 10;					
+				}
+				descuentoExtra = pv.getPorcentajeDescuentoExtra();
+				if(descuentoExtra == null){
+					descuentoExtra = 0;
+				}				
+			}
+			descuentoAplicado         = descuentoCalculado + descuentoExtra;
+			importeDescuentoExtra     = (subTotalBruto * descuentoExtra)/100.0;						
+			importeDescuentoCalculado = (subTotalBruto * descuentoCalculado)/100.0;			
+			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;			
 		} 
-		pv.setPorcentajeDescuentoCalculado(descuentoCalculado);
-		importeDescuentoExtra = (subTotalBruto * descuentoExtra)/100.0;
-
-		total = subTotalNoGrabado + importeIVA - importeDescuentoAplicado ;		
+		
+		total = subTotalNoGrabado + importeIVA - importeDescuentoAplicado ;
 	}
 	
 	public void calculaParaFacturaTotalesDesde(EntradaSalida pv,ArrayList<? extends EntradaSalidaDetalle> dvpList){
@@ -103,30 +117,43 @@ public class EntradaSalidaFooter implements Serializable{
 		descuentoAplicado =0;
 		importeDescuentoExtra = 0.0;
 		importeDescuentoAplicado = 0.0;
-		if(pv.getAutorizaDescuento()!=null && pv.getAutorizaDescuento().intValue()==1){			
-			if (subTotalBruto >= 5000 && subTotalBruto < 10000) {				
-				descuentoCalculado = 5;
-				importeDescuentoCalculado = (subTotalNoGrabado * descuentoCalculado)/100.0;
-			} else if (subTotalBruto >= 10000) {
-				descuentoCalculado = 10;
-				importeDescuentoCalculado = (subTotalNoGrabado * descuentoCalculado)/100.0;
+		if(pv.getAutorizaDescuento()!=null && pv.getAutorizaDescuento().intValue()==1){
+			
+			Integer pdc = pv.getPorcentajeDescuentoCalculado();
+			Integer pde = pv.getPorcentajeDescuentoExtra();
+			int     pddb = 0;
+			if(pdc !=null){
+				pddb += pdc.intValue();
+				descuentoCalculado = pdc.intValue();
 			}
-			descuentoExtra = pv.getPorcentajeDescuentoExtra();
-			if(descuentoExtra == null){
-				descuentoExtra = 0;
+			if(pde !=null){
+				pddb += pde.intValue();
+				descuentoExtra = pde;
 			}
-			importeDescuentoExtra    = (subTotalNoGrabado * descuentoExtra)/100.0;			
-		} 
-		descuentoAplicado        = descuentoCalculado + descuentoExtra;
-		pv.setPorcentajeDescuentoCalculado(descuentoCalculado);
-		importeDescuentoExtra = (subTotalNoGrabado * descuentoExtra)/100.0;
-		logger.info("->subTotalNoGrabado="+subTotalNoGrabado);
-		importeDescuentoAplicado = importeDescuentoCalculado + importeDescuentoExtra;
-		logger.info("->importeDescuentoAplicado="+importeDescuentoAplicado);
+			if(pddb == 0){
+				if (subTotalBruto >= 5000 && subTotalBruto < 10000) {
+					descuentoCalculado = 5;
+					
+				} else if (subTotalBruto >= 10000) {
+					descuentoCalculado = 10;					
+				}
+				descuentoExtra = pv.getPorcentajeDescuentoExtra();
+				if(descuentoExtra == null){
+					descuentoExtra = 0;
+				}				
+			}
+			descuentoAplicado         = descuentoCalculado + descuentoExtra;
+			importeDescuentoExtra     = (subTotalBruto * descuentoExtra)/100.0;						
+			importeDescuentoCalculado = (subTotalBruto * descuentoCalculado)/100.0;			
+			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;			
+		}
+		logger.info("->calculaParaFacturaTotalesDesde: FACTURA subTotalBruto="+subTotalBruto);
+		logger.info("->calculaParaFacturaTotalesDesde: FACTURA subTotalNoGrabado="+subTotalNoGrabado);		
+		logger.info("->calculaParaFacturaTotalesDesde: FACTURA importeDescuentoAplicado="+importeDescuentoAplicado);
 		importeIVA = (subTotalNoGrabado - importeDescuentoAplicado) * Constants.IVA;
-		logger.info("->iva="+importeIVA);
+		logger.info("->calculaParaFacturaTotalesDesde: FACTURA iva="+importeIVA);
 		total = subTotalNoGrabado - importeDescuentoAplicado + importeIVA;		
-		logger.info("->total="+total);
+		logger.info("->calculaParaFacturaTotalesDesde: FACTURA total="+total);
 	}
 
 	/**
@@ -206,4 +233,19 @@ public class EntradaSalidaFooter implements Serializable{
 		return totalUnidades;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("\t----EntradaSalidaFooter----\n");
+		sb.append("\t #UNIDADES:\t#"+totalUnidades+"\n");
+		sb.append("\t SUBTOT.NG:\t"+Constants.getImporteMoneda(subTotalNoGrabado)+"\n");
+		sb.append("\tSUBTOTAL B:\t"+Constants.getImporteMoneda(subTotalBruto)+" = ("+Constants.getImporteDesglosado(subTotalBruto)+")\n");
+		sb.append("\t  SUBTOTAL:\t"+Constants.getImporteMoneda(subTotalNoGrabado)+"\n");
+		sb.append("\t-DESCUENTO:\t( "+descuentoCalculado+"% + "+descuentoExtra+"% = "+descuentoAplicado+"%) = "+Constants.getImporteMoneda(importeDescuentoAplicado)+"\n");
+		sb.append("\t   +I.V.A.:\t"+Constants.getImporteMoneda(importeIVA)+"\n");
+		sb.append("\t T O T A L:\t"+Constants.getImporteMoneda(total)+"\n");
+		sb.append("\t===========================\n");
+		return sb.toString(); 
+	}	
 }

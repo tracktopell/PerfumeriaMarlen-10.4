@@ -6,11 +6,11 @@
 
 package com.pmarlen.jsf;
 
+import java.io.Serializable;
 import org.apache.log4j.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 
 /**
  *
@@ -18,7 +18,7 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean(name="navigationMB")
 @RequestScoped
-public class NavigationMB {
+public class NavigationMB  implements Serializable{
 	protected static transient Logger logger = Logger.getLogger(NavigationMB.class.getName());
 
 	@ManagedProperty(value = "#{pedidosVentaMB}")

@@ -30,7 +30,7 @@ import org.primefaces.event.ReorderEvent;
 
 @ManagedBean(name="comprasMB")
 @SessionScoped
-public class ComprasMB  {
+public class ComprasMB  implements Serializable{
 	private transient static Logger logger = Logger.getLogger(ComprasMB.class.getSimpleName());
 	
 	@ManagedProperty(value = "#{editarCompraMB}")

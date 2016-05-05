@@ -91,7 +91,7 @@
 					<p:column headerText="DATOS" width="20%">
 						<p:panelGrid columns="2" columnClasses="rightAlign,leftAlign">
 							<h:outputText value="ELEMENTOS :" />
-							<h:outputText value="#{pv.numElementos}" />
+							<h:outputText value="#{pv.numElementos} / #{pv.totProds}" />
 							<h:outputText value="FORMA DE PAGO :" />
 							<h:outputText value="#{pv.formaDePagoDescripcion}" />
 							<h:outputText value="METODO DE PAGO:" />
@@ -111,12 +111,17 @@
 							</h:outputText>
 							
 							<h:outputText value="IMPORTE NO GRAVADO :" />
+							<h:panelGroup>
 							<h:outputText value="#{pv.importeNoGravado}" >
 								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
 							</h:outputText>
-							
+							==
+							<h:outputText value="#{pv.importeNoGravado} / (1 + #{pv.factorIva})" >
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>
+							</h:panelGroup>
 							<h:outputText value="- DESCUENTOS :" />
-							<h:outputText value="#{pv.porcentajeDescuentoCalculado}% + #{pv.porcentajeDescuentoExtra}%  = #{ventasSucursalesMB.getImporteMoneda(pv.importeDescuento)}" />
+							<h:outputText value="#{pv.porcentajeDescuentoCalculado}% + #{pv.porcentajeDescuentoExtra}%  = #{ventasSucursalesMB.getImporteMoneda(pv.importeDescuento)} = #{pv.descuentoAplic} " />
 							
 							<h:outputText value="+ I.V.A. :" />
 							<h:outputText value="#{pv.importeIVA}" title="FACTOR I.V.A.= ${ventasSucursalesMB.getImporteMoneda(pv.factorIva)}" >
