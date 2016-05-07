@@ -130,8 +130,6 @@ public class EntradaSalida implements java.io.Serializable {
 
 	private Double total;
 	
-	private Double descuentoAplic;
-	
 	private Double descRedondeo;
 	
 	private Double redondeoHab;
@@ -430,20 +428,6 @@ public class EntradaSalida implements java.io.Serializable {
     public String toString() {
         return "com.pmarlen.backend.model.EntradaSalida[id = "+id+ "]";
     }	
-
-	/**
-	 * @return the descuentoAplic
-	 */
-	public Double getDescuentoAplic() {
-		return descuentoAplic;
-	}
-
-	/**
-	 * @param descuentoAplic the descuentoAplic to set
-	 */
-	public void setDescuentoAplic(Double descuentoAplic) {
-		this.descuentoAplic = descuentoAplic;
-	}
 
 	/**
 	 * @return the descRedondeo

@@ -36,3 +36,5 @@ import_PMDBSucs_PM104_DEVE:
 	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  4  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS3/PMarlen_DB "
 	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  5  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS4/PMarlen_DB "
 
+homogenizarVentas:
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.HomogenizarVentas_PM104 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8"

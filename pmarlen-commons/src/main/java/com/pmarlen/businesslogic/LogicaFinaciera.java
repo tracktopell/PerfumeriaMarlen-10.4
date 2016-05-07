@@ -51,16 +51,22 @@ public class LogicaFinaciera {
 		
 		return calculaTotales(factorIva, esdListObj, descuento, porcentajeDescuentoExtra/100.0, redondear, importeRecibido, recibidoTarjeta,estrategiaDesc);
 	}
+	
 	public static TotalesCalculados calculaTotales(double factorIva,List<Object[]> esdList,boolean descunetoHabilitado, double factorDescExtra,boolean redondear, double recibidoEfectivo,double recibidoTarjeta,int estrategiaDesc){
 		double st1ra=0.0;
 		double stOpo=0.0;
 		double stReg=0.0;
 		int numProd1ra=0;
+		int elemDet  = 0;
+		int totProds = 0;
+		int i=0;
 		for(Object[]  esd: esdList){
-			
+			i++;
 			int	tipoAlm = (Integer)esd[0];
 			int	cant    = (Integer)esd[1];
 			double	precio  = (Double) esd[2];
+			
+			totProds    += cant;
 
 			
 			if(tipoAlm == Constants.ALMACEN_PRINCIPAL){
@@ -73,7 +79,11 @@ public class LogicaFinaciera {
 				stReg += cant * precio;				
 			}			
 		}
-		return calculaTotales(factorIva, numProd1ra,st1ra, stOpo, stReg, descunetoHabilitado, factorDescExtra, redondear, recibidoEfectivo, recibidoTarjeta, estrategiaDesc);
+		elemDet = i;
+		final TotalesCalculados ct = calculaTotales(factorIva, numProd1ra,st1ra, stOpo, stReg, descunetoHabilitado, factorDescExtra, redondear, recibidoEfectivo, recibidoTarjeta, estrategiaDesc);
+		ct.elemDet = elemDet;
+		ct.totProds=totProds;
+		return ct;
 	
 	}
 	
@@ -176,9 +186,9 @@ public class LogicaFinaciera {
 		esdList.add(new Object[]{1,   800,  19.76});
 		esdList.add(new Object[]{2,   300,  27.50});
 		esdList.add(new Object[]{2,   700,  19.03});
-		esdList.add(new Object[]{3,   100,   0.0});
-		esdList.add(new Object[]{3,   100,   0.0});
-		esdList.add(new Object[]{3,   100,   0.0});
+		esdList.add(new Object[]{3,   100,    0.0});
+		esdList.add(new Object[]{3,   100,    0.0});
+		esdList.add(new Object[]{3,   100,    0.0});
 		
 		TotalesCalculados tc1 = calculaTotales(factorIva, esdList, descunetoHabilitado, factorDescExtra, false, recibidoEfectivo, recibidoTarjeta, CALCULO_DESC_ALMACEN);
 		

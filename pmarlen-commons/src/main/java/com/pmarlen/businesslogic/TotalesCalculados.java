@@ -32,6 +32,9 @@ public class TotalesCalculados {
 	double recibidoEfectivo;
 	double recibidoTarjeta;
 	double cambio;
+	
+	int    elemDet;
+	int    totProds;
 
 	public TotalesCalculados() {
 	}
@@ -322,7 +325,9 @@ public class TotalesCalculados {
 	public String toString(boolean vistaFactura) {
 		StringBuilder sb= new StringBuilder();
 		sb.append("===========================================================\n");
-		
+		sb.append("  ELEM_DET :").append("+\t").append(String.format("%15s",elemDet)).append("\n");
+		sb.append(" TOT_PRODS :").append("+\t").append(String.format("%15s",totProds)).append("\n");
+		sb.append("                 -------------------\n");
 		sb.append("S.T. 1RA   :").append("+\t").append(String.format("%15s",Constants.dfCurrency.format(subTotal1ra))).append("\n");
 		sb.append("S.T. OPO   :").append("+\t").append(String.format("%15s",Constants.dfCurrency.format(subTotalOpo))).append("\n");
 		sb.append("S.T. REG   :").append("+\t").append(String.format("%15s",Constants.dfCurrency.format(subTotalReg))).append("\n");
@@ -361,6 +366,34 @@ public class TotalesCalculados {
 	@Override
 	public String toString() {
 		return toString(true);
+	}
+
+	/**
+	 * @return the elemDet
+	 */
+	public int getElemDet() {
+		return elemDet;
+	}
+
+	/**
+	 * @param elemDet the elemDet to set
+	 */
+	public void setElemDet(int elemDet) {
+		this.elemDet = elemDet;
+	}
+
+	/**
+	 * @return the totProds
+	 */
+	public int getTotProds() {
+		return totProds;
+	}
+
+	/**
+	 * @param totProds the totProds to set
+	 */
+	public void setTotProds(int totProds) {
+		this.totProds = totProds;
 	}
 
 	

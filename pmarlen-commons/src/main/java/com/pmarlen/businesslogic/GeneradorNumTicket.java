@@ -19,8 +19,10 @@ public class GeneradorNumTicket{
     private static final long bigLong  =  999999999999999999L;
 	private static final long bigLongT =  99999999L;
 	private static final long bigLongT2 = 9999999999999999L;
-	/*
-    @Deprecated
+	
+	/**
+	@deprecated
+	*/
 	public static String getNumTicket(int sucId,int caja,int clienteId,double total){
 		StringBuilder sb= new StringBuilder();		
 		sb.append(sdf.format(new Date()));
@@ -34,8 +36,9 @@ public class GeneradorNumTicket{
         //return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + String.valueOf(bigLongT - l2);
 		return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + df2Tot.format(total).replace(".", "");
     }
-	
-	@Deprecated
+	/**
+	@deprecated
+	*/ 
     public static String getNumTicket(Date d,int sucId,int caja,int clienteId,double total){
 		StringBuilder sb= new StringBuilder();		
 		sb.append(sdf.format(d));
@@ -49,7 +52,6 @@ public class GeneradorNumTicket{
         //return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + String.valueOf(bigLongT - l2);
 		return String.valueOf(bigLong - l1) + df3Id.format(clienteId) + df2Tot.format(total).replace(".", "");
     }
-	*/
 	
 	public static String getNumTicket(Date d,int sucId,int caja){
 		StringBuilder sb= new StringBuilder();		
@@ -64,7 +66,8 @@ public class GeneradorNumTicket{
     }
 
     public static void main(String args[]){
-        String numTicket = getNumTicket(new Date(),3,3);
-		System.out.println("TIKECT      ="+numTicket);	
+		System.out.println("TIKECT     V1 ="+getNumTicket(1,1,3,3.1));	
+        System.out.println("TIKECT     V2 ="+getNumTicket(new Date(),1,1,3,3.1));	
+		System.out.println("TIKECT     V3 ="+getNumTicket(new Date(),3,3));	
     }
 }

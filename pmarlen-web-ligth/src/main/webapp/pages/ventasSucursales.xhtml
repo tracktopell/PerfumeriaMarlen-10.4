@@ -52,24 +52,26 @@
 						<p:commandButton value="RECARGAR" actionListener="#{ventasSucursalesMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
 					</f:facet>
 					
-					<p:column headerText="#" width="10%" filterBy="#{pv.id}" filterMatchMode="contains">						
-						<p:panelGrid columns="1" columnClasses="centerAlign" >							
+					<p:column headerText="#" width="7%" filterBy="#{pv.id}" filterMatchMode="contains" filterStyle="width:30px;" >
+						<p:panelGrid columns="1" columnClasses="centerAlign" >		
+							<!--
 							<p:commandButton actionListener="#{ventasSucursalesMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
+							-->
 							<h:panelGroup>
 								
 								<h:outputLink id="pdfLink" value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pv.id}.pdf" target="_blank">
 									<h:graphicImage value="/images/nota_16x16.png" title="PDF NOTA DE VENTA ##{pv.id}"/>
 								</h:outputLink>
-								<p:spacer width="5"/>
+							<!--	
 								<h:outputLink id="pdfLinkNoImages" value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pv.id}_paraImprimir.pdf" target="_blank">
 									<h:graphicImage value="/images/nota_16x16.png" title="PDF NOTA DE VENTA ##{pv.id} PARA IMPRIMIR HOJAS MEMBRETADAS"/>
 								</h:outputLink>
-								
+							-->	
 							</h:panelGroup>
 						</p:panelGrid>
 					</p:column>
 					
-					<p:column headerText="CREADO / ACTUAL" width="15%">
+					<p:column headerText="CREADO / ACTUAL" width="18%">
 						<p:panelGrid columns="1" columnClasses="centerAlign" style="border: none; border-collapse: none; ">							
 							<h:outputText value="CREADO / #{pv.fechaCreo} (#{pv.usuarioEmailCreo}) "/>
 							<h:outputText value="#{pv.estadoDescripcion} / #{pv.estadoActualFecha} (#{pv.estadoActualUsuarioEmail}" />							
@@ -77,20 +79,15 @@
 						
 					</p:column>
 					
-					<p:column headerText="CLIENTE" width="20%">
-						<p:panelGrid columns="2" columnClasses="rightAlign,leftAlign">
+					<p:column headerText="DATOS" width="40%">
+						<p:panelGrid columns="2" columnClasses="columnWidth30 rightAlign,columnWidth70 leftAlign">
 							<h:outputText value="R.F.C. :" />
 							<h:outputText value="#{pv.clienteRFC}" />
 							<h:outputText value="RAZÓN SOCIAL :" />
 							<h:outputText value="#{pv.clienteRazonSocial}" />
 							<h:outputText value="NOMBRE ESTAB.:" />
 							<h:outputText value="#{pv.clienteNombreEstablecimiento}" />							
-						</p:panelGrid>
-					</p:column>
-					
-					<p:column headerText="DATOS" width="20%">
-						<p:panelGrid columns="2" columnClasses="rightAlign,leftAlign">
-							<h:outputText value="ELEMENTOS :" />
+							<h:outputText value="ELEM/ # PRODS.:" />
 							<h:outputText value="#{pv.numElementos} / #{pv.totProds}" />
 							<h:outputText value="FORMA DE PAGO :" />
 							<h:outputText value="#{pv.formaDePagoDescripcion}" />
@@ -110,24 +107,8 @@
 								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
 							</h:outputText>
 							
-							<h:outputText value="IMPORTE NO GRAVADO :" />
-							<h:panelGroup>
-							<h:outputText value="#{pv.importeNoGravado}" >
-								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
-							</h:outputText>
-							==
-							<h:outputText value="#{pv.importeNoGravado} / (1 + #{pv.factorIva})" >
-								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
-							</h:outputText>
-							</h:panelGroup>
 							<h:outputText value="- DESCUENTOS :" />
-							<h:outputText value="#{pv.porcentajeDescuentoCalculado}% + #{pv.porcentajeDescuentoExtra}%  = #{ventasSucursalesMB.getImporteMoneda(pv.importeDescuento)} = #{pv.descuentoAplic} " />
-							
-							<h:outputText value="+ I.V.A. :" />
-							<h:outputText value="#{pv.importeIVA}" title="FACTOR I.V.A.= ${ventasSucursalesMB.getImporteMoneda(pv.factorIva)}" >
-								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
-							</h:outputText>									
-							
+							<h:outputText value="#{pv.porcentajeDescuentoCalculado}% + #{pv.porcentajeDescuentoExtra}%" />
 							
 							<h:outputText value="TOTAL :" />
 							<h:outputText value="#{pv.importeTotal}" styleClass="littleLabel_bold_right">

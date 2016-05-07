@@ -5,11 +5,11 @@
  */
 package com.pmarlen.migration;
 
-import com.lowagie.text.pdf.PdfName;
-import com.pmarlen.backend.model.EntradaSalida;
-import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.businesslogic.GeneradorNumTicket;
-import com.pmarlen.model.Constants;
+import static com.pmarlen.businesslogic.LogicaFinaciera.CALCULO_DESC_ALMACEN;
+import static com.pmarlen.businesslogic.LogicaFinaciera.calculaTotales;
+import static com.pmarlen.businesslogic.LogicaFinaciera.getImpuestoIVA;
+import com.pmarlen.businesslogic.TotalesCalculados;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,16 +17,11 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -62,169 +57,88 @@ public class HomogenizarVentas_PM104 {
 			System.out.println("-->>> DEBUG MODE");
 		}
 		
-		
-		connectToNewDBTransactional();
+		//connectToNewDBTransactional();
+		connectToNewDB();
 
 		try {
 			long t1, t2, t3, T;
-			String queryVentasPM103 =	"SELECT  ES.ID,\n" +													// 0
-										"        ESD.ALMACEN_ID,\n" +
-										"        ES.AUTORIZA_DESCUENTO,\n" +
-										"        ES.TOTAL,\n" +
-										"        ES.TOTAL_COBRADO,\n" +
-										"        ES.IMPORTE_RECIBIDO,\n"+										// 5
-										"        ES.CAMBIO,\n" +
-										"        ES.DESCUENTO_APLIC,\n" +
-										"        ES.PORCENTAJE_DESCUENTO_CALCULADO,\n" +
-										"        ES.PORCENTAJE_DESCUENTO_EXTRA,\n" +
-										"        ES.ELEM_DET,\n" +												// 10
-										"        ES.TOT_PRODS,\n" +
-										"        ES.SUB_TOTAL_1RA,\n" +
-										"        ES.SUB_TOTAL_OPO,\n" +
-										"        ES.SUB_TOTAL_REG,\n" +
-										"        SUM(ESD.CANTIDAD * ESD.PRECIO_VENTA) AS IMPORTE_BRUTO_X,\n" +	// 15
-										"        SUM(ESD.CANTIDAD) T1,\n"+
-										"        SUM(1) T2\n" +													// 17
-										"FROM    ENTRADA_SALIDA ES,ENTRADA_SALIDA_DETALLE ESD\n" +
-										"WHERE   1=1\n" +
-										"AND     ES.ID >= 5500\n"+
-										"AND     ES.PEDIDO_SUCURSAL IS NULL\n" +
-										"AND     ES.ID = ESD.ENTRADA_SALIDA_ID\n" +
-										"GROUP   BY ES.ID, ESD.ALMACEN_ID";
+			
+			String queryVentasPM103    ="SELECT    ES.ID,ES.FECHA_CREO,ES.SUCURSAL_ID,ES.CAJA\n" +
+										"FROM      ENTRADA_SALIDA ES\n" +
+										"WHERE     1=1\n" +
+										"AND       ES.PEDIDO_SUCURSAL IS NULL;";
+			
+			String queryDetVentasPM103 ="SELECT ES.ID,\n" +								// 0							
+										"       A.TIPO_ALMACEN,\n" +					// 1
+										"       ESD.CANTIDAD,\n" +						// 2
+										"       ESD.PRECIO_VENTA,\n" +					// 3
+										"       ES.AUTORIZA_DESCUENTO,\n" +				// 4
+										"       ES.PORCENTAJE_DESCUENTO_CALCULADO,\n" +	// 5
+										"       ES.PORCENTAJE_DESCUENTO_EXTRA\n" +		// 6
+										"FROM   ENTRADA_SALIDA ES,ENTRADA_SALIDA_DETALLE ESD,ALMACEN A\n" +
+										"WHERE  1=1\n" +
+										"AND    ES.ID = ? \n" +
+										"AND    ES.ID = ESD.ENTRADA_SALIDA_ID\n" +
+										"AND    ESD.ALMACEN_ID = A.ID ;";
 			
 			System.out.println("--->> HOMOGENIZANDO VENTAS ACTUALES:");
 			
 			final List<Object[]> ventas = executeQuery(newDBConnection,queryVentasPM103);
-			int esID     = -1;
-			int esIDLast = -1;
-			Integer esAlmacenId = null;
-			Integer autorizaDescunto = null;
-			Double  total= 0.0;
-			Double  totalCobrado = 0.0;
-			Integer elemDet = 0;
-			Integer totProds = 0;
-			Double  importeRecib = null;
-			Double  cambio = null;
-			Double  descAplic = null;
-			Integer porcentajeDescCalc  = null;
-			Integer porcentajeDescExtra = null;
-			Double  importeBruto = null;
-			Integer  tot1 = null;
-			Integer  tot2 = null;
-			
-			Double  st1ra = 0.0;
-			Double  stOpo = 0.0;			
-			Double  stReg = 0.0;
-			boolean first=true;
-			int numReg = 0;
-			System.out.println("->ventas.size="+ventas.size());
-			for(Object[] ventasArr:ventas){
-				numReg++;
+			System.out.println("\t->ID_VTA");
+			int i=0;
+			int adv = 0;
+			Date fecha = null;
+			int  idSuc = 0;
+			Integer  caja=null;
+			Integer idVenta=null;
+			for(Object[] vtaArr: ventas){
+				i++;
+				idVenta = (Integer)vtaArr[0];
+				fecha   = (Date)   vtaArr[1];
+				idSuc   = (Integer)vtaArr[2];
+				caja    = (Integer)vtaArr[3];
 				
-				//System.out.println("READ["+numReg+"]:"+Arrays.asList(ventasArr));
-				
-				
-				esID				= (Integer)ventasArr[0];
-				if(first){
-					esIDLast        = esID;
-					first			= false;
+				if(caja==null){
+					caja = 1;
 				}
 				
-				if(esID == esIDLast && numReg != ventas.size()){
-					esAlmacenId			= (Integer)ventasArr[1];
-					autorizaDescunto	= (Integer)ventasArr[2];
-					if(autorizaDescunto==null) autorizaDescunto=0;
-					total				= (Double) ventasArr[3];
-					if(total==null)		total = 0.0;
-					totalCobrado		= (Double) ventasArr[4];
-					if(totalCobrado==null)totalCobrado=0.0;
-					importeRecib		= (Double) ventasArr[5];
-					if(importeRecib ==null)importeRecib=0.0;
-					cambio				= (Double) ventasArr[6];
-					if(cambio==null) cambio=0.0;
-					descAplic			= (Double)ventasArr[7];
-					if(descAplic==null)descAplic = 0.0;
-					porcentajeDescCalc	= (Integer)ventasArr[8];
-					if(porcentajeDescCalc == null) porcentajeDescCalc = 0;					
-					porcentajeDescExtra	= (Integer)ventasArr[9];
-					if(porcentajeDescExtra==null) porcentajeDescExtra = 0;
-					importeBruto		= (Double) ventasArr[15];
-					tot1				= ((java.math.BigDecimal) ventasArr[16]).intValue();
-					tot2				= ((java.math.BigDecimal) ventasArr[17]).intValue();
+				//System.out.println("\t"+Arrays.asList(vtaArr));
+				
+				final List<Object[]> ventasDet = executeQuery(newDBConnection,queryDetVentasPM103.replaceAll("\\?", String.valueOf(idVenta)));
+				double factorIva = getImpuestoIVA();
+				List<Object[]> esdList = new ArrayList<Object[]>();
+				Integer autorizaDescuento = null;
+				boolean descunetoHabilitado = true;
+				double factorDescExtra = 0.0;
+				boolean redondear = false;
+				double recibidoEfectivo = 0.0;
+				double recibidoTarjeta = 0.0;
 
-					elemDet			+= tot1;
-					totProds		+= tot2;
-
-					if(esAlmacenId == 1){
-						st1ra = importeBruto;
-					} else if(esAlmacenId == 2){
-						stOpo = importeBruto;
-					} else if(esAlmacenId == 3){
-						stReg = importeBruto;
-					}				
-					total			= st1ra + stOpo + stReg;
-					totalCobrado	= total;
+				for(Object[] regDetVent: ventasDet){
+					//System.out.println("\t"+Arrays.asList(regDetVent));
+					autorizaDescuento   = regDetVent[4]!=null?(Integer)regDetVent[4]:0;
+					descunetoHabilitado = (autorizaDescuento!=null && autorizaDescuento==1)?true:false;
+					factorDescExtra     = regDetVent[6]!=null?((Integer)regDetVent[6]) / 100.0:0;
 					
-				} else if(esID != esIDLast || numReg == ventas.size()){
-					if(numReg != ventas.size()) {
-						//System.out.println("\t>>["+((numReg == ventas.size())?"*":" ")+""+numReg+"] ID: ["+esIDLast+"]\t"+sdf.format(total)+"\t"+sdf.format(totalCobrado)+"\t"+sdf.format(cambio)+"\t"+elemDet+"\t"+totProds+"\t"+sdf.format(st1ra)+"\t"+sdf.format(stOpo)+"\t"+sdf.format(stReg)+"\t-"+porcentajeDescCalc+"%"+"\t-"+porcentajeDescExtra+"%");
-						updatePV(esIDLast,porcentajeDescCalc,porcentajeDescExtra,elemDet,totProds,st1ra,stOpo,stReg);
-					}
-					
-					if(esID != esIDLast ){
-						st1ra			= 0.0;
-						stOpo			= 0.0;
-						stReg			= 0.0;
-						elemDet			= 0;
-						totProds		= 0;
-					}
-					
-					esAlmacenId			= (Integer)ventasArr[1];
-					autorizaDescunto	= (Integer)ventasArr[2];
-					if(autorizaDescunto==null) autorizaDescunto=0;
-					total				= (Double) ventasArr[3];
-					if(total==null)		total = 0.0;
-					totalCobrado		= (Double) ventasArr[4];
-					if(totalCobrado==null)totalCobrado=0.0;
-					importeRecib		= (Double) ventasArr[5];
-					if(importeRecib ==null)importeRecib=0.0;
-					cambio				= (Double) ventasArr[6];
-					if(cambio==null) cambio=0.0;
-					descAplic			= (Double)ventasArr[7];
-					if(descAplic==null)descAplic = 0.0;
-					porcentajeDescCalc	= (Integer)ventasArr[8];
-					if(porcentajeDescCalc == null) porcentajeDescCalc = 0;					
-					porcentajeDescExtra	= (Integer)ventasArr[9];
-					if(porcentajeDescExtra==null) porcentajeDescExtra = 0;
-					importeBruto		= (Double) ventasArr[15];
-					tot1				= ((java.math.BigDecimal) ventasArr[16]).intValue();
-					tot2				= ((java.math.BigDecimal) ventasArr[17]).intValue();
-
-					elemDet			+= tot1;
-					totProds		+= tot2;
-
-					if(esAlmacenId == 1){
-						st1ra = importeBruto;
-					} else if(esAlmacenId == 2){
-						stOpo = importeBruto;
-					} else if(esAlmacenId == 3){
-						stReg = importeBruto;
-					}
-					
-					total			= st1ra + stOpo + stReg;
-					totalCobrado	= total;
-					
-					if(numReg == ventas.size()){
-						//System.out.println("\t>>["+((numReg == ventas.size())?"*":" ")+""+numReg+"] ID: ["+esID+"]\t"+sdf.format(total)+"\t"+sdf.format(totalCobrado)+"\t"+sdf.format(cambio)+"\t"+elemDet+"\t"+totProds+"\t"+sdf.format(st1ra)+"\t"+sdf.format(stOpo)+"\t"+sdf.format(stReg)+"\t-"+porcentajeDescCalc+"%"+"\t-"+porcentajeDescExtra+"%");
-						updatePV(esID,porcentajeDescCalc,porcentajeDescExtra,elemDet,totProds,st1ra,stOpo,stReg);
-					}
-					
-					cambio			= 0.0;
-					
+					esdList.add(new Object[]{(Integer)regDetVent[1],(Integer)regDetVent[2],(Double)regDetVent[3]});		
 				}
-				esIDLast = esID;
+
+				TotalesCalculados tc1 = calculaTotales(factorIva, esdList, descunetoHabilitado, factorDescExtra, false, recibidoEfectivo, recibidoTarjeta, CALCULO_DESC_ALMACEN);
+
+				//System.out.println(tc1.toString(true));
+				//System.out.println(tc1.toString(false));
+
+				//TotalesCalculados tc2 = calculaTotales(factorIva, esdList, descunetoHabilitado, factorDescExtra, true, recibidoEfectivo, recibidoTarjeta, CALCULO_DESC_SUCUSALES);
+
+				//System.out.println(tc2.toString(true));
+				//System.out.println(tc2.toString(false));
+
+				updatePV(idVenta,tc1,fecha,idSuc,caja);
+				adv = (i*100) / ventas.size();
+				System.out.print("\t==>UpdateVEntas\t"+adv+"% ("+i+"/"+ventas.size()+")\r");
 			}
-						
+			System.out.println();
+					
 			System.out.println("=================================== END IMPORT OK =================================");
 			System.exit(0);
 		} catch (Exception ex) {
@@ -233,31 +147,30 @@ public class HomogenizarVentas_PM104 {
 		}
 	}
 	
-	private static void updatePV(int id,int descCalc,int descExtra,int elemDEt,int numProds,Double  st1ra,Double  stOpo,Double  stReg){
-		Double total;
-		Double subTotal;
-		Double subTotalNG;
-		Double descAplic;
-		Double iva;
-		Double totalCobrado;
-		Double cambio;
-		Double impDesc = 0.0;
+	private static void updatePV(int id,TotalesCalculados tc,Date fecha,int sucId,int caja){
 		
-		descAplic = (descCalc/100.0) + (descExtra/100.0);
-		 
-		subTotal     = st1ra + stOpo + stReg;
-		subTotalNG   = (subTotal/1.16);
-		impDesc      = descAplic*subTotalNG;
-		iva          = (subTotalNG - impDesc)* 0.16;
-		total        = subTotalNG - impDesc + iva;
-		totalCobrado = total;
-		cambio       = 0.0;
+		String numTicket = GeneradorNumTicket.getNumTicket(fecha, sucId, caja);
 		
-		String updatePV =	"UPDATE  ENTRADA_SALIDA SET TOTAL="+sdf.format(total)+",DESCUENTO_APLIC="+sdf.format(impDesc)+",SUB_TOTAL_1RA="+sdf.format(st1ra)+",SUB_TOTAL_OPO="+sdf.format(stOpo)+",SUB_TOTAL_REG="+sdf.format(stReg)+" WHERE ID="+id+"; IVA="+sdf.format(iva);
-		//String updatePV =	"UPDATE  ENTRADA_SALIDA SET IB="+sdf.format(subTotal)+",ING="+sdf.format(subTotalNG)+" WHERE ID="+id+";";
+		String updatePV =	"UPDATE  ENTRADA_SALIDA SET "+
+							"TOTAL="+sdf.format(tc.getTotalFinal())+","+
+							"TOTAL_COBRADO="+sdf.format(tc.getTotalFinal())+","+
+							"IMPORTE_RECIBIDO="+sdf.format(tc.getTotalFinal())+","+
+							"CAMBIO="+sdf.format(tc.getCambio())+","+
+							"NUMERO_TICKET='"+numTicket+"',"+
+							"SUB_TOTAL_1RA ="+sdf.format(tc.getSubTotal1ra())+","+
+							"SUB_TOTAL_OPO ="+sdf.format(tc.getSubTotalOpo())+","+
+							"SUB_TOTAL_1RA ="+sdf.format(tc.getSubTotalReg())+","+
+							"ELEM_DET  ="+tc.getElemDet()+","+
+							"TOT_PRODS ="+tc.getTotProds()+", "+
+							"PEDIDO_SUCURSAL=0 "+
+							"WHERE ID="+id+";";
 		
-		System.out.println("\t"+updatePV);
-		
+		//System.out.println("\t"+updatePV);
+		try {
+			executeDirectUpdate(newDBConnection,updatePV);
+		}catch(SQLException se){
+			System.err.println(se.toString());
+		}
 	}
 	
 	
