@@ -181,7 +181,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					if(		productoEncontrado.getA1c() <= 0 ||
 							productoEncontrado.getaRc() <= 0 ||
 							productoEncontrado.getaOc() <= 0    ) {
-						throw new IllegalStateException("NO HAY CANTIDAD SUFICIENTE EN ALMACEN PARA ="+productoEncontrado.getCb());
+						logger.info("EN ALGUN ALMACEN NO HAY CANTIDAD SUFICIENTE ["+productoEncontrado.getA1c()+"|"+productoEncontrado.getaRc()+"|"+productoEncontrado.getaOc()+"] EN ALMACEN["+tipoAlmacenSeleccionado+"] PARA ="+productoEncontrado.getCb());
 					}
 					
 					

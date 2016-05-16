@@ -21,6 +21,7 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaEstadoQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.backend.model.quickviews.PagerInfo;
 import com.pmarlen.digifactws.production.client.DigifactClient;
+import com.pmarlen.jsf.model.EntradaSalidaDTOPageHelper;
 import com.pmarlen.model.Constants;
 import com.tracktopell.jdbc.DataSourceFacade;
 import java.io.ByteArrayInputStream;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 
@@ -568,7 +568,11 @@ public class EntradaSalidaDAO {
 	}	
 	
 	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(int tipoMov,int sucursalId,boolean active,PagerInfo pagerInfo,Timestamp fechaInicial,Timestamp fechaFinal) throws DAOException {
-		logger.info("->findAllActiveByPage(tipoMov="+tipoMov+",sucursalId="+sucursalId+",active="+active+",pagerInfo.filters="+pagerInfo.getFilters()+",fechaInicial="+fechaInicial+",fechaFinal="+fechaFinal+")");
+		return findAllActiveByPage(new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, active, pagerInfo, fechaInicial, fechaFinal, null));
+	}
+	
+	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(EntradaSalidaDTOPageHelper esdtoH) throws DAOException {
+		logger.info("->findAllActiveByPage(tipoMov="+esdtoH.getTipoMov()+",sucursalId="+esdtoH.getSucursalId()+",active="+esdtoH.isActive()+",pagerInfo.filters="+esdtoH.getPagerInfo().getFilters()+",fechaInicial="+esdtoH.getFechaInicial()+",fechaFinal="+esdtoH.getFechaFinal()+",ImporteTotal="+esdtoH.getImporteTotal()+")");
 		
 		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
@@ -606,14 +610,14 @@ public class EntradaSalidaDAO {
 					+ "LEFT JOIN FORMA_DE_PAGO  FP  ON ES.FORMA_DE_PAGO_ID  = FP.ID\n"
 					+ "LEFT JOIN METODO_DE_PAGO MP  ON ES.METODO_DE_PAGO_ID = MP.ID\n"
 					+ " WHERE    1=1\n"
-					+ (active ? "AND       ES.ESTADO_ID IN (1,2,4,512)\n":
-							    "AND       ES.ESTADO_ID >  4\n" )
+					+ (esdtoH.isActive()   ?"AND       ES.ESTADO_ID IN (1,2,4,512)\n":
+											"AND       ES.ESTADO_ID >  4\n" )
 					+ "AND       ES.ID        = ESD.ENTRADA_SALIDA_ID\n"
 					+ "AND       ES.ID        = ESE.ENTRADA_SALIDA_ID\n"
 					+ "AND       ES.ESTADO_ID = ESE.ESTADO_ID\n"		
 					+ "AND       ES.TIPO_MOV  = ?\n"
 					+ "AND       ES.SUCURSAL_ID= ?\n"
-					+ (fechaInicial!=null && fechaFinal!=null? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n":"");
+					+ (esdtoH.getFechaInicial()!=null && esdtoH.getFechaFinal()!=null? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n":"");
 			
 			String q0="SELECT	ES.TOTAL "
 					+ fq0
@@ -624,7 +628,7 @@ public class EntradaSalidaDAO {
 					+ fwq0;
 			
 			//+ "ORDER BY  ES.ID DESC";
-			Map<String, Object> filters = pagerInfo.getFilters();
+			Map<String, Object> filters = esdtoH.getPagerInfo().getFilters();
 			if(filters != null) {
 				for(String k:filters.keySet()){
 					q0 += "AND     ES."+k.toUpperCase()+" = ? \n";
@@ -634,26 +638,26 @@ public class EntradaSalidaDAO {
 			q0  += " GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
 			qT0 += " GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
 			
-			if(pagerInfo.getSortField() != null) {
-				q0  += " ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
-				qT0 += " ORDER BY "+pagerInfo.getSortField()+" "+(pagerInfo.getSortOrder()<0?"DESC":"ASC")+" \n";
+			if(esdtoH.getPagerInfo().getSortField() != null) {
+				q0  += " ORDER BY "+esdtoH.getPagerInfo().getSortField()+" "+(esdtoH.getPagerInfo().getSortOrder()<0?"DESC":"ASC")+" \n";
+				qT0 += " ORDER BY "+esdtoH.getPagerInfo().getSortField()+" "+(esdtoH.getPagerInfo().getSortOrder()<0?"DESC":"ASC")+" \n";
 			}
 			//------------------------------------------------------------------			
 			logger.info("\t->QUERY COUNT:");			
 			ps = conn.prepareStatement(q0);
 			
 			int vs=1;
-			ps.setInt(vs++, tipoMov);
-			ps.setInt(vs++, sucursalId);			
+			ps.setInt(vs++, esdtoH.getTipoMov());
+			ps.setInt(vs++, esdtoH.getSucursalId());			
 			
-			if(fechaInicial!=null && fechaFinal!=null){
-				ps.setTimestamp(vs++, fechaInicial);
-				ps.setTimestamp(vs++, fechaFinal);
+			if(esdtoH.getFechaInicial()!=null && esdtoH.getFechaFinal()!=null){
+				ps.setTimestamp(vs++, esdtoH.getFechaInicial());
+				ps.setTimestamp(vs++, esdtoH.getFechaFinal());
 			}else{
 				
 			}
 			
-			Map<String, Object> filtersValues = pagerInfo.getFilters();
+			Map<String, Object> filtersValues = esdtoH.getPagerInfo().getFilters();
 			if(filters != null) {
 				
 				for(String k:filtersValues.keySet()){
@@ -665,69 +669,91 @@ public class EntradaSalidaDAO {
 			int size = rs.getRow();
 			rs.beforeFirst();
 			logger.info("->rs.last(): rs.getRow()=TotalRowCount="+size);
-			pagerInfo.setTotalRowCount(size);
+			esdtoH.getPagerInfo().setTotalRowCount(size);
 			rs.close();
 			ps.close();
 			ps = null;
 			
 			//------------------------------------------------------------------
-			logger.debug("\t->QUERY TOTAL Q:"+qT0);
-			ps = conn.prepareStatement(qT0);
-			
-			vs=1;
-			ps.setInt(vs++, tipoMov);
-			ps.setInt(vs++, sucursalId);			
-			
-			if(fechaInicial!=null && fechaFinal!=null){
-				ps.setTimestamp(vs++, fechaInicial);
-				ps.setTimestamp(vs++, fechaFinal);
-			}else{
-				
-			}
-			
-			filtersValues = pagerInfo.getFilters();
-			if(filters != null) {	
-				for(String k:filtersValues.keySet()){
-					ps.setObject(vs++, filtersValues.get(k));
+			if(esdtoH.getImporteTotal() != null) {
+				logger.debug("\t->QUERY TOTAL Q:"+qT0);
+				ps = conn.prepareStatement(qT0);
+
+				vs=1;
+				ps.setInt(vs++, esdtoH.getTipoMov());
+				ps.setInt(vs++, esdtoH.getSucursalId());			
+
+				if(esdtoH.getFechaInicial()!=null && esdtoH.getFechaFinal()!=null){
+					ps.setTimestamp(vs++, esdtoH.getFechaInicial());
+					ps.setTimestamp(vs++, esdtoH.getFechaFinal());
+				}else{
+
 				}
+
+				filtersValues = esdtoH.getPagerInfo().getFilters();
+				if(filters != null) {	
+					for(String k:filtersValues.keySet()){
+						ps.setObject(vs++, filtersValues.get(k));
+					}
+				}
+				rs = ps.executeQuery();
+
+				double importeBruto    = 0.0;
+				double factorIva       = 0.0;
+				double importeNOGra    = 0.0;
+				double importeDesc     = 0.0;
+				double importeTOTAL    = 0.0;
+				double importeIVA      = 0.0;
+				int    porcDescCalc = 0;
+				int    porcDescExtra   = 0;
+				logger.debug("\t\t->IMBR\tFACTOR_IVA\tPDESCCALC\tPOCDESCEX\tIMP_TOTAL");
+				Double sumTot = 0.0;
+				while(rs.next()){
+
+					importeBruto    = rs.getDouble("IMPORTE_BRUTO");
+					factorIva       = rs.getDouble("FACTOR_IVA");
+					porcDescCalc    = rs.getInt("PORCENTAJE_DESCUENTO_CALCULADO");
+					porcDescExtra   = rs.getInt("PORCENTAJE_DESCUENTO_EXTRA");
+
+
+					importeNOGra    = importeBruto / (1.0 + factorIva);	
+					//logger.info("========================");
+					//logger.info("PEDIDO ID:        :\t"+x.getId());
+					//logger.info("IMPORTE BRUTO     :\t"+x.getImporteBruto());
+					//logger.info("IMPORTE NO GRABADO:\t"+x.getImporteNoGravado());
+					int dtot = porcDescCalc + porcDescExtra;
+
+					importeDesc = (importeNOGra * dtot)/100.0;
+
+					importeIVA   = ((importeNOGra - importeDesc)*Constants.IVA);
+					importeTOTAL = (importeNOGra- importeDesc + importeIVA);
+
+					sumTot       += importeTOTAL;
+
+
+					logger.debug("\t\t->"+importeBruto+"\t"+factorIva+"\t"+porcDescCalc+"\t"+porcDescExtra+"\t"+importeTOTAL);				
+				}
+				logger.debug("T O T A L->"+sumTot);
+				esdtoH.setImporteTotal(sumTot);
+
+
+				rs.close();
+				ps.close();
+				ps = null;
 			}
-			rs = ps.executeQuery();
-			
-			double importeBruto    = 0.0;
-			double factorIva       = 0.0;
-			double importeNOGra    = 0.0;
-			int    importeDescCalc = 0;
-			int    porcDescExtra   = 0;
-			logger.debug("\t\t->IMBR\tFACTOR_IVA\tPDESCCALC\tPOCDESCEX");
-			while(rs.next()){
-				
-				importeBruto    = rs.getDouble("IMPORTE_BRUTO");
-				importeNOGra    = rs.getDouble("IMPORTE_BRUTO");
-				factorIva       = rs.getDouble("FACTOR_IVA");
-				importeDescCalc = rs.getInt("PORCENTAJE_DESCUENTO_CALCULADO");
-				porcDescExtra   = rs.getInt("PORCENTAJE_DESCUENTO_EXTRA");
-				
-				logger.debug("\t\t->"+importeBruto+"\t"+factorIva+"\t"+importeDescCalc+"\t"+porcDescExtra);
-			}
-			
-			
-			rs.close();
-			ps.close();
-			ps = null;
-			
 			//------------------------------------------------------------------
-			String qR0 = q0 +   "LIMIT "+pagerInfo.getFirst()+","+pagerInfo.getPageSize();
+			String qR0 = q0 +   "LIMIT "+esdtoH.getPagerInfo().getFirst()+","+esdtoH.getPagerInfo().getPageSize();
 			//logger.info("\t->QUERY BY PAGE (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"):");
-			logger.info("\t->QUERY BY PAGE (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"):"+q0);
+			logger.info("\t->QUERY BY PAGE (first="+esdtoH.getPagerInfo().getFirst()+",pageSize="+esdtoH.getPagerInfo().getPageSize()+"):"+q0);
 			
 			ps = conn.prepareStatement(qR0);
 			vs=1;
-			ps.setInt(vs++, tipoMov);
-			ps.setInt(vs++, sucursalId);
-			Map<String, Object> filtersValuesT = pagerInfo.getFilters();
-			if(fechaInicial!=null && fechaFinal!=null){
-				ps.setTimestamp(vs++, fechaInicial);
-				ps.setTimestamp(vs++, fechaFinal);
+			ps.setInt(vs++, esdtoH.getTipoMov());
+			ps.setInt(vs++, esdtoH.getSucursalId());
+			Map<String, Object> filtersValuesT = esdtoH.getPagerInfo().getFilters();
+			if(esdtoH.getFechaInicial()!=null && esdtoH.getFechaFinal()!=null){
+				ps.setTimestamp(vs++, esdtoH.getFechaInicial());
+				ps.setTimestamp(vs++, esdtoH.getFechaFinal());
 			}else{
 				
 			}
