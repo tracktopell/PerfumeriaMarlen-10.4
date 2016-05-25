@@ -127,10 +127,9 @@ public class EntradaSalida implements java.io.Serializable {
 	 */
 	private Integer   esIdTraOri;	
 		
-	/**
-	 * entrada salida Traspaso Destino
-	 */
-	private Integer   esIdTraDes;
+	private Integer   sucursalIdTraOri;
+	
+	private Integer   sucursalIdTraDes;
 	
 	private Double subTotal1ra;
 	
@@ -552,16 +551,30 @@ public class EntradaSalida implements java.io.Serializable {
 	}
 
 	/**
-	 * @return the esIdTraDes
+	 * @return the sucursalIdTraOri
 	 */
-	public Integer getEsIdTraDes() {
-		return esIdTraDes;
+	public Integer getSucursalIdTraOri() {
+		return sucursalIdTraOri;
 	}
 
 	/**
-	 * @param esIdTraDes the esIdTraDes to set
+	 * @param sucursalIdTraOri the sucursalIdTraOri to set
 	 */
-	public void setEsIdTraDes(Integer esIdTraDes) {
-		this.esIdTraDes = esIdTraDes;
+	public void setSucursalIdTraOri(Integer sucursalIdTraOri) {
+		this.sucursalIdTraOri = sucursalIdTraOri;
+	}
+
+	/**
+	 * @return the sucursalIdTraDes
+	 */
+	public Integer getSucursalIdTraDes() {
+		return sucursalIdTraDes;
+	}
+
+	/**
+	 * @param sucursalIdTraDes the sucursalIdTraDes to set
+	 */
+	public void setSucursalIdTraDes(Integer sucursalIdTraDes) {
+		this.sucursalIdTraDes = sucursalIdTraDes;
 	}
 }

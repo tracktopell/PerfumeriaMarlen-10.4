@@ -20,11 +20,11 @@
 					
 					<h:panelGrid columns="1" cellpadding="0" id="panel1" width="100%" columnClasses="leftAlign">
 						
-						<p:outputLabel for="sucursal" value="SUCURSAL :" />
+						<p:outputLabel for="sucursal" value="SUCURSAL DESTINO:" />
 
-						<p:selectOneMenu id="sucursal" value="#{nuevoTraspasoMB.sucursalId}" disabled="#{nuevoTraspasoMB.crearCompra}" >				
+						<p:selectOneMenu id="sucursal" value="#{nuevoTraspasoMB.sucursalId}" disabled="#{nuevoTraspasoMB.crearCompra}" >		
 							<f:selectItems  value="#{nuevoTraspasoMB.sucursalesList}"/>					
-							<p:ajax listener="#{nuevoTraspasoMB.onSucursalChange}" process=":form1:sucursal" update=":form1:"/>
+							<p:ajax listener="#{nuevoTraspasoMB.onSucursalChange}" process=":form1:sucursal" update=":form1,:form2,:form2,:form3,:form4:panel4_3"/>
 						</p:selectOneMenu>
 
 						

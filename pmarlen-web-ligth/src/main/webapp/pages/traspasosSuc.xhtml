@@ -29,8 +29,9 @@
 					<f:facet name="header">
 						OPCIONES :		
 						<p:commandButton value="RECARGAR" actionListener="#{traspasosSucMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
-						
-						<p:inputSwitch id="autorizaDescuento" value="#{traspasosSucMB.soloSurtidos}" onLabel="SI" offLabel="NO">
+						<p:spacer width="10"/>
+						VER:
+						<p:inputSwitch id="autorizaDescuento" value="#{traspasosSucMB.soloSurtidos}" onLabel="EN PROCESO" offLabel="HISTORICO">
 							<p:ajax listener="#{traspasosSucMB.refrescar}" process=":form1" update=":form1"/>
 						</p:inputSwitch>
 

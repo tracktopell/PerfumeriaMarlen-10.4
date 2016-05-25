@@ -1,12 +1,13 @@
 package com.pmarlen.backend.model.quickviews;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  *
  * @author alfredo
  */
-public class PagerInfo {
+public class PagerInfo implements Serializable{
 	private int first;
 	private int pageSize;
 	private String sortField;

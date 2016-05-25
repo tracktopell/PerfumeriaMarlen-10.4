@@ -62,7 +62,7 @@ public class NuevoTraspasoMB extends PedidoVentaMB{
 	public boolean isCrearCompra() {
 		crearES=false;
 		
-		if(entityList!=null && entityList.size()>0 ){
+		if(entityList!=null && entityList.size()>0 && sucursalId!=0){
 			crearES=true;
 		}
 		
@@ -80,10 +80,10 @@ public class NuevoTraspasoMB extends PedidoVentaMB{
 			entradaSalida.setSucursalId(sessionUserMB.getSucursalId());
 			entradaSalida.setUsuarioEmailCreo(sessionUserMB.getUsuarioAuthenticated().getEmail());
 			entradaSalida.setAutorizaDescuento(autorizaDescuento?1:0);
-			entradaSalida.setEsIdTraDes(sucursalId);
-			entradaSalida.setEsIdTraOri(1);
+			entradaSalida.setSucursalIdTraDes(sucursalId);
+			entradaSalida.setSucursalIdTraOri(1);
 			EntradaSalidaDAO.getInstance().insertTraspaso(entradaSalida,entityList);
-			logger.debug("guardar:entradaSalida.id:"+entradaSalida.getId());
+			logger.debug("guardar:entradaSalida.id:"+entradaSalida.getId()+", ["+entradaSalida.getSucursalIdTraOri()+"] -> ["+entradaSalida.getSucursalIdTraDes()+"]");
 			
 			esFinalizado = true;
 			cadenaBusqueda = null;

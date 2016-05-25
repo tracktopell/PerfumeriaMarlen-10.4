@@ -25,14 +25,15 @@ public class TraspasosSucMB  implements Serializable {
 	@PostConstruct
 	public void init(){
 		logger.trace("init:");
-		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_TRASPASO,1,true);
-		viewRows = 25;
 		soloSurtidos = true;
+		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_TRASPASO,1,soloSurtidos);
+		viewRows = 25;
+		
 	}
 	
 	public void refrescar(){
 		logger.trace("refrescar:");
-		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_TRASPASO,1,true);
+		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_TRASPASO,1,soloSurtidos);
 	}
 
 	public void setEditarTraspasoSucMB(EditarTraspasoSucMB editarTraspasoSucMB) {
