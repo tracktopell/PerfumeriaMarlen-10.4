@@ -118,9 +118,19 @@ public class EntradaSalida implements java.io.Serializable {
     private Integer autorizaDescuento;
 
 	/**
-	 * entrada salida dev
+	 * entrada salida devolucion
 	 */
 	private Integer   esIdDev;
+	
+	/**
+	 * entrada salida Traspaso Origen
+	 */
+	private Integer   esIdTraOri;	
+		
+	/**
+	 * entrada salida Traspaso Destino
+	 */
+	private Integer   esIdTraDes;
 	
 	private Double subTotal1ra;
 	
@@ -525,5 +535,33 @@ public class EntradaSalida implements java.io.Serializable {
 	 */
 	public void setTotProds(Integer totProds) {
 		this.totProds = totProds;
+	}
+
+	/**
+	 * @return the esIdTraOri
+	 */
+	public Integer getEsIdTraOri() {
+		return esIdTraOri;
+	}
+
+	/**
+	 * @param esIdTraOri the esIdTraOri to set
+	 */
+	public void setEsIdTraOri(Integer esIdTraOri) {
+		this.esIdTraOri = esIdTraOri;
+	}
+
+	/**
+	 * @return the esIdTraDes
+	 */
+	public Integer getEsIdTraDes() {
+		return esIdTraDes;
+	}
+
+	/**
+	 * @param esIdTraDes the esIdTraDes to set
+	 */
+	public void setEsIdTraDes(Integer esIdTraDes) {
+		this.esIdTraDes = esIdTraDes;
 	}
 }

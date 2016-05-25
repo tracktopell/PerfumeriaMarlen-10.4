@@ -176,7 +176,7 @@ public class EntradaSalidaDAO {
 			final String query = "SELECT	ES.ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,"
 					+ "ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,"
 					+ "ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,ES.TOT_PRODS,ES.ES_ID_DEV,\n"
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,ES.TOT_PRODS,ES.ES_ID_DEV,ES.ES_ID_TRA_ORI,ES.ES_ID_TRA_DES,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -188,11 +188,17 @@ public class EntradaSalidaDAO {
 					+ "MP.DESCRIPCION AS MP_DESCRIPCION,\n"
 					+ "CFD.NUM_CFD AS CFD_NUM_CFD,\n"
 					+ "COUNT(1) NUM_ELEMENTOS, \n"
+					+ "S1.NOMBRE AS S1_NOMBRE,\n"
+					+ "S2.NOMBRE AS S2_NOMBRE,\n"
+					+ "S1.CLAVE  AS S1_CLAVE,\n"
+					+ "S2.CLAVE  AS S2_CLAVE,\n"
 					+ "SUM(ESD.CANTIDAD * ESD.PRECIO_VENTA) AS IMPORTE_BRUTO\n"
 					+ "FROM      ENTRADA_SALIDA_DETALLE ESD,\n"
 					+ "          ENTRADA_SALIDA         ES\n"
 					+ "LEFT JOIN CFD            CFD ON ES.CFD_ID            = CFD.ID\n"
 					+ "LEFT JOIN SUCURSAL       S   ON ES.SUCURSAL_ID       = S.ID\n"
+					+ "LEFT JOIN SUCURSAL       S1  ON ES.ES_ID_TRA_ORI     = S1.ID\n"
+					+ "LEFT JOIN SUCURSAL       S2  ON ES.ES_ID_TRA_DES     = S2.ID\n"					
 					+ "LEFT JOIN ESTADO         E   ON ES.ESTADO_ID         = E.ID\n"
 					+ "LEFT JOIN USUARIO        U   ON ES.USUARIO_EMAIL_CREO= U.EMAIL\n"
 					+ "LEFT JOIN CLIENTE        C   ON ES.CLIENTE_ID        = C.ID\n"
@@ -238,7 +244,13 @@ public class EntradaSalidaDAO {
 				x.setPedioSucursal((Integer) rs.getObject("PEDIDO_SUCURSAL"));
 				x.setTotProds((Integer) rs.getObject("TOT_PRODS"));
 				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
-				
+				x.setEsIdTraOri((Integer) rs.getObject("ES_ID_TRA_ORI"));
+				x.setEsIdTraDes((Integer) rs.getObject("ES_ID_TRA_DES"));
+				x.setTraspasoSucOriNombre((String) rs.getObject("S1_NOMBRE"));
+				x.setTraspasoSucOriClave ((String) rs.getObject("S1_CLAVE"));
+				x.setTraspasoSucDesNombre((String) rs.getObject("S2_NOMBRE"));
+				x.setTraspasoSucDesClave ((String) rs.getObject("S2_CLAVE"));
+
 				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
 				x.setEstadoDescripcion((String) rs.getObject("E_DESCRIPCION"));
 				x.setUsuarioNombreCompleto((String) rs.getObject("U_NOMBRE_COMPLETO"));
@@ -422,7 +434,7 @@ public class EntradaSalidaDAO {
 	}
 	
 	private ArrayList<EntradaSalidaQuickView> findAllActive(int tipoMov,int sucursalId,boolean active) throws DAOException {
-		logger.info("->findAllActive(tipoMov="+tipoMov+",sucursalId="+sucursalId+",active="+active+")");
+		logger.info("->DEPRECATED: findAllActive(tipoMov="+tipoMov+",sucursalId="+sucursalId+",active="+active+")");
 		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -583,7 +595,7 @@ public class EntradaSalidaDAO {
 			
 			String fq0 = 
 					",ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,TOT_PRODS,ES.ES_ID_DEV,\n"
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,TOT_PRODS,ES.ES_ID_DEV,ES.ES_ID_TRA_ORI,ES.ES_ID_TRA_DES,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
 					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
@@ -597,20 +609,27 @@ public class EntradaSalidaDAO {
 					+ "COUNT(1) NUM_ELEMENTOS, \n"
 					+ "SUM(ESD.CANTIDAD * ESD.PRECIO_VENTA) AS IMPORTE_BRUTO, \n"
 					+ "ESE.FECHA AS FECHA_ACTUALIZO, \n"		
-					+ "ESE.USUARIO_EMAIL AS USUARIO_ACTUALIZO\n";
+					+ "ESE.USUARIO_EMAIL AS USUARIO_ACTUALIZO,\n"
+					+ "S1.NOMBRE AS S1_NOMBRE,\n"
+					+ "S2.NOMBRE AS S2_NOMBRE,\n"
+					+ "S1.CLAVE  AS S1_CLAVE,\n"
+					+ "S2.CLAVE  AS S2_CLAVE\n";
+
 			String fwq0 =
 					" FROM       ENTRADA_SALIDA_ESTADO  ESE,\n"
 					+ "          ENTRADA_SALIDA_DETALLE ESD,\n"		
 					+ "          ENTRADA_SALIDA         ES\n"
 					+ "LEFT JOIN CFD            CFD ON ES.CFD_ID      = CFD.ID\n"
 					+ "LEFT JOIN SUCURSAL       S   ON ES.SUCURSAL_ID       = S.ID\n"
+					+ "LEFT JOIN SUCURSAL       S1  ON ES.ES_ID_TRA_ORI     = S1.ID\n"
+					+ "LEFT JOIN SUCURSAL       S2  ON ES.ES_ID_TRA_DES     = S2.ID\n"
 					+ "LEFT JOIN ESTADO         E   ON ES.ESTADO_ID         = E.ID\n"
 					+ "LEFT JOIN USUARIO        U   ON ES.USUARIO_EMAIL_CREO= U.EMAIL\n"
 					+ "LEFT JOIN CLIENTE        C   ON ES.CLIENTE_ID        = C.ID\n"
 					+ "LEFT JOIN FORMA_DE_PAGO  FP  ON ES.FORMA_DE_PAGO_ID  = FP.ID\n"
 					+ "LEFT JOIN METODO_DE_PAGO MP  ON ES.METODO_DE_PAGO_ID = MP.ID\n"
 					+ " WHERE    1=1\n"
-					+ (esdtoH.isActive()   ?"AND       ES.ESTADO_ID IN (1,2,4,512)\n":
+					+ (esdtoH.isActive()   ?"AND       ES.ESTADO_ID IN (1,2,4,512,1024)\n":
 											"AND       ES.ESTADO_ID >  4\n" )
 					+ "AND       ES.ID        = ESD.ENTRADA_SALIDA_ID\n"
 					+ "AND       ES.ID        = ESE.ENTRADA_SALIDA_ID\n"
@@ -795,6 +814,13 @@ public class EntradaSalidaDAO {
 				x.setTotProds((Integer) rs.getObject("TOT_PRODS"));
 				x.setTotal     ((Double) rs.getObject("TOTAL"));
 				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
+				x.setEsIdTraOri((Integer) rs.getObject("ES_ID_TRA_ORI"));
+				x.setEsIdTraDes((Integer) rs.getObject("ES_ID_TRA_DES"));
+				
+				x.setTraspasoSucOriNombre((String) rs.getObject("S1_NOMBRE"));
+				x.setTraspasoSucOriClave ((String) rs.getObject("S1_CLAVE"));
+				x.setTraspasoSucDesNombre((String) rs.getObject("S2_NOMBRE"));
+				x.setTraspasoSucDesClave ((String) rs.getObject("S2_CLAVE"));
 				
 				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
 				x.setEstadoDescripcion((String) rs.getObject("E_DESCRIPCION"));
@@ -1215,6 +1241,10 @@ public class EntradaSalidaDAO {
 		return insert(Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION,x,pvdList);
 	}
 	
+	public int insertTraspaso(EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
+		return insert(Constants.TIPO_MOV_SALIDA_TRASPASO,x,pvdList);
+	}
+	
 	private int insert(int tipoMov,EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
 		PreparedStatement ps = null;
 		PreparedStatement psESE = null;
@@ -1225,8 +1255,8 @@ public class EntradaSalidaDAO {
 			conn = getConnectionCommiteable();
 
 			Timestamp now = new Timestamp(System.currentTimeMillis());
-			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,METODO_DE_PAGO_ID,FACTOR_IVA,COMENTARIOS,CFD_ID,NUMERO_TICKET,CAJA,IMPORTE_RECIBIDO,APROBACION_VISA_MASTERCARD,PORCENTAJE_DESCUENTO_CALCULADO,PORCENTAJE_DESCUENTO_EXTRA,CONDICIONES_DE_PAGO,NUM_DE_CUENTA,AUTORIZA_DESCUENTO) "
-					+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,METODO_DE_PAGO_ID,FACTOR_IVA,COMENTARIOS,CFD_ID,NUMERO_TICKET,CAJA,IMPORTE_RECIBIDO,APROBACION_VISA_MASTERCARD,PORCENTAJE_DESCUENTO_CALCULADO,PORCENTAJE_DESCUENTO_EXTRA,CONDICIONES_DE_PAGO,NUM_DE_CUENTA,AUTORIZA_DESCUENTO,ES_ID_TRA_ORI,ES_ID_TRA_DES) "
+					+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int ci = 1;
 			ps.setObject(ci++, tipoMov);
 			ps.setObject(ci++, x.getSucursalId());
@@ -1248,6 +1278,8 @@ public class EntradaSalidaDAO {
 			ps.setObject(ci++, x.getCondicionesDePago());
 			ps.setObject(ci++, x.getNumDeCuenta());
 			ps.setObject(ci++, x.getAutorizaDescuento());
+			ps.setObject(ci++, x.getEsIdTraOri());
+			ps.setObject(ci++, x.getEsIdTraDes());
 			logger.info("->EntradaSalida before Insert:"+x.getId());
 			r = ps.executeUpdate();					
 			

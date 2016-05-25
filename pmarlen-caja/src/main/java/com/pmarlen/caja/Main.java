@@ -12,6 +12,8 @@ import com.pmarlen.caja.view.UpadateApplicationJFrame;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -50,6 +52,14 @@ public class Main {
 				dinamicTrace = true;
 			}
 			na++;
+		}
+		if(dinamicDebug || dinamicTrace){
+			System.out.println("\tClassPath:{");
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			URL[] urls = ((URLClassLoader)cl).getURLs();
+			for(URL url: urls){
+				System.out.println("\t\t"+url.getFile());
+			}
 		}
 		System.out.println("main:}");
 		

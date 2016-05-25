@@ -56,6 +56,14 @@ public class EntradaSalidaQuickView extends EntradaSalida {
 	
 	private java.sql.Timestamp estadoActualFecha;
 	
+	private String traspasoSucOriNombre;
+	
+	private String traspasoSucOriClave;	
+	
+	private String traspasoSucDesNombre;
+	
+	private String traspasoSucDesClave;
+	
     /** 
      * Default Constructor
      */
@@ -320,6 +328,62 @@ public class EntradaSalidaQuickView extends EntradaSalida {
 	 */
 	public void setEstadoActualFecha(java.sql.Timestamp estadoActualFecha) {
 		this.estadoActualFecha = estadoActualFecha;
+	}
+
+	/**
+	 * @return the traspasoSucOriNombre
+	 */
+	public String getTraspasoSucOriNombre() {
+		return traspasoSucOriNombre;
+	}
+
+	/**
+	 * @param traspasoSucOriNombre the traspasoSucOriNombre to set
+	 */
+	public void setTraspasoSucOriNombre(String traspasoSucOriNombre) {
+		this.traspasoSucOriNombre = traspasoSucOriNombre;
+	}
+
+	/**
+	 * @return the traspasoSucOriClave
+	 */
+	public String getTraspasoSucOriClave() {
+		return traspasoSucOriClave;
+	}
+
+	/**
+	 * @param traspasoSucOriClave the traspasoSucOriClave to set
+	 */
+	public void setTraspasoSucOriClave(String traspasoSucOriClave) {
+		this.traspasoSucOriClave = traspasoSucOriClave;
+	}
+
+	/**
+	 * @return the traspasoSucDesNombre
+	 */
+	public String getTraspasoSucDesNombre() {
+		return traspasoSucDesNombre;
+	}
+
+	/**
+	 * @param traspasoSucDesNombre the traspasoSucDesNombre to set
+	 */
+	public void setTraspasoSucDesNombre(String traspasoSucDesNombre) {
+		this.traspasoSucDesNombre = traspasoSucDesNombre;
+	}
+
+	/**
+	 * @return the traspasoSucDesClave
+	 */
+	public String getTraspasoSucDesClave() {
+		return traspasoSucDesClave;
+	}
+
+	/**
+	 * @param traspasoSucDesClave the traspasoSucDesClave to set
+	 */
+	public void setTraspasoSucDesClave(String traspasoSucDesClave) {
+		this.traspasoSucDesClave = traspasoSucDesClave;
 	}
 	
 }

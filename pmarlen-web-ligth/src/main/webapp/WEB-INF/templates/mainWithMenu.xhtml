@@ -86,9 +86,9 @@
 								<p:menuitem value="EN PROCESO" url="/pages/pendiente.jsf" icon="ui-icon-calculator"/>
 							</p:submenu>
 							
-							<p:submenu label="MOVS. ALMACENES" icon="ui-icon-transfer-e-w" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
-								<p:menuitem value="A SUCURSAL" url="/pages/pendiente.jsf" icon="ui-icon-shuffle"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}"/>
-								<p:menuitem value="SUB-ALMACEN" url="/pages/pendiente.jsf" icon="ui-icon-arrow-1-se" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}"/>								
+							<p:submenu label="TRASPASOS SUCS." icon="ui-icon-arrowstop-1-e" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
+								<p:menuitem value="NUEVO"       url="/pages/traspasoSucursal.jsf" icon="ui-icon-arrowstop-1-e"        rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}"/>
+								<p:menuitem value="EN PROCESO"  url="/pages/traspasosSuc.jsf"     icon="ui-icon-calculator"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}"/>								
 							</p:submenu>
 
 						</p:submenu>

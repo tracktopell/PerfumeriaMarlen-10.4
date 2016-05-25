@@ -1,0 +1,110 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+        TRASPASOS ALM A SUC
+    </ui:define>
+
+    <ui:define name="body-title">
+        TRASPASOS DE ALMACÉN A SUCURSAL
+    </ui:define>
+
+    <ui:define name="body">		
+
+		<h:form id="form1" rendered="true">
+
+			<h:panelGrid columns="1" cellpadding="0" id="panel3" columnClasses="leftAlign" width="100%" >						
+
+				<p:dataTable  var="pv" value="#{traspasosSucMB.lazyModel}"
+							  paginator="true" lazy="true"
+							  id="pvTable" emptyMessage="-- SIN ELEMENTOS --" 							  
+							  rows="#{traspasosSucMB.viewRows}"
+							  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{traspasosSucMB.sizeList}]"
+							  rowsPerPageTemplate="25,100,250,500">
+					
+					<f:facet name="header">
+						OPCIONES :		
+						<p:commandButton value="RECARGAR" actionListener="#{traspasosSucMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
+						
+						<p:inputSwitch id="autorizaDescuento" value="#{traspasosSucMB.soloSurtidos}" onLabel="SI" offLabel="NO">
+							<p:ajax listener="#{traspasosSucMB.refrescar}" process=":form1" update=":form1"/>
+						</p:inputSwitch>
+
+						
+					</f:facet>
+					
+					<p:column headerText="#" width="5%" filterBy="#{pv.id}" filterMatchMode="contains">						
+						<p:panelGrid columns="1" columnClasses="centerAlign" >
+							<p:commandButton actionListener="#{traspasosSucMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>							
+						</p:panelGrid>
+					</p:column>
+					
+					<p:column headerText="ESTADO / FECHA" width="10%">
+						<p:panelGrid columns="1" columnClasses="centerAlign" style="border: none; border-collapse: none; ">
+							<h:outputText value="#{pv.estadoDescripcion}" />
+							<h:outputText value="#{pv.fechaCreo}" />
+						</p:panelGrid>
+						
+					</p:column>
+					
+					<p:column headerText="DATOS" width="20%">
+						<p:panelGrid columns="2" columnClasses="rightAlign,leftAlign">
+							<h:outputText value="SUCURSAL DESTINO :" />
+							<h:outputText value="[#{pv.traspasoSucDesClave}] #{pv.traspasoSucDesNombre}" />
+							<h:outputText value="USUARIO CREÓ :" />
+							<h:outputText value="#{pv.usuarioNombreCompleto}" />
+							<h:outputText value="ELEMENTOS :" />
+							<h:outputText value="#{pv.numElementos}" />							
+						</p:panelGrid>
+					</p:column>
+					
+					<p:column headerText="TOTAL" width="20%">
+						<p:panelGrid columns="2" columnClasses="rightAlign,rightAlign">
+							<h:outputText value="IMPORTE BRUTO :" />
+							<h:outputText value="#{pv.importeBruto}" >
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>
+							
+							<h:outputText value="IMPORTE NO GRAVADO :" />
+							<h:outputText value="#{pv.importeNoGravado}" >
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>
+							
+							<h:outputText value="IMPORTE I.V.A. :" />
+							<h:outputText value="#{pv.importeIVA}" title="FACTOR I.V.A.= ${traspasosSucMB.getImporteMoneda(pv.factorIva)}" >
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>									
+														
+							<h:outputText value="TOTAL :" />
+							<h:outputText value="#{pv.importeTotal}" styleClass="littleLabel_bold_right">
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>
+						</p:panelGrid>
+					</p:column>
+
+					<f:facet name="footer">
+
+						<h:outputText value="ELEMENTOS : #{traspasosSucMB.sizeList}" rendered="true"/>
+
+					</f:facet>
+				</p:dataTable>
+			<script>
+				function edit(){
+					location.href = "editarTraspasoSuc.jsf";
+				}
+				
+				$(document).ready(function() {
+
+				});
+			</script>		
+
+			</h:panelGrid>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

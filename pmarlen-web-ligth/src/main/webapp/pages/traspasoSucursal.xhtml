@@ -1,0 +1,363 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:p="http://primefaces.org/ui"
+				template="/WEB-INF/templates/mainWithMenu.xhtml">
+
+	<ui:define name="title">
+		ENTRADA POR TRASPASO
+	</ui:define>
+
+	<ui:define name="body-title">
+		<h:outputText value="NUEVO TRASPASO DE ALMACÉN A SUCURSAL"/>
+	</ui:define>
+
+	<ui:define name="body">		
+		<h:panelGrid columns="2" cellpadding="0" id="panel0" columnClasses="columnWidth75 centerAlign, columnWidth25 leftAlign topAlign topTAlign" width="100%">			
+			<h:panelGrid columns="1" cellpadding="0" id="panelL" width="100%" columnClasses="leftAlign">
+				<h:form id="form1" rendered="true">
+					
+					<h:panelGrid columns="1" cellpadding="0" id="panel1" width="100%" columnClasses="leftAlign">
+						
+						<p:outputLabel for="sucursal" value="SUCURSAL :" />
+
+						<p:selectOneMenu id="sucursal" value="#{nuevoTraspasoMB.sucursalId}" disabled="#{nuevoTraspasoMB.crearCompra}" >				
+							<f:selectItems  value="#{nuevoTraspasoMB.sucursalesList}"/>					
+							<p:ajax listener="#{nuevoTraspasoMB.onSucursalChange}" process=":form1:sucursal" update=":form1:"/>
+						</p:selectOneMenu>
+
+						
+						
+						<p:outputLabel for="almacen" value="ALMACÉN :" title="CAMBIAR EL ALMACÉN PARA HACER LA SELECCION DE UN NUEVO PRODUCTO HASTA AGREGARLO"/>
+
+						<p:selectOneMenu id="almacen" value="#{nuevoTraspasoMB.tipoAlmacen}" style="width:125px" disabled="#{nuevoTraspasoMB.compraFinalizada}">							
+							<f:selectItems  value="#{nuevoTraspasoMB.tipoAlmacenList}"/>
+							<p:ajax listener="#{nuevoTraspasoMB.onTipoAlmacenChange}" process="@all" oncomplete="updateComponentsOnWindowResize();"  update=":form1,:form2,:form2a,:form3,:form4"/>
+						</p:selectOneMenu>
+
+						<p:outputLabel for="cadenaBusqueda" value="BUSCAR POR: NOMBRE,PRESENTACIÓN,LINEA O MARCA :" rendered="true"/>
+						<h:panelGrid columns="2" cellpadding="0">
+							<h:panelGroup rendered="true">
+								<p:inputText id="cadenaBusqueda" value="#{nuevoTraspasoMB.cadenaBusqueda}" size="50" maxlength="128" valueChangeListener="#{nuevoTraspasoMB.cadenaBusquedaChanged}"
+											 title="BUSCAR PRODUCTOS CON PALABRAS COINCIDAD CON: NOMBRE,PRESENTACIÓN,LINEA,MARCA; Y PARA UNA BUSQUEDA MAS PRECISA ENCERRAR ENTRE ( .... )" disabled="#{nuevoTraspasoMB.compraFinalizada}">
+									<p:ajax event="change" listener="#{nuevoTraspasoMB.buscarXCadena}" process=":form1:panel1" update="panel1,:form2,:form2a"/>
+								</p:inputText>						
+								<p:selectBooleanButton   id="conservarBusqueda" value="#{nuevoTraspasoMB.conservarBusqueda}" onLabel="CONSERVAR RESULT." offLabel="LIMPIAR RESULT." 
+														 onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="#{nuevoTraspasoMB.compraFinalizada}">
+									<p:ajax process=":form1" update=":form1" listener="#{nuevoTraspasoMB.conservarBusquedaChanged}" />
+								</p:selectBooleanButton>
+							</h:panelGroup>
+						
+						</h:panelGrid>
+					</h:panelGrid>
+				</h:form>
+
+				<h:form id="form2" rendered="true">					
+					
+					<h:panelGrid columns="1" cellpadding="0" id="panel2" columnClasses="leftAlign" width="100%">
+						
+						<p:outputLabel value="CANTIDAD x PRODUCTO :" rendered="true"/>
+
+						<h:panelGrid columns="6" cellpadding="0">	
+							<p:spinner id="cantidadAgregarBusquedaSpinner" value="#{nuevoTraspasoMB.cantidadAgregarBusqueda}" min="1" max="9999" size="1" rendered="true" 
+									   disabled="#{nuevoTraspasoMB.compraFinalizada}"/>
+
+							<p:outputLabel value=" x " />
+							<p:selectOneMenu id="resultadoBusqueda" value="#{nuevoTraspasoMB.resultadoBusquedaSelected}" disabled="#{nuevoTraspasoMB.compraFinalizada}">							
+								<f:selectItems  value="#{nuevoTraspasoMB.resultadoBusqueda}"/>
+								<p:ajax process=":form2:panel2" listener="#{nuevoTraspasoMB.onResultadoBusquedaChange}" update=":form2:panel2" />							
+							</p:selectOneMenu>
+
+							<p:commandButton id="masInfo" icon="ui-icon-comment" type="button" process=":form2" rendered="#{not empty nuevoTraspasoMB.resultadoBusqueda}"
+											 disabled="#{nuevoTraspasoMB.compraFinalizada}" title="VER MAS ACERCA DEL PRODUCTO SELECCIONADO"/>
+
+							<p:commandButton value="+"  actionListener="#{nuevoTraspasoMB.agregarSeleccionadoDeBusqueda}" id="xx1" disabled="#{nuevoTraspasoMB.compraFinalizada}"
+											 process=":form2" update=":form1,:form2,:form2,:form3,:form4:panel4_3"  
+											 rendered="#{not empty nuevoTraspasoMB.resultadoBusqueda}" oncomplete="updateComponentsOnWindowResize();scrollDownTablaPedidos();"  title="AGREGAR EL PRODUCTO SELECCIONADO, SEGUN LA CANTIDAD"/>
+
+							<p:overlayPanel id="masInfoPanel" for="masInfo" hideEffect="fade" dismissable="true" showCloseIcon="false">
+								<h:panelGrid columns="2" cellpadding="0" width="300" columnClasses="columnWidth40 rightAlign, columnWidth60 leftAlign">
+									<h:outputText value="CODIGO :" />
+									<h:outputText value="#{nuevoTraspasoMB.resultadoBusquedaSI.productoCodigoBarras}" class="bold_text"/>
+
+									<h:outputText value="LINEA :" />
+									<h:outputText value="#{nuevoTraspasoMB.resultadoBusquedaSI.productoLinea}" class="bold_text"/>
+
+									<h:outputText value="MARCA :" />
+									<h:outputText value="#{nuevoTraspasoMB.resultadoBusquedaSI.productoMarca}" class="bold_text" />
+
+									<h:outputText value="CANTIDAD ACTUAL :" />
+									<h:outputText value="#{nuevoTraspasoMB.resultadoBusquedaSI.apCantidad}" class="bold_text" />
+
+									<h:outputText value="CONTENIDO :" />
+									<h:outputText value="#{nuevoTraspasoMB.resultadoBusquedaSI.productoContenido} #{nuevoTraspasoMB.resultadoBusquedaSI.productoUnidadMedida} [x #{nuevoTraspasoMB.resultadoBusquedaSI.productoUnidadEmpaque}]" class="bold_text" />
+
+									<h:outputText value="PRECIO :" />
+									<h:outputText value="#{nuevoTraspasoMB.resultadoBusquedaSI.precioVenta}" class="bold_text" >
+										<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+									</h:outputText>
+								</h:panelGrid>
+							</p:overlayPanel>							
+						</h:panelGrid>
+						
+					</h:panelGrid>
+				</h:form>
+				<h:form id="form2a" rendered="true">
+
+					<h:panelGrid columns="1" cellpadding="0" id="panel2a" columnClasses="leftAlign" width="100%">
+						<p:outputLabel value="CANTIDAD x CODIGO :" />
+						
+						<h:panelGroup>
+							<p:inputText value="#{nuevoTraspasoMB.cantidadAgregarCodigo}" size="3" maxlength="5" rendered="false" disabled="#{nuevoTraspasoMB.compraFinalizada}">
+								<f:convertNumber integerOnly="true"/>
+							</p:inputText>
+
+							<p:spinner id="cantidadAgregarCodigoSpinner" value="#{nuevoTraspasoMB.cantidadAgregarCodigo}" min="1" max="9999" size="1" disabled="#{nuevoTraspasoMB.compraFinalizada}"/>
+
+							<p:outputLabel value=" x " />
+							<p:inputText value="#{nuevoTraspasoMB.codigo}" size="15" maxlength="15" valueChangeListener="#{nuevoTraspasoMB.codigoChanged}"
+										 title="BUSCA Y AGREGA EL PRODUCTO POR EL CODIGO DE BARRAS" disabled="#{nuevoTraspasoMB.compraFinalizada}">
+								<p:ajax  event="change" listener="#{nuevoTraspasoMB.buscarXCodigo}" 
+										 process=":form2a" update=":form1:panel1,:form2a:panel2a,:form3,:form4:panel4_3"
+										 oncomplete="updateComponentsOnWindowResize();scrollDownTablaPedidos();"/>
+							</p:inputText>						
+
+						</h:panelGroup>
+
+					</h:panelGrid>
+				</h:form>
+
+				<h:form id="form3" rendered="true">
+					<p:growl id="growl" showDetail="true" sticky="false" autoUpdate="true"  />
+					
+					<h:panelGrid columns="1" cellpadding="0" id="panel3" columnClasses="leftAlign" width="100%" >						
+						<p:dataTable  var="pvd" value="#{nuevoTraspasoMB.entityList}"
+									  id="pvdTable" widgetVar="wv_pvdTable" emptyMessage="-- SIN ELEMENTOS --" 
+									  scrollable="true" draggableRows="#{nuevoTraspasoMB.tableDraggableEnabled}"
+									  editable="true" editMode="cell" 
+									  scrollHeight="200" >
+							<p:ajax event="rowReorder" listener="#{nuevoTraspasoMB.onRowReorder}" update=":form3:panel3,:form4:panel4_3" oncomplete="updateComponentsOnWindowResize();"/>
+							<f:facet name="header">								
+								<h:outputText value="OPCIONES DE VER TABLA:"/>
+								<p:commandButton	icon="ui-icon-arrowrefresh-1-s" value="ACTUALIZAR TOTALES" process=":form3" update=":form3,:form4:panel4_3" 
+													rendered="#{not nuevoTraspasoMB.compraFinalizada and !nuevoTraspasoMB.tableDraggableEnabled}"
+													actionListener="#{nuevoTraspasoMB.actualizarTotales()}"
+													oncomplete="updateComponentsOnWindowResize();"
+													title="ACTUALZIA TOTALES DESPUES QUE SE CAMBIAN CANTIDADES Y DESCUENTOS"/>
+								<p:spacer width="10"/>
+								<p:commandButton	value="VER + COLUMNAS" actionListener="#{nuevoTraspasoMB.expandirTabla}" process=":form3" update=":form3:panel3" 
+												 rendered="#{not nuevoTraspasoMB.tablaExpandida}" oncomplete="updateComponentsOnWindowResize();" title="VER MAS COLUMNAS EN LA TABLA, PARA VISTA MÁS DETALLADA"/>
+								<p:commandButton	value="VER - COLUMNAS" actionListener="#{nuevoTraspasoMB.contraerTabla}" process=":form3" update=":form3:panel3" 
+													rendered="#{nuevoTraspasoMB.tablaExpandida}"  oncomplete="updateComponentsOnWindowResize();" title="VER MENOS COLUMNAS EN LA TABLA, VISTA RESUMIDA"/>
+								<p:spacer width="10"/>
+								
+								<p:commandButton	value="MOVER RENGLONES"       actionListener="#{nuevoTraspasoMB.activarMover}"   process=":form3" update=":form3:panel3" 
+													rendered="#{!nuevoTraspasoMB.tableDraggableEnabled}" oncomplete="updateComponentsOnWindowResize();" 
+													title="PERMITE REORDENAR LOS RENGLONES EN DETALLE, SIN ALTERAR TOTALES NI CANTIDADES" disabled="#{nuevoTraspasoMB.compraFinalizada}"/>
+								<p:commandButton	value="RENGLONES FIJOS" actionListener="#{nuevoTraspasoMB.desactivarMover}" process=":form3" update=":form3:panel3" 
+													rendered="#{nuevoTraspasoMB.tableDraggableEnabled}"  oncomplete="updateComponentsOnWindowResize();" 
+													title="FIJA LOS RENGLONES Y PERMITE PODER ELIMINARLOS" disabled="#{nuevoTraspasoMB.compraFinalizada}"/>
+							</f:facet>
+
+							<p:column headerText="." width="3%">
+								<p:commandButton icon="ui-icon-trash" actionListener="#{nuevoTraspasoMB.deleteRow(pvd.rowId)}" 
+												 title="ELIMINAR ESTE ELEMENTO DEL DETALLE" process=":form3" update=":form3,:form4:panel4_3"
+												 oncomplete="updateComponentsOnWindowResize();" disabled="#{nuevoTraspasoMB.compraFinalizada}"
+												 rendered="#{not nuevoTraspasoMB.tableDraggableEnabled}">
+									<p:confirm header="ELIMINAR" message="¿ SEGURO QUE QUIERE ELIMINAR ?" icon="ui-icon-alert" rendered="#{not nuevoTraspasoMB.tableDraggableEnabled}"/>
+								</p:commandButton>		
+								
+								<h:graphicImage value="/images/draggable.png" rendered="#{nuevoTraspasoMB.tableDraggableEnabled}" style="cursor:move"/>
+							</p:column>
+
+							<p:column headerText="#" width="10%" >	
+								
+								<h:outputText value="#{pvd.cantidad}" rendered="#{nuevoTraspasoMB.compraFinalizada or nuevoTraspasoMB.tableDraggableEnabled}"/>
+								
+								<h:panelGroup rendered="#{not nuevoTraspasoMB.compraFinalizada and not nuevoTraspasoMB.tableDraggableEnabled}">
+									<h:inputText value="#{pvd.cantidad}" size="2" validatorMessage="LA CANTIDAD ES INCORRECTA, DEBE SER > 0" converterMessage="DEBE SER UN NUMERO ENTERO > 0">
+										<f:convertNumber integerOnly="true" />
+										<f:validateLongRange minimum="1" maximum="99999"/>
+									</h:inputText>	
+									<p:spacer width="5"/>
+									<p:commandButton	icon="ui-icon-arrowrefresh-1-s" process=":form3"  title="SI ACTUALIZA CANTIDAD, ACTUALIZAR IMPORTE Y TOTALES"
+														update=":form3,:form4:panel4_3" oncomplete="updateComponentsOnWindowResize();"
+														actionListener="#{nuevoTraspasoMB.actualizarTotales()}"/>
+								</h:panelGroup>
+								
+							</p:column>
+
+							<p:column headerText="ALM." width="5%" >
+								<h:outputText value="1RA" rendered="#{pvd.apTipoAlmacen eq 1}" class="centerAlignColumn"/>
+								<h:outputText value="OPO" rendered="#{pvd.apTipoAlmacen eq 2}" class="centerAlignColumn"/>
+								<h:outputText value="REG" rendered="#{pvd.apTipoAlmacen eq 3}" class="centerAlignColumn"/>
+							</p:column>
+
+							<p:column headerText="PRODUCTO" width="#{nuevoTraspasoMB.codigoTableWidth}">
+								<h:outputText value="#{pvd.productoCodigoBarras} #{pvd.productoNombre} / #{pvd.productoPresentacion} #{pvd.productoContenido} #{pvd.productoUnidadMedida}" rendered="#{not nuevoTraspasoMB.tablaExpandida}"/>
+								<h:outputText value="#{pvd.productoCodigoBarras}" rendered="#{nuevoTraspasoMB.tablaExpandida}"/>
+							</p:column>
+
+							<p:column headerText="IND. / LINEA / MARCA" rendered="#{nuevoTraspasoMB.tablaExpandida}" width="35%">
+								<h:outputText value="#{pvd.productoIndustria} /" /> <br/>
+								<h:outputText value="#{pvd.productoLinea} /" /> <br/>
+								<h:outputText value="#{pvd.productoMarca}" /> <br/>
+							</p:column>
+
+							<p:column headerText="NOM. / PRESENT." rendered="#{nuevoTraspasoMB.tablaExpandida}" width="25%">
+								<h:outputText value="#{pvd.productoNombre} / #{pvd.productoPresentacion}" />
+							</p:column>
+
+							<p:column headerText="CONT." rendered="#{nuevoTraspasoMB.tablaExpandida}" width="5%">
+								<h:outputText value="#{pvd.productoContenido} #{pvd.productoUnidadMedida}" />
+							</p:column>
+							
+							<p:column headerText="PRECIO" width="8%">
+								<h:outputText value="#{pvd.precioVenta}" title="#{nuevoTraspasoMB.getImporteDesglosado(pvd.precioVenta)}" class="rightAlignColumn">
+									<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="IMPORTE" width="10%">
+								<h:outputText value="#{pvd.cantidad * pvd.precioVenta}" title="#{nuevoTraspasoMB.getImporteDesglosado(pvd.cantidad * pvd.precioVenta)}" class="rightAlignColumn">
+									<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+								</h:outputText>
+							</p:column>
+
+							<f:facet name="footer">
+								<h:panelGrid width="100%" columns="2" columnClasses="columnWidth85 centerAlign, columnWidth15 rightAlign" style="border-width: 0">
+									<h:panelGroup>
+										<h:outputText value="ELEMENTOS DETALLE: #{nuevoTraspasoMB.sizeList}, TOTAL UNIDADES INDIVIDUALES : #{nuevoTraspasoMB.pedidoVentaFooter.totalUnidades}" />
+									</h:panelGroup>
+									<h:outputText value="#{nuevoTraspasoMB.getImporteMoneda(nuevoTraspasoMB.pedidoVentaFooter.subTotalBruto)}" 
+												  title="= #{nuevoTraspasoMB.getImporteDesglosado(nuevoTraspasoMB.pedidoVentaFooter.subTotalBruto)}"/>
+								</h:panelGrid>
+								
+							</f:facet>
+						</p:dataTable>
+
+					</h:panelGrid>
+				</h:form>
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="1" cellpadding="0" columnClasses="centerAlign bottomAlign"  width="100%">
+				<h:form id="form4">
+
+					<h:panelGrid columns="1" id="panel4_2" cellpadding="0" columnClasses="leftAlign" width="100%">
+																		
+						<p:outputLabel value="COMENTARIOS :" />
+
+						<h:inputText id="comentarios" value="#{nuevoTraspasoMB.pedidoVenta.comentarios}" size="30"
+										 title="COMENTARIOS ACERCA DEL PEDIDO" disabled="#{nuevoTraspasoMB.compraFinalizada}">
+							<p:ajax		 event="blur" listener="#{nuevoTraspasoMB.onComentariosChange}" 
+									  process=":form4:panel4_2" update=":form4:panel4_2,:form4:panel4_3"/>
+						</h:inputText>
+
+					</h:panelGrid>
+					
+					<h:panelGrid columns="1" id="panel4_3" cellpadding="0" columnClasses="centerAlign" width="100%">
+						<p:spacer width="10"/>
+						<h:panelGrid id="panel4_3a" columns="2" cellpadding="0" columnClasses="columnWidth60 rightAlign, columnWidth40 rightAlign" width="100%">
+							<h:outputText value="SUBTOTAL :" />
+							<h:outputText value="#{nuevoTraspasoMB.pedidoVentaFooter.subTotalNoGrabado}">
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>
+
+							<h:outputText value="I.V.A. :" />
+							<h:outputText value="#{nuevoTraspasoMB.pedidoVentaFooter.importeIVA}">
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>
+
+							<h:outputText value="T O T A L :" styleClass="bold_text"/>
+							<h:outputText value="#{nuevoTraspasoMB.pedidoVentaFooter.total}" styleClass="bold_text">
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>
+						</h:panelGrid>
+						<p:spacer width="10" rendered="#{not nuevoTraspasoMB.compraFinalizada}"/>
+						
+						<h:panelGrid columns="1" rendered="#{not nuevoTraspasoMB.compraFinalizada}" columnClasses="columnWidth50 centerAlign, columnWidth50 centerAlign" width="100%">
+							<p:commandButton value="CANCELAR Y REINICIAR" actionListener="#{nuevoTraspasoMB.cancelar}" process="@all" rendered="#{not nuevoTraspasoMB.compraFinalizada}" icon="ui-icon-cancel"
+											 update=":form1,:form2,:form2a,:form3,:form4" oncomplete="updateComponentsOnWindowResize();">
+								<p:confirm header="CANCELAR CREACIÓN" message="¿ SEGURO QUE QUIERE CANCELAR CREACIÓN DE EL TRASPASO ?" icon="ui-icon-alert" />
+							</p:commandButton>						
+
+							<p:commandButton value="CREAR TRASPASO"  actionListener="#{nuevoTraspasoMB.guardar}" disabled="#{not nuevoTraspasoMB.crearCompra}" icon="ui-icon-play"
+											 process="@all" update=":form1,:form2,:form2a,:form3,:form4" oncomplete="updateComponentsOnWindowResize();">
+								<p:confirm header="CREAR TRASPASO" message="¿ SEGURO YÁ TERMINÓ Y QUIERE CREAR EL TRASPASO ?" icon="ui-icon-alert" />
+							</p:commandButton>
+						
+							<p:commandButton value="OK, SE HA VERIFICADO"  icon="ui-icon-check" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and (not nuevoTraspasoMB.hayCambios and nuevoTraspasoMB.verificable)}"
+											 actionListener="#{nuevoTraspasoMB.verificar}" process="@all" update="@all">
+								<p:confirm header="VERIFICAR" message="¿ SEGURO QUE YA HA VERIFICADO TODOS LOS ELEMENTOS ?" icon="ui-icon-alert" />
+							</p:commandButton>
+
+							<p:commandButton value="OK, SE AUTORIZA SURTIRSE" icon="ui-icon-cart" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin  and (not nuevoTraspasoMB.hayCambios and nuevoTraspasoMB.surtible)}"  
+											 actionListener="#{nuevoTraspasoMB.surtir}" process="@all" update="@all"
+											 disabled="#{not nuevoTraspasoMB.posibleSurtir}">
+								<p:confirm header="SURTIRSE" message="¿ SEGURO QUE ESTA LISTO PARA SURTIRSE ?" icon="ui-icon-alert" />
+							</p:commandButton>
+
+
+							<h:outputText	value="TRASPASO ID : ##{nuevoTraspasoMB.pedidoVenta.id}" rendered="#{not empty nuevoTraspasoMB.pedidoVenta and nuevoTraspasoMB.compraFinalizada}"/>
+
+
+							<p:commandButton value="TRASPASO FINALIZADO, CERRAR"  actionListener="#{nuevoTraspasoMB.cerrar}" rendered="#{nuevoTraspasoMB.compraFinalizada}" 
+											 process="@all" update=":form1,:form2,:form2a,:form3,:form4" oncomplete="updateComponentsOnWindowResize();"/>
+						</h:panelGrid>
+						<div id="debugDivOutput">						
+						</div>
+					</h:panelGrid>
+				</h:form>
+				
+				<p:confirmDialog global="true" styleClass="centerAlign" closeOnEscape="true" widgetVar="dlgConfirmation">
+					<h:form id="dlgConfirmForm">
+						<h:panelGrid columns="2" columnClasses="columnWidth50 centerAlign, columnWidth50 centerAlign"  width="100%">
+							<p:commandButton value="SI, ESTOY SEGURO"	type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" oncomplete="dlgConfirmation.hide(); return false;"/>
+							<p:commandButton value="¡ NO, MEJOR NO !"  type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  oncomplete="dlgConfirmation.hide(); return false;"/>
+						</h:panelGrid>
+					</h:form>
+				</p:confirmDialog>
+
+			</h:panelGrid>
+
+		</h:panelGrid>
+		<script>
+			var counterResized = 0;
+			function updateComponentsOnWindowResize() {
+				//var txt="";
+				//txt+="["+counterResized+"]Resized:(" + $(window).width() + " x  " + $(window).height() +"), table height:"+$(".ui-datatable-scrollable-body").height();
+				//$("#debugDivOutput").html(txt);
+				setDataTableHeight();
+				counterResized++;
+			}
+
+			function setDataTableHeight() {
+				var docHeight = $(document).height();				
+				var scrollHeight = docHeight - 520;
+
+				var scrollBody = $(".ui-datatable-scrollable-body");
+				scrollBody.height(scrollHeight);
+
+			}
+			
+			function scrollDownTablaPedidos(){
+				var d = $('.ui-datatable-scrollable-body');
+				d.scrollTop(d.prop("scrollHeight"));				
+			}
+
+			$(document).ready(function() {
+
+				$(window).resize(function() {
+					updateComponentsOnWindowResize();
+				});
+
+				updateComponentsOnWindowResize();
+
+			});
+		</script>		
+
+	</ui:define>
+
+</ui:composition>
