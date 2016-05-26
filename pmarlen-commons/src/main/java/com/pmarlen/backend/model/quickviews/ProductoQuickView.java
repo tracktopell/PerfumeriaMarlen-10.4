@@ -62,5 +62,19 @@ public class ProductoQuickView extends Producto {
 		return firstMultimedio;
 	}
 	
+	public boolean isDescont(){
+		if(getDescontinuado()==null){
+			return false;
+		} else{
+			return getDescontinuado()==1;
+		}
+	}
 	
+	public void setDescont(boolean descont){
+		if(descont){
+			setDescontinuado(1);
+		} else {
+			setDescontinuado(null);
+		}
+	}
 }

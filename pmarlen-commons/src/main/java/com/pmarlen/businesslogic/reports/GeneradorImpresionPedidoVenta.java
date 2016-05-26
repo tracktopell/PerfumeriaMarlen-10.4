@@ -2,6 +2,7 @@ package com.pmarlen.businesslogic.reports;
 
 import com.pmarlen.backend.model.Cfd;
 import com.pmarlen.backend.model.Cliente;
+import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
@@ -11,6 +12,7 @@ import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -21,6 +23,7 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
@@ -35,7 +38,11 @@ public class GeneradorImpresionPedidoVenta {
 	private static Logger logger = Logger.getLogger("GeneradorImpresionPedidoVenta");
 	private static String reportDesignDir="/reports/";
 	
-    public static byte[] generaPdfPedidoVenta(EntradaSalidaQuickView pedidoVenta,ArrayList<EntradaSalidaDetalleQuickView> esdListOriginal,Cliente clienteVenta,boolean fullPrint,boolean interna,String usuarioImr) {
+	public static byte[] generaPdfPedidoVenta(EntradaSalidaQuickView pedidoVenta,ArrayList<EntradaSalidaDetalleQuickView> esdListOriginal,Cliente clienteVenta,boolean fullPrint,boolean interna,String usuarioImr) {
+		return generaPdfPedidoVenta(null,pedidoVenta, esdListOriginal, clienteVenta, fullPrint, interna, usuarioImr);
+	}
+    
+	public static byte[] generaPdfPedidoVenta(Sucursal suc,EntradaSalidaQuickView pedidoVenta,ArrayList<EntradaSalidaDetalleQuickView> esdListOriginal,Cliente clienteVenta,boolean fullPrint,boolean interna,String usuarioImr) {
 		byte[] pdfBytes = null;
 		ArrayList<EntradaSalidaDetalleQuickView> esdList=null;
 		try {
@@ -44,7 +51,7 @@ public class GeneradorImpresionPedidoVenta {
 			String compiledReportPath = "";
 			String compiledReportClassPath = "";
             
-			logger.info("Default Locale:"+Locale.getDefault());
+			logger.debug("Default Locale:"+Locale.getDefault());
             
 			if(interna){
 				reportFileName = "pedidoVentaDesignInterno2";
@@ -62,8 +69,8 @@ public class GeneradorImpresionPedidoVenta {
             Collection<Map<String,?>> col = new ArrayList<Map<String,?>>();
             DecimalFormat    df    = new  DecimalFormat("$###,###,###,##0.00");
             DecimalFormat    dfEnt = new  DecimalFormat("###########0.00");
-            logger.info("Ok, jrxml loaded");
-			logger.info("Ok, jrxml loaded:"+pedidoVenta.getAutorizaDescuento()+"?,"+pedidoVenta.getPorcentajeDescuentoCalculado()+"%+"+pedidoVenta.getPorcentajeDescuentoExtra()+"%");
+            logger.debug("Ok, jrxml loaded");
+			logger.debug("Ok, jrxml loaded:"+pedidoVenta.getAutorizaDescuento()+"?,"+pedidoVenta.getPorcentajeDescuentoCalculado()+"%+"+pedidoVenta.getPorcentajeDescuentoExtra()+"%");
             int n;
 			EntradaSalidaFooter esf=new EntradaSalidaFooter();
 			esf.calculaTotalesDesde(pedidoVenta, esdList);
@@ -93,7 +100,7 @@ public class GeneradorImpresionPedidoVenta {
 			}
 			
             JRDataSource beanColDataSource = new JRMapCollectionDataSource(col);
-            logger.info("Ok, JRDataSource created");
+            logger.debug("Ok, JRDataSource created");
             
             Map parameters = new HashMap();
             SimpleDateFormat sdf_cdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -113,20 +120,35 @@ public class GeneradorImpresionPedidoVenta {
 			//parameters.put("tipoAlmacen", "TA");
 			
 			parameters.put("fechaHoraImpr",sdf_cdf.format(new Date()));
-						
+			String dirSuc = null;
+			if(suc != null){
+				dirSuc = suc.getDireccion().toUpperCase();
+				parameters.put("dirSuc",dirSuc);
+				parameters.put("telsSuc","TEL. "+suc.getTelefonos().toUpperCase());
+			} else {
+				dirSuc = "CALLE FRANCISCO VILLA LT3 MZ 98 NO. 121, Col. SAN MARTÍN AZCATEPEC, TÉCAMAC. EDO. DE MÉX. C.P. 55740";
+				parameters.put("dirSuc",dirSuc);				
+				parameters.put("telsSuc","TEL. (55)5936-7894");
+			}
+			
+			
             parameters.put("cliente",clienteVenta.getRazonSocial());
 			parameters.put("nombreEstab",clienteVenta.getNombreEstablecimiento());
             parameters.put("rfc",clienteVenta.getRfc());
 			String direccionValue = null;
-			direccionValue = clienteVenta.getDireccionFacturacion();
-			if(direccionValue == null){
-				direccionValue = clienteVenta.getCalle()+
-						", Num. Ext. "+(clienteVenta.getNumExterior()!=null&&clienteVenta.getNumExterior().length()>0?clienteVenta.getNumExterior():"S/N")+
-						", Num. Int. "+(clienteVenta.getNumInterior()!=null&&clienteVenta.getNumInterior().length()>0?clienteVenta.getNumInterior():"S/N")+					
-						", "+clienteVenta.getColonia()+
-					", "+clienteVenta.getMunicipio()+
-						", "+clienteVenta.getEstado()+
-						", C.P. "+clienteVenta.getCp();
+			if(clienteVenta.getId() == Constants.ID_CLIENTE_MOSTRADOR){
+				direccionValue = dirSuc;
+			} else {
+				direccionValue = clienteVenta.getDireccionFacturacion();
+				if(direccionValue == null){
+					direccionValue = clienteVenta.getCalle()+
+							", Num. Ext. "+(clienteVenta.getNumExterior()!=null&&clienteVenta.getNumExterior().length()>0?clienteVenta.getNumExterior():"S/N")+
+							", Num. Int. "+(clienteVenta.getNumInterior()!=null&&clienteVenta.getNumInterior().length()>0?clienteVenta.getNumInterior():"S/N")+					
+							", "+clienteVenta.getColonia()+
+						", "+clienteVenta.getMunicipio()+
+							", "+clienteVenta.getEstado()+
+							", C.P. "+clienteVenta.getCp();
+				}
 			}
             parameters.put("direccion" , direccionValue.toUpperCase());
 			
@@ -147,7 +169,7 @@ public class GeneradorImpresionPedidoVenta {
 			}
 			parameters.put("formaDePago" ,pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
             parameters.put("metodoDePago",pedidoVenta.getMetodoDePagoDescripcion().toUpperCase());
-            logger.info("->descuento:autorizadescuento?"+pedidoVenta.getAutorizaDescuento()+", "+pedidoVenta.getPorcentajeDescuentoCalculado()+"% + "+pedidoVenta.getPorcentajeDescuentoExtra());
+            logger.debug("->descuento:autorizadescuento?"+pedidoVenta.getAutorizaDescuento()+", "+pedidoVenta.getPorcentajeDescuentoCalculado()+"% + "+pedidoVenta.getPorcentajeDescuentoExtra());
             parameters.put("subtotal" , df.format(esf.getSubTotalBruto()));
             parameters.put("iva" ,df.format(esf.getImporteIVA()));
             parameters.put("descuento" ,df.format(esf.getImporteDescuentoAplicado()));
@@ -155,25 +177,28 @@ public class GeneradorImpresionPedidoVenta {
             parameters.put("total" ,df.format(esf.getTotal()));  
             JasperReport jasperReport = null;
             //String intDecParts[] = dfEnt.format(esf.getTotal()).split("\\.");
-			File compiledReportPathFile=new File(compiledReportPath);
-			/*
-            if(! compiledReportPathFile.exists()){
+			try {
+				File compiledReportPathFile=new File(compiledReportPath);
+				if(! compiledReportPathFile.exists()){
+					InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream(reportPath);
+					JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
+					JasperCompileManager.compileReportToStream(jasperDesign,new FileOutputStream(compiledReportPathFile));
+					logger.debug("Ok, JasperReport compiled and saved 1st time, to:"+compiledReportPath);				
+				} else {
+					logger.debug("Ok,JasperReport loadfrom:"+compiledReportPath);
+				}
+				jasperReport = (JasperReport)JRLoader.loadObject(compiledReportPathFile);
+				logger.debug("Ok,JasperReport compiled:"+jasperReport.getName());
+			}catch(Exception e){
+				logger.error("JasperReport:"+e.getMessage());
 				InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream(reportPath);
 				JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
-				JasperCompileManager.compileReportToStream(jasperDesign,new FileOutputStream(compiledReportPathFile));
-				logger.info("Ok, JasperReport compiled and saved 1st time, to:"+compiledReportPath);				
+				jasperReport = JasperCompileManager.compileReport(jasperDesign);
+				logger.debug("Ok,Emergency JasperReport runtime compiled from:"+reportPath+", name:"+jasperReport.getName());
 			}
 			
-			jasperReport = (JasperReport)JRLoader.loadObject(compiledReportPathFile);
-			*/
-			InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream(reportPath);
-			JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
-			jasperReport = JasperCompileManager.compileReport(jasperDesign);
-
-			logger.info("Ok, JasperReport loaded from:"+compiledReportPath);
-            
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
-            logger.info("Ok, JasperPrint created.");
+            logger.debug("Ok, JasperPrint created.");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			JRPdfExporter exporter = new JRPdfExporter(DefaultJasperReportsContext.getInstance());
     
@@ -185,9 +210,9 @@ public class GeneradorImpresionPedidoVenta {
 			exporter.setConfiguration(configuration);
 			
 			exporter.exportReport();
-			logger.info("Ok, JasperExportManager executed");
+			logger.debug("Ok, JasperExportManager executed");
 			pdfBytes = baos.toByteArray();            
-            logger.info("Ok, finished");
+            logger.debug("Ok, finished");
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
             //System.exit(1);
@@ -203,7 +228,7 @@ public class GeneradorImpresionPedidoVenta {
 			String compiledReportPath = "";
 			String compiledReportClassPath = "";
             
-			logger.info("Default Locale:"+Locale.getDefault());
+			logger.debug("Default Locale:"+Locale.getDefault());
             
 			reportFileName = "pedidoVentaTicketDesign";
 			
@@ -216,8 +241,8 @@ public class GeneradorImpresionPedidoVenta {
             Collection<Map<String,?>> col = new ArrayList<Map<String,?>>();
             DecimalFormat    df    = new  DecimalFormat("$###,###,###,##0.00");
             DecimalFormat    dfEnt = new  DecimalFormat("###########0.00");
-            logger.info("Ok, jrxml loaded");
-			logger.info("Ok, jrxml loaded:"+pedidoVenta.getAutorizaDescuento()+"?,"+pedidoVenta.getPorcentajeDescuentoCalculado()+"%+"+pedidoVenta.getPorcentajeDescuentoExtra()+"%");
+            logger.debug("Ok, jrxml loaded");
+			logger.debug("Ok, jrxml loaded:"+pedidoVenta.getAutorizaDescuento()+"?,"+pedidoVenta.getPorcentajeDescuentoCalculado()+"%+"+pedidoVenta.getPorcentajeDescuentoExtra()+"%");
             int n;
 			EntradaSalidaFooter esf=new EntradaSalidaFooter();
 			esf.calculaTotalesDesde(pedidoVenta, esdList);
@@ -247,7 +272,7 @@ public class GeneradorImpresionPedidoVenta {
 			}
 			
             JRDataSource beanColDataSource = new JRMapCollectionDataSource(col);
-            logger.info("Ok, JRDataSource created");
+            logger.debug("Ok, JRDataSource created");
             
             Map parameters = new HashMap();
             SimpleDateFormat sdf_cdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -305,7 +330,7 @@ public class GeneradorImpresionPedidoVenta {
 			}
 			parameters.put("formaDePago" ,pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
             parameters.put("metodoDePago",pedidoVenta.getMetodoDePagoDescripcion().toUpperCase());
-            logger.info("->descuento:autorizadescuento?"+pedidoVenta.getAutorizaDescuento()+", "+pedidoVenta.getPorcentajeDescuentoCalculado()+"% + "+pedidoVenta.getPorcentajeDescuentoExtra());
+            logger.debug("->descuento:autorizadescuento?"+pedidoVenta.getAutorizaDescuento()+", "+pedidoVenta.getPorcentajeDescuentoCalculado()+"% + "+pedidoVenta.getPorcentajeDescuentoExtra());
             parameters.put("subtotal" , df.format(esf.getSubTotalBruto()));
             parameters.put("iva" ,df.format(esf.getImporteIVA()));
             parameters.put("descuento" ,df.format(esf.getImporteDescuentoAplicado()));
@@ -324,7 +349,7 @@ public class GeneradorImpresionPedidoVenta {
 				InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream(reportPath);
 				JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 				JasperCompileManager.compileReportToStream(jasperDesign,new FileOutputStream(compiledReportPathFile));
-				logger.info("Ok, JasperReport compiled and saved 1st time, to:"+compiledReportPath);				
+				logger.debug("Ok, JasperReport compiled and saved 1st time, to:"+compiledReportPath);				
 			}
 			jasperReport = (JasperReport)JRLoader.loadObject(compiledReportPathFile);
 			*/
@@ -332,9 +357,9 @@ public class GeneradorImpresionPedidoVenta {
 			JasperDesign jasperDesign = JRXmlLoader.load(inputStream);			
 			jasperReport = JasperCompileManager.compileReport(jasperDesign);
 			
-			logger.info("Ok, JasperReport loaded from:"+compiledReportPath);
+			logger.debug("Ok, JasperReport loaded from:"+compiledReportPath);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
-            logger.info("Ok, JasperPrint created.");
+            logger.debug("Ok, JasperPrint created.");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			JRPdfExporter exporter = new JRPdfExporter(DefaultJasperReportsContext.getInstance());
     
@@ -346,9 +371,9 @@ public class GeneradorImpresionPedidoVenta {
 			exporter.setConfiguration(configuration);
 			
 			exporter.exportReport();
-			logger.info("Ok, JasperExportManager executed");
+			logger.debug("Ok, JasperExportManager executed");
 			pdfBytes = baos.toByteArray();            
-            logger.info("Ok, finished");
+            logger.debug("Ok, finished");
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
             //System.exit(1);
@@ -365,7 +390,7 @@ public class GeneradorImpresionPedidoVenta {
 			String compiledReportPath = "";
 			String compiledReportClassPath = "";
             
-			logger.info("Default Locale:"+Locale.getDefault());
+			logger.debug("Default Locale:"+Locale.getDefault());
             
 			reportFileName = "facturaDesignNueva";
 			
@@ -377,7 +402,7 @@ public class GeneradorImpresionPedidoVenta {
             DecimalFormat    df    = new  DecimalFormat("$###,###,###,##0.00");
             DecimalFormat    dfEnt = new  DecimalFormat("###########0.00");
             DecimalFormat    dfBC  = new  DecimalFormat("0000000000000");
-            logger.info("Ok, jrxml loaded:"+pedidoVenta.getAutorizaDescuento()+"?,"+pedidoVenta.getPorcentajeDescuentoCalculado()+"%+"+pedidoVenta.getPorcentajeDescuentoExtra()+"%");
+            logger.debug("Ok, jrxml loaded:"+pedidoVenta.getAutorizaDescuento()+"?,"+pedidoVenta.getPorcentajeDescuentoCalculado()+"%+"+pedidoVenta.getPorcentajeDescuentoExtra()+"%");
             int n;
             EntradaSalidaFooter esf=new EntradaSalidaFooter();
 			esf.calculaParaFacturaTotalesDesde(pedidoVenta, esdList);
@@ -416,7 +441,7 @@ public class GeneradorImpresionPedidoVenta {
 			}
 						
             JRDataSource beanColDataSource = new JRMapCollectionDataSource(col);
-            logger.info("Ok, JRDataSource created");
+            logger.debug("Ok, JRDataSource created");
             
             Map parameters = new HashMap();
             SimpleDateFormat sdf_cdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -505,7 +530,7 @@ public class GeneradorImpresionPedidoVenta {
 				InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream(reportPath);
 				JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 				JasperCompileManager.compileReportToStream(jasperDesign,new FileOutputStream(compiledReportPathFile));
-				logger.info("Ok, JasperReport compiled and saved 1st time, to:"+compiledReportPath);				
+				logger.debug("Ok, JasperReport compiled and saved 1st time, to:"+compiledReportPath);				
 			}
 			
 			jasperReport = (JasperReport)JRLoader.loadObject(compiledReportPathFile);
@@ -514,20 +539,20 @@ public class GeneradorImpresionPedidoVenta {
 			JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 			jasperReport = JasperCompileManager.compileReport(jasperDesign);
 
-			logger.info("Ok, JasperReport loaded from:"+compiledReportPath);
+			logger.debug("Ok, JasperReport loaded from:"+compiledReportPath);
             
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
-            logger.info("Ok, JasperPrint created");
+            logger.debug("Ok, JasperPrint created");
             //JasperExportManager.exportReportToPdfFile(jasperPrint, "jasper_out_"+sdf.format(new Date())+".pdf");
-            //logger.info("Ok, JasperExportManager executed");
+            //logger.debug("Ok, JasperExportManager executed");
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
-			logger.info("Ok, JasperExportManager executed");
+			logger.debug("Ok, JasperExportManager executed");
 			pdfBytes = baos.toByteArray();
             //JasperPrintManager.printReport(jasperPrint, false);
-            //logger.info("Ok, printed. executed");                        
+            //logger.debug("Ok, printed. executed");                        
             
-            logger.info("Ok, finished");
+            logger.debug("Ok, finished");
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
             //System.exit(1);

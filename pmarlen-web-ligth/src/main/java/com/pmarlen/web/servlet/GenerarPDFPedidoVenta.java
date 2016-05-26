@@ -6,9 +6,11 @@ package com.pmarlen.web.servlet;
 
 import com.pmarlen.backend.dao.ClienteDAO;
 import com.pmarlen.backend.dao.EntradaSalidaDAO;
+import com.pmarlen.backend.dao.SucursalDAO;
 import com.pmarlen.backend.dao.UsuarioDAO;
 import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.EntradaSalida;
+import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
@@ -82,9 +84,10 @@ public class GenerarPDFPedidoVenta extends HttpServlet {
 			EntradaSalidaQuickView pv = EntradaSalidaDAO.getInstance().findBy(new EntradaSalida(pedidoVentaID));
 			ArrayList<EntradaSalidaDetalleQuickView> entityList = EntradaSalidaDAO.getInstance().findAllESDByEntradaSalida(pedidoVentaID);
 			Cliente clienteVenta = ClienteDAO.getInstance().findBy(new Cliente(pv.getClienteId()));
+			Sucursal sucursal    = SucursalDAO.getInstance().findBy(new Sucursal(pv.getSucursalId()));
 			String uemail=request.getUserPrincipal().getName();
 			Usuario ui= UsuarioDAO.getInstance().findBy(uemail);			
-			byte[] bytesPdf = GeneradorImpresionPedidoVenta.generaPdfPedidoVenta(pv,entityList,clienteVenta,fullPrint,interna,ui.getNombreCompleto().toUpperCase());
+			byte[] bytesPdf = GeneradorImpresionPedidoVenta.generaPdfPedidoVenta(sucursal,pv,entityList,clienteVenta,fullPrint,interna,ui.getNombreCompleto().toUpperCase());
 			
 			logger.trace("OK writing PDF bytes");
 			

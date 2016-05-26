@@ -32,7 +32,7 @@
 											actionListener="#{productoMB.prepareForNew}" 
 											icon="ui-icon-circle-plus" onsuccess="PF('dlg1').show();"/>
 						<p:spacer width="20"/>
-						<p:commandButton	value="ACTUALIZAR" update=":form1:panel1" 
+						<p:commandButton	value="ACTUALIZAR" update=":form1:panel1" actionListener="#{productoMB.recargar}"
 											icon="ui-icon-arrowrefresh-1-s" />
 
 						<p:commandButton id="toggler" type="button" value=" VER COLUMNAS" style="float:right" icon="ui-icon-calculator" rendered="false"/>
@@ -51,8 +51,11 @@
 						
 					</p:column>
 
+					<p:column headerText="D" width="2%" >
+						<h:outputText value="X" rendered="#{producto.descont}" />
+					</p:column>
 					
-					<p:column headerText="CODIGO" filterBy="#{producto.codigoBarras}" width="10%" filterMatchMode="contains">
+					<p:column headerText="CODIGO" filterBy="#{producto.codigoBarras}" width="8%" filterMatchMode="contains">
 						<p:commandButton	update=":form1:panel1, :form2:dlg1Panel1" 
 											actionListener="#{productoMB.setSelectedEntity(producto)}" 
 											icon="ui-icon-pencil" onsuccess="PF('dlg1').show();"
@@ -110,6 +113,9 @@
 								<f:convertNumber maxFractionDigits="6" pattern="$ ###,###,##0.000000" locale="es_MX"/>
 							</h:outputText>
 							
+							<p:outputLabel value="POCO:"/>
+							<h:outputText value="#{producto.poco}" title="VALOR QUE SE USA EN REPOSTES COMO POCA CANTIDAD"/>
+							
 						</p:panelGrid>
 					</p:column>
 					
@@ -120,7 +126,7 @@
 		</h:form>
 
 		<h:form id="form2">
-			<p:dialog header="#{productoMB.dialogTitle}" widgetVar="dlg1" modal="true" width="500" height="550" closable="false" resizable="true">
+			<p:dialog header="#{productoMB.dialogTitle}" widgetVar="dlg1" modal="true" width="500" height="590" closable="false" resizable="true">
 				<h:panelGrid columns="1" cellpadding="5" id="dlg1Panel1" width="100%">
 
 					<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" globalOnly="true"/>
@@ -210,6 +216,26 @@
 							<f:convertNumber integerOnly="false"/>
 						</p:inputText>
 						<p:message for="producto_costoVenta" />
+						
+						<h:outputLabel for="producto_descontinuado" value="DESCONTINUADO:" style="font-weight:bold"/>
+						<h:panelGroup>
+							<p:inputSwitch id="producto_descontinuado" value="#{productoMB.selectedEntity.descont}" onLabel="SI" offLabel="NO" >								
+							</p:inputSwitch>
+							<p:tooltip id="tooltip_producto_descontinuado" for="producto_descontinuado" value="ESTO EVITARA QUE SE USE O NO PARA LOS PEDIDOS" />
+						</h:panelGroup>
+						<p:message for="producto_descontinuado" />
+						
+						<h:outputLabel for="producto_poco" value="POCO:" style="font-weight:bold"/>
+						<h:panelGrid columns="2" width="100%" columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign">
+							<p:inputText id="producto_poco" value="#{productoMB.selectedEntity.poco}" size="3" />
+							<p:slider for="producto_poco" minValue="1" maxValue="200" >
+								<!--
+								<p:ajax event="slideEnd" listener="#{sliderView.onSlideEnd}" update="growl" />
+								-->
+							</p:slider>
+							<p:tooltip id="tooltip_producto_poco" for="producto_poco" value="POCA CANTIDAD, ESTO SE USARA PARA PARAMETRO EN REPORTES FILTROS PARA CATALOGOS" />
+						</h:panelGrid>
+						<p:message for="producto_descontinuado" />
 
 					</h:panelGrid>
 

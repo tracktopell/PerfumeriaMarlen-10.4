@@ -81,6 +81,16 @@ public class Producto implements java.io.Serializable {
     * costo venta
     */
     private double costoVenta;
+	
+	/**
+    * descontinuado
+    */
+    private Integer descontinuado;
+
+	/**
+    * descontinuado
+    */
+    private Integer poco;
 
     /** 
      * Default Constructor
@@ -240,4 +250,22 @@ public class Producto implements java.io.Serializable {
     public String toString() {
         return nombre + ", " + presentacion;
     }
+
+	public Integer getDescontinuado() {
+		return descontinuado;
+	}
+
+	public void setDescontinuado(Integer descontinuado) {
+		this.descontinuado = descontinuado;
+	}
+
+	
+	public void setPoco(Integer poco) {
+		this.poco = poco;
+	}
+
+	public Integer getPoco() {
+		return poco;
+	}
+	
 }

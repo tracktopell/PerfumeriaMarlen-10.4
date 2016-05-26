@@ -55,8 +55,9 @@
 						<h:outputText value="#{ap.almacenTipoDescripcion}" title="ALMACEN_ID=#{ap.almacenId}" />
 					</p:column>
 
-					<p:column headerText="CANTIDAD" sortBy="#{ap.cantidad}"  width="5%">
-						<h:outputText value="#{ap.cantidad}" />
+					<p:column headerText="CANTIDAD" sortBy="#{ap.cantidad}"  width="5%">						
+						<h:outputText value="#{ap.cantidad} [#{ap.poco}]" rendered="#{ap.cantidad le ap.poco}" style="color: red;"/>
+						<h:outputText value="#{ap.cantidad} [#{ap.poco}]" rendered="#{ap.cantidad gt  ap.poco}" style="color: green;"/>
 					</p:column>
 
 					<p:column headerText="PRECIO" sortBy="#{ap.precio}" width="7%">
@@ -83,7 +84,7 @@
 					<p:column headerText="PRES." filterBy="#{ap.productoPresentacion}" filterMatchMode="contains">
 						<h:outputText value="#{ap.productoPresentacion}" />
 					</p:column>
-					
+					<!--
 					<p:column headerText="INDUSTRIA" filterBy="#{ap.productoIndustria}" filterMatchMode="contains">
 						<h:outputText value="#{ap.productoIndustria}" />
 					</p:column>
@@ -95,7 +96,7 @@
 					<p:column headerText="MARCA" filterBy="#{ap.productoMarca}" filterMatchMode="contains">
 						<h:outputText value="#{ap.productoMarca}" />
 					</p:column>
-					
+					-->
 					<p:column headerText="CONT. [U/E]" sortBy="#{ap.productoContenido}">
 						<h:outputText value="#{ap.productoContenido} #{ap.productoUnidadMedida} [#{ap.productoUnidadEmpaque}]" />
 					</p:column>

@@ -29,7 +29,7 @@ public class ProductoMB  implements Serializable {
 	boolean nuevoProducto=false;
 	@PostConstruct
     public void init() {
-		logger.trace("ProductoMB: init.");
+		logger.debug("ProductoMB: init.");
 		nuevoProducto=false;
         try{
 			entityList = ProductoDAO.getInstance().findAll();
@@ -37,13 +37,18 @@ public class ProductoMB  implements Serializable {
 			logger.error(de.getMessage());
 			entityList = new ArrayList<ProductoQuickView>();
 		}
-		//logger.trace("ProductoMB: init:entityList="+entityList);
+		//logger.debug("ProductoMB: init:entityList="+entityList);
 		viewRows = 10;
 		dialogTitle ="PRODUCTO";
     }
 	
+	public void recargar(){
+		logger.debug("ProductoMB: recagar");
+		entityList = null;
+	}
+	
 	public String reset() {
-		logger.trace("ProductoMB: rest.");
+		logger.debug("ProductoMB: reset.");
         init();
 		return "/pages/producto";
     }
@@ -53,36 +58,37 @@ public class ProductoMB  implements Serializable {
 	}
 	
 	public void selectEntity(ActionEvent event){
-		logger.trace("ProductoMB: selectProducto.");
+		logger.debug("ProductoMB: selectProducto.");
 	}
 	
 	public void actionX(ActionEvent event){
-		logger.trace("ProductoMB: actionX.");
+		logger.debug("ProductoMB: actionX.");
 	}
 	
 	public void prepareForNew() {
 		nuevoProducto=true;
-		logger.trace("ProductoMB prepareForNew");
+		logger.debug("ProductoMB prepareForNew");
 		dialogTitle ="DATOS DEL PRODUCTO";
 		this.selectedEntity = new ProductoQuickView();
 		this.selectedEntity.setUnidadEmpaque("PZ");
 		this.selectedEntity.setUnidadesXCaja(12);		
+		this.selectedEntity.setPoco(5);
 	}
 	
 	public void setSelectedEntity(ProductoQuickView selectedProducto) {
 		nuevoProducto=false;
-		logger.trace("ProductoMB setSelectedProducto.id="+selectedProducto.getCodigoBarras());
+		logger.debug("ProductoMB setSelectedProducto.id="+selectedProducto.getCodigoBarras());
 		dialogTitle ="EDITAR PRODUCTO ID #"+selectedProducto.getCodigoBarras();
 		this.selectedEntity = selectedProducto;
 	}
 	
 	public void save(){
-		logger.trace("ProductoMB: saveSelectedProducto:codigoBarras:"+selectedEntity.getCodigoBarras());
+		logger.debug("ProductoMB: saveSelectedProducto:codigoBarras:"+selectedEntity.getCodigoBarras()+",NOMBRE:"+selectedEntity.getNombre()+", DESCONTONUADO:"+selectedEntity.getDescontinuado());
 		
 		try{
 			int u=-1;			
 			if(nuevoProducto){
-				u=ProductoDAO.getInstance().insert(selectedEntity);			
+				u=ProductoDAO.getInstance().insert(selectedEntity);	
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, dialogTitle, "SE CREÓ CORRECTAMENTE NUEVO PRODUCTO"));			
 			} else{
 				u=ProductoDAO.getInstance().update(selectedEntity);
@@ -107,6 +113,15 @@ public class ProductoMB  implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 	public List<ProductoQuickView> getEntityList() {
+		if(entityList == null){
+			try{
+				entityList = ProductoDAO.getInstance().findAll();
+				logger.debug("ProductoMB: getEntityList: entityList.size="+entityList.size());
+			}catch(DAOException de){
+				logger.error(de.getMessage());
+				entityList = new ArrayList<ProductoQuickView>();
+			}
+		}
 		return entityList;
 	}
 	

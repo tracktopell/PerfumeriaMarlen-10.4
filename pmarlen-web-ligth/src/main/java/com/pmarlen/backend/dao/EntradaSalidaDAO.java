@@ -1243,6 +1243,10 @@ public class EntradaSalidaDAO {
 		return insert(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,x,pvdList);
 	}
 	
+	public int insertComra(EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
+		return insert(Constants.TIPO_MOV_ENTRADA_ALMACEN_COMPRA,x,pvdList);	
+	}
+	
 	public int insertDevolucionVenta(EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
 		return insert(Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION,x,pvdList);
 	}
@@ -1573,7 +1577,7 @@ public class EntradaSalidaDAO {
 				conn = getConnectionCommiteable();
 				
 				logger.debug("============>>> INICIO SURTIR TRASPASO ["+x.getSucursalIdTraOri()+"] A ["+x.getSucursalIdTraDes()+"]<<<===========");
-				rs = surtir(x, pvdList, u, conn);
+				rs = surtirTransacc(x, pvdList, u, conn);
 				logger.debug("============>>> after surtir:rtx="+rs);
 				preparaTraspaso(x, pvdList, u, conn);
 				logger.debug("============>>> after preparaTraspaso:x.id="+x.getSucursalId()+", c.tipoMov="+x.getTipoMov());
@@ -1581,7 +1585,7 @@ public class EntradaSalidaDAO {
 				logger.debug("============>>> after insert:rtx="+rs+", x.id="+x.getId());
 				rs = verificar(x, u , conn);
 				logger.debug("============>>> after verificar:rtx="+rs);			
-				rs = surtir(x, pvdList, u, conn);
+				rs = surtirTransacc(x, pvdList, u, conn);
 				logger.debug("============>>> after surtir destino:rtx="+rs);
 
 				conn.commit();
@@ -1608,7 +1612,6 @@ public class EntradaSalidaDAO {
 				}
 			}
 			
-			
 			return rs;
 		} else {
 			return surtirNormal(x, pvdList, u);
@@ -1621,7 +1624,7 @@ public class EntradaSalidaDAO {
 		int rs = 0;
 		try {
 			conn = getConnectionCommiteable();
-			rs = surtir(x, pvdList, u);
+			rs = surtirTransacc(x, pvdList, u, conn);
 		
 			conn.commit();
 		} catch (SQLException ex) {
@@ -1645,7 +1648,7 @@ public class EntradaSalidaDAO {
 		return rs;
 	}
 	
-	private int surtir(EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList, Usuario u,Connection conn) throws DAOException {
+	private int surtirTransacc(EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList, Usuario u,Connection conn) throws DAOException {
 		PreparedStatement ps = null;
 		PreparedStatement psESE = null;
 		PreparedStatement psESD = null;

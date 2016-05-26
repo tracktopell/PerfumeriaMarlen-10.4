@@ -31,7 +31,7 @@ public class VentasSucursalesMB implements Serializable {
 	private int		sucursalId = -1;		
 	private ArrayList<SelectItem> sucursalesList;
 
-	class IntervaloFecha {
+	class IntervaloFecha implements Serializable{
 		Date fechaInicial;
 		Date fechaFinal;
 		IntervaloFecha(Date fi,Date ff){
@@ -125,6 +125,10 @@ public class VentasSucursalesMB implements Serializable {
 					new Timestamp(fechaInicial.getTime()),new Timestamp(fechaFinal.getTime()));
 		}
 		return lazyModel;
+	}
+	
+	public double getTotalVenta(){
+		return lazyModel.getTotalVenta();
 	}
 	
 	public void setSucursalId(int sucursalId) {
@@ -294,11 +298,8 @@ public class VentasSucursalesMB implements Serializable {
 		this.especificarFecha = especificarFecha;
 	}
 	
-	/**
-	 * @return the totalVenta
-	 */
-	public Double getTotalVenta() {
-		return totalVenta;
+	public boolean isIntervaloEspecifico() {
+		return intFechaSelec.equals(IF_SPEC);
 	}
-
+	
 }

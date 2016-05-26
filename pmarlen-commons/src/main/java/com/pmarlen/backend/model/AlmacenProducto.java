@@ -14,6 +14,7 @@ public class AlmacenProducto implements java.io.Serializable {
     private Integer almacenId;
     private String productoCodigoBarras;
     private int cantidad;
+	private Integer poco;
     private double precio;
     private String ubicacion;
 
@@ -75,6 +76,14 @@ public class AlmacenProducto implements java.io.Serializable {
         this.ubicacion = v;
     }
 
+	public void setPoco(Integer poco) {
+		this.poco = poco;
+	}
+
+	public Integer getPoco() {
+		return poco;
+	}
+	
 
     @Override
     public int hashCode() {

@@ -131,10 +131,11 @@ FROM     ALMACEN_PRODUCTO AP
 GROUP BY AP.ALMACEN_ID;			
 			*/
 			ps = conn.prepareStatement(
-					"SELECT    AP.ALMACEN_ID,AP.PRODUCTO_CODIGO_BARRAS,AP.CANTIDAD,AP.PRECIO,AP.UBICACION,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDAD_EMPAQUE,A.TIPO_ALMACEN\n" +
+					"SELECT    AP.ALMACEN_ID,AP.PRODUCTO_CODIGO_BARRAS,AP.CANTIDAD,AP.PRECIO,AP.UBICACION,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDAD_EMPAQUE,P.POCO,A.TIPO_ALMACEN\n" +
 					"FROM      ALMACEN A,PRODUCTO P\n" +
 					"LEFT JOIN ALMACEN_PRODUCTO AP  ON P.CODIGO_BARRAS = AP.PRODUCTO_CODIGO_BARRAS AND AP.ALMACEN_ID=?\n" +
-					"WHERE     1=1\n" +					
+					"WHERE     1=1\n" +				
+					"AND       (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)\n"+
 					"AND       AP.ALMACEN_ID=A.ID\n" +
 					"ORDER BY  P.NOMBRE,P.PRESENTACION");
 			ps.setInt(1, almacenId);
@@ -151,6 +152,7 @@ GROUP BY AP.ALMACEN_ID;
 				x.setCantidad((Integer)rs.getObject("CANTIDAD"));
 				x.setPrecio((Double)rs.getObject("PRECIO"));
 				x.setUbicacion((String)rs.getObject("UBICACION"));
+				x.setPoco((Integer)rs.getObject("POCO"));
 				
 				x.setProductoNombre(rs.getString("NOMBRE"));
 				x.setProductoPresentacion(rs.getString("PRESENTACION"));
@@ -272,7 +274,7 @@ ORDER BY P.NOMBRE,P.PRESENTACION
 			
 			*/
 			ps = conn.prepareStatement(
-					"SELECT    P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.ABREBIATURA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,\n" +
+					"SELECT    P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.ABREBIATURA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,P.POCO,\n" +
 					"          R1.CANTIDAD A1_C,R1.PRECIO A1_P,\n" +
 					"          R2.CANTIDAD AO_C,R2.PRECIO AO_P,\n" +
 					"          R3.CANTIDAD AR_C,R3.PRECIO AR_P\n" +
@@ -305,6 +307,7 @@ ORDER BY P.NOMBRE,P.PRESENTACION
 					"          )\n" +
 					") AS R3\n" +
 					"WHERE 1                         = 1\n" +
+					"AND  (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)\n"+
 					"AND   P.CODIGO_BARRAS           = R1.PRODUCTO_CODIGO_BARRAS\n" +
 					"AND   R1.PRODUCTO_CODIGO_BARRAS = R2.PRODUCTO_CODIGO_BARRAS\n" +
 					"AND   R2.PRODUCTO_CODIGO_BARRAS = R3.PRODUCTO_CODIGO_BARRAS\n" +
@@ -325,6 +328,7 @@ ORDER BY P.NOMBRE,P.PRESENTACION
 				x.setPresentacion((String)rs.getObject("PRESENTACION"));
 				x.setAbrebiatura((String)rs.getObject("ABREBIATURA"));
 				x.setUnidadesXCaja((Integer)rs.getObject("UNIDADES_X_CAJA"));
+				x.setPoco((Integer)rs.getObject("POCO"));
 				x.setContenido((String)rs.getObject("CONTENIDO"));
 				x.setUnidadMedida((String)rs.getObject("UNIDAD_MEDIDA"));
 				x.setUnidadEmpaque((String)rs.getObject("UNIDAD_EMPAQUE"));

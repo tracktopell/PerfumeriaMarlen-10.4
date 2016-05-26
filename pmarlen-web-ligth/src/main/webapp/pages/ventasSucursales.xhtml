@@ -34,8 +34,10 @@
 							<p:ajax listener="#{ventasSucursalesMB.onIntervaloFechaChange}" process=":form1:intervaloFec" update=":form1:"/>
 						</p:selectOneMenu>
 						<p:spacer width="5"/>
-						<p:calendar id="fechaInicial" value="#{ventasSucursalesMB.fechaInicial}" showOn="button" pattern="yyyy/MM/dd" size="10"/>
-						<p:calendar id="fechaFinal"   value="#{ventasSucursalesMB.fechaFinal}" showOn="button"   pattern="yyyy/MM/dd" size="10"/>
+						<h:outputLabel value=" DESDE : " for="fechaInicial" />
+						<p:calendar id="fechaInicial" value="#{ventasSucursalesMB.fechaInicial}" showOn="button" pattern="yyyy/MM/dd" locale="es" lang="es" size="10" disabled="#{not ventasSucursalesMB.intervaloEspecifico}"/>						
+						<h:outputLabel value=" HASTA : " for="fechaFinal" />
+						<p:calendar id="fechaFinal"   value="#{ventasSucursalesMB.fechaFinal}" showOn="button"   pattern="yyyy/MM/dd" locale="es" lang="es" size="10" disabled="#{not ventasSucursalesMB.intervaloEspecifico}"/>
 					</h:panelGroup>
 					
 				</h:panelGrid>
@@ -57,6 +59,7 @@
 							<!--
 							<p:commandButton actionListener="#{ventasSucursalesMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
 							-->
+							<h:outputText value="[#{pv.id}]" />
 							<h:panelGroup>
 								
 								<h:outputLink id="pdfLink" value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pv.id}.pdf" target="_blank">
@@ -118,9 +121,15 @@
 					</p:column>
 
 					<f:facet name="footer">
-
-						<h:outputText value="ELEMENTOS : #{ventasSucursalesMB.sizeList}" rendered="true"/>
-
+						<p:panelGrid columns="4" >
+							<h:outputText value="ELEMENTOS : "  />
+							<h:outputText value="#{ventasSucursalesMB.sizeList}" />
+							<h:outputText value="TOTAL : "/>
+							
+							<h:outputText value="#{ventasSucursalesMB.totalVenta}" styleClass="littleLabel_bold_right">
+								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+							</h:outputText>
+						</p:panelGrid>
 					</f:facet>
 				</p:dataTable>
 
@@ -131,7 +140,7 @@
 				}
 				
 				$(document).ready(function() {
-
+					PrimeFaces.locales['es'] = { closeText: 'Cerrar', prevText: 'Anterior', nextText: 'Siguiente', monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'], monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'], dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'], dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'], dayNamesMin: ['D','L','M','X','J','V','S'], weekHeader: 'Semana', firstDay: 1, isRTL: false, showMonthAfterYear: false, yearSuffix: '', timeOnlyTitle: 'Sólo hora', timeText: 'Tiempo', hourText: 'Hora', minuteText: 'Minuto', secondText: 'Segundo', currentText: 'Fecha actual', ampm: false, month: 'Mes', week: 'Semana', day: 'Día', allDayText : 'Todo el día' }; 
 				});
 			</script>		
 			

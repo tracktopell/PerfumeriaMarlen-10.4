@@ -72,7 +72,7 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA FROM PRODUCTO "
+			ps = conn.prepareStatement("SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,DESCONTINUADO,POCO FROM PRODUCTO "
 					+ "WHERE CODIGO_BARRAS=?"
 			);
 			ps.setString(1, x.getCodigoBarras());
@@ -93,6 +93,8 @@ public class ProductoDAO {
 				r.setUnidadEmpaque((String) rs.getObject("UNIDAD_EMPAQUE"));
 				r.setCosto((Double) rs.getObject("COSTO"));
 				r.setCostoVenta((Double) rs.getObject("COSTO_VENTA"));
+				r.setDescontinuado((Integer) rs.getObject("DESCONTINUADO"));
+				r.setPoco((Integer) rs.getObject("POCO"));
 			} else {
 				throw new EntityNotFoundException("PRODUCTO NOT FOUND FOR CODIGO_BARRAS=" + x.getCodigoBarras());
 			}
@@ -129,6 +131,7 @@ public class ProductoDAO {
 					+ "AND    AP.ALMACEN_ID=?\n"
 					+ "AND    AP.ALMACEN_ID=A.ID\n"
 					+ "AND    P.CODIGO_BARRAS=?\n"
+					+ "AND    (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)\n"
 					+ "ORDER BY P.NOMBRE,P.PRESENTACION,P.LINEA,P.MARCA";
 			logger.info("->query:"+query);
 			
@@ -159,7 +162,7 @@ public class ProductoDAO {
 				x.setProductoIndustria(rs.getString("INDUSTRIA"));
 				x.setProductoMarca(rs.getString("MARCA"));
 				x.setProductoLinea(rs.getString("LINEA"));
-				x.setProductoUnidadesPorCaja(rs.getObject("UNIDADES_X_CAJA").toString());
+				x.setProductoUnidadesPorCaja(rs.getObject("UNIDADES_X_CAJA").toString());				
 				
 				x.setProductoContenido(rs.getString("CONTENIDO"));
 				x.setProductoUnidadMedida(rs.getString("UNIDAD_MEDIDA"));
@@ -223,6 +226,7 @@ public class ProductoDAO {
 					+ "FROM   PRODUCTO P,ALMACEN_PRODUCTO AP,ALMACEN A \n"
 					+ "WHERE  1=1\n"
 					+ "AND    P.CODIGO_BARRAS=AP.PRODUCTO_CODIGO_BARRAS\n"
+					+ "AND    (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)\n"
 					+ "AND    AP.ALMACEN_ID=?\n"
 					+ "AND    AP.ALMACEN_ID=A.ID\n"
 					+ "AND(\n"
@@ -286,7 +290,7 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT DISTINCT(INDUSTRIA) FROM PRODUCTO ORDER BY INDUSTRIA");
+			ps = conn.prepareStatement("SELECT DISTINCT(P.INDUSTRIA) FROM PRODUCTO P WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) ORDER BY P.INDUSTRIA");
 			
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -318,7 +322,7 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT DISTINCT(LINEA) FROM PRODUCTO ORDER BY LINEA");
+			ps = conn.prepareStatement("SELECT DISTINCT(P.LINEA) FROM PRODUCTO P WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) ORDER BY P.LINEA");
 			
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -350,7 +354,7 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT DISTINCT(MARCA) FROM PRODUCTO WHERE INDUSTRIA = ? ORDER BY MARCA");
+			ps = conn.prepareStatement("SELECT DISTINCT(P.MARCA) FROM PRODUCTO P WHERE WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) AND P.INDUSTRIA = ? ORDER BY P.MARCA");
 			ps.setString(1, industria);
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -382,7 +386,7 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT DISTINCT(MARCA) FROM PRODUCTO WHERE LINEA = ? ORDER BY MARCA");
+			ps = conn.prepareStatement("SELECT DISTINCT(P.MARCA) FROM PRODUCTO P WHERE WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) AND P.LINEA = ? ORDER BY P.MARCA");
 			ps.setString(1, linea);
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -409,7 +413,53 @@ public class ProductoDAO {
 	
 	
 	public ArrayList<ProductoQuickView> findAll() throws DAOException {
-		return findAllByMarca(null); 
+		ArrayList<ProductoQuickView> r = new ArrayList<ProductoQuickView>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			String q = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,DESCONTINUADO,POCO\n"+
+					"FROM PRODUCTO";
+			
+			ps = conn.prepareStatement(q);
+			
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				ProductoQuickView x = new ProductoQuickView();
+				x.setCodigoBarras((String)rs.getObject("CODIGO_BARRAS"));				
+				x.setIndustria((String)rs.getObject("INDUSTRIA"));
+				x.setLinea((String)rs.getObject("LINEA"));
+				x.setMarca((String)rs.getObject("MARCA"));
+				x.setNombre((String)rs.getObject("NOMBRE"));
+				x.setPresentacion((String)rs.getObject("PRESENTACION"));
+				x.setAbrebiatura((String)rs.getObject("ABREBIATURA"));
+				x.setUnidadesXCaja((Integer)rs.getObject("UNIDADES_X_CAJA"));
+				x.setDescontinuado((Integer)rs.getObject("DESCONTINUADO"));
+				x.setPoco((Integer)rs.getObject("POCO"));
+				x.setContenido((String)rs.getObject("CONTENIDO"));
+				x.setUnidadMedida((String)rs.getObject("UNIDAD_MEDIDA"));
+				x.setUnidadEmpaque((String)rs.getObject("UNIDAD_EMPAQUE"));
+				x.setCosto((Double)rs.getObject("COSTO"));
+				x.setCostoVenta((Double)rs.getObject("COSTO_VENTA"));
+				r.add(x);
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
 	}
 	
     public ArrayList<ProductoQuickView> findAllByMarca(String marca) throws DAOException {
@@ -419,7 +469,8 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			String q = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA FROM PRODUCTO";
+			String q = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,POCO\n "
+					+ "FROM PRODUCTO P WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)";
 			
 			if(marca != null && marca.trim().length()>1){
 				q = q + " WHERE MARCA=? ";
@@ -442,6 +493,7 @@ public class ProductoDAO {
 				x.setPresentacion((String)rs.getObject("PRESENTACION"));
 				x.setAbrebiatura((String)rs.getObject("ABREBIATURA"));
 				x.setUnidadesXCaja((Integer)rs.getObject("UNIDADES_X_CAJA"));
+				x.setPoco((Integer)rs.getObject("POCO"));
 				x.setContenido((String)rs.getObject("CONTENIDO"));
 				x.setUnidadMedida((String)rs.getObject("UNIDAD_MEDIDA"));
 				x.setUnidadEmpaque((String)rs.getObject("UNIDAD_EMPAQUE"));
@@ -476,7 +528,7 @@ public class ProductoDAO {
 			conn = getConnection();
 			//---------
 			
-			String q1 = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA "
+			String q1 = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,POCO "
 					+ "FROM PRODUCTO";
 			ps = conn.prepareStatement(q1);
 			rs = ps.executeQuery();
@@ -512,7 +564,7 @@ public class ProductoDAO {
 			conn = getConnection();
 			//---------
 			
-			String q1 = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA "
+			String q1 = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,POCO "
 					+ "FROM PRODUCTO";
 			ps = conn.prepareStatement(q1);
 			rs = ps.executeQuery();
@@ -531,7 +583,7 @@ public class ProductoDAO {
 				last = first + pageSize;
 			}
 			
-			String q2 = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA "
+			String q2 = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,POCO "
 					+ "FROM PRODUCTO LIMIT "+first+", "+last;
 			
 			ps = conn.prepareStatement(q2);
@@ -549,6 +601,7 @@ public class ProductoDAO {
 				x.setAbrebiatura((String)rs.getObject("ABREBIATURA"));
 				x.setUnidadesXCaja((Integer)rs.getObject("UNIDADES_X_CAJA"));
 				x.setContenido((String)rs.getObject("CONTENIDO"));
+				x.setPoco((Integer)rs.getObject("POCO"));
 				x.setUnidadMedida((String)rs.getObject("UNIDAD_MEDIDA"));
 				x.setUnidadEmpaque((String)rs.getObject("UNIDAD_EMPAQUE"));
 				x.setCosto((Double)rs.getObject("COSTO"));
@@ -582,13 +635,14 @@ public class ProductoDAO {
 			conn = getConnection();
 			ps = conn.prepareStatement("SELECT     CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,\n" +
 										"          MULTIMEDIO_ID,M.MIME_TYPE,M.RUTA_CONTENIDO,M.SIZE_BYTES,M.NOMBRE_ARCHIVO,\n" +
-										"          ALMACEN_ID,PRECIO\n" +
+										"          ALMACEN_ID,PRECIO,POCO\n" +
 										"FROM      PRODUCTO P\n" +
 										"LEFT JOIN PRODUCTO_MULTIMEDIO PM ON P.CODIGO_BARRAS  = PM.PRODUCTO_CODIGO_BARRAS\n" +
 										"LEFT JOIN MULTIMEDIO          M  ON PM.MULTIMEDIO_ID = M.ID\n" +
 										"LEFT JOIN ALMACEN_PRODUCTO    AP ON P.CODIGO_BARRAS  = AP.PRODUCTO_CODIGO_BARRAS\n" +
 										"WHERE     1=1\n" +
 										"AND       AP.ALMACEN_ID=? \n" +
+										"AND      (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)\n"+
 										"ORDER BY  INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION");
 			ps.setInt(1, almacenId);
 			/*
@@ -640,6 +694,7 @@ AND       AP.ALMACEN_ID=1;
 				x.setPresentacion((String)rs.getObject("PRESENTACION"));
 				x.setAbrebiatura((String)rs.getObject("ABREBIATURA"));
 				x.setUnidadesXCaja((Integer)rs.getObject("UNIDADES_X_CAJA"));
+				x.setPoco((Integer)rs.getObject("POCO"));
 				x.setContenido((String)rs.getObject("CONTENIDO"));
 				x.setUnidadMedida((String)rs.getObject("UNIDAD_MEDIDA"));
 				x.setUnidadEmpaque((String)rs.getObject("UNIDAD_EMPAQUE"));
@@ -686,37 +741,82 @@ AND       AP.ALMACEN_ID=1;
 	};
     
     public int insert(Producto x) throws DAOException {
-		PreparedStatement ps = null;
+		
 		int r = -1;
 		Connection conn = null;
+		ArrayList<Almacen> rAl = new ArrayList<Almacen>();
+		PreparedStatement psAl = null;
+		PreparedStatement psAP = null;
+		ResultSet rsAl = null;
+		PreparedStatement psMHP = null;
 		try {
-			conn = getConnection();
-			ps = conn.prepareStatement("INSERT INTO PRODUCTO(CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA) "+
-					" VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)"
+			conn = getConnectionCommiteable();
+			psAP = conn.prepareStatement("INSERT INTO PRODUCTO(CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,DESCONTINUADO,POCO) "+
+					" VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 					,Statement.RETURN_GENERATED_KEYS);			
 			int ci=1;
-			ps.setObject(ci++,x.getCodigoBarras());
-			ps.setObject(ci++,x.getIndustria());
-			ps.setObject(ci++,x.getLinea());
-			ps.setObject(ci++,x.getMarca());
-			ps.setObject(ci++,x.getNombre());
-			ps.setObject(ci++,x.getPresentacion());
-			ps.setObject(ci++,x.getAbrebiatura());
-			ps.setObject(ci++,x.getUnidadesXCaja());
-			ps.setObject(ci++,x.getContenido());
-			ps.setObject(ci++,x.getUnidadMedida());
-			ps.setObject(ci++,x.getUnidadEmpaque());
-			ps.setObject(ci++,x.getCosto());
-			ps.setObject(ci++,x.getCostoVenta());
+			psAP.setObject(ci++,x.getCodigoBarras());
+			psAP.setObject(ci++,x.getIndustria());
+			psAP.setObject(ci++,x.getLinea());
+			psAP.setObject(ci++,x.getMarca());
+			psAP.setObject(ci++,x.getNombre());
+			psAP.setObject(ci++,x.getPresentacion());
+			psAP.setObject(ci++,x.getAbrebiatura());
+			psAP.setObject(ci++,x.getUnidadesXCaja());
+			psAP.setObject(ci++,x.getContenido());
+			psAP.setObject(ci++,x.getUnidadMedida());
+			psAP.setObject(ci++,x.getUnidadEmpaque());
+			psAP.setObject(ci++,x.getCosto());
+			psAP.setObject(ci++,x.getCostoVenta());
+			psAP.setObject(ci++,x.getDescontinuado());
+			psAP.setObject(ci++,x.getPoco());
 
-			r = ps.executeUpdate();
-		}catch(SQLException ex) {
+			r = psAP.executeUpdate();
+			
+			psAl = conn.prepareStatement("SELECT ID,TIPO_ALMACEN,SUCURSAL_ID FROM ALMACEN");
+			psAP = conn.prepareStatement("INSERT INTO ALMACEN_PRODUCTO(ALMACEN_ID,PRODUCTO_CODIGO_BARRAS,CANTIDAD,PRECIO,UBICACION) "+
+					" VALUES(?,?,?,?,?)"
+					,Statement.RETURN_GENERATED_KEYS);
+			rsAl = psAl.executeQuery();
+						
+			Timestamp now = new Timestamp(System.currentTimeMillis());
+			
+			while(rsAl.next()) {
+				Almacen a = new Almacen();
+				a.setId((Integer)rsAl.getObject("ID"));
+				a.setTipoAlmacen((Integer)rsAl.getObject("TIPO_ALMACEN"));
+				a.setSucursalId((Integer)rsAl.getObject("SUCURSAL_ID"));
+				rAl.add(a);
+				
+				psAP.clearParameters();
+				
+				ci=1;
+				psAP.setObject(ci++,a.getId());
+				psAP.setObject(ci++,x.getCodigoBarras());
+				psAP.setObject(ci++,0);
+				psAP.setObject(ci++,x.getCostoVenta());
+				psAP.setObject(ci++,null);
+
+				r += psAP.executeUpdate();									
+			}
+			
+			conn.commit();
+			
+		} catch (SQLException ex) {
 			logger.error("SQLException:", ex);
+			try {
+				conn.rollback();
+			} catch (SQLException exR) {
+				logger.error("RollBack failed:", ex);
+			}
 			throw new DAOException("InUpdate:" + ex.getMessage());
 		} finally {
-			if(ps != null) {
+			if(psAP != null) {
 				try{				
-					ps.close();
+					psAP.close();
+					rsAl.close();
+					rsAl.close();					
+			
 					conn.close();
 				}catch(SQLException ex) {
 					logger.error("clossing, SQLException:" + ex.getMessage());
@@ -733,7 +833,7 @@ AND       AP.ALMACEN_ID=1;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("UPDATE PRODUCTO SET INDUSTRIA=?,LINEA=?,MARCA=?,NOMBRE=?,PRESENTACION=?,ABREBIATURA=?,UNIDADES_X_CAJA=?,CONTENIDO=?,UNIDAD_MEDIDA=?,UNIDAD_EMPAQUE=?,COSTO=?,COSTO_VENTA=? "+
+			ps = conn.prepareStatement("UPDATE PRODUCTO SET INDUSTRIA=?,LINEA=?,MARCA=?,NOMBRE=?,PRESENTACION=?,ABREBIATURA=?,UNIDADES_X_CAJA=?,CONTENIDO=?,UNIDAD_MEDIDA=?,UNIDAD_EMPAQUE=?,COSTO=?,COSTO_VENTA=?,DESCONTINUADO=?,POCO=? "+
 					" WHERE CODIGO_BARRAS=?");
 			
 			int ci=1;
@@ -749,6 +849,9 @@ AND       AP.ALMACEN_ID=1;
 			ps.setObject(ci++,x.getUnidadEmpaque());
 			ps.setObject(ci++,x.getCosto());
 			ps.setObject(ci++,x.getCostoVenta());
+			ps.setObject(ci++,x.getDescontinuado());
+			ps.setObject(ci++,x.getPoco());
+			
 			ps.setObject(ci++,x.getCodigoBarras());
 			
 			r = ps.executeUpdate();						

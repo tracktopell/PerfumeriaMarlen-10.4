@@ -31,7 +31,8 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 	boolean active;
 	private Timestamp fechaInicial;
 	private Timestamp fechaFinal;
-	private Double totalVenta;
+	//private Double totalVenta;
+	private EntradaSalidaDTOPageHelper esdtoH;
 	public EntradaSalidaLazyDataModel(int tipoMov, int sucursalId, boolean active,Timestamp fechaInicial,Timestamp fechaFinal) {
 		this.tipoMov = tipoMov;
 		this.sucursalId = sucursalId;
@@ -39,9 +40,10 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 		this.pagerInfo = new PagerInfo(0, 25, "ES.ID", PagerInfo.DESCENDING, null, 0);
 		this.fechaInicial = fechaInicial;
 		this.fechaFinal   = fechaFinal;
-		this.totalVenta= 0.0;
-		try {			
-			this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.tipoMov,this.sucursalId, this.active,pagerInfo,this.fechaInicial,this.fechaFinal);
+		
+		try {
+			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, active, pagerInfo, fechaInicial, fechaFinal, 0.0);
+			this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.esdtoH);
 			super.setRowCount(pagerInfo.getTotalRowCount());
 		}catch(DAOException de){
 			this.pageData = null;
@@ -85,7 +87,9 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 				this.pagerInfo.setSortOrder(PagerInfo.DESCENDING);
 			}
 			super.setPageSize(pageSize);
-			this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.tipoMov,this.sucursalId, this.active,pagerInfo,this.fechaInicial,this.fechaFinal);
+			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, active, pagerInfo, fechaInicial, fechaFinal, 0.0);
+			this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.esdtoH);
+			//this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.tipoMov,this.sucursalId, this.active,pagerInfo,this.fechaInicial,this.fechaFinal);
 			super.setRowCount(pagerInfo.getTotalRowCount());
 		}catch(DAOException de){
 			this.pageData = null;
@@ -125,7 +129,7 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 	 * @return the totalVenta
 	 */
 	public Double getTotalVenta() {
-		return totalVenta;
+		return this.esdtoH.getImporteTotal();
 	}
  	
 }

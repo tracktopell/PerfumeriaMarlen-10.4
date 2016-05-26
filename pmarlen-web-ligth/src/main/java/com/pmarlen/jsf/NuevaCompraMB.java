@@ -68,7 +68,7 @@ public class NuevaCompraMB extends PedidoVentaMB{
 			entradaSalida.setUsuarioEmailCreo(sessionUserMB.getUsuarioAuthenticated().getEmail());
 			entradaSalida.setAutorizaDescuento(autorizaDescuento?1:0);
 						
-			EntradaSalidaDAO.getInstance().insertDevolucionVenta(entradaSalida,entityList);
+			EntradaSalidaDAO.getInstance().insertComra(entradaSalida,entityList);
 			logger.trace("guardar:entradaSalida.id:"+entradaSalida.getId());
 			
 			esFinalizado = true;
