@@ -18,9 +18,9 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-@ManagedBean(name="nuevoTraspasoMB")
+@ManagedBean(name="nuevoTraspasoSucMB")
 @SessionScoped
-public class NuevoTraspasoMB extends PedidoVentaMB{	
+public class NuevoTraspasoSucMB extends PedidoVentaMB{	
 	
 	@ManagedProperty(value = "#{sessionUserMB}")
 	private SessionUserMB sessionUserMB;
@@ -59,7 +59,7 @@ public class NuevoTraspasoMB extends PedidoVentaMB{
 		return entradaSalidaFooter;
 	}
 
-	public boolean isCrearCompra() {
+	public boolean isCrearTraspaso() {
 		crearES=false;
 		
 		if(entityList!=null && entityList.size()>0 && sucursalId!=0){
@@ -128,7 +128,7 @@ public class NuevoTraspasoMB extends PedidoVentaMB{
 				sucursalesList.add(new SelectItem(0,"--SELECCIONE--"));			
 				for(Sucursal s:sucursales){
 					if(s.getIdPadre() != null){						
-						sucursalesList.add(new SelectItem(s.getId(),s.getNombre()));			
+						sucursalesList.add(new SelectItem(s.getId(),"["+s.getClave()+"]"+s.getNombre()));			
 					}
 				}
 			}

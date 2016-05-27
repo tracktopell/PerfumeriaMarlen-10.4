@@ -536,6 +536,10 @@ public class PedidoVentaMB  implements Serializable{
 	public void expandirTabla() {
 		this.tablaExpandida = true;
 	}
+	
+	public void actualizarTabla(){
+		logger.debug("->actualizarTabla");
+	}
 
 	public void contraerTabla() {
 		this.tablaExpandida = false;

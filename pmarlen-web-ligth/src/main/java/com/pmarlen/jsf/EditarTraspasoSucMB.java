@@ -88,7 +88,7 @@ public class EditarTraspasoSucMB extends EditarPedidoVentaMB{
 		return "/pages/editarDevolucion";
 	}
 
-	public EntradaSalidaQuickView getDevolucion() {
+	public EntradaSalidaQuickView getTraspaso() {
 		return entradaSalida;
 	}
 	

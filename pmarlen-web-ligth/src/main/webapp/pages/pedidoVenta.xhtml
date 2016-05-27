@@ -130,7 +130,7 @@
 							<p:ajax event="rowReorder" listener="#{pedidoVentaMB.onRowReorder}" update=":form3:panel3,:form4:panel4_3" oncomplete="updateComponentsOnWindowResize();"/>
 							<f:facet name="header">
 								
-								<h:outputLink value="#{request.contextPath}/pages/pedidoVenta.jsf">
+								<h:outputLink value="#{request.contextPath}/pages/pedidoVenta.jsf" title="ACTUALIZAR TABLA">
 									<p:ajax event="click" listener="#{pedidoVentaMB.actualizarTabla}" process=":form3" update=":form3:panel3,:form4" />
 									<h:graphicImage value="/images/table_refresh.png"/>
 								</h:outputLink>

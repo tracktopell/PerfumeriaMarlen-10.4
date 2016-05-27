@@ -53,13 +53,15 @@
 					</p:column>
 					
 					<p:column headerText="DATOS" width="20%">
-						<p:panelGrid columns="2" columnClasses="rightAlign,leftAlign">
+						<p:panelGrid columns="2" columnClasses="columnWidth30 rightAlign, columnWidth70 leftAlign">
 							<h:outputText value="SUCURSAL DESTINO :" />
 							<h:outputText value="[#{pv.traspasoSucDesClave}] #{pv.traspasoSucDesNombre}" />
 							<h:outputText value="USUARIO CREÓ :" />
 							<h:outputText value="#{pv.usuarioNombreCompleto}" />
 							<h:outputText value="ELEMENTOS :" />
-							<h:outputText value="#{pv.numElementos}" />							
+							<h:outputText value="#{pv.numElementos}" />
+							<h:outputText value="COMENTARIOS :"     rendered="#{not empty pv.comentarios}"/>
+							<h:outputText value="#{pv.comentarios}" rendered="#{not empty pv.comentarios}"/>
 						</p:panelGrid>
 					</p:column>
 					
