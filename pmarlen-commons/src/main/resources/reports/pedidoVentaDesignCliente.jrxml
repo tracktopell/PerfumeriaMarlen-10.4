@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pedidoVentaDesign1" language="groovy" pageWidth="612" pageHeight="792" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="27" uuid="11a92365-c4f5-4806-b1a1-ad327ebfdc78">
-	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="225"/>
+	<property name="ireport.y" value="0"/>
 	<property name="ireport.callouts" value="##Sat Jul 21 10:43:27 CDT 2012"/>
 	<parameter name="fechaHoraImpr" class="java.lang.String"/>
 	<parameter name="usuarioImpr" class="java.lang.String"/>
@@ -27,6 +27,8 @@
 	<parameter name="comentarios" class="java.lang.String"/>
 	<parameter name="condiciones" class="java.lang.String"/>
 	<parameter name="nombreEstab" class="java.lang.String"/>
+	<parameter name="dirSuc" class="java.lang.String"/>
+	<parameter name="telsSuc" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from orders where orderid < 10255]]>
 	</queryString>
@@ -158,14 +160,7 @@
 				<textFieldExpression><![CDATA["NO. PEDIDO"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="135" y="57" width="213" height="29" uuid="996cda3e-9c01-423d-ac2f-9be01e810bc5"/>
-				<textElement textAlignment="Center">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA["CALLE FRANCISCO VILLA LT3 MZ 98 NO. 121, Col. SAN MART\u00CDN AZCATEPEC, T\u00C9CAMAC. EDO. DE M\u00C9X. C.P. 55740, TEL. (55)5936-2597, TEL. SUC. (55)5936-7894"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement x="135" y="87" width="213" height="11" uuid="938ac47f-9ce4-4831-b6cd-d0e148aa7701"/>
+				<reportElement x="135" y="92" width="213" height="11" uuid="938ac47f-9ce4-4831-b6cd-d0e148aa7701"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
@@ -232,6 +227,20 @@
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreEstab}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="135" y="55" width="230" height="24" uuid="6424ec3e-6407-42b4-9bc7-8ba106082030"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dirSuc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="135" y="79" width="230" height="12" uuid="f3627b73-9b37-430b-b4e6-382c8fc55097"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{telsSuc}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

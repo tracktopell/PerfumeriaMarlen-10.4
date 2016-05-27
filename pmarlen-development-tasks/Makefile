@@ -30,11 +30,15 @@ mmigrateTo_PM104_DEVE:
 	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD) PMDB104_DEVE  < /usr/local/pmarlen_mysqldump/PMDB103_PROD_mysqldump_LAST.sql	
 	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD) PMDB104_DEVE  < ../pmarlen-commons/db_resources/sql/MIGRATION.mysql.sql
 
-import_PMDBSucs_PM104_DEVE:
-	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  2  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS1/PMarlen_DB "
-	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  3  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS2/PMarlen_DB "
-	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  4  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS3/PMarlen_DB "
-	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  5  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS4/PMarlen_DB "
+import_PMDBSucs_PM104_DEVE_fast:
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  2  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS1/PMarlen_DB 2016-04-01"
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  3  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS2/PMarlen_DB 2016-04-01"
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  4  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS3/PMarlen_DB 2016-04-01"
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  5  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS4/PMarlen_DB 2016-04-01"
 
-homogenizarVentas:
-	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.HomogenizarVentas_PM104 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8"
+import_PMDBSucs_PM104_DEVE:
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  2  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS1/PMarlen_DB 2010-01-01"
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  3  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS2/PMarlen_DB 2010-01-01"
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  4  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS3/PMarlen_DB 2010-01-01"
+	mvn compile exec:java -Dexec.mainClass=com.pmarlen.migration.MigrarInventarioPM901_PM1041 -Dexec.args="root $(MYSQL_ROOT_PASSWORD) jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8  5  PMARLEN_PROD PMARLEN_PROD_PASSWORD jdbc:derby:/usr/local/PM901Sucursales/PMS4/PMarlen_DB 2010-01-01"
+

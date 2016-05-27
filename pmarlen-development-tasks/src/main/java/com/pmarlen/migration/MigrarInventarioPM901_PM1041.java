@@ -5,7 +5,6 @@
  */
 package com.pmarlen.migration;
 
-import com.lowagie.text.pdf.PdfName;
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.businesslogic.GeneradorNumTicket;
@@ -23,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,7 +47,7 @@ public class MigrarInventarioPM901_PM1041 {
 	private static String usrDerbyDB = null;
 	private static String pwdDerbyDB = null;
 	private static String urlDerbyDB = null;
-
+	private static String fechaInicio = null;
 	private static int sucursalId = 0;
 	
 	private static HashMap<Integer, Integer> almacenByTipo=null;
@@ -82,6 +82,11 @@ public class MigrarInventarioPM901_PM1041 {
 		usrDerbyDB = args[4];
 		pwdDerbyDB = args[5];
 		urlDerbyDB = args[6];
+		if(args.length==8){
+			fechaInicio = args[7];
+		} else {
+			fechaInicio = "2009-01-01";
+		}
 
 		System.out.println("---------------------- MigrarInventarioPM901_PM1041 (Suc:" + sucursalId + ") IVA BUG ? -----------------------");
 		if(debug){
@@ -316,7 +321,10 @@ public class MigrarInventarioPM901_PM1041 {
 			}
 			System.out.println();
 			System.out.println("->OK, Importado el Inventario ");
-						
+			System.out.println("---------------------- Migrando VENTAS (Suc:" + sucursalId + ") DESDE ["+fechaInicio+"] -----------------------");
+			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+			//Date fehcaInicial = sdf.parse(fechaInicio);
+			
 			String queryVentasPM901 = 
 					"SELECT PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA\n" +
 					"FROM   PEDIDO_VENTA PV,PEDIDO_VENTA_DETALLE PVD,PEDIDO_VENTA_ESTADO PVE,PRODUCTO P,ALMACEN A\n" +
@@ -325,9 +333,8 @@ public class MigrarInventarioPM901_PM1041 {
 					"AND    PV.ID=PVE.PEDIDO_VENTA_ID\n" +
 					"AND    PVD.PRODUCTO_ID=P.ID\n" +
 					"AND    PV.ALMACEN_ID=A.ID\n" +
+					"AND    PVE.FECHA >= TIMESTAMP('"+fechaInicio+"','00.00.00') \n" +
 					"ORDER BY PVE.FECHA";
-			
-			
 			
 			System.out.println("--->> EXECUTING QUERY VENTAS:");
 			ResultSet ventasRS = derbyDBConnection.createStatement().executeQuery(queryVentasPM901);
