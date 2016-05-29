@@ -24,9 +24,19 @@ public class UsuarioQuickView extends Usuario{
 	private boolean inRoleSales;
 	private boolean inRoleStock;
 	
+	private String sucursalNombre;
+	
 	public UsuarioQuickView() {
 		perfiles = new ArrayList<PerfiQuickView>();
 		passwordConfirm = null;
+	}
+
+	public void setSucursalNombre(String sucursalNombre) {
+		this.sucursalNombre = sucursalNombre;
+	}
+
+	public String getSucursalNombre() {
+		return sucursalNombre;
 	}
 
 	public void setHabilitado(boolean habilitadoValue) {

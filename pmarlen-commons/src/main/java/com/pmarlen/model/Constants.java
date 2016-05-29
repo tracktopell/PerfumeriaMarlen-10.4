@@ -18,6 +18,7 @@ public class Constants {
 	public static final String PERFIL_ROOT = "root";
 	public static final String PERFIL_PMARLENUSER = "pmarlenuser";
 	public static final String PERFIL_ADMIN = "admin";
+	public static final String PERFIL_SUCADMIN = "sucadmin";
 	public static final String PERFIL_FINANCES = "finances";
 	public static final String PERFIL_STOCK = "stock";
 	public static final String PERFIL_SALES = "sales";
@@ -25,6 +26,7 @@ public class Constants {
 	public static final String es_PERFIL_ROOT = "SUPER-ADMINISTRADOR";
 	public static final String es_PERFIL_PMARLENUSER = "USUARIO DE SISTEMA";
 	public static final String es_PERFIL_ADMIN = "ADMINISTRADOR";
+	public static final String es_PERFIL_SUCADMIN = "ADMINISTRADOR DE CAJA";
 	public static final String es_PERFIL_FINANCES = "FINANZAS";
 	public static final String es_PERFIL_STOCK = "ALMACÉN";
 	public static final String es_PERFIL_SALES = "VENTAS";
@@ -193,6 +195,8 @@ public class Constants {
 			return es_PERFIL_ROOT;
 		} else if(perfil.equals(PERFIL_ADMIN)){
 			return es_PERFIL_ADMIN;
+		} else if(perfil.equals(PERFIL_SUCADMIN)){
+			return es_PERFIL_SUCADMIN;
 		} else if(perfil.equals(PERFIL_FINANCES)){
 			return es_PERFIL_FINANCES;
 		} else if(perfil.equals(PERFIL_PMARLENUSER)){

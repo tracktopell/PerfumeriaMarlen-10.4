@@ -4,6 +4,7 @@ package com.pmarlen.businesslogic.reports;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.JarpeReportsInfoDTO;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -476,6 +477,21 @@ public class TextReporter {
 		}
 		return fileName;
 	}
+	
+	public static byte[] generateTicketTXTBytes(JarpeReportsInfoDTO jrInfo) {
+		//String fileName = "TICKET_"+jrInfo.getParameters().get("venta.ticket")+"_" + Constants.sdfThinDate.format(today) + ".txt";
+		ByteArrayOutputStream baos = null;
+		byte content[]=null;
+		try {
+			baos = new ByteArrayOutputStream();
+			processReport(TextReporter.class.getResourceAsStream("/textreports/TEXT_TICKET_V2.txt"), baos, jrInfo.getParameters(), jrInfo.getRecords(), columns);
+			content = baos.toByteArray();
+		} catch (Exception ioe) {
+			ioe.printStackTrace(System.err);			
+		}
+		return content;
+	}
+	
 
 	public static List<String> justifyText(String text, int maxPerColumn) {
 		List<String> result = new ArrayList<String>();
@@ -544,7 +560,7 @@ public class TextReporter {
 		
 		return result;
 	}
-
+	/*
 	public static void main(String[] args) {
 		
 		DEBUG=true;
@@ -675,4 +691,5 @@ public class TextReporter {
 		JarpeReportsInfoDTO jrInfo = new JarpeReportsInfoDTO(parameters, records);
 		generateTicketTXT(jrInfo);
 	}
+	*/
 }

@@ -48,30 +48,33 @@ public class MigrarInventarioPM901_PM1041 {
 	private static String pwdDerbyDB = null;
 	private static String urlDerbyDB = null;
 	private static String fechaInicio = null;
+	private static boolean migrarVentas = true;
 	private static int sucursalId = 0;
-	
-	private static HashMap<Integer, Integer> almacenByTipo=null;
-	
-	private static class  AlmsProd{
-		String  cb;
+
+	private static HashMap<Integer, Integer> almacenByTipo = null;
+
+	private static class AlmsProd {
+
+		String cb;
 		Integer cantidad1ra;
-		Double  precioVenta1ra;
+		Double precioVenta1ra;
 		Integer cantidadOpo;
-		Double  precioVentaOpo;
+		Double precioVentaOpo;
 		Integer cantidadReg;
-		Double  precioVentaReg;
-		public AlmsProd(String  cbx){
-			cb				= cbx;
-			cantidad1ra		= 0;
-			precioVenta1ra	= 0.0;
-			cantidadOpo		= 0;
-			precioVentaOpo	= 0.0;
-			cantidadReg		= 0;
-			precioVentaReg	= 0.0;
+		Double precioVentaReg;
+
+		public AlmsProd(String cbx) {
+			cb = cbx;
+			cantidad1ra = 0;
+			precioVenta1ra = 0.0;
+			cantidadOpo = 0;
+			precioVentaOpo = 0.0;
+			cantidadReg = 0;
+			precioVentaReg = 0.0;
 		}
 	}
-	
-	private static HashMap<String, AlmsProd> inventarioPM901=null;
+
+	private static HashMap<String, AlmsProd> inventarioPM901 = null;
 
 	public static void main(String[] args) {
 
@@ -82,17 +85,15 @@ public class MigrarInventarioPM901_PM1041 {
 		usrDerbyDB = args[4];
 		pwdDerbyDB = args[5];
 		urlDerbyDB = args[6];
-		if(args.length==8){
-			fechaInicio = args[7];
-		} else {
-			fechaInicio = "2009-01-01";
-		}
 
-		System.out.println("---------------------- MigrarInventarioPM901_PM1041 (Suc:" + sucursalId + ") IVA BUG ? -----------------------");
-		if(debug){
+		fechaInicio = args[7];
+		migrarVentas = args[8].equalsIgnoreCase("MV");
+
+		System.out.println("---------------------- MigrarInventarioPM901_PM1041 (Suc:" + sucursalId + ") MIGRAR_VENTAS?(" + migrarVentas + ") -----------------------");
+		if (debug) {
 			System.out.println("-->>> DEBUG MODE");
 		}
-		
+
 		connectToDerbyDB();
 
 		connectToNewDB();
@@ -101,71 +102,68 @@ public class MigrarInventarioPM901_PM1041 {
 			long t1, t2, t3, T;
 
 			System.out.println("---------------------- HOMOGENIZANDO PRODUCTOS -----------------------");
-			List<Object[]> resultAlmacenesSuc         = executeQuery(newDBConnection, "SELECT TIPO_ALMACEN,ID FROM ALMACEN WHERE SUCURSAL_ID="+sucursalId);
-			
+			List<Object[]> resultAlmacenesSuc = executeQuery(newDBConnection, "SELECT TIPO_ALMACEN,ID FROM ALMACEN WHERE SUCURSAL_ID=" + sucursalId);
+
 			List<Object[]> resultAlmacenesPrincipales = executeQuery(newDBConnection, "SELECT TIPO_ALMACEN,ID FROM ALMACEN WHERE SUCURSAL_ID=1");
 
 			almacenByTipo = new HashMap<Integer, Integer>();
 			for (Object[] arr : resultAlmacenesSuc) {
-				System.out.println("\t-->> almacenByTipo.put("+arr[0]+", "+arr[1]+")");
-				almacenByTipo.put((Integer) arr[0], (Integer) arr[1]);				
+				System.out.println("\t-->> almacenByTipo.put(" + arr[0] + ", " + arr[1] + ")");
+				almacenByTipo.put((Integer) arr[0], (Integer) arr[1]);
 			}
-			
+
 			List<Object[]> resultPM901Inventario = executeQuery(derbyDBConnection,
-					"SELECT  P.CODIGO_BARRAS,A.TIPO_ALMACEN,AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA\n" +
-					"FROM    PRODUCTO P,ALMACEN_PRODUCTO AP,ALMACEN A\n" +
-					"WHERE   1=1\n" +
-					"AND     AP.PRODUCTO_ID=P.ID\n" +
-					"AND     AP.ALMACEN_ID=A.ID");
+					"SELECT  P.CODIGO_BARRAS,A.TIPO_ALMACEN,AP.CANTIDAD_ACTUAL,AP.PRECIO_VENTA\n"
+					+ "FROM    PRODUCTO P,ALMACEN_PRODUCTO AP,ALMACEN A\n"
+					+ "WHERE   1=1\n"
+					+ "AND     AP.PRODUCTO_ID=P.ID\n"
+					+ "AND     AP.ALMACEN_ID=A.ID");
 			inventarioPM901 = new HashMap<String, AlmsProd>();
-			for(Object[] rx1: resultPM901Inventario){
-				String  cb = (String )rx1[0];
-				Integer ta = (Integer)rx1[1];
-				Integer ca = (Integer)rx1[2];
-				Double  pv = (Double )rx1[3];
-				
+			for (Object[] rx1 : resultPM901Inventario) {
+				String cb = (String) rx1[0];
+				Integer ta = (Integer) rx1[1];
+				Integer ca = (Integer) rx1[2];
+				Double pv = (Double) rx1[3];
+
 				AlmsProd ir = inventarioPM901.get(cb);
-				if(ir == null){
+				if (ir == null) {
 					ir = new AlmsProd(cb);
 					inventarioPM901.put(cb, ir);
 				}
-				if(ta == Constants.ALMACEN_PRINCIPAL){
-					ir.cantidad1ra    = ca;
+				if (ta == Constants.ALMACEN_PRINCIPAL) {
+					ir.cantidad1ra = ca;
 					ir.precioVenta1ra = pv;
-				} else if(ta == Constants.ALMACEN_OPORTUNIDAD){
-					ir.cantidadOpo    = ca;
+				} else if (ta == Constants.ALMACEN_OPORTUNIDAD) {
+					ir.cantidadOpo = ca;
 					ir.precioVentaOpo = pv;
-				} else if(ta == Constants.ALMACEN_REGALIAS){
-					ir.cantidadReg    = ca;
+				} else if (ta == Constants.ALMACEN_REGALIAS) {
+					ir.cantidadReg = ca;
 					ir.precioVentaReg = pv;
 				}
 			}
-			
 
 			List<Object[]> resultPM901Productos = executeQuery(derbyDBConnection,
-					"SELECT   P.CODIGO_BARRAS,\n"					// 0
+					"SELECT   P.CODIGO_BARRAS,\n" // 0
 					+ "       I.NOMBRE AS INDUSTRIA,\n"
 					+ "       L.NOMBRE AS LINEA,\n"
 					+ "       M.NOMBRE AS MARCA,\n"
 					+ "       UPPER(P.NOMBRE) AS P_NOMBRE,\n"
-					+ "       UPPER(P.PRESENTACION),\n"				// 5
+					+ "       UPPER(P.PRESENTACION),\n" // 5
 					+ "       P.CODIGO_BARRAS AS ABREBIATURA,\n"
 					+ "       P.UNIDADES_POR_CAJA,\n"
 					+ "       P.CONTENIDO,\n"
 					+ "       P.UNIDAD_MEDIDA,\n"
-					+ "       'PZ' AS UNIDAD_EMPAQUE,\n"			// 10
+					+ "       'PZ' AS UNIDAD_EMPAQUE,\n" // 10
 					+ "       P.COSTO,\t"
-					+ "       P.COSTO_VENTA\n"						// 12
+					+ "       P.COSTO_VENTA\n" // 12
 					+ "FROM   PRODUCTO P,MARCA M,LINEA L,INDUSTRIA I\n"
 					+ "WHERE  1=1\n"
 					+ "AND    P.MARCA_ID = M.ID\n"
 					+ "AND    M.LINEA_ID=L.ID\n"
 					+ "AND    M.INDUSTRIA_ID=I.ID\n"
 					+ "ORDER BY INDUSTRIA,LINEA,MARCA,P_NOMBRE,PRESENTACION,CODIGO_BARRAS");
-			
+
 			LinkedHashMap<String, String> productosActuales = null;
-			
-			
 
 			List<Object[]> resultAllProductos = null;
 			resultAllProductos = executeQuery(newDBConnection, "SELECT CODIGO_BARRAS,NOMBRE,PRESENTACION,INDUSTRIA,LINEA,MARCA FROM PRODUCTO");
@@ -186,47 +184,47 @@ public class MigrarInventarioPM901_PM1041 {
 
 			PreparedStatement psUpdateAlmProd = newDBConnection.prepareStatement(
 					"UPDATE ALMACEN_PRODUCTO SET CANTIDAD=?,PRECIO=? "
-							+ "WHERE ALMACEN_ID=? AND PRODUCTO_CODIGO_BARRAS=?", Statement.RETURN_GENERATED_KEYS);
+					+ "WHERE ALMACEN_ID=? AND PRODUCTO_CODIGO_BARRAS=?", Statement.RETURN_GENERATED_KEYS);
 
 			PreparedStatement psInsertAlmProd = newDBConnection.prepareStatement(
 					"INSERT INTO ALMACEN_PRODUCTO(CANTIDAD,PRECIO,ALMACEN_ID,PRODUCTO_CODIGO_BARRAS)"
 					+ " VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
-			int migrated  = 0;
-			
-			int carx=0;
-			int affAP=0;
+			int migrated = 0;
+
+			int carx = 0;
+			int affAP = 0;
 			Object[] aaProdParams = null;
-			System.out.println("->EMPATANDO CON DERBY: #"+resultPM901Productos.size());
+			System.out.println("->EMPATANDO CON DERBY: #" + resultPM901Productos.size());
 			for (Object[] aaDerby : resultPM901Productos) {
-				
-				String  oldCB = (String) aaDerby[0];
-				
+
+				String oldCB = (String) aaDerby[0];
+
 				if (!productosActuales.containsKey(oldCB)) {
-					
+
 					aaProdParams = new Object[13];
-					for(int j=0;j<aaProdParams.length;j++){
+					for (int j = 0; j < aaProdParams.length; j++) {
 						aaProdParams[j] = aaDerby[j];
 					}
-					
+
 					psInsertProd.clearParameters();
-					try{
+					try {
 						executeUpdate(psInsertProd, aaProdParams);
 						migrated++;
-					}catch(Exception ex){
+					} catch (Exception ex) {
 						System.out.println("");
-						System.out.println("\t----->>>FAYO IMPORT=>" + Arrays.asList(aaProdParams)+", params # "+aaProdParams.length+":"+ex.getMessage());
+						System.out.println("\t----->>>FAYO IMPORT=>" + Arrays.asList(aaProdParams) + ", params # " + aaProdParams.length + ":" + ex.getMessage());
 					}
 				}
-				
-				System.out.print("--->> REVISANDO PRODUCTOS DERBY: ("+migrated+" / "+(carx++)+") ("+affAP+")\r");
+
+				System.out.print("--->> REVISANDO PRODUCTOS DERBY: (" + migrated + " / " + (carx++) + ") (" + affAP + ")\r");
 				//newDBConnection.commit();
 			}
 			System.out.println("");
-			System.out.println("==>> ANTES, #resultAllProductos.size="+resultAllProductos.size());
-			
+			System.out.println("==>> ANTES, #resultAllProductos.size=" + resultAllProductos.size());
+
 			System.out.println("==>> TERMINADO, AHORA PARA IMPORTAR INVETARIOS:");
-			
+
 			resultAllProductos = executeQuery(newDBConnection, "SELECT CODIGO_BARRAS,NOMBRE,PRESENTACION,INDUSTRIA,LINEA,MARCA FROM PRODUCTO");
 			productosActuales = new LinkedHashMap<String, String>();
 			for (Object[] ap : resultAllProductos) {
@@ -234,34 +232,34 @@ public class MigrarInventarioPM901_PM1041 {
 				String prod2String = Arrays.asList(ap).toString();
 				productosActuales.put(cb, prod2String);
 			}
-			int numReg=0;
+			int numReg = 0;
 			int totRI = resultAllProductos.size();
 			int almProdUp = 0;
 			int almProdIn = 0;
 			int almProdPR = 0;
-			System.out.println("==>> DESPUES, #resultAllProductos.size="+resultAllProductos.size());
+			System.out.println("==>> DESPUES, #resultAllProductos.size=" + resultAllProductos.size());
 			for (Object[] ap : resultAllProductos) {
 				numReg++;
 				String codigoBarrasIntegrado = (String) ap[0];
 				AlmsProd ir = inventarioPM901.get(codigoBarrasIntegrado);
-				if(ir == null){
+				if (ir == null) {
 					ir = new AlmsProd(codigoBarrasIntegrado);
 				}
-				
-				for(Object[] arrAlm : resultAlmacenesSuc) {
-					Integer almacenIdActual = (Integer)arrAlm[1];
-					Integer tipoAlmacen		= (Integer)arrAlm[0];
-					Integer cantidad        = 0;
-					Double  precioVenta		= 0.0;
-					if(tipoAlmacen == Constants.ALMACEN_PRINCIPAL){
-						cantidad			= ir.cantidad1ra;
-						precioVenta			= ir.precioVenta1ra;
-					} else if(tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD){
-						cantidad			= ir.cantidadOpo;
-						precioVenta			= ir.precioVentaOpo;
-					} else if(tipoAlmacen == Constants.ALMACEN_REGALIAS){
-						cantidad			= ir.cantidadReg;
-						precioVenta			= ir.precioVentaReg;
+
+				for (Object[] arrAlm : resultAlmacenesSuc) {
+					Integer almacenIdActual = (Integer) arrAlm[1];
+					Integer tipoAlmacen = (Integer) arrAlm[0];
+					Integer cantidad = 0;
+					Double precioVenta = 0.0;
+					if (tipoAlmacen == Constants.ALMACEN_PRINCIPAL) {
+						cantidad = ir.cantidad1ra;
+						precioVenta = ir.precioVenta1ra;
+					} else if (tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD) {
+						cantidad = ir.cantidadOpo;
+						precioVenta = ir.precioVentaOpo;
+					} else if (tipoAlmacen == Constants.ALMACEN_REGALIAS) {
+						cantidad = ir.cantidadReg;
+						precioVenta = ir.precioVentaReg;
 					}
 
 					psUpdateAlmProd.clearParameters();
@@ -270,76 +268,57 @@ public class MigrarInventarioPM901_PM1041 {
 					psUpdateAlmProd.setObject(2, precioVenta);
 					psUpdateAlmProd.setObject(3, almacenIdActual);
 					psUpdateAlmProd.setObject(4, codigoBarrasIntegrado);
-					
-					affAP=psUpdateAlmProd.executeUpdate();
-					if(affAP==1){						
+
+					affAP = psUpdateAlmProd.executeUpdate();
+					if (affAP == 1) {
 						almProdUp++;
 					} else {
 						psInsertAlmProd.clearParameters();
-						
+
 						psInsertAlmProd.setObject(1, cantidad);
 						psInsertAlmProd.setObject(2, precioVenta);
 						psInsertAlmProd.setObject(3, almacenIdActual);
 						psInsertAlmProd.setObject(4, codigoBarrasIntegrado);
-						
-						affAP=psInsertAlmProd.executeUpdate();
-						if(affAP==1){
+
+						affAP = psInsertAlmProd.executeUpdate();
+						if (affAP == 1) {
 							almProdIn++;
-						}						
-					}					
+						}
+					}
 				}
-				for(Object[] arrAlm : resultAlmacenesPrincipales) {
-					Integer almacenIdActual = (Integer)arrAlm[1];
-					Integer tipoAlmacen		= (Integer)arrAlm[0];
-					Integer cantidad        = 0;
-					Double  precioVenta		= 0.0;
-					
+				for (Object[] arrAlm : resultAlmacenesPrincipales) {
+					Integer almacenIdActual = (Integer) arrAlm[1];
+					Integer tipoAlmacen = (Integer) arrAlm[0];
+					Integer cantidad = 0;
+					Double precioVenta = 0.0;
+
 					psExistAlmProd.clearParameters();
 					// CANT,PREC, ALM, CB
 					psExistAlmProd.setObject(1, almacenIdActual);
 					psExistAlmProd.setObject(2, codigoBarrasIntegrado);
-					ResultSet rseia = psExistAlmProd.executeQuery();					
+					ResultSet rseia = psExistAlmProd.executeQuery();
 					boolean existInAlm = rseia.next();
 					rseia.close();
-															
-					if(!existInAlm){
+
+					if (!existInAlm) {
 						psInsertAlmProd.clearParameters();
-						
+
 						psInsertAlmProd.setObject(1, cantidad);
 						psInsertAlmProd.setObject(2, precioVenta);
 						psInsertAlmProd.setObject(3, almacenIdActual);
 						psInsertAlmProd.setObject(4, codigoBarrasIntegrado);
-						
-						affAP=psInsertAlmProd.executeUpdate();
-						if(affAP==1){
+
+						affAP = psInsertAlmProd.executeUpdate();
+						if (affAP == 1) {
 							almProdPR++;
 						}
-					}					
+					}
 				}
 				//newDBConnection.commit();
-				System.out.print("--->> IMPORTANDO INVENTARIO ("+numReg+" / "+totRI+") [\t"+almProdUp+", \t"+almProdIn+",\t"+almProdPR+"] \r");
+				System.out.print("--->> IMPORTANDO INVENTARIO (" + numReg + " / " + totRI + ") [\t" + almProdUp + ", \t" + almProdIn + ",\t" + almProdPR + "] \r");
 			}
 			System.out.println();
 			System.out.println("->OK, Importado el Inventario ");
-			System.out.println("---------------------- Migrando VENTAS (Suc:" + sucursalId + ") DESDE ["+fechaInicio+"] -----------------------");
-			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-			//Date fehcaInicial = sdf.parse(fechaInicio);
-			
-			String queryVentasPM901 = 
-					"SELECT PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA\n" +
-					"FROM   PEDIDO_VENTA PV,PEDIDO_VENTA_DETALLE PVD,PEDIDO_VENTA_ESTADO PVE,PRODUCTO P,ALMACEN A\n" +
-					"WHERE  1=1\n" +
-					"AND    PV.ID=PVD.PEDIDO_VENTA_ID\n" +
-					"AND    PV.ID=PVE.PEDIDO_VENTA_ID\n" +
-					"AND    PVD.PRODUCTO_ID=P.ID\n" +
-					"AND    PV.ALMACEN_ID=A.ID\n" +
-					"AND    PVE.FECHA >= TIMESTAMP('"+fechaInicio+"','00.00.00') \n" +
-					"ORDER BY PVE.FECHA";
-			
-			System.out.println("--->> EXECUTING QUERY VENTAS:");
-			ResultSet ventasRS = derbyDBConnection.createStatement().executeQuery(queryVentasPM901);
-			
-			
 			LinkedHashMap<String, List<Integer>> productosNoEncotrados = new LinkedHashMap<String, List<Integer>>();
 
 			String line = null;
@@ -363,193 +342,209 @@ public class MigrarInventarioPM901_PM1041 {
 			Integer cantidad;
 			String codigoBarras = null;
 			Double precio = null;
-			
-			//debug = true;
 
-			int i = 0;
-			int adv = 0;
+			if (migrarVentas) {
+				System.out.println("---------------------- Migrando VENTAS (Suc:" + sucursalId + ") DESDE [" + fechaInicio + "] -----------------------");
+				//SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+				//Date fehcaInicial = sdf.parse(fechaInicio);
 
-			boolean insertES = false;
-			long t0 = System.currentTimeMillis();
-			int contCBNoExiste = 0;
-			boolean x = false;
-			int tot = 1;
-			System.out.println("--->> READ RESULT SET:");
-			int numProds=0;
-			boolean firstRec = true;
-			int lastpvId = -1;
-			int contPV = 0;
-			while (ventasRS.next()) {
-				insertES = false;
+				String queryVentasPM901
+						= "SELECT PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA\n"
+						+ "FROM   PEDIDO_VENTA PV,PEDIDO_VENTA_DETALLE PVD,PEDIDO_VENTA_ESTADO PVE,PRODUCTO P,ALMACEN A\n"
+						+ "WHERE  1=1\n"
+						+ "AND    PV.ID=PVD.PEDIDO_VENTA_ID\n"
+						+ "AND    PV.ID=PVE.PEDIDO_VENTA_ID\n"
+						+ "AND    PVD.PRODUCTO_ID=P.ID\n"
+						+ "AND    PV.ALMACEN_ID=A.ID\n"
+						+ "AND    PVE.FECHA >= TIMESTAMP('" + fechaInicio + "','00.00.00') \n"
+						+ "ORDER BY PVE.FECHA";
 
-				//PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA
-				//    1              2        3                    4             5              6            7             8                     9           10              11               12 
-				pvId  = ventasRS.getInt(1);  
-				
-				if(firstRec) {
-					pv = new EntradaSalida(pvId);
-					pvdListPV = new ArrayList<EntradaSalidaDetalle>();
-					lastpvId = pvId;
-					firstRec = false;
-				}
-				if (lastpvId != pvId) {
-					if(debug){
-						System.out.println("\t\t===============>> "+lastpvId+" != "+pvId+" !! ");
+				System.out.println("--->> EXECUTING QUERY VENTAS:");
+				ResultSet ventasRS = derbyDBConnection.createStatement().executeQuery(queryVentasPM901);
+
+				//debug = true;
+				int i = 0;
+				int adv = 0;
+
+				boolean insertES = false;
+				long t0 = System.currentTimeMillis();
+				int contCBNoExiste = 0;
+				boolean x = false;
+				int tot = 1;
+				System.out.println("--->> READ RESULT SET:");
+				int numProds = 0;
+				boolean firstRec = true;
+				int lastpvId = -1;
+				int contPV = 0;
+				while (ventasRS.next()) {
+					insertES = false;
+
+					//PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA
+					//    1              2        3                    4             5              6            7             8                     9           10              11               12 
+					pvId = ventasRS.getInt(1);
+
+					if (firstRec) {
+						pv = new EntradaSalida(pvId);
+						pvdListPV = new ArrayList<EntradaSalidaDetalle>();
+						lastpvId = pvId;
+						firstRec = false;
 					}
-					
-					if(debug){
-						System.out.println("\tpvdList:");
-						for(EntradaSalidaDetalle esdXD:pvdListPV){
-							System.out.println("\t\tesdXD:"+esdXD.getCantidad()+" X "+esdXD.getProductoCodigoBarras()+"["+esdXD.getAlmacenId()+" ] ");
+					if (lastpvId != pvId) {
+						if (debug) {
+							System.out.println("\t\t===============>> " + lastpvId + " != " + pvId + " !! ");
 						}
+
+						if (debug) {
+							System.out.println("\tpvdList:");
+							for (EntradaSalidaDetalle esdXD : pvdListPV) {
+								System.out.println("\t\tesdXD:" + esdXD.getCantidad() + " X " + esdXD.getProductoCodigoBarras() + "[" + esdXD.getAlmacenId() + " ] ");
+							}
+						}
+
+						insertEntradaSalidaSucursal(newDBConnection, pv, descAplicado, pvdListPV, tipoAlmacen);
+
+						numProds = 0;
+
+						pv = new EntradaSalida(pvId);
+						pvdListPV = new ArrayList<EntradaSalidaDetalle>();
+						insertES = true;
+						contPV++;
 					}
-					
-					insertEntradaSalidaSucursal(newDBConnection, pv, descAplicado, pvdListPV,tipoAlmacen);					
-					
-					numProds=0;
 
+					fecha = ventasRS.getTimestamp(3);
+					formaDePagoId = ventasRS.getInt(4);
+					usuario = ventasRS.getString(5);
+					clienteId = Constants.ID_CLIENTE_MOSTRADOR;
+					tipoAlmacen = ventasRS.getInt(6);
+					factorIVA = Constants.IVA;
+					comentariosX = ventasRS.getString(8);
 
-					pv = new EntradaSalida(pvId);
-					pvdListPV = new ArrayList<EntradaSalidaDetalle>();
-					insertES = true;
-					contPV++;
-				}
+					if (ventasRS.getObject(9) == null) {
+						descAplicado = null;
+					} else {
+						descAplicado = ventasRS.getDouble(9);
+					}
+					cantidad = ventasRS.getInt(10);
+					codigoBarras = ventasRS.getString(11);
+					precio = ventasRS.getDouble(12);
+					if (comentariosX != null) {
+						int idxCb = comentariosX.indexOf("<caja>");
+						int idxCe = comentariosX.indexOf("</caja>");
+						int idxRb = comentariosX.indexOf("<recibido>");
+						int idxRe = comentariosX.indexOf("</recibido>");
 
-				
-				fecha = ventasRS.getTimestamp(3); 
-				formaDePagoId = ventasRS.getInt(4);
-				usuario   = ventasRS.getString(5); 
-				clienteId = Constants.ID_CLIENTE_MOSTRADOR;
-				tipoAlmacen = ventasRS.getInt(6);
-				factorIVA = Constants.IVA;
-				comentariosX = ventasRS.getString(8);
-				
-				if (ventasRS.getObject(9) == null) {
-					descAplicado = null;
-				} else {
-					descAplicado = ventasRS.getDouble(9);
-				}
-				cantidad = ventasRS.getInt(10);
-				codigoBarras = ventasRS.getString(11);
-				precio = ventasRS.getDouble(12);
-				if (comentariosX != null) {
-					int idxCb = comentariosX.indexOf("<caja>");
-					int idxCe = comentariosX.indexOf("</caja>");
-					int idxRb = comentariosX.indexOf("<recibido>");
-					int idxRe = comentariosX.indexOf("</recibido>");
-
-					if (idxCb > 0 && idxCe > idxCb) {
-						numCaja = Integer.parseInt(comentariosX.substring(idxCb + 6, idxCe));
+						if (idxCb > 0 && idxCe > idxCb) {
+							numCaja = Integer.parseInt(comentariosX.substring(idxCb + 6, idxCe));
+						} else {
+							numCaja = 1;
+						}
+						if (idxRb > 0 && idxRe > idxRb) {
+							recibido = Double.parseDouble(comentariosX.substring(idxRb + 10, idxRe));
+						} else {
+							recibido = null;
+						}
 					} else {
 						numCaja = 1;
-					}
-					if (idxRb > 0 && idxRe > idxRb) {
-						recibido = Double.parseDouble(comentariosX.substring(idxRb + 10, idxRe));
-					} else {
 						recibido = null;
 					}
-				} else {
-					numCaja = 1;
-					recibido = null;
-				}
 
-				if (!productosActuales.containsKey(codigoBarras)) {
-					contCBNoExiste++;
-					List<Integer> pedidosQueTienenProdX = null;
-					pedidosQueTienenProdX = productosNoEncotrados.get(codigoBarras);
-					if (pedidosQueTienenProdX == null) {
-						pedidosQueTienenProdX = new ArrayList<Integer>();
-						productosNoEncotrados.put(codigoBarras, pedidosQueTienenProdX);
+					if (!productosActuales.containsKey(codigoBarras)) {
+						contCBNoExiste++;
+						List<Integer> pedidosQueTienenProdX = null;
+						pedidosQueTienenProdX = productosNoEncotrados.get(codigoBarras);
+						if (pedidosQueTienenProdX == null) {
+							pedidosQueTienenProdX = new ArrayList<Integer>();
+							productosNoEncotrados.put(codigoBarras, pedidosQueTienenProdX);
+						}
+						pedidosQueTienenProdX.add(pvId);
 					}
-					pedidosQueTienenProdX.add(pvId);
+
+					ticket = GeneradorNumTicket.getNumTicket(fecha, sucursalId, numCaja);
+
+					esd = new EntradaSalidaDetalle();
+
+					esd.setAlmacenId(almacenByTipo.get(tipoAlmacen));
+					esd.setCantidad(cantidad);
+					esd.setProductoCodigoBarras(codigoBarras);
+					esd.setPrecioVenta(precio);
+					esd.setEntradaSalidaId(pvId);
+
+					numProds += cantidad;
+
+					if (descAplicado != null) {
+						pv.setAutorizaDescuento(1);
+					} else {
+						pv.setAutorizaDescuento(0);
+					}
+					pv.setAutorizaDescuento(descAplicado != null ? 1 : 0);
+					pv.setCaja(numCaja);
+					pv.setSucursalId(sucursalId);
+					pv.setFechaCreo(new Timestamp(fecha.getTime()));
+					pv.setClienteId(clienteId);
+					pv.setComentarios("VENTA SUCURSAL MIGRADO DE PM9.1(USUARIO:" + usuario + ")");
+					pv.setFactorIva(factorIVA);
+					pv.setFormaDePagoId(Constants.ID_FDP_1SOLA_E);
+					pv.setMetodoDePagoId(formaDePagoId == 1 ? Constants.ID_MDP_EFECTIVO : Constants.ID_MDP_TARJETA);
+					pv.setImporteRecibido(recibido);
+					pv.setNumeroTicket(ticket);
+					pv.setUsuarioEmailCreo("sucursalPM901@perfumeriamarlen.com.mx");
+					pv.setTipoMov(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
+					pv.setEstadoId(Constants.ESTADO_VENDIDO_SUCURSAL);
+
+					pvdListPV.add(esd);
+					i++;
+					lastpvId = pvId;
+					t2 = System.currentTimeMillis();
+					//System.out.println("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ] PV=["+lastpvId+" > "+pvId+"] #"+contPV+"["+pvdListPV.size()+"](ERROR CB:" + contCBNoExiste + ")");
+					System.out.print("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ] PV=[" + lastpvId + " > " + pvId + "] #" + contPV + "[" + pvdListPV.size() + "](ERROR CB:" + contCBNoExiste + ")\r");
 				}
 
-				ticket = GeneradorNumTicket.getNumTicket(fecha, sucursalId, numCaja);
-
-				esd = new EntradaSalidaDetalle();
-
-				esd.setAlmacenId(almacenByTipo.get(tipoAlmacen));
-				esd.setCantidad(cantidad);
-				esd.setProductoCodigoBarras(codigoBarras);
-				esd.setPrecioVenta(precio);
-				esd.setEntradaSalidaId(pvId);
-				
-				numProds+=cantidad;
-				
-				if(descAplicado!=null){
-					pv.setAutorizaDescuento(1);					
-				}else {
-					pv.setAutorizaDescuento(0);
+				if (pv != null && pvdListPV.size() > 0) {
+					insertEntradaSalidaSucursal(newDBConnection, pv, descAplicado, pvdListPV, tipoAlmacen);
 				}
-				pv.setAutorizaDescuento(descAplicado != null ? 1 : 0);								
-				pv.setCaja(numCaja);
-				pv.setSucursalId(sucursalId);
-				pv.setFechaCreo(new Timestamp(fecha.getTime()));
-				pv.setClienteId(clienteId);
-				pv.setComentarios("VENTA SUCURSAL MIGRADO DE PM9.1(USUARIO:" + usuario + ")");
-				pv.setFactorIva(factorIVA);
-				pv.setFormaDePagoId(Constants.ID_FDP_1SOLA_E);
-				pv.setMetodoDePagoId(formaDePagoId == 1 ? Constants.ID_MDP_EFECTIVO : Constants.ID_MDP_TARJETA);
-				pv.setImporteRecibido(recibido);
-				pv.setNumeroTicket(ticket);
-				pv.setUsuarioEmailCreo("sucursalPM901@perfumeriamarlen.com.mx");
-				pv.setTipoMov(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
-				pv.setEstadoId(Constants.ESTADO_VENDIDO_SUCURSAL);
 
-				pvdListPV.add(esd);
-				
-				//--------------------------------------------------------------
-				i++;
-				lastpvId = pvId;
-				t2 = System.currentTimeMillis();
-				//System.out.println("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ] PV=["+lastpvId+" > "+pvId+"] #"+contPV+"["+pvdListPV.size()+"](ERROR CB:" + contCBNoExiste + ")");
-				System.out.print("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ] PV=["+lastpvId+" > "+pvId+"] #"+contPV+"["+pvdListPV.size()+"](ERROR CB:" + contCBNoExiste + ")\r");
-			}
+				t3 = System.currentTimeMillis();
+				System.out.println();
+				System.out.print("END: ADVANCE: \t" + i + "/\t" + tot + "\t:" + adv + " % [ " + enalapsed(t0, t3) + " ] (ERROR CB:" + contCBNoExiste + ") \r");
 
-			if (pv != null && pvdListPV.size() > 0) {
-				insertEntradaSalidaSucursal(newDBConnection, pv, descAplicado, pvdListPV,tipoAlmacen);
-			}
+				ventasRS.close();
 
-			t3 = System.currentTimeMillis();
-			System.out.println();
-			System.out.print("END: ADVANCE: \t" + i + "/\t" + tot + "\t:" + adv + " % [ " + enalapsed(t0, t3) + " ] (ERROR CB:" + contCBNoExiste + ") \r");
+				System.out.println("MIGRADO VENTAS:");
 
-			ventasRS.close();
-			
-			System.out.println("MIGRADO VENTAS:");
-
-			if (!productosNoEncotrados.isEmpty()) {
-				System.out.println("NO ENCOTRADOS:" + productosNoEncotrados.size());
-				Set<String> pcbSet = productosNoEncotrados.keySet();
-				for (String cb : pcbSet) {
-					//	System.out.println("\t:["+cb+"]"+productosNoEncotrados.get(cb)+" ?? "+productos.get(cb));
-					System.out.print(",'" + cb + "'");
+				if (!productosNoEncotrados.isEmpty()) {
+					System.out.println("NO ENCOTRADOS:" + productosNoEncotrados.size());
+					Set<String> pcbSet = productosNoEncotrados.keySet();
+					for (String cb : pcbSet) {
+						//	System.out.println("\t:["+cb+"]"+productosNoEncotrados.get(cb)+" ?? "+productos.get(cb));
+						System.out.print(",'" + cb + "'");
+					}
 				}
 			}
-			
-			System.out.println("==>> Otra vez el inventario, #resultAllProductos.size="+resultAllProductos.size());
+			//-------------------------------------------------
+
+			System.out.println("==>> Otra vez el inventario, #resultAllProductos.size=" + resultAllProductos.size());
 			for (Object[] ap : resultAllProductos) {
 				numReg++;
 				String codigoBarrasIntegrado = (String) ap[0];
 				AlmsProd ir = inventarioPM901.get(codigoBarrasIntegrado);
-				if(ir == null){
+				if (ir == null) {
 					ir = new AlmsProd(codigoBarrasIntegrado);
 				}
-				
-				for(Object[] arrAlm : resultAlmacenesSuc) {
-					Integer almacenIdActual = (Integer)arrAlm[1];
-					tipoAlmacen		= (Integer)arrAlm[0];
-					cantidad        = 0;
-					Double  precioVenta		= 0.0;
-					if(tipoAlmacen == Constants.ALMACEN_PRINCIPAL){
-						cantidad			= ir.cantidad1ra;
-						precioVenta			= ir.precioVenta1ra;
-					} else if(tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD){
-						cantidad			= ir.cantidadOpo;
-						precioVenta			= ir.precioVentaOpo;
-					} else if(tipoAlmacen == Constants.ALMACEN_REGALIAS){
-						cantidad			= ir.cantidadReg;
-						precioVenta			= ir.precioVentaReg;
+
+				for (Object[] arrAlm : resultAlmacenesSuc) {
+					Integer almacenIdActual = (Integer) arrAlm[1];
+					tipoAlmacen = (Integer) arrAlm[0];
+					cantidad = 0;
+					Double precioVenta = 0.0;
+					if (tipoAlmacen == Constants.ALMACEN_PRINCIPAL) {
+						cantidad = ir.cantidad1ra;
+						precioVenta = ir.precioVenta1ra;
+					} else if (tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD) {
+						cantidad = ir.cantidadOpo;
+						precioVenta = ir.precioVentaOpo;
+					} else if (tipoAlmacen == Constants.ALMACEN_REGALIAS) {
+						cantidad = ir.cantidadReg;
+						precioVenta = ir.precioVentaReg;
 					}
 
 					psUpdateAlmProd.clearParameters();
@@ -558,54 +553,54 @@ public class MigrarInventarioPM901_PM1041 {
 					psUpdateAlmProd.setObject(2, precioVenta);
 					psUpdateAlmProd.setObject(3, almacenIdActual);
 					psUpdateAlmProd.setObject(4, codigoBarrasIntegrado);
-					
-					affAP=psUpdateAlmProd.executeUpdate();
-					if(affAP==1){						
+
+					affAP = psUpdateAlmProd.executeUpdate();
+					if (affAP == 1) {
 						almProdUp++;
 					} else {
 						psInsertAlmProd.clearParameters();
-						
+
 						psInsertAlmProd.setObject(1, cantidad);
 						psInsertAlmProd.setObject(2, precioVenta);
 						psInsertAlmProd.setObject(3, almacenIdActual);
 						psInsertAlmProd.setObject(4, codigoBarrasIntegrado);
-						
-						affAP=psInsertAlmProd.executeUpdate();
-						if(affAP==1){
+
+						affAP = psInsertAlmProd.executeUpdate();
+						if (affAP == 1) {
 							almProdIn++;
-						}						
-					}					
+						}
+					}
 				}
-				for(Object[] arrAlm : resultAlmacenesPrincipales) {
-					Integer almacenIdActual = (Integer)arrAlm[1];
-					tipoAlmacen		= (Integer)arrAlm[0];
-					cantidad        = 0;
-					Double  precioVenta		= 0.0;
-					
+				for (Object[] arrAlm : resultAlmacenesPrincipales) {
+					Integer almacenIdActual = (Integer) arrAlm[1];
+					tipoAlmacen = (Integer) arrAlm[0];
+					cantidad = 0;
+					Double precioVenta = 0.0;
+
 					psExistAlmProd.clearParameters();
 					// CANT,PREC, ALM, CB
 					psExistAlmProd.setObject(1, almacenIdActual);
 					psExistAlmProd.setObject(2, codigoBarrasIntegrado);
-					ResultSet rseia = psExistAlmProd.executeQuery();					
+					ResultSet rseia = psExistAlmProd.executeQuery();
 					boolean existInAlm = rseia.next();
 					rseia.close();
-															
-					if(!existInAlm){
+
+					if (!existInAlm) {
 						psInsertAlmProd.clearParameters();
-						
+
 						psInsertAlmProd.setObject(1, cantidad);
 						psInsertAlmProd.setObject(2, precioVenta);
 						psInsertAlmProd.setObject(3, almacenIdActual);
 						psInsertAlmProd.setObject(4, codigoBarrasIntegrado);
-						
-						affAP=psInsertAlmProd.executeUpdate();
-						if(affAP==1){
+
+						affAP = psInsertAlmProd.executeUpdate();
+						if (affAP == 1) {
 							almProdPR++;
 						}
-					}					
+					}
 				}
 				//newDBConnection.commit();
-				System.out.print("--->> IMPORTANDO INVENTARIO ("+numReg+" / "+totRI+") [\t"+almProdUp+", \t"+almProdIn+",\t"+almProdPR+"] \r");
+				System.out.print("--->> IMPORTANDO INVENTARIO (" + numReg + " / " + totRI + ") [\t" + almProdUp + ", \t" + almProdIn + ",\t" + almProdPR + "] \r");
 			}
 			System.out.println();
 			System.out.println("->OK, Importado el Inventario ");
@@ -627,20 +622,18 @@ public class MigrarInventarioPM901_PM1041 {
 		return 0;
 	}
 
-	private static int insertEntradaSalidaSucursal(Connection conn, EntradaSalida x,Double descuentoAplic, List<EntradaSalidaDetalle> pvdList, int tipoAlmacen) throws SQLException {
+	private static int insertEntradaSalidaSucursal(Connection conn, EntradaSalida x, Double descuentoAplic, List<EntradaSalidaDetalle> pvdList, int tipoAlmacen) throws SQLException {
 		Collections.reverse(pvdList);
-		Double subTotal1ra = 0.0;	
+		Double subTotal1ra = 0.0;
 		Double subTotalOpo = 0.0;
 		Double subTotalReg = 0.0;
 
-		
 		if (debug) {
 			System.out.println("insertEntradaSalidaSucursal: EntradaSalida: INSERT FECHA:" + x.getFechaCreo() + ", SUCURSAL:" + x.getSucursalId() + ", CAJA:" + x.getCaja() + ", TICKET:" + x.getNumeroTicket());
 			for (EntradaSalidaDetalle esd : pvdList) {
 				System.out.println("insertEntradaSalidaSucursal:\t INSERT & COMMIT, DISCOUNT=" + esd.getCantidad() + " x " + esd.getProductoCodigoBarras() + "[" + esd.getAlmacenId() + "]");
 			}
 		}
-		
 
 		int r = -1;
 		int tipoMov = x.getTipoMov();
@@ -649,28 +642,28 @@ public class MigrarInventarioPM901_PM1041 {
 		PreparedStatement psESD = null;
 		PreparedStatement psMHP = null;
 
-		double importeBruto = 0.0;		
+		double importeBruto = 0.0;
 		Integer totProds = 0;
 
 		for (EntradaSalidaDetalle esd : pvdList) {
-			final double imp = esd.getCantidad() * esd.getPrecioVenta();			
+			final double imp = esd.getCantidad() * esd.getPrecioVenta();
 			importeBruto += (imp);
-			if(tipoAlmacen == Constants.ALMACEN_PRINCIPAL){
-				subTotal1ra += imp;	
-			} else if (tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD){
+			if (tipoAlmacen == Constants.ALMACEN_PRINCIPAL) {
+				subTotal1ra += imp;
+			} else if (tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD) {
 				subTotalOpo += imp;
-			} else if (tipoAlmacen == Constants.ALMACEN_REGALIAS){
+			} else if (tipoAlmacen == Constants.ALMACEN_REGALIAS) {
 				subTotalReg += imp;
 			}
 			totProds += esd.getCantidad();
 		}
-		
+
 		x.setElemDet(pvdList.size());
 		x.setTotProds(totProds);
-		
-		if(descuentoAplic != null){
+
+		if (descuentoAplic != null) {
 			double descRaz = descuentoAplic / importeBruto;
-			int    descCalc = (int)(descRaz * 100);
+			int descCalc = (int) (descRaz * 100);
 			x.setPorcentajeDescuentoCalculado(descCalc);
 			x.setPorcentajeDescuentoExtra(0);
 		} else {
@@ -679,18 +672,18 @@ public class MigrarInventarioPM901_PM1041 {
 		x.setSubTotal1ra(subTotal1ra);
 		x.setSubTotalOpo(subTotalOpo);
 		x.setSubTotalReg(subTotalReg);
-				
-		Double subTotal = (subTotal1ra + subTotalOpo);		
-		Double total    = subTotal - descuentoAplic;
-		Double cambio   = 0.0;
-		if(x.getImporteRecibido() != null){
+
+		Double subTotal = (subTotal1ra + subTotalOpo);
+		Double total = subTotal - descuentoAplic;
+		Double cambio = 0.0;
+		if (x.getImporteRecibido() != null) {
 			x.setCambio(x.getImporteRecibido() - total);
 		} else {
 			x.setCambio(0.0);
-		} 
+		}
 		x.setTotalCobrado(total);
 		x.setTotal(total);
-		
+
 		try {
 			//Timestamp now = new Timestamp(System.currentTimeMillis());
 			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,"
@@ -718,8 +711,8 @@ public class MigrarInventarioPM901_PM1041 {
 			ps.setObject(ci++, x.getPorcentajeDescuentoExtra());
 			ps.setObject(ci++, x.getCondicionesDePago());
 			ps.setObject(ci++, x.getNumDeCuenta());
-			ps.setObject(ci++, x.getAutorizaDescuento());			
-			ps.setInt   (ci++, 1);
+			ps.setObject(ci++, x.getAutorizaDescuento());
+			ps.setInt(ci++, 1);
 			ps.setObject(ci++, x.getSubTotal1ra());
 			ps.setObject(ci++, x.getSubTotalOpo());
 			ps.setObject(ci++, x.getSubTotalReg());
@@ -728,7 +721,7 @@ public class MigrarInventarioPM901_PM1041 {
 			ps.setObject(ci++, x.getCambio());
 			ps.setObject(ci++, x.getElemDet());
 			ps.setObject(ci++, x.getTotProds());
-			
+
 			if (debug) {
 				System.out.println("->EntradaSalida before Insert:" + x.getId());
 			}
@@ -765,7 +758,7 @@ public class MigrarInventarioPM901_PM1041 {
 
 				rESD += psESD.executeUpdate();
 				if (debug) {
-					System.out.println("\tINSERT ENTRADA_SALIDA_DETALLE:" + esd1.getCantidad()+" X "+esd1.getProductoCodigoBarras()+" >> ["+rESD+"]++");
+					System.out.println("\tINSERT ENTRADA_SALIDA_DETALLE:" + esd1.getCantidad() + " X " + esd1.getProductoCodigoBarras() + " >> [" + rESD + "]++");
 				}
 			}
 			psESD.close();
@@ -1002,6 +995,7 @@ public class MigrarInventarioPM901_PM1041 {
 		rs.close();
 		return result;
 	}
+
 	/*
 	 private static void executeUpdate(Connection conn, PreparedStatement st, Object[] row) throws SQLException {
 	 st.clearParameters();

@@ -41,6 +41,9 @@ public class Usuario implements java.io.Serializable {
 	 * email alternativo
 	 */
 	private String emailAlternativo;
+	
+	private Integer sucursalId;
+	
     /** 
      * Default Constructor
      */
@@ -105,6 +108,15 @@ public class Usuario implements java.io.Serializable {
 	public void setEmailAlternativo(String emailAlternativo) {
 		this.emailAlternativo = emailAlternativo;
 	}
+
+	public Integer getSucursalId() {
+		return sucursalId;
+	}
+
+	public void setSucursalId(Integer sucursalId) {
+		this.sucursalId = sucursalId;
+	}
+	
 	
     @Override
     public int hashCode() {
