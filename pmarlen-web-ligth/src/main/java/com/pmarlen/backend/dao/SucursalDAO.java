@@ -70,7 +70,7 @@ public class SucursalDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT ID,ID_PADRE,NOMBRE,DIRECCION,TELEFONOS,USUARIO_SICOFI,PASSWORD_SICOFI,SERIE_SICOFI,COMENTARIOS,DESCUENTO_MAYOREO_HABILITADO,CLAVE FROM SUCURSAL "+
+			ps = conn.prepareStatement("SELECT ID,ID_PADRE,NOMBRE,DIRECCION,TELEFONOS,USUARIO_SICOFI,PASSWORD_SICOFI,SERIE_SICOFI,COMENTARIOS,DESCUENTO_MAYOREO_HABILITADO,CLAVE,PROHIBIDO_VENT_REG,PROHIBIDO_VENT_OPO FROM SUCURSAL "+
 					"WHERE ID=?"
 			);
 			ps.setInt(1, x.getId());
@@ -89,6 +89,8 @@ public class SucursalDAO {
 				r.setComentarios((String)rs.getObject("COMENTARIOS"));				
 				r.setDescuentoMayoreoHabilitado((Integer)rs.getObject("DESCUENTO_MAYOREO_HABILITADO"));
 				r.setClave((String)rs.getObject("CLAVE"));
+				r.setProhibidoVentOpo((Integer)rs.getObject("PROHIBIDO_VENT_OPO"));
+				r.setProhibidoVentReg((Integer)rs.getObject("PROHIBIDO_VENT_REG"));
 			} else {
 				throw new EntityNotFoundException("SUCURSAL NOT FOUND FOR ID="+x.getId());
 			}
@@ -117,7 +119,7 @@ public class SucursalDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT ID,ID_PADRE,NOMBRE,DIRECCION,TELEFONOS,USUARIO_SICOFI,PASSWORD_SICOFI,SERIE_SICOFI,COMENTARIOS,DESCUENTO_MAYOREO_HABILITADO,CLAVE FROM SUCURSAL");
+			ps = conn.prepareStatement("SELECT ID,ID_PADRE,NOMBRE,DIRECCION,TELEFONOS,USUARIO_SICOFI,PASSWORD_SICOFI,SERIE_SICOFI,COMENTARIOS,DESCUENTO_MAYOREO_HABILITADO,CLAVE,PROHIBIDO_VENT_REG,PROHIBIDO_VENT_OPO FROM SUCURSAL");
 			
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -133,6 +135,8 @@ public class SucursalDAO {
 				x.setComentarios((String)rs.getObject("COMENTARIOS"));
 				x.setDescuentoMayoreoHabilitado((Integer)rs.getObject("DESCUENTO_MAYOREO_HABILITADO"));
 				x.setClave((String)rs.getObject("CLAVE"));
+				x.setProhibidoVentOpo((Integer)rs.getObject("PROHIBIDO_VENT_OPO"));
+				x.setProhibidoVentReg((Integer)rs.getObject("PROHIBIDO_VENT_REG"));
 				r.add(x);
 			}
 		}catch(SQLException ex) {
@@ -159,7 +163,7 @@ public class SucursalDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("INSERT INTO SUCURSAL(ID_PADRE,NOMBRE,DIRECCION,TELEFONOS,USUARIO_SICOFI,PASSWORD_SICOFI,SERIE_SICOFI,COMENTARIOS,DESCUENTO_MAYOREO_HABILITADO,CLAVE) "+
+			ps = conn.prepareStatement("INSERT INTO SUCURSAL(ID_PADRE,NOMBRE,DIRECCION,TELEFONOS,USUARIO_SICOFI,PASSWORD_SICOFI,SERIE_SICOFI,COMENTARIOS,DESCUENTO_MAYOREO_HABILITADO,CLAVE,PROHIBIDO_VENT_REG,PROHIBIDO_VENT_OPO) "+
 					" VALUES(?,?,?,?,?,?,?,?,?,?)"
 					,Statement.RETURN_GENERATED_KEYS);			
 			int ci=1;
@@ -174,6 +178,8 @@ public class SucursalDAO {
 			ps.setObject(ci++,x.getComentarios());
 			ps.setObject(ci++,x.getDescuentoMayoreoHabilitado());
 			ps.setObject(ci++,x.getClave());
+			ps.setObject(ci++,x.getProhibidoVentReg());
+			ps.setObject(ci++,x.getProhibidoVentOpo());			
 
 			r = ps.executeUpdate();					
 			ResultSet rsk = ps.getGeneratedKeys();
@@ -205,7 +211,7 @@ public class SucursalDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("UPDATE SUCURSAL SET ID_PADRE=?,NOMBRE=?,DIRECCION=?,TELEFONOS=?,USUARIO_SICOFI=?,PASSWORD_SICOFI=?,SERIE_SICOFI=?,COMENTARIOS=?,DESCUENTO_MAYOREO_HABILITADO=?,CLAVE=? "+
+			ps = conn.prepareStatement("UPDATE SUCURSAL SET ID_PADRE=?,NOMBRE=?,DIRECCION=?,TELEFONOS=?,USUARIO_SICOFI=?,PASSWORD_SICOFI=?,SERIE_SICOFI=?,COMENTARIOS=?,DESCUENTO_MAYOREO_HABILITADO=?,CLAVE=?,PROHIBIDO_VENT_REG=?,PROHIBIDO_VENT_OPO=? "+
 					" WHERE ID=?");
 			
 			int ci=1;
@@ -221,6 +227,8 @@ public class SucursalDAO {
 			ps.setObject(ci++,x.getDescuentoMayoreoHabilitado());
 			ps.setObject(ci++,x.getClave());
 			ps.setObject(ci++,x.getId());
+			ps.setObject(ci++,x.getProhibidoVentReg());
+			ps.setObject(ci++,x.getProhibidoVentOpo());
 			
 			r = ps.executeUpdate();						
 		}catch(SQLException ex) {

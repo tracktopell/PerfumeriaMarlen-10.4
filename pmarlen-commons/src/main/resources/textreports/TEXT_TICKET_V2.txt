@@ -31,8 +31,9 @@ ${sucursal.direccion1,c,100%,R}
 ${L.venta.ticket,c,100%,C}
 ${venta.ticket,c,100%,C}
 
-FECHA VTA.:${fecha.creado,l,16,F}
+     FECHA:${fecha.creado,l,16,F}
    ATENDIO:${usuario.creo.clave,l,4,F}
+  IMPRIMIO:${usuario.imprimio.clave,l,4,F}
     CAJA #:${sucursal.caja.creo,l,3,F}
    CLIENTE:?{cliente.racSoc1,l,-11,F}
            ?{cliente.racSoc2,l,-11,F}

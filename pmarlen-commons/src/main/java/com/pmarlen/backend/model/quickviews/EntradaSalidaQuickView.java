@@ -20,6 +20,8 @@ public class EntradaSalidaQuickView extends EntradaSalida {
 	
 	private String usuarioNombreCompleto;
 	
+	private Integer usuarioClave;
+	
 	private String estadoDescripcion;
 	
 	private String cdfNumCFD;
@@ -30,11 +32,15 @@ public class EntradaSalidaQuickView extends EntradaSalida {
 	
 	private String clienteNombreEstablecimiento;
 	
+	private String clienteDirFacturacion;
+	
 	private String formaDePagoDescripcion;
 	
 	private String metodoDePagoDescripcion;
 	
 	private String sucursalNombre;
+	
+	private String sucursalDireccion;
 	
 	private int numElementos;
 	
@@ -384,6 +390,48 @@ public class EntradaSalidaQuickView extends EntradaSalida {
 	 */
 	public void setTraspasoSucDesClave(String traspasoSucDesClave) {
 		this.traspasoSucDesClave = traspasoSucDesClave;
+	}
+
+	/**
+	 * @return the usuarioClave
+	 */
+	public Integer getUsuarioClave() {
+		return usuarioClave;
+	}
+
+	/**
+	 * @param usuarioClave the usuarioClave to set
+	 */
+	public void setUsuarioClave(Integer usuarioClave) {
+		this.usuarioClave = usuarioClave;
+	}
+
+	/**
+	 * @return the sucursalDireccion
+	 */
+	public String getSucursalDireccion() {
+		return sucursalDireccion;
+	}
+
+	/**
+	 * @param sucursalDireccion the sucursalDireccion to set
+	 */
+	public void setSucursalDireccion(String sucursalDireccion) {
+		this.sucursalDireccion = sucursalDireccion;
+	}
+
+	/**
+	 * @return the clienteDirFacturacion
+	 */
+	public String getClienteDirFacturacion() {
+		return clienteDirFacturacion;
+	}
+
+	/**
+	 * @param clienteDirFacturacion the clienteDirFacturacion to set
+	 */
+	public void setClienteDirFacturacion(String clienteDirFacturacion) {
+		this.clienteDirFacturacion = clienteDirFacturacion;
 	}
 	
 }

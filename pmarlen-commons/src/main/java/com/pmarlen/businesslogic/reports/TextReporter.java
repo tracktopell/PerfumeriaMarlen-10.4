@@ -14,9 +14,11 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -211,7 +213,7 @@ public class TextReporter {
 		return s.substring(0, p) + i + s.substring(p + i.length());
 	}
 
-	private static String processLine(String srcline, HashMap<String, Object> parameters, HashMap<String, String> rfield, int maxLineWidth) {
+	private static String processLine(String srcline, HashMap<String, Object> parameters, Map<String, ?> rfield, int maxLineWidth) {
 		List<TextToken> tokens = new ArrayList<TextToken>();
 
 		int fromIndex = 0;
@@ -355,7 +357,7 @@ public class TextReporter {
 				 p = tb != null ? tb.i + tb.l : 0;
 				 if(DEBUG) System.err.println("p          :->"+p+"<- (4)");
 				 */
-				ti = ((RecordFieldToken) tt).expand(rfield.get(tt.e));
+				ti = ((RecordFieldToken) tt).expand(rfield.get(tt.e).toString());
 				tc = ti.length();
 				cc += tc;
 				VariableToken vt = (VariableToken) tt;
@@ -386,11 +388,11 @@ public class TextReporter {
 		}
 	}
 
-	private static void processReport(InputStream isReport, OutputStream os, HashMap<String, Object> parameters, List<HashMap<String, String>> records, int maxLineWidth) {
+	private static void processReport(InputStream isReport, OutputStream os, HashMap<String, Object> parameters, Collection<Map<String,?>> records, int maxLineWidth) {
 		processReport(isReport, os, parameters, records, maxLineWidth, "\n", "UTF-8");
 	}
 
-	private static void processReport(InputStream isReport, OutputStream os, HashMap<String, Object> parameters, List<HashMap<String, String>> records, int maxLineWidth, String endLine, String encoding) {
+	private static void processReport(InputStream isReport, OutputStream os, HashMap<String, Object> parameters, Collection<Map<String,?>> records, int maxLineWidth, String endLine, String encoding) {
 		BufferedReader br = null;
 		PrintStream ps = null;
 		br = new BufferedReader(new InputStreamReader(isReport));
@@ -439,7 +441,7 @@ public class TextReporter {
 					ps.println(pl1);
 				}
 			}
-			for (HashMap<String, String> r : records) {
+			for (Map<String, ?> r : records) {
 				for (String l : detailLines) {
 					final String pl2 = processLine(l, parameters, r, maxLineWidth);
 					if(pl2!=null){

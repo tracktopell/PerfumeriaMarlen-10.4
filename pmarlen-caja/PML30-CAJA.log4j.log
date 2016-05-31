@@ -1,8 +1,0 @@
-2016-05-28 23:12:58 INFO  Main:83 - main: ====================================================================
-2016-05-28 23:12:58 INFO  Main:84 - main: ApplicationLogic.getInstance().getVersion():10.4.1.95
-2016-05-28 23:13:56 INFO  ParamsConfigDialogControl:73 - [USER]->guardar_ActionPerformed
-2016-05-28 23:13:58 INFO  PanelVentaControl:352 - [USER]->actualizarEstadoChecado=false
-2016-05-28 23:14:05 INFO  DialogLoginControl:56 - [USER]->aceptar_ActionPerformed()
-2016-05-28 23:14:07 INFO  FramePrincipalControl:248 - [USER]->abrirSesion_actionPerformed:
-2016-05-28 23:14:10 INFO  AperturaCajaControl:156 - [USER]->saldoInicial_focusLost():saldoInicial=200
-2016-05-28 23:14:15 INFO  AperturaCajaControl:60 - [USER]->aceptar_ActionPerformed()

@@ -62,6 +62,10 @@ public class Sucursal implements java.io.Serializable {
     */
     private Integer descuentoMayoreoHabilitado;
 	
+	private Integer prohibidoVentReg;
+	
+	private Integer prohibidoVentOpo;
+	
 	/**
 	 * clave
 	 */
@@ -200,4 +204,32 @@ public class Sucursal implements java.io.Serializable {
     public String toString() {
         return nombre;
     }
+
+	/**
+	 * @return the prohibidoVentReg
+	 */
+	public Integer getProhibidoVentReg() {
+		return prohibidoVentReg;
+	}
+
+	/**
+	 * @param prohibidoVentReg the prohibidoVentReg to set
+	 */
+	public void setProhibidoVentReg(Integer prohibidoVentReg) {
+		this.prohibidoVentReg = prohibidoVentReg;
+	}
+
+	/**
+	 * @return the prohibidoVentOpo
+	 */
+	public Integer getProhibidoVentOpo() {
+		return prohibidoVentOpo;
+	}
+
+	/**
+	 * @param prohibidoVentOpo the prohibidoVentOpo to set
+	 */
+	public void setProhibidoVentOpo(Integer prohibidoVentOpo) {
+		this.prohibidoVentOpo = prohibidoVentOpo;
+	}
 }

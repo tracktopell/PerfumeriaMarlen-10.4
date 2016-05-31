@@ -6,6 +6,7 @@ package com.pmarlen.caja.control;
 
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.Notificacion;
+import com.pmarlen.caja.model.SyncUpdateListener;
 import com.pmarlen.caja.view.AperturaCajaJFrame;
 import com.pmarlen.caja.view.CierreCajaJFrame;
 import com.pmarlen.caja.view.DialogConfiguracionBTImpresora;
@@ -36,7 +37,7 @@ import org.apache.log4j.Logger;
  *
  * @author alfredo
  */
-public class FramePrincipalControl implements ActionListener{
+public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 	private static Logger logger = Logger.getLogger(FramePrincipalControl.class.getName());
 	private FramePrincipal    framePrincipal;
 	private PanelVentaControl panelVentaControl;
@@ -67,8 +68,8 @@ public class FramePrincipalControl implements ActionListener{
 		
 		panelVentaControl  = new PanelVentaControl ((PanelVenta)framePrincipal.getPanelVenta());
 		
-		panelVentasControl = new PanelVentasControl((PanelVentas)framePrincipal.getPanelVentas()) ;
-
+		panelVentasControl = new PanelVentasControl((PanelVentas)framePrincipal.getPanelVentas());
+		
 		framePrincipal.getProductosMenu().addActionListener(this);
 		
 		framePrincipal.getVentasMenu().addActionListener(this);
@@ -162,6 +163,7 @@ public class FramePrincipalControl implements ActionListener{
 		relojRunning=true;
 		Date fecha;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		final Color backgroundC = framePrincipal.getNotificaciones().getBackground();
 		while(relojRunning) {
 			try{
 				logger.trace("procesoReloj:sleep(1000)");
@@ -178,9 +180,11 @@ public class FramePrincipalControl implements ActionListener{
 				if(nn){
 					coloridoNotificacion = !coloridoNotificacion;
 					if(coloridoNotificacion){
+						//framePrincipal.getNotificaciones().setForeground(Color.RED);
 						framePrincipal.getNotificaciones().setForeground(Color.RED);
 					}else{
-						framePrincipal.getNotificaciones().setForeground(Color.BLACK);						
+						//framePrincipal.getNotificaciones().setForeground(Color.BLACK);
+						framePrincipal.getNotificaciones().setForeground(backgroundC);
 					}
 				} else {
 					framePrincipal.getNotificaciones().setForeground(Color.BLACK);
@@ -188,7 +192,8 @@ public class FramePrincipalControl implements ActionListener{
 				framePrincipal.getNotificaciones().updateUI();
 			}catch(InterruptedException ie){
 				ie.printStackTrace(System.err);
-				framePrincipal.getStatusCenter().setText("interrupted :(");
+				framePrincipal.getStatusCenter().setText(":(");
+				framePrincipal.getNotificaciones().setForeground(backgroundC);
 			}
 		}
 	}
@@ -430,5 +435,18 @@ public class FramePrincipalControl implements ActionListener{
 
 	private void nuevaDevolMenu_actionPerformed() {
 		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelDevolucion");		
+	}
+
+	@Override
+	public void updateSyncInfo() {
+		updateStatusWest();
+	}
+	
+	public void updateProhibidaVentOpo(boolean estatus){
+		panelVentaControl.abilitarVentaOportunidad(estatus);
+	}
+	
+	public void updateProhibidaVentReg(boolean estatus){
+		panelVentaControl.abilitarVentaRegalias(estatus);
 	}
 }

@@ -8,6 +8,7 @@ import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.model.Notificacion;
+import com.pmarlen.caja.model.SyncUpdateListener;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.I;
@@ -60,6 +61,7 @@ public class MemoryDAO {
 	private static final String corteCajaDTOjsonFile    = "CorteCajaDTO.json";
 	//private static final String aperturaCajaDTOjsonFile = "AperturaCajaDTO.json";
 	public static final int URL_CONNECTION_TIMEOUT = 5000;	
+	private static SyncUpdateListener  syncUpdateListener;
 	static {
 		properties.put("sucursal","1");
 		properties.put("caja","1");
@@ -86,6 +88,10 @@ public class MemoryDAO {
 	private static Sucursal sucursal;
 	private static List<Almacen> almacenList;
 
+	public static void setSyncUpdateListener(SyncUpdateListener syncUpdateListener) {
+		MemoryDAO.syncUpdateListener = syncUpdateListener;
+	}
+	
 	public static void loadProperties() {
 		
 		File fileProperties = new File(propertiesFileNAme);
@@ -191,7 +197,7 @@ public class MemoryDAO {
 		
 		logger.debug("getPaqueteSyncPoll:");
 		ESFileSystemJsonDAO.laod();
-		logger.debug("getPaqueteSyncPoll:----------------->>BEFORE while ");
+		logger.debug("getPaqueteSyncPoll:========================>>BEFORE while<<========================");
 		syncPollState = SYNC_STATE_BEFORE_RUNNING;
 		while(runnigPool){
 			logger.trace("getPaqueteSyncPoll:\t----------------->> while running, download");
@@ -217,7 +223,6 @@ public class MemoryDAO {
 					logger.error("getPaqueteSyncPoll: after call downoload, readLocally:",e);
 					syncPollState = SYNC_STATE_ERROR;
 				}
-
 			} else if(xt % IMALIVEPERIOD_SECS == 0){
 				try {					
 					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
@@ -238,7 +243,6 @@ public class MemoryDAO {
 					logger.error("getPaqueteSyncPoll: after call iamalive:",e);
 					syncPollState = SYNC_STATE_ERROR;
 				}
-
 			}
 			
 			try {
@@ -445,7 +449,7 @@ public class MemoryDAO {
 	
 	private static IAmAliveDTOPackage iAmAliveDTOPackage=null;
 	
-	private static void iamalive() throws IOException{		
+	private static void iamalive() throws IOException{
 		
 		Gson gson=new Gson();
 
@@ -510,6 +514,8 @@ public class MemoryDAO {
 			}
 		}
 	}
+	
+	private static int numReadSync=0;
 
 	private static void readLocally() {
 		logger.debug("readLocally:");
@@ -568,8 +574,9 @@ public class MemoryDAO {
 			logger.debug("readLocally:After read zip");
 			if(jsonContent != null) {
 				logger.debug("readLocally:...OK, JSon parse:");
-				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);			
-				logger.debug("readLocally:paqueteSinc=->"+paqueteSinc+"<-");
+				paqueteSinc = gson.fromJson(jsonContent, SyncDTOPackage.class);
+				numReadSync++;
+				logger.debug("readLocally:paqueteSinc["+numReadSync+"]=->"+paqueteSinc+"<-");
 				logger.debug("readLocally:paqueteSinc:paqueteSinc.getSyncDBStatus():"+Integer.toBinaryString(paqueteSinc.getSyncDBStatus())+"<-");
 				String remoteCurrentPMCajaVersion = paqueteSinc.getCurrentPMCajaVersion();
 				logger.debug("readLocally:paqueteSinc:paqueteSinc.getCurrentPMCajaVersion="+remoteCurrentPMCajaVersion);
@@ -628,6 +635,19 @@ public class MemoryDAO {
 				logger.trace("readLocally:sucursal="+sucursal);
 				logger.trace("readLocally:almacenList="+almacenList);
 				ApplicationLogic.getInstance().setAlmacen(almacenList);
+
+				if(syncUpdateListener != null){
+					logger.debug("readLocally:->syncUpdateListener.updateSyncInfo()");
+					syncUpdateListener.updateSyncInfo();
+					
+					if(sucursal.getProhibidoVentOpo()!=null && sucursal.getProhibidoVentOpo()==1){
+						syncUpdateListener.updateProhibidaVentOpo(false);
+					}
+					if(sucursal.getProhibidoVentReg()!=null && sucursal.getProhibidoVentReg()==1){
+						syncUpdateListener.updateProhibidaVentReg(false);
+					}
+				}
+
 				logger.debug("readLocally:======================= E N D ======================");
 			}
 			
@@ -658,9 +678,9 @@ public class MemoryDAO {
 	
 	public static String getCajaGlobalInfo() {
 		if(sucursal!=null){
-			return sucursal.getNombre()+" C#"+properties.getProperty("caja").toUpperCase();
+			return sucursal.getNombre()+" / CAJA #"+properties.getProperty("caja").toUpperCase();
 		} else {
-			return "["+getSucursalId()+"] C#"+properties.getProperty("caja").toUpperCase();
+			return "["+getSucursalId()+"] / CAJA #"+properties.getProperty("caja").toUpperCase();
 		}
 	}
 

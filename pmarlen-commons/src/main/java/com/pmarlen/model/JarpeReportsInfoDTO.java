@@ -6,8 +6,11 @@
 
 package com.pmarlen.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -15,9 +18,10 @@ import java.util.List;
  */
 public class JarpeReportsInfoDTO {
 	HashMap<String, Object> parameters;
-	List<HashMap<String, String>> records;
+	//List<HashMap<String, String>> records;
+	Collection<Map<String,?>> records = new ArrayList<Map<String,?>>();
 
-	public JarpeReportsInfoDTO(HashMap<String, Object> parameters, List<HashMap<String, String>> records) {
+	public JarpeReportsInfoDTO(HashMap<String, Object> parameters, Collection<Map<String,?>> records) {
 		this.parameters = parameters;
 		this.records = records;
 	}
@@ -26,7 +30,7 @@ public class JarpeReportsInfoDTO {
 		return parameters;
 	}
 
-	public List<HashMap<String, String>> getRecords() {
+	public Collection<Map<String,?>> getRecords() {
 		return records;
 	}
 

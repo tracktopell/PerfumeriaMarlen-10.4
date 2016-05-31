@@ -593,8 +593,8 @@ public class FramePrincipal extends javax.swing.JFrame {
 			statusConeccion.setBackground(Color.GRAY);
 			statusConeccion.setText("ERROR ???");
 		}
-		
-		statusConeccion.setToolTipText("STATUS:"+s);				
+		String serverContext= "CONECTADO A ["+MemoryDAO.getServerContext()+"] STATUS:"+s;
+		statusConeccion.setToolTipText(serverContext);				
 	}
 	
 	public void updateStatusWest(String info){

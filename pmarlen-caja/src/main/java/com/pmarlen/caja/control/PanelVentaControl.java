@@ -97,8 +97,29 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		this.panelVenta.getTerminar().addActionListener(this);
 		this.panelVenta.getCancelar().addActionListener(this);
 		this.panelVenta.getChechar().addActionListener(this);
+		
+		//abilitarVentaOportunidad(false);
+		//abilitarVentaRegalias(false);
 	}
-
+	
+	public void abilitarVentaOportunidad(boolean status){
+		if(!status){
+			this.panelVenta.getDesdeOportunidad().setVisible(false);
+			this.panelVenta.getTipoAlmacen().remove(this.panelVenta.getDesdeOportunidad());
+		}else{
+			this.panelVenta.getDesdeOportunidad().setVisible(true);
+			this.panelVenta.getTipoAlmacen().add(this.panelVenta.getDesdeOportunidad());
+		}	
+	}
+	public void abilitarVentaRegalias(boolean status){
+		if(!status){
+			this.panelVenta.getDesdeRegalias().setVisible(false);
+			this.panelVenta.getTipoAlmacen().remove(this.panelVenta.getDesdeRegalias());
+		}else{
+			this.panelVenta.getDesdeRegalias().setVisible(true);
+			this.panelVenta.getTipoAlmacen().add(this.panelVenta.getDesdeRegalias());
+		}	
+	}
 	public void estadoInicial() {		
 		
 		ApplicationLogic.getInstance().getVentaSesion().nuevaSesionVenta();
@@ -349,13 +370,17 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 
 	private void actualizarEstadoChecado() {
-		logger.info("[USER]->actualizarEstadoChecado="+estadoChecando);
+		int pvw  = (int)panelVenta.getSize().getWidth();
+		int opvw = (pvw * 70)/100;
+		logger.info("[USER]->actualizarEstadoChecado="+estadoChecando+" | DL="+panelVenta.getSplitPanel().getDividerLocation()+" ("+pvw+","+panelVenta.getSplitPanel().getMaximumDividerLocation()+")("+pvw+","+opvw+")");
 		if(estadoChecando) {
 			panelVenta.getChechar().setText("AGREGAR [ F9 ]");			
 			panelVenta.getCodigoBuscar().setBackground(Color.YELLOW);
+			panelVenta.getSplitPanel().setDividerLocation(1);
 		} else {
 			panelVenta.getChechar().setText("CHECAR [ F9 ]");
 			panelVenta.getCodigoBuscar().setBackground(Color.WHITE);
+			panelVenta.getSplitPanel().setDividerLocation(opvw);
 		}
 	}
 

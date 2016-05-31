@@ -13,6 +13,9 @@ package com.pmarlen.caja.model;
 public class Caja {
 	private int id;
 	private String nombre;
+	private String clave;
+	private boolean prohibidoVentaReg;
+	private boolean prohibidoVentaOpo;
 
 	public Caja() {
 	}
@@ -62,6 +65,48 @@ public class Caja {
 	@Override
 	public String toString() {
 		return this.nombre;
+	}
+
+	/**
+	 * @return the clave
+	 */
+	public String getClave() {
+		return clave;
+	}
+
+	/**
+	 * @param clave the clave to set
+	 */
+	public void setClave(String clave) {
+		this.clave = clave;
+	}
+
+	/**
+	 * @return the prohibidoVentaReg
+	 */
+	public boolean isProhibidoVentaReg() {
+		return prohibidoVentaReg;
+	}
+
+	/**
+	 * @param prohibidoVentaReg the prohibidoVentaReg to set
+	 */
+	public void setProhibidoVentaReg(boolean prohibidoVentaReg) {
+		this.prohibidoVentaReg = prohibidoVentaReg;
+	}
+
+	/**
+	 * @return the prohibidoVentaOpo
+	 */
+	public boolean isProhibidoVentaOpo() {
+		return prohibidoVentaOpo;
+	}
+
+	/**
+	 * @param prohibidoVentaOpo the prohibidoVentaOpo to set
+	 */
+	public void setProhibidoVentaOpo(boolean prohibidoVentaOpo) {
+		this.prohibidoVentaOpo = prohibidoVentaOpo;
 	}
 
 }

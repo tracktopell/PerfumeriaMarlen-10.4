@@ -3,11 +3,14 @@ package com.pmarlen.businesslogic.reports;
 import com.pmarlen.backend.model.Cfd;
 import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.Sucursal;
+import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.businesslogic.LogicaFinaciera;
 import com.pmarlen.model.Constants;
+import com.pmarlen.model.JarpeReportsInfoDTO;
+import com.pmarlen.rest.dto.I;
 import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -559,4 +562,187 @@ public class GeneradorImpresionPedidoVenta {
         }
 		return pdfBytes;
     }
+	
+	public static JarpeReportsInfoDTO generaJarpeReportsInfoDTOTextTicket(EntradaSalidaQuickView es,List<EntradaSalidaDetalleQuickView> esdList,Sucursal suc,Usuario usuarioLogedin){
+		HashMap<String, Object> parameters = new HashMap<String, Object> (); 
+		Collection<Map<String,?>> records  = new ArrayList<Map<String, ?>>();
+		
+		parameters.put("L.venta.ticket"    , "NO. TICKET:");
+		parameters.put("venta.ticket"      , es.getNumeroTicket());
+		final String sucNom = es.getSucursalNombre();
+		final String sucDir = es.getSucursalDireccion();
+		parameters.put("sucursal.nombre"   , sucNom);
+		
+		final String nombre1 = sucNom.substring(0, sucNom.indexOf("S.A. DE C.V.")+13);
+		final String nombre2 = sucNom.substring(sucNom.indexOf("S.A. DE C.V.")+13);
+		
+		parameters.put("sucursal.nombre1"  , nombre1);
+		parameters.put("sucursal.nombre2"  , nombre2);
+		
+		List<String> direccionList = TextReporter.justifyText(sucDir, TextReporter.columns);		
+		parameters.put("sucursal.direccion", sucDir);
+		
+		for(int i=1;i<=direccionList.size();i++){
+			parameters.put("sucursal.direccion"+i, direccionList.get(i-1));
+		}
+		
+		String[] txtLogo={  "          ##########          " ,
+							"       ###          ###       " ,
+							"    ###                ##     " ,
+							"   ##                    ##   " ,
+							"  ##  PPPPPPP           ...#  " ,
+							" ##  P  PP  PPP        ·   .# " ,
+							"##   P  PP   PP       ·    · #" ,
+							"#     P PP  PPP  MMM   MMMM. #" ,
+							"#       PPPPP     MMM  MMM   #" ,
+							"#       PP        MMM MMMM   #" ,
+							"#       PP        MM M  MM   #" ,
+							"##   . PPPP       MM    MM   #" ,
+							" #  ·.    PP      MM    MM  ##" ,
+							" ## ···          MMMMM  MMM## " ,
+							"  ## ····                 ##  " ,
+							"   ##  ··················##   " ,
+							"     ### ·DISTRUBUCIONES#     " ,
+							"        ###         ###       " ,
+							"           #########          "};
+		
+		String[] txtLogo2={ "           #########          " ,
+							"      ###             ###     " ,
+							"   ##                    ##   " ,
+							"  ##   PPPPPP           ...#  " ,
+							" ##  P  PP  PPP        ·   .# " ,
+							"##   P  PP   PP       ·    · #" ,
+							"#     P PP  PPP  MMM   MMMM. #" ,
+							"#       PPPPP     MMM  MMM   #" ,
+							"#       PP        MM M  MM   #" ,
+							"#    . PPPP       MM    MM   #" ,
+							" #  ·.    PP      MM    MM  ##" ,
+							" ## ···          MMMMM  MMM## " ,
+							"   ##  ··················##   " ,
+							"     ### ·DISTRUBUCIONES#     " ,
+							"           #########          "};		
+
+		for (int i = 1; i <= txtLogo.length; i++) {
+			parameters.put("logo.line" + i, txtLogo[i - 1]);
+		}
+		//parameters.put("sucursal.tels", "TELS.:"+MemoryDAO.getSucursal().getTelefonos());		
+		
+		parameters.put("L.fecha.creado", "FECHA V.:");
+		parameters.put("fecha.creado", Constants.sdfShortDateTime.format(es.getFechaCreo()));
+		
+		parameters.put("L.fecha.actual", "FECHA:");
+		final Date today = new Date();
+		parameters.put("fecha.actual", Constants.sdfShortDate.format(today));
+		parameters.put("hora.actual", Constants.sdfShortTime.format(today));
+		
+		parameters.put("usuario.creo.email", es.getUsuarioEmailCreo());
+		parameters.put("L.usuario.creo.nombre", "ATENDIO:");
+		parameters.put("usuario.creo.nombre", es.getUsuarioNombreCompleto());
+		parameters.put("usuario.creo.clave", String.valueOf(es.getUsuarioClave()));
+		parameters.put("usuario.imprimio.email" , usuarioLogedin.getEmail());
+		parameters.put("usuario.imprimio.nombre", usuarioLogedin.getNombreCompleto());
+		parameters.put("usuario.imprimio.clave" , usuarioLogedin.getClave());
+		//parameters.put("sucursal.caja.actual", MemoryDAO.getNumCaja());
+		parameters.put("sucursal.caja.creo", es.getCaja());
+		
+		parameters.put("cliente.rfc"  , es.getClienteRFC());
+		parameters.put("cliente.estab", es.getClienteNombreEstablecimiento());
+		parameters.put("cliente.racSoc", es.getClienteRazonSocial());
+		List<String> racSocList = TextReporter.justifyText(es.getClienteRazonSocial(), TextReporter.columns - 11);
+		for (int i = 1; i <= racSocList.size(); i++) {
+			parameters.put("cliente.racSoc" + i, racSocList.get(i - 1));
+		}
+		parameters.put("cliente.cirFac", es.getClienteRazonSocial());
+		
+		parameters.put("formaDePago.desc" ,es.getFormaDePagoDescripcion());
+		parameters.put("metodoDePago.desc",es.getMetodoDePagoDescripcion());
+		
+		boolean descuentoAplicadoX  = false;
+		double  descuentoFactorX    = 0.0;
+		double  descuentoCalculadoX = 0.0;		
+		double	totalBrutoDescontableX = 0.0;
+		double	totalBrutoFijoX        = 0.0;
+		int		numElemX=0;
+		int		nunElemDescontablesX=0;
+		int		numElemSinDescX=0;
+		double	importeBrutoX =0.0;
+		
+		for (EntradaSalidaDetalleQuickView esd: esdList) {
+			HashMap<String, String> r=new HashMap<String, String>();
+			
+			importeBrutoX = esd.getCantidad()*esd.getPrecioVenta();
+			
+			if(esd.getApTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+				totalBrutoDescontableX  += importeBrutoX;
+				nunElemDescontablesX    += esd.getCantidad();
+			} else {
+				totalBrutoFijoX			+= importeBrutoX;
+				numElemSinDescX			+= esd.getCantidad();
+			}
+			
+			r.put("pvd.producto.cb"    , esd.getProductoCodigoBarras());
+			r.put("pvd.producto.nombre", esd.getProductoNombre());
+			r.put("pvd.producto.present", esd.getProductoPresentacion());
+			r.put("pvd.cant"			, String.valueOf(esd.getCantidad()));
+			r.put("pvd.precio"			, String.valueOf(esd.getPrecioVenta()));
+			r.put("pvd.imp"				, Constants.df2Decimal.format(importeBrutoX));
+			
+			records.add(r);
+
+		}
+		numElemX = nunElemDescontablesX + numElemSinDescX;		
+		double totalBrutoX = totalBrutoDescontableX + totalBrutoFijoX;
+		
+		if(es.getAutorizaDescuento()!=null){
+			if(totalBrutoDescontableX >= 100.00 || nunElemDescontablesX>= 12){
+				descuentoFactorX   = Constants.FACTOR_DES_MAY2_SUC;
+				descuentoAplicadoX = true;
+			}
+		}
+		
+		
+		descuentoCalculadoX = totalBrutoDescontableX * descuentoFactorX;
+		double totalX = totalBrutoDescontableX - descuentoCalculadoX + totalBrutoFijoX;
+				
+		parameters.put("fot.neDesc"			, String.valueOf(nunElemDescontablesX));
+		parameters.put("fot.neSinDesc"		, String.valueOf(numElemSinDescX));
+		parameters.put("fot.neTotElem"		, String.valueOf(numElemX));
+		parameters.put("fot.neTotElemL"		, " <-- # PRODS.");
+		
+		parameters.put("fot.subTotDesc"		, Constants.df2Decimal.format(totalBrutoDescontableX));
+		parameters.put("fot.subTotSinDesc"	, Constants.df2Decimal.format(totalBrutoFijoX));
+		parameters.put("fot.subTot"			, Constants.df2Decimal.format(totalBrutoX));
+		parameters.put("fot.desc"			, Constants.df2Decimal.format(descuentoCalculadoX));
+		
+		final String totalXval = Constants.df2Decimal.format(totalX);
+		
+		parameters.put("fot.tot"			, totalXval);
+		parameters.put("fot.impRecib"		, Constants.df2Decimal.format(es.getImporteRecibido()));		
+		parameters.put("fot.cambio"		    , Constants.df2Decimal.format(es.getImporteRecibido()-totalX));		
+		
+		String intDecParts[] = totalXval.split("\\.");            
+		String letrasParteEntera  = NumeroCastellano.numeroACastellano(Long.parseLong(intDecParts[0])).trim();
+		parameters.put("fot.leyendaNoFiscal" , "ESTO NO ES UN COMPROBANTE FISCAL");
+		
+		parameters.put("fot.totLetra"		,"**("+(letrasParteEntera+" Pesos "+intDecParts[1]+"/100 M.N.").toUpperCase()+")**");
+		final String importeTotal = "**("+(letrasParteEntera+" Pesos "+intDecParts[1]+" / 100 M.N.").toUpperCase()+")**";
+		List<String> totalLetraLineas = TextReporter.splitInLinesText(importeTotal, TextReporter.columns,'*');
+		
+		//parameters.put("fot.totLetra1" , "-----------------");
+		//parameters.put("fot.totLetra2" , "-----------------");
+		//parameters.put("fot.totLetra3" , "-----------------");
+		for (int i = 1; i <= totalLetraLineas.size(); i++) {
+			parameters.put("fot.totLetra" + i, totalLetraLineas.get(i - 1));
+		}
+		
+		parameters.put("fot.leyendaNoFiscal" , "ESTE NO ES UN COMPROBANTE FISCAL");
+		parameters.put("fot.leyenda1" , "¡ LE AGRADECEMOS SU COMPRA !");
+		parameters.put("fot.leyenda2" , "VUELVA PRONTO");		
+		parameters.put("fot.leyenda3" , "http://perfumeriamarlen.com.mx");		
+		parameters.put("fot.leyenda4" , "http://facebook.com/PerfumeriaMarlen");
+
+		return new JarpeReportsInfoDTO(parameters, records);
+	}
+
+	
 }

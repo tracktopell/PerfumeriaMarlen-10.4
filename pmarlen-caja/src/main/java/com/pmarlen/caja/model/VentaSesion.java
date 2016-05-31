@@ -10,19 +10,21 @@ import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.backend.model.quickviews.ClienteQuickView;
+import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
+import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.businesslogic.reports.NumeroCastellano;
 import com.pmarlen.businesslogic.reports.TextReporter;
 import com.pmarlen.caja.control.ApplicationLogic;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.JarpeReportsInfoDTO;
-import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.I;
 import com.pmarlen.rest.dto.U;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -230,7 +232,7 @@ public class VentaSesion {
 	
 	public static JarpeReportsInfoDTO generaJarpeReportsInfoDTOTicket(ES_ESD ventax){
 		HashMap<String, Object> parameters = new HashMap<String, Object> (); 
-		List<HashMap<String, String>> records=new ArrayList<HashMap<String, String>>();
+		Collection<Map<String, ?>> records = new ArrayList<Map<String, ?>>();
 		
 		parameters.put("L.venta.ticket"    , "NO. TICKET:");
 		parameters.put("venta.ticket"      , ventax.getEs().getNt());
@@ -289,8 +291,7 @@ public class VentaSesion {
 		for (int i = 1; i <= txtLogo.length; i++) {
 			parameters.put("logo.line" + i, txtLogo[i - 1]);
 		}
-		parameters.put("sucursal.tels", "TELS.:"+MemoryDAO.getSucursal().getTelefonos());
-		
+		//parameters.put("sucursal.tels", "TELS.:"+MemoryDAO.getSucursal().getTelefonos());		
 		
 		parameters.put("L.fecha.creado", "FECHA V.:");
 		parameters.put("fecha.creado", Constants.sdfShortDateTime.format(new Date(ventax.getEs().getFc())));
@@ -355,14 +356,13 @@ public class VentaSesion {
 			r.put("pvd.imp"				, Constants.df2Decimal.format(importeBrutoX));
 			
 			records.add(r);
-
 		}
 		numElemX = nunElemDescontablesX + numElemSinDescX;		
 		double totalBrutoX = totalBrutoDescontableX + totalBrutoFijoX;
 		
-		if(MemoryDAO.getSucursal()!= null && (MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=null && MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=0)){
-			if(totalBrutoDescontableX >= 10.00 || nunElemDescontablesX>= 12){
-				descuentoFactorX   = Constants.FACTOR_DES_MAYSUC;
+		if(ventax.getEs().getDesc()>0){
+			if(totalBrutoDescontableX >= 100.00 || nunElemDescontablesX>= 12){
+				descuentoFactorX   = 0.1; //ventax.getEs().getDesc();
 				descuentoAplicadoX = true;
 			}
 		}
@@ -408,5 +408,5 @@ public class VentaSesion {
 
 		return new JarpeReportsInfoDTO(parameters, records);
 	}
-
+	
 }

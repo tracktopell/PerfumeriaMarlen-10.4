@@ -62,6 +62,7 @@ public class Main {
 			}
 		}
 		System.out.println("main:}");
+		System.out.println("LogManager.getRootLogger().getLevel():"+LogManager.getRootLogger().getLevel());
 		
 		if(dinamicDebug){
 			System.out.println("main:->Activating Log4J DEBUG Level.");
@@ -162,6 +163,8 @@ public class Main {
 		try {
 			DialogLogin dialogLogin = DialogLogin.getInstance(FramePrincipalControl.getInstance().getFramePrincipal());
 			DialogLoginControl dlc = new DialogLoginControl(dialogLogin);
+			
+			MemoryDAO.setSyncUpdateListener(FramePrincipalControl.getInstance());
 			
 			FramePrincipalControl.getInstance().setFontBigest();
 			FramePrincipalControl.getInstance().estadoInicial();
