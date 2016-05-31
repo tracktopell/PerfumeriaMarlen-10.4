@@ -519,6 +519,9 @@ public class MigrarInventarioPM901_PM1041 {
 						System.out.print(",'" + cb + "'");
 					}
 				}
+			} else {
+				System.out.println("==>> No se importa 2da vez el inventario");
+				System.exit(0);
 			}
 			//-------------------------------------------------
 
@@ -612,14 +615,6 @@ public class MigrarInventarioPM901_PM1041 {
 			ex.printStackTrace(System.err);
 			System.exit(3);
 		}
-	}
-
-	private static int simula_insertEntradaSalidaSucursal(Connection conn, EntradaSalida x, List<EntradaSalidaDetalle> pvdList) throws SQLException {
-
-		if (debug) {
-			System.out.println("insertEntradaSalidaSucursal:TESTING: EntradaSalida: INSERT FECHA:" + x.getFechaCreo() + ", SUCURSAL:" + x.getSucursalId() + ", CAJA:" + x.getCaja() + ", TICKET:" + x.getNumeroTicket());
-		}
-		return 0;
 	}
 
 	private static int insertEntradaSalidaSucursal(Connection conn, EntradaSalida x, Double descuentoAplic, List<EntradaSalidaDetalle> pvdList, int tipoAlmacen) throws SQLException {
@@ -849,8 +844,8 @@ public class MigrarInventarioPM901_PM1041 {
 			//conn.commit();
 		} catch (SQLException ex) {
 			System.err.println("En lo mas dificil de sucursales:" + ex);
-			conn.rollback();
-			System.exit(5);
+			//conn.rollback();
+			//System.exit(5);
 		}
 
 		return r;
