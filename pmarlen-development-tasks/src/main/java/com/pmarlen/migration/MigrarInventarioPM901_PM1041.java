@@ -345,25 +345,38 @@ public class MigrarInventarioPM901_PM1041 {
 
 			if (migrarVentas) {
 				System.out.println("---------------------- Migrando VENTAS (Suc:" + sucursalId + ") DESDE [" + fechaInicio + "] -----------------------");
-				//SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-				//Date fehcaInicial = sdf.parse(fechaInicio);
+				SimpleDateFormat sdfR = new SimpleDateFormat("yyyy-MM-dd");
+				Date fehcaInicial = sdfR.parse(fechaInicio);
+				
+				/*
+				SELECT   COUNT(*) AS NUM_VENTAS
+				FROM     PEDIDO_VENTA_ESTADO PVE
+				WHERE    1=1
+				AND      PVE.FECHA >= TIMESTAMP('2010-01-01','00.00.00');
+
+
+				SELECT   COUNT(*) AS NUM_VENTAS
+				FROM     PEDIDO_VENTA_ESTADO PVE
+				WHERE    1=1
+				AND      PVE.FECHA >= TIMESTAMP('2016-05-30','00.00.00');
+
+				SELECT   *
+				FROM     PEDIDO_VENTA_ESTADO PVE
+				WHERE    1=1
+				AND      PVE.FECHA >= TIMESTAMP('2016-05-30','00.00.00');
+				*/
 
 				String queryCountVentasPM901
-						= "SELECT COUNT(*) AS NUM_VENTAS\n"
-						+ "FROM   PEDIDO_VENTA PV,PEDIDO_VENTA_DETALLE PVD,PEDIDO_VENTA_ESTADO PVE,PRODUCTO P,ALMACEN A\n"
-						+ "WHERE  1=1\n"
-						+ "AND    PV.ID=PVD.PEDIDO_VENTA_ID\n"
-						+ "AND    PV.ID=PVE.PEDIDO_VENTA_ID\n"
-						+ "AND    PVD.PRODUCTO_ID=P.ID\n"
-						+ "AND    PV.ALMACEN_ID=A.ID\n"
-						+ "AND    PVE.FECHA >= TIMESTAMP('" + fechaInicio + "','00.00.00') \n"
-						+ "ORDER BY PVE.FECHA";
+						= "SELECT   COUNT(*) AS NUM_VENTAS\n"
+						+ "FROM     PEDIDO_VENTA_ESTADO PVE\n"
+						+ "WHERE    1=1\n"
+						+ "AND      PVE.FECHA >= TIMESTAMP('" + fechaInicio + "','00.00.00');";
 				String queryVentasPM901
 						= "SELECT PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA\n"
 						+ "FROM   PEDIDO_VENTA PV,PEDIDO_VENTA_DETALLE PVD,PEDIDO_VENTA_ESTADO PVE,PRODUCTO P,ALMACEN A\n"
 						+ "WHERE  1=1\n"
 						+ "AND    PV.ID=PVD.PEDIDO_VENTA_ID\n"
-						+ "AND    PV.ID=PVE.PEDIDO_VENTA_ID\n"
+						+ "AND    PV.ID=PVE.PEDIDO_VENTA_ID\n"						
 						+ "AND    PVD.PRODUCTO_ID=P.ID\n"
 						+ "AND    PV.ALMACEN_ID=A.ID\n"
 						+ "AND    PVE.FECHA >= TIMESTAMP('" + fechaInicio + "','00.00.00') \n"
