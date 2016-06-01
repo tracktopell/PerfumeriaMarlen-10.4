@@ -6,6 +6,7 @@
 package com.pmarlen.rest.dto;
 
 import com.pmarlen.backend.model.EntradaSalida;
+import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import java.sql.Timestamp;
 
 /**
@@ -27,14 +28,16 @@ public class ES {
 	private String amc;
 	private int pdc;	
 	private int pde;	
-	private double stot;
+	private double st1;
+	private double stO;
+	private double stR;
 	private double desc;
 	private double tot;
 	private int    nElem;	
 	private String esTicketDev;
 	
-	public EntradaSalida reverse(){
-		EntradaSalida es = new EntradaSalida();
+	public EntradaSalidaQuickView reverse(){
+		EntradaSalidaQuickView es = new EntradaSalidaQuickView();
 		es.setTipoMov(tm);
 		es.setSucursalId(s);
 		es.setFechaCreo(new Timestamp(fc));
@@ -49,6 +52,13 @@ public class ES {
 		es.setImporteRecibido(ir);
 		es.setPorcentajeDescuentoCalculado(pdc);
 		es.setPorcentajeDescuentoExtra(pde);
+		if(pdc>0 || pde>0){
+			es.setAutorizaDescuento(1);
+		}
+		es.setSubTotal1ra(st1);
+		es.setSubTotalOpo(stO);
+		es.setSubTotalReg(stR);
+		es.setTotal(tot);
 		return es;
 	}
 
@@ -268,20 +278,6 @@ public class ES {
 	}
 
 	/**
-	 * @return the stot
-	 */
-	public double getStot() {
-		return stot;
-	}
-
-	/**
-	 * @param stot the stot to set
-	 */
-	public void setStot(double stot) {
-		this.stot = stot;
-	}
-
-	/**
 	 * @return the desc
 	 */
 	public double getDesc() {
@@ -329,6 +325,48 @@ public class ES {
 
 	public String getEsTicketDev() {
 		return esTicketDev;
+	}
+
+	/**
+	 * @return the st1
+	 */
+	public double getSt1() {
+		return st1;
+	}
+
+	/**
+	 * @param st1 the st1 to set
+	 */
+	public void setSt1(double st1) {
+		this.st1 = st1;
+	}
+
+	/**
+	 * @return the stO
+	 */
+	public double getStO() {
+		return stO;
+	}
+
+	/**
+	 * @param stO the stO to set
+	 */
+	public void setStO(double stO) {
+		this.stO = stO;
+	}
+
+	/**
+	 * @return the stR
+	 */
+	public double getStR() {
+		return stR;
+	}
+
+	/**
+	 * @param stR the stR to set
+	 */
+	public void setStR(double stR) {
+		this.stR = stR;
 	}
 
 }

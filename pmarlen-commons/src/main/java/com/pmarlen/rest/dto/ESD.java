@@ -1,6 +1,7 @@
 package com.pmarlen.rest.dto;
 
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
+import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 
 /**
  *
@@ -14,8 +15,8 @@ public class ESD {
 	private double p;
 	private String dev;
 	
-	public EntradaSalidaDetalle reverse(){
-		EntradaSalidaDetalle esd=new EntradaSalidaDetalle();
+	public EntradaSalidaDetalleQuickView reverse(){
+		EntradaSalidaDetalleQuickView esd=new EntradaSalidaDetalleQuickView();
 		esd.setProductoCodigoBarras(cb);
 		esd.setAlmacenId(a);
 		esd.setCantidad(c);

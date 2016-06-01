@@ -94,7 +94,7 @@ public class VentaTableModel implements TableModel{
 		else if(columnIndex == 5)
 			return xr.getEs().getU();
 		else if(columnIndex == 6)
-			return Constants.dfCurrency.format(xr.getEs().getStot());
+			return Constants.dfCurrency.format(xr.getEs().getSt1()+xr.getEs().getStO()+xr.getEs().getStR());
 		else if(columnIndex == 7)
 			return Constants.dfCurrency.format(xr.getEs().getDesc());
 		else if(columnIndex == 8)

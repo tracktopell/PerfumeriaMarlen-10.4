@@ -2,8 +2,6 @@ package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
-import com.pmarlen.businesslogic.LogicaFinaciera;
-import com.pmarlen.businesslogic.TotalesCalculados;
 import com.pmarlen.businesslogic.reports.TextReporter;
 import com.pmarlen.caja.Main;
 import com.pmarlen.caja.dao.MemoryDAO;
@@ -30,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -330,7 +329,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			//TotalesCalculados ct = LogicaFinaciera.calculaTotales(esesdLAstForPrint.getEs(), esesdLAstForPrint.getEsdList(), true, 0.0);
 			//logger.info("terminar_ActionPerformed:-->>LogicaFinaciera.calculaTotales: TotalesCalculados:\n"+ct);
 			
-			logger.debug("terminar_ActionPerformed(): TICKET:"+esesdLAstForPrint.getEs().getNt());
+			logger.debug("terminar_ActionPerformed(): TICKET:"+esesdLAstForPrint.getEs().getNt()+", ImporteRecibido="+esesdLAstForPrint.getEs().getIr());
 			
 			if (ApplicationLogic.getInstance().isPrintingEnabled()) {
 				new Thread() {
@@ -391,7 +390,9 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	}
 	
 	private void renderTotal() {
+		
 		ApplicationLogic.getInstance().getVentaSesion().calcularTotales();
+		
 		panelVenta.getNumArt()    .setText(String.valueOf(ApplicationLogic.getInstance().getVentaSesion().getNumElemVta()));
 		panelVenta.getNumArt()    .setToolTipText(ApplicationLogic.getInstance().getVentaSesion().getNumElemSinDescVta()+"+"+ApplicationLogic.getInstance().getVentaSesion().getNunElemDescontablesVta());
 		final String stTT = Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotalBrutoDescontable()) + " + "+
@@ -400,12 +401,17 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		panelVenta.getSubtotal()  .setToolTipText(
 				stTT);
 		panelVenta.getSubtotal()  .setText(Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotalBruto()));
-		panelVenta.getDescuento() .setText(Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getDescuentoCalculado()));
+		
+		panelVenta.getDescuento() .setText(ApplicationLogic.getInstance().getVentaSesion().getPorcentajeDescuentoCalculado()+"% = "+Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getDescuentoCalculado()));
 		panelVenta.getDescuento() .setToolTipText(Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotalBrutoDescontable())+" * "+
 				Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getDescuentoFactor()));
+		
+		
 		panelVenta.getTotal()     .setText(Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotal()));
 		logger.debug("renderTotal:subTotal = "+stTT);
-		logger.debug("renderTotal:descuento= "+ApplicationLogic.getInstance().getVentaSesion().getDescuentoCalculado());
+		logger.debug("renderTotal:descuento= "+ApplicationLogic.getInstance().getVentaSesion().getDescuentoCalculado()+
+				" = " +ApplicationLogic.getInstance().getVentaSesion().getPorcentajeDescuentoCalculado()+
+				"% + "+ApplicationLogic.getInstance().getVentaSesion().getPorcentajeDescuentoExtra()+"% ");
 		logger.debug("renderTotal:="+Constants.df2Decimal.format(ApplicationLogic.getInstance().getVentaSesion().getTotal())+" => "+ApplicationLogic.getInstance().getVentaSesion().getTotalRedondeado2Dec());
 	}
 
@@ -509,27 +515,25 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 				TextReporter.DEBUG = false;
 			}
 			
-			
 			TextReporter.setColumns(MemoryDAO.getTextSystemPrinterColumns());
-			//logger.debug("->ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList()="+ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList());			
-			//logger.debug("->ticketPrinteService:esesd.getEs()="+esesd.getEs());
-			//logger.debug("->ticketPrinteService:esesd.getEsdList()="+esesd.getEsdList());
+			
 			if(Main.dinamicTrace){
 				TextReporter.DEBUG =true;
 			} else {
 				TextReporter.DEBUG =false;
 			}
-			logger.debug("ticketPrinteService:esesdLAstForPrint.getEs().getNt()="+esesdLAstForPrint.getEs().getNt());
-			final JarpeReportsInfoDTO infoDTOTicket = VentaSesion.generaJarpeReportsInfoDTOTicket(esesdLAstForPrint);
-			logger.debug("ticketPrinteService:fileTicket="+infoDTOTicket);			
-			String fileTicket = TextReporter.generateTicketTXT(infoDTOTicket);			
-			logger.debug("ticketPrinteService:fileTicket="+fileTicket);
+			logger.debug("ticketPrinteService:esesdLAstForPrint.getEs().getNt()="+esesdLAstForPrint.getEs().getNt()+", ImporteREcibido="+esesdLAstForPrint.getEs().getIr());
 			
+			JarpeReportsInfoDTO infoDTOTicket = VentaSesion.generaJarpeReportsInfoDTOTicket(esesdLAstForPrint);
+			logger.debug("ticketPrinteService:fileTicket="+infoDTOTicket);			
+			byte[] generateTicketTXTBytes = TextReporter.generateTicketTXTBytes(infoDTOTicket);
+			logger.debug("ticketPrinteService:fileTicket:{\n"+new String(generateTicketTXTBytes)+"\n}");
+			Date today = new Date();
+			String fileTicket = "TICKET_"+infoDTOTicket.getParameters().get("venta.ticket")+"_" + Constants.sdfThinDate.format(today) + ".txt";
+			logger.debug("ticketPrinteService:fileTicket="+fileTicket);
 			logger.debug("imprimirTicket:ticketFileName:"+fileTicket);
-		
 			logger.debug("imprimirTicket:OSValidator.isUnix()?:"+OSValidator.isUnix());
-			logger.debug("imprimirTicket:OSValidator.isMac():"+OSValidator.isMac()); 
-
+			logger.debug("imprimirTicket:OSValidator.isMac():"+OSValidator.isMac());
 			if(OSValidator.isUnix() || OSValidator.isMac()){
 				logger.debug("imprimirTicket: calling UnixSendToLP.printFile");
 				UnixSendToLP.printFile((String)fileTicket);
@@ -537,7 +541,6 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 				logger.debug("imprimirTicket: calling SendFileToSystemPrinter.printFile");
 				SendFileToSystemPrinter.printFile((String)fileTicket);
 			}
-			
 			printed = true;
 		} catch (Exception ioe) {
 			logger.error("imprimiedo",ioe);

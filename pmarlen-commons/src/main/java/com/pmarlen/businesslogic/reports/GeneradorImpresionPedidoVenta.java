@@ -563,14 +563,14 @@ public class GeneradorImpresionPedidoVenta {
 		return pdfBytes;
     }
 	
-	public static JarpeReportsInfoDTO generaJarpeReportsInfoDTOTextTicket(EntradaSalidaQuickView es,List<EntradaSalidaDetalleQuickView> esdList,Sucursal suc,Usuario usuarioLogedin){
+	public static JarpeReportsInfoDTO generaJarpeReportsInfoDTOTextTicket(EntradaSalidaQuickView es,List<EntradaSalidaDetalleQuickView> esdList,Sucursal suc,Usuario usuarioLogedin){				
 		HashMap<String, Object> parameters = new HashMap<String, Object> (); 
 		Collection<Map<String,?>> records  = new ArrayList<Map<String, ?>>();
 		
 		parameters.put("L.venta.ticket"    , "NO. TICKET:");
 		parameters.put("venta.ticket"      , es.getNumeroTicket());
-		final String sucNom = es.getSucursalNombre();
-		final String sucDir = es.getSucursalDireccion();
+		final String sucNom = suc.getNombre();
+		final String sucDir = suc.getDireccion();
 		parameters.put("sucursal.nombre"   , sucNom);
 		
 		final String nombre1 = sucNom.substring(0, sucNom.indexOf("S.A. DE C.V.")+13);
@@ -656,69 +656,34 @@ public class GeneradorImpresionPedidoVenta {
 		
 		parameters.put("formaDePago.desc" ,es.getFormaDePagoDescripcion());
 		parameters.put("metodoDePago.desc",es.getMetodoDePagoDescripcion());
-		
-		boolean descuentoAplicadoX  = false;
-		double  descuentoFactorX    = 0.0;
-		double  descuentoCalculadoX = 0.0;		
-		double	totalBrutoDescontableX = 0.0;
-		double	totalBrutoFijoX        = 0.0;
-		int		numElemX=0;
-		int		nunElemDescontablesX=0;
-		int		numElemSinDescX=0;
-		double	importeBrutoX =0.0;
-		
+				
 		for (EntradaSalidaDetalleQuickView esd: esdList) {
 			HashMap<String, String> r=new HashMap<String, String>();
-			
-			importeBrutoX = esd.getCantidad()*esd.getPrecioVenta();
-			
-			if(esd.getApTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
-				totalBrutoDescontableX  += importeBrutoX;
-				nunElemDescontablesX    += esd.getCantidad();
-			} else {
-				totalBrutoFijoX			+= importeBrutoX;
-				numElemSinDescX			+= esd.getCantidad();
-			}
-			
+			double imp = esd.getCantidad() * esd.getPrecioVenta();
 			r.put("pvd.producto.cb"    , esd.getProductoCodigoBarras());
 			r.put("pvd.producto.nombre", esd.getProductoNombre());
 			r.put("pvd.producto.present", esd.getProductoPresentacion());
 			r.put("pvd.cant"			, String.valueOf(esd.getCantidad()));
 			r.put("pvd.precio"			, String.valueOf(esd.getPrecioVenta()));
-			r.put("pvd.imp"				, Constants.df2Decimal.format(importeBrutoX));
+			r.put("pvd.imp"				, Constants.df2Decimal.format(imp));
 			
 			records.add(r);
 
 		}
-		numElemX = nunElemDescontablesX + numElemSinDescX;		
-		double totalBrutoX = totalBrutoDescontableX + totalBrutoFijoX;
-		
-		if(es.getAutorizaDescuento()!=null){
-			if(totalBrutoDescontableX >= 100.00 || nunElemDescontablesX>= 12){
-				descuentoFactorX   = Constants.FACTOR_DES_MAY2_SUC;
-				descuentoAplicadoX = true;
-			}
-		}
-		
-		
-		descuentoCalculadoX = totalBrutoDescontableX * descuentoFactorX;
-		double totalX = totalBrutoDescontableX - descuentoCalculadoX + totalBrutoFijoX;
 				
-		parameters.put("fot.neDesc"			, String.valueOf(nunElemDescontablesX));
-		parameters.put("fot.neSinDesc"		, String.valueOf(numElemSinDescX));
-		parameters.put("fot.neTotElem"		, String.valueOf(numElemX));
+		parameters.put("fot.neDesc"			, String.valueOf(0.0));
+		parameters.put("fot.neSinDesc"		, String.valueOf(0.0));
+		parameters.put("fot.neTotElem"		, String.valueOf(es.getNumElementos()));
 		parameters.put("fot.neTotElemL"		, " <-- # PRODS.");
 		
-		parameters.put("fot.subTotDesc"		, Constants.df2Decimal.format(totalBrutoDescontableX));
-		parameters.put("fot.subTotSinDesc"	, Constants.df2Decimal.format(totalBrutoFijoX));
-		parameters.put("fot.subTot"			, Constants.df2Decimal.format(totalBrutoX));
-		parameters.put("fot.desc"			, Constants.df2Decimal.format(descuentoCalculadoX));
+		parameters.put("fot.subTot"			, Constants.df2Decimal.format(es.getSubTotal1ra() + es.getSubTotalOpo() + es.getSubTotalReg()));
+		parameters.put("fot.desc"			, Constants.df2Decimal.format(es.getImporteDescuento()));
 		
-		final String totalXval = Constants.df2Decimal.format(totalX);
+		final String totalXval = Constants.df2Decimal.format(es.getTotal());
 		
 		parameters.put("fot.tot"			, totalXval);
 		parameters.put("fot.impRecib"		, Constants.df2Decimal.format(es.getImporteRecibido()));		
-		parameters.put("fot.cambio"		    , Constants.df2Decimal.format(es.getImporteRecibido()-totalX));		
+		parameters.put("fot.cambio"		    , Constants.df2Decimal.format(es.getImporteRecibido()-es.getTotal()));		
 		
 		String intDecParts[] = totalXval.split("\\.");            
 		String letrasParteEntera  = NumeroCastellano.numeroACastellano(Long.parseLong(intDecParts[0])).trim();

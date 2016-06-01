@@ -5,6 +5,7 @@ import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.model.Constants;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
@@ -44,7 +45,69 @@ public class EntradaSalidaFooter implements Serializable{
 		this.totalUnidades = 0;
 	}
 	
-	public void calculaTotalesDesde(EntradaSalida pv,ArrayList<? extends EntradaSalidaDetalle> dvpList){
+	public void calculaTotalesSucDesde(EntradaSalida pv,List<? extends EntradaSalidaDetalle> dvpList){
+		logger.debug("calculaTotalesSucDesde: Suc:"+pv.getSucursalId()+"<-------------------------------------");
+		reset();
+		double importeReg = 0.0;
+		double importeRegNG = 0.0;
+		totalUnidades = 0;
+		int cantMayoreo = 0;
+		
+		double subTotal1ra = 0.0;	
+		double subTotalOpo = 0.0;
+		double subTotalReg = 0.0;
+
+		for(EntradaSalidaDetalle dvp: dvpList){			
+			totalUnidades     += dvp.getCantidad();
+			if(dvp.getCantidad()>cantMayoreo){
+				cantMayoreo = dvp.getCantidad();
+			}
+			importeReg         = dvp.getCantidad()*dvp.getPrecioVenta();
+			importeIVA        += importeReg - (importeReg / Constants.MAS_IVA);
+			importeRegNG       = (importeReg / Constants.MAS_IVA);
+			subTotalNoGrabado += importeRegNG;
+			subTotalBruto     += importeReg;
+			
+		}
+		descuentoCalculado = 0;
+		descuentoExtra = 0;
+		descuentoAplicado =0;
+		importeDescuentoExtra = 0.0;
+		importeDescuentoAplicado = 0.0;
+		Integer pdc = pv.getPorcentajeDescuentoCalculado();
+		Integer pde = pv.getPorcentajeDescuentoExtra();
+		logger.debug("calculaTotalesSucDesde: pdc="+pdc+", pde="+pde+", pv.getAutorizaDescuento()="+pv.getAutorizaDescuento()+",subTotalBruto="+subTotalBruto);
+		if(pv.getAutorizaDescuento()!=null && pv.getAutorizaDescuento().intValue()==1){			
+			
+			logger.debug("calculaTotalesSucDesde: Pedido de SUCURSAL, recalculando: cantMayoreo="+cantMayoreo);
+			if(cantMayoreo>=12){
+				descuentoCalculado = 10;
+			} else {
+				if (subTotalBruto >= 100.0 && subTotalBruto < 200.0) {
+					descuentoCalculado = 5;
+
+				} else if (subTotalBruto >= 200) {
+					descuentoCalculado = 10;					
+				}
+			}
+			descuentoExtra = pv.getPorcentajeDescuentoExtra();
+			if(descuentoExtra == null){
+				descuentoExtra = 0;
+			}				
+
+			
+			descuentoAplicado         = descuentoCalculado + descuentoExtra;
+			importeDescuentoExtra     = (subTotalBruto * descuentoExtra)/100.0;						
+			importeDescuentoCalculado = (subTotalBruto * descuentoCalculado)/100.0;			
+			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;			
+		} 
+		
+		total = subTotalNoGrabado + importeIVA - importeDescuentoAplicado ;
+		logger.debug("calculaTotalesSucDesde: Pedido de SUCURSAL:descuentoAplicado="+descuentoAplicado+", importeDescuentoAplicado="+importeDescuentoAplicado+", total="+total);
+	}
+
+	
+	public void calculaTotalesDesde(EntradaSalida pv,List<? extends EntradaSalidaDetalle> dvpList){
 		logger.debug("calculaTotalesDesde: Suc:"+pv.getSucursalId());
 		reset();
 		double importeReg = 0.0;
@@ -99,7 +162,7 @@ public class EntradaSalidaFooter implements Serializable{
 		total = subTotalNoGrabado + importeIVA - importeDescuentoAplicado ;
 	}
 	
-	public void calculaParaFacturaTotalesDesde(EntradaSalida pv,ArrayList<? extends EntradaSalidaDetalle> dvpList){
+	public void calculaParaFacturaTotalesDesde(EntradaSalida pv,List<? extends EntradaSalidaDetalle> dvpList){
 		reset();
 		double importeReg = 0.0;
 		double importeRegNG = 0.0;

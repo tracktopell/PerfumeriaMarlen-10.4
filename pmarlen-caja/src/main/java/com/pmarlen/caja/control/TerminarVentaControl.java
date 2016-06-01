@@ -173,17 +173,20 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	}
 
 	private void registrarVenta() {
+		
+		ventaSesion.setImporteRecibido(recibido);
+		
 		final ES_ESD venta = ventaSesion.getVenta();
 		
 		String numTicket = null;
-		//GeneradorNumTicket.getNumTicket(venta.getEs().getS(), venta.getEs().getJ(), venta.getEs().getC(), ventaSesion.getTotalRedondeado2Dec());
+		logger.debug("registrarVenta:ANTES:   numTicket="+numTicket+", importeRecibido="+venta.getEs().getIr()+", recibido="+recibido);
 		numTicket = GeneradorNumTicket.getNumTicket(new Date(venta.getEs().getFc()),venta.getEs().getS(),venta.getEs().getJ());
-		logger.debug("registrarVenta:numTicket="+numTicket);		
+		logger.debug("registrarVenta:DESPUES: numTicket="+numTicket+", importeRecibido="+venta.getEs().getIr()+", recibido="+recibido);
 		venta.getEs().setNt(numTicket);
 		venta.getEs().setC(Constants.ID_CLIENTE_MOSTRADOR);
 		venta.getEs().setFp(Constants.ID_FDP_1SOLA_E);
 		venta.getEs().setMp(((MetodoDePago)terminarVentaDlg.getMetodoDePago().getSelectedItem()).getId());
-		venta.getEs().setIr(recibido);
+		//venta.getEs().setIr(recibido);
 		venta.getEs().setAmc(autorizacion);
 		
 		ESFileSystemJsonDAO.commit(venta);

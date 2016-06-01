@@ -348,6 +348,16 @@ public class MigrarInventarioPM901_PM1041 {
 				//SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 				//Date fehcaInicial = sdf.parse(fechaInicio);
 
+				String queryCountVentasPM901
+						= "SELECT COUNT(*) AS NUM_VENTAS\n"
+						+ "FROM   PEDIDO_VENTA PV,PEDIDO_VENTA_DETALLE PVD,PEDIDO_VENTA_ESTADO PVE,PRODUCTO P,ALMACEN A\n"
+						+ "WHERE  1=1\n"
+						+ "AND    PV.ID=PVD.PEDIDO_VENTA_ID\n"
+						+ "AND    PV.ID=PVE.PEDIDO_VENTA_ID\n"
+						+ "AND    PVD.PRODUCTO_ID=P.ID\n"
+						+ "AND    PV.ALMACEN_ID=A.ID\n"
+						+ "AND    PVE.FECHA >= TIMESTAMP('" + fechaInicio + "','00.00.00') \n"
+						+ "ORDER BY PVE.FECHA";
 				String queryVentasPM901
 						= "SELECT PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA\n"
 						+ "FROM   PEDIDO_VENTA PV,PEDIDO_VENTA_DETALLE PVD,PEDIDO_VENTA_ESTADO PVE,PRODUCTO P,ALMACEN A\n"
@@ -359,23 +369,29 @@ public class MigrarInventarioPM901_PM1041 {
 						+ "AND    PVE.FECHA >= TIMESTAMP('" + fechaInicio + "','00.00.00') \n"
 						+ "ORDER BY PVE.FECHA";
 
-				System.out.println("--->> EXECUTING QUERY VENTAS:");
+				System.out.println("--->> EXECUTING QUERY COUNT VENTAS:");
+				ResultSet countVentasRS = derbyDBConnection.createStatement().executeQuery(queryCountVentasPM901);
+				int numVentas=0;
+				while(countVentasRS.next()){
+					numVentas = countVentasRS.getInt("NUM_VENTAS");
+				}
+				System.out.println("--->> EXECUTING QUERY VENTAS FOR ("+numVentas+" FOUND):");
 				ResultSet ventasRS = derbyDBConnection.createStatement().executeQuery(queryVentasPM901);
 
 				//debug = true;
 				int i = 0;
-				int adv = 0;
 
 				boolean insertES = false;
 				long t0 = System.currentTimeMillis();
 				int contCBNoExiste = 0;
 				boolean x = false;
 				int tot = 1;
-				System.out.println("--->> READ RESULT SET:");
+				System.out.println("--->> READ RESULT SET VENTAS:");
 				int numProds = 0;
 				boolean firstRec = true;
 				int lastpvId = -1;
 				int contPV = 0;
+				int advImpVtas = 0;
 				while (ventasRS.next()) {
 					insertES = false;
 
@@ -496,16 +512,18 @@ public class MigrarInventarioPM901_PM1041 {
 					lastpvId = pvId;
 					t2 = System.currentTimeMillis();
 					//System.out.println("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ] PV=["+lastpvId+" > "+pvId+"] #"+contPV+"["+pvdListPV.size()+"](ERROR CB:" + contCBNoExiste + ")");
-					System.out.print("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ] PV=[" + lastpvId + " > " + pvId + "] #" + contPV + "[" + pvdListPV.size() + "](ERROR CB:" + contCBNoExiste + ")\r");
+					advImpVtas = (contPV  * 100) / numVentas;
+					System.out.print("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ]  #" + contPV + "/ "+numVentas+" = "+advImpVtas+"% \t(ERROR CB:" + contCBNoExiste + ")\r");
 				}
 
-				if (pv != null && pvdListPV.size() > 0) {
+				if (pv != null && pvdListPV.size() > 0) {					
 					insertEntradaSalidaSucursal(newDBConnection, pv, descAplicado, pvdListPV, tipoAlmacen);
 				}
 
+				advImpVtas = (contPV  * 100) / numVentas;
 				t3 = System.currentTimeMillis();
-				System.out.println();
-				System.out.print("END: ADVANCE: \t" + i + "/\t" + tot + "\t:" + adv + " % [ " + enalapsed(t0, t3) + " ] (ERROR CB:" + contCBNoExiste + ") \r");
+				System.out.println();				
+				System.out.print("END: ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t3) + " ]  #" + contPV + "/ "+numVentas+" = "+advImpVtas+"% \t(ERROR CB:" + contCBNoExiste + ")");
 
 				ventasRS.close();
 

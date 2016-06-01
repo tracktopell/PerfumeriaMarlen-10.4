@@ -9,12 +9,16 @@ package com.pmarlen.caja.model;
 import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.FormaDePago;
 import com.pmarlen.backend.model.MetodoDePago;
+import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.ClienteQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
+import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
+import com.pmarlen.businesslogic.reports.GeneradorImpresionPedidoVenta;
 import com.pmarlen.businesslogic.reports.NumeroCastellano;
 import com.pmarlen.businesslogic.reports.TextReporter;
 import com.pmarlen.caja.control.ApplicationLogic;
+import com.pmarlen.caja.control.PanelVentaControl;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.JarpeReportsInfoDTO;
@@ -29,12 +33,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author alfredo
  */
 public class VentaSesion {
+	private static Logger logger = Logger.getLogger(VentaSesion.class.getName());
 	private ArrayList<PedidoVentaDetalleTableItem> detalleVentaTableItemList;
 	private ES_ESD venta;
 	
@@ -42,6 +48,9 @@ public class VentaSesion {
 	private FormaDePago formaDePago;
 	private MetodoDePago metodoDePago;
 	private double importeRecibido;
+	private double subTotal1ra;	
+	private double subTotalOpo;
+	private double subTotalReg;
 	private double totalBruto;
 	private double totalBrutoDescontable;
 	private double totalBrutoFijo;
@@ -88,6 +97,7 @@ public class VentaSesion {
 	}
 	
 	public void nuevaSesionVenta() {
+		logger.debug("nuevaSesionVenta:");
 		detalleVentaTableItemList = new ArrayList<PedidoVentaDetalleTableItem>();
 		cliente			= new ClienteQuickView	();
 		formaDePago     = new FormaDePago		(Constants.ID_FDP_1SOLA_E);
@@ -96,6 +106,9 @@ public class VentaSesion {
 		importeRecibido = 0.0;
 		totalBruto		= 0.0;
 		total			= 0.0;
+		subTotal1ra		= 0.0;	
+		subTotalOpo		= 0.0;
+		subTotalReg		= 0.0;
 		porcentajeDescuentoCalculado =0;
 		porcentajeDescuentoExtra=0;
 	
@@ -104,38 +117,39 @@ public class VentaSesion {
 		venta			= null;
 	}
 
-	public ES_ESD getVenta() {		
-		if(venta == null) {
-			ArrayList<ESD> detalleVentaList = new ArrayList<ESD>();
-			for (PedidoVentaDetalleTableItem dvil : detalleVentaTableItemList) {
-				detalleVentaList.add(dvil.getPvd());
-			}
+	public ES_ESD getVenta() {
+		if(venta == null) {			
 			venta = new ES_ESD();
-
-			venta.getEs().setTm(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
-			venta.getEs().setJ(MemoryDAO.getNumCaja());
-			venta.getEs().setC(cliente.getId());
-			venta.getEs().setFc(System.currentTimeMillis());
-			venta.getEs().setFp(formaDePago.getId());
-			venta.getEs().setIr(importeRecibido);
-			venta.getEs().setPdc(porcentajeDescuentoCalculado);
-			venta.getEs().setPde(porcentajeDescuentoExtra);
-			venta.getEs().setIr(importeRecibido);
-			venta.getEs().setMp(metodoDePago.getId());
-			venta.getEs().setAmc(autorizacion);
-			venta.getEs().setI(Constants.IVA);
-			venta.getEs().setS(MemoryDAO.getSucursalId());
-			venta.setEsdList(detalleVentaList);
-			venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getE());		
-			
-			calcularTotales();
-			
-			venta.getEs().setStot(totalBruto);
-			venta.getEs().setDesc(descuentoCalculado);
-			venta.getEs().setTot(total);
-			venta.getEs().setnElem(numElemVta);
-			
 		}
+		ArrayList<ESD> detalleVentaList = new ArrayList<ESD>();
+		for (PedidoVentaDetalleTableItem dvil : detalleVentaTableItemList) {
+			detalleVentaList.add(dvil.getPvd());
+		}
+		venta.getEs().setTm(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA);
+		venta.getEs().setJ(MemoryDAO.getNumCaja());
+		venta.getEs().setC(cliente.getId());
+		venta.getEs().setFc(System.currentTimeMillis());
+		venta.getEs().setFp(formaDePago.getId());
+		venta.getEs().setIr(importeRecibido);
+		venta.getEs().setPdc(porcentajeDescuentoCalculado);
+		venta.getEs().setPde(porcentajeDescuentoExtra);		
+		venta.getEs().setMp(metodoDePago.getId());
+		venta.getEs().setAmc(autorizacion);
+		venta.getEs().setI(Constants.IVA);		
+		venta.getEs().setnElem(numElemVta);
+		venta.getEs().setS(MemoryDAO.getSucursalId());
+		venta.setEsdList(detalleVentaList);
+		venta.getEs().setU(ApplicationLogic.getInstance().getLogged().getE());		
+
+		calcularTotales();
+		
+		venta.getEs().setSt1(subTotal1ra);
+		venta.getEs().setStO(subTotalOpo);
+		venta.getEs().setStR(subTotalReg);
+		venta.getEs().setDesc(descuentoCalculado);
+		venta.getEs().setTot(total);
+		venta.getEs().setnElem(numElemVta);
+
 		return venta;
 	}
 
@@ -144,8 +158,7 @@ public class VentaSesion {
 	}
 	
 	public void calcularTotales() {
-		totalBruto = 0.0;
-		
+		totalBruto = 0.0;		
 		numElemVta=0;
 		nunElemDescontablesVta = 0;
 		numElemSinDescVta = 0;
@@ -155,29 +168,46 @@ public class VentaSesion {
 		totalBrutoFijo=0.0;
 		totalBrutoDescontable=0.0;
 		porcentajeDescuentoCalculado = 0;
+		subTotal1ra		= 0.0;	
+		subTotalOpo		= 0.0;
+		subTotalReg		= 0.0;
+		logger.debug("calcularTotales:porcentajeDescuentoCalculado="+porcentajeDescuentoCalculado+", ImporteRecibido="+importeRecibido);
+		int max12=0;
 		for (PedidoVentaDetalleTableItem dvti : detalleVentaTableItemList) {
+			
 			if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
 				totalBrutoDescontable += dvti.getI();
-				nunElemDescontablesVta += dvti.getPvd().getC();
-			} else {
-				totalBrutoFijo        += dvti.getI();
-				numElemSinDescVta += dvti.getPvd().getC();
+				nunElemDescontablesVta += dvti.getPvd().getC();				
+				if(dvti.getPvd().getC()>=max12){
+					max12=dvti.getPvd().getC();
+				}
+				subTotal1ra		   += dvti.getI();
+			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
+				totalBrutoFijo     += dvti.getI();
+				numElemSinDescVta  += dvti.getPvd().getC();
+				subTotalOpo		   += dvti.getI();
+			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
+				totalBrutoFijo     += dvti.getI();
+				numElemSinDescVta  += dvti.getPvd().getC();
+				subTotalOpo		   += dvti.getI();
 			}
 		}
 		numElemVta = nunElemDescontablesVta + numElemSinDescVta;
 		totalBruto = totalBrutoDescontable + totalBrutoFijo;
-		
+		logger.debug("calcularTotales:totalBrutoDescontable="+totalBrutoDescontable+", nunElemDescontablesVta="+nunElemDescontablesVta+", max12="+max12);
 		if(		MemoryDAO.getSucursal()!= null &&
 				(	MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=null && 
 					MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=0)){
-			if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY_SUC || nunElemDescontablesVta>= 12){
+			if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY2_SUC || max12 >= 12){
 				descuentoFactor   = Constants.FACTOR_DES_MAY2_SUC;
 				porcentajeDescuentoCalculado     = 10;
 				descuentoAplicado = true;
+				logger.debug("calcularTotales: 1)\tporcentajeDescuentoCalculado="+porcentajeDescuentoCalculado+", descuentoFactor="+descuentoFactor);
 			} else if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY_SUC && totalBrutoDescontable < Constants.IMPORTE_DES_MAY2_SUC){
 				descuentoFactor   = Constants.FACTOR_DES_MAYSUC;
 				porcentajeDescuentoCalculado     = 5;
 				descuentoAplicado = true;
+				logger.debug("calcularTotales: 2)\tporcentajeDescuentoCalculado="+porcentajeDescuentoCalculado+", descuentoFactor="+descuentoFactor);
 			}
 		}
 		descuentoCalculado = totalBrutoDescontable * descuentoFactor;
@@ -187,6 +217,7 @@ public class VentaSesion {
 		}catch(ParseException pe){
 			totalRedondeado2Dec = total;
 		}
+		logger.debug("calcularTotales: totalBruto="+totalBruto+", descuentoCalculado="+descuentoCalculado+", totalRedondeado2Dec="+totalRedondeado2Dec+", total="+total);
 	}
 
 	public int getNumElemVta() {
@@ -228,185 +259,69 @@ public class VentaSesion {
 	public double getDescuentoFactor() {
 		return descuentoFactor;
 	}
-	
+
+	public int getPorcentajeDescuentoCalculado() {
+		return porcentajeDescuentoCalculado;
+	}
+
+	public int getPorcentajeDescuentoExtra() {
+		return porcentajeDescuentoExtra;
+	}
+
+	public void setImporteRecibido(double importeRecibido) {
+		this.importeRecibido = importeRecibido;
+	}
 	
 	public static JarpeReportsInfoDTO generaJarpeReportsInfoDTOTicket(ES_ESD ventax){
-		HashMap<String, Object> parameters = new HashMap<String, Object> (); 
-		Collection<Map<String, ?>> records = new ArrayList<Map<String, ?>>();
-		
-		parameters.put("L.venta.ticket"    , "NO. TICKET:");
-		parameters.put("venta.ticket"      , ventax.getEs().getNt());
-		parameters.put("sucursal.nombre"   , MemoryDAO.getSucursal().getNombre());
-		
-		final String nombre1 = MemoryDAO.getSucursal().getNombre().substring(0, MemoryDAO.getSucursal().getNombre().indexOf("S.A. DE C.V.")+13);
-		final String nombre2 = MemoryDAO.getSucursal().getNombre().substring(MemoryDAO.getSucursal().getNombre().indexOf("S.A. DE C.V.")+13);
-		
-		parameters.put("sucursal.nombre1"  , nombre1);
-		parameters.put("sucursal.nombre2"  , nombre2);
-		
-		List<String> direccionList = TextReporter.justifyText(MemoryDAO.getSucursal().getDireccion(), TextReporter.columns);
-		
-		parameters.put("sucursal.direccion", MemoryDAO.getSucursal().getDireccion());
-		
-		for(int i=1;i<=direccionList.size();i++){
-			parameters.put("sucursal.direccion"+i, direccionList.get(i-1));
+		logger.debug("->generaJarpeReportsInfoDTOTicket: --------------->> TICKET: "+ventax.getEs().getNt());
+		EntradaSalidaQuickView es = ventax.getEs().reverse();
+		List<ESD> esd2List = ventax.getEsdList();
+		List<EntradaSalidaDetalleQuickView> esdList = new ArrayList<EntradaSalidaDetalleQuickView>();
+		for(ESD esd2: esd2List){
+			I pp = MemoryDAO.fastSearchProducto(esd2.getCb());
+			EntradaSalidaDetalleQuickView rESD = esd2.reverse();
+			rESD.setProductoNombre(pp.getN());
+			rESD.setProductoPresentacion(pp.getPr());
+			esdList.add(rESD);
 		}
+		 
+		EntradaSalidaFooter entradaSalidaFooter;
+		entradaSalidaFooter= new EntradaSalidaFooter();
 		
-		String[] txtLogo={  "          ##########          " ,
-							"       ###          ###       " ,
-							"    ###                ##     " ,
-							"   ##                    ##   " ,
-							"  ##  PPPPPPP           ...#  " ,
-							" ##  P  PP  PPP        ·   .# " ,
-							"##   P  PP   PP       ·    · #" ,
-							"#     P PP  PPP  MMM   MMMM. #" ,
-							"#       PPPPP     MMM  MMM   #" ,
-							"#       PP        MMM MMMM   #" ,
-							"#       PP        MM M  MM   #" ,
-							"##   . PPPP       MM    MM   #" ,
-							" #  ·.    PP      MM    MM  ##" ,
-							" ## ···          MMMMM  MMM## " ,
-							"  ## ····                 ##  " ,
-							"   ##  ··················##   " ,
-							"     ### ·DISTRUBUCIONES#     " ,
-							"        ###         ###       " ,
-							"           #########          "};
+		logger.debug("->generaJarpeReportsInfoDTOTicket:-> importeRecibido:"+es.getImporteRecibido());
 		
-		String[] txtLogo2={ "           #########          " ,
-							"      ###             ###     " ,
-							"   ##                    ##   " ,
-							"  ##   PPPPPP           ...#  " ,
-							" ##  P  PP  PPP        ·   .# " ,
-							"##   P  PP   PP       ·    · #" ,
-							"#     P PP  PPP  MMM   MMMM. #" ,
-							"#       PPPPP     MMM  MMM   #" ,
-							"#       PP        MM M  MM   #" ,
-							"#    . PPPP       MM    MM   #" ,
-							" #  ·.    PP      MM    MM  ##" ,
-							" ## ···          MMMMM  MMM## " ,
-							"   ##  ··················##   " ,
-							"     ### ·DISTRUBUCIONES#     " ,
-							"           #########          "};		
+		entradaSalidaFooter.calculaTotalesSucDesde(es, esdList);
+		logger.debug("->generaJarpeReportsInfoDTOTicket:-> calculaTotalesSucDesde:entradaSalidaFooter="+entradaSalidaFooter);
+		
+		es.setImporteDescuento(entradaSalidaFooter.getImporteDescuentoAplicado());
+		entradaSalidaFooter.getSubTotalBruto();
+		
+		com.pmarlen.backend.model.Sucursal suc = MemoryDAO.getSucursal();
+		Usuario usuarioLogedin = new Usuario();
+		
+		usuarioLogedin.setEmail         (ApplicationLogic.getInstance().getLogged().getE());
+		usuarioLogedin.setNombreCompleto(ApplicationLogic.getInstance().getLogged().getN());
+		usuarioLogedin.setClave         (ApplicationLogic.getInstance().getLogged().getC());
+		
+		Cliente clienteES= MemoryDAO.getCliente(es.getClienteId());
+		
+		es.setClienteDirFacturacion(clienteES.getDireccionFacturacion());
+		es.setClienteNombreEstablecimiento(clienteES.getNombreEstablecimiento());
+		es.setClienteRazonSocial(clienteES.getRazonSocial());
+		es.setClienteRFC(clienteES.getRfc());
+		
+		
+		U uc = MemoryDAO.getUsuario(es.getUsuarioEmailCreo());
+		es.setUsuarioClave(uc.getC());
+		es.setUsuarioNombreCompleto(uc.getN());
 
-		for (int i = 1; i <= txtLogo.length; i++) {
-			parameters.put("logo.line" + i, txtLogo[i - 1]);
-		}
-		//parameters.put("sucursal.tels", "TELS.:"+MemoryDAO.getSucursal().getTelefonos());		
+		FormaDePago  fp1 = MemoryDAO.getFormaDePago(es.getFormaDePagoId());
+		MetodoDePago mp1 = MemoryDAO.getMetodoDePago(es.getMetodoDePagoId());
 		
-		parameters.put("L.fecha.creado", "FECHA V.:");
-		parameters.put("fecha.creado", Constants.sdfShortDateTime.format(new Date(ventax.getEs().getFc())));
+		es.setFormaDePagoDescripcion(fp1.getDescripcion());
+		es.setMetodoDePagoDescripcion(mp1.getDescripcion());
 		
-		parameters.put("L.fecha.actual", "FECHA:");
-		final Date today = new Date();
-		parameters.put("fecha.actual", Constants.sdfShortDate.format(today));
-		parameters.put("hora.actual", Constants.sdfShortTime.format(today));
-		
-		final U uc = MemoryDAO.getUsuario(ventax.getEs().getU());
-		
-		parameters.put("usuario.creo.email", uc.getE());
-		parameters.put("L.usuario.creo.nombre", "ATENDIO:");
-		parameters.put("usuario.creo.nombre", uc.getN());
-		parameters.put("usuario.creo.clave", String.valueOf(uc.getC()));
-		parameters.put("usuario.imprimio.email" , ApplicationLogic.getInstance().getLogged().getE());
-		parameters.put("usuario.imprimio.nombre", ApplicationLogic.getInstance().getLogged().getN());
-		parameters.put("sucursal.caja.actual", MemoryDAO.getNumCaja());
-		parameters.put("sucursal.caja.creo", ventax.getEs().getJ());
-		final Cliente cte = MemoryDAO.getCliente(ventax.getEs().getC());
-		parameters.put("cliente.rfc"  , cte.getRfc());
-		parameters.put("cliente.estab", cte.getNombreEstablecimiento());
-		parameters.put("cliente.racSoc", cte.getRazonSocial());
-		List<String> racSocList = TextReporter.justifyText(cte.getRazonSocial(), TextReporter.columns - 11);
-		for (int i = 1; i <= racSocList.size(); i++) {
-			parameters.put("cliente.racSoc" + i, racSocList.get(i - 1));
-		}
-		parameters.put("cliente.cirFac", cte.getDireccionFacturacion());
-		
-		parameters.put("formaDePago.desc",MemoryDAO.getFormaDePago(ventax.getEs().getFp()));
-		parameters.put("metodoDePago.desc",MemoryDAO.getMetodoDePago(ventax.getEs().getFp()));
-		parameters.put("cliente.cirFac", cte.getDireccionFacturacion());
-		
-		boolean descuentoAplicadoX  = false;
-		double  descuentoFactorX    = 0.0;
-		double  descuentoCalculadoX = 0.0;		
-		double	totalBrutoDescontableX = 0.0;
-		double	totalBrutoFijoX        = 0.0;
-		int		numElemX=0;
-		int		nunElemDescontablesX=0;
-		int		numElemSinDescX=0;
-		double	importeBrutoX =0.0;
-		
-		for (ESD esd: ventax.getEsdList()) {
-			HashMap<String, String> r=new HashMap<String, String>();
-			
-			importeBrutoX = esd.getC()*esd.getP();
-			
-			if(esd.getTa() == Constants.ALMACEN_PRINCIPAL){
-				totalBrutoDescontableX  += importeBrutoX;
-				nunElemDescontablesX    += esd.getC();
-			} else {
-				totalBrutoFijoX			+= importeBrutoX;
-				numElemSinDescX			+= esd.getC();
-			}
-			final I px = MemoryDAO.fastSearchProducto(esd.getCb());
-			r.put("pvd.producto.cb"    , px.getCb());
-			r.put("pvd.producto.nombre", px.getN());
-			r.put("pvd.producto.present", px.getPr());
-			r.put("pvd.cant"			, String.valueOf(esd.getC()));
-			r.put("pvd.precio"			, String.valueOf(esd.getP()));
-			r.put("pvd.imp"				, Constants.df2Decimal.format(importeBrutoX));
-			
-			records.add(r);
-		}
-		numElemX = nunElemDescontablesX + numElemSinDescX;		
-		double totalBrutoX = totalBrutoDescontableX + totalBrutoFijoX;
-		
-		if(ventax.getEs().getDesc()>0){
-			if(totalBrutoDescontableX >= 100.00 || nunElemDescontablesX>= 12){
-				descuentoFactorX   = 0.1; //ventax.getEs().getDesc();
-				descuentoAplicadoX = true;
-			}
-		}
-		descuentoCalculadoX = totalBrutoDescontableX * descuentoFactorX;
-		double totalX = totalBrutoDescontableX - descuentoCalculadoX + totalBrutoFijoX;
-				
-		parameters.put("fot.neDesc"			, String.valueOf(nunElemDescontablesX));
-		parameters.put("fot.neSinDesc"		, String.valueOf(numElemSinDescX));
-		parameters.put("fot.neTotElem"		, String.valueOf(numElemX));
-		parameters.put("fot.neTotElemL"		, " <-- # PRODS.");
-		
-		parameters.put("fot.subTotDesc"		, Constants.df2Decimal.format(totalBrutoDescontableX));
-		parameters.put("fot.subTotSinDesc"	, Constants.df2Decimal.format(totalBrutoFijoX));
-		parameters.put("fot.subTot"			, Constants.df2Decimal.format(totalBrutoX));
-		parameters.put("fot.desc"			, Constants.df2Decimal.format(descuentoCalculadoX));
-		
-		final String totalXval = Constants.df2Decimal.format(totalX);
-		
-		parameters.put("fot.tot"			, totalXval);
-		parameters.put("fot.impRecib"		, Constants.df2Decimal.format(ventax.getEs().getIr()));		
-		parameters.put("fot.cambio"		    , Constants.df2Decimal.format(ventax.getEs().getIr()-totalX));		
-		
-		String intDecParts[] = totalXval.split("\\.");            
-		String letrasParteEntera  = NumeroCastellano.numeroACastellano(Long.parseLong(intDecParts[0])).trim();
-		parameters.put("fot.leyendaNoFiscal" , "ESTO NO ES UN COMPROBANTE FISCAL");
-		
-		parameters.put("fot.totLetra"		,"**("+(letrasParteEntera+" Pesos "+intDecParts[1]+"/100 M.N.").toUpperCase()+")**");
-		final String importeTotal = "**("+(letrasParteEntera+" Pesos "+intDecParts[1]+" / 100 M.N.").toUpperCase()+")**";
-		List<String> totalLetraLineas = TextReporter.splitInLinesText(importeTotal, TextReporter.columns,'*');
-		
-		//parameters.put("fot.totLetra1" , "-----------------");
-		//parameters.put("fot.totLetra2" , "-----------------");
-		//parameters.put("fot.totLetra3" , "-----------------");
-		for (int i = 1; i <= totalLetraLineas.size(); i++) {
-			parameters.put("fot.totLetra" + i, totalLetraLineas.get(i - 1));
-		}
-		
-		parameters.put("fot.leyendaNoFiscal" , "ESTE NO ES UN COMPROBANTE FISCAL");
-		parameters.put("fot.leyenda1" , "¡ LE AGRADECEMOS SU COMPRA !");
-		parameters.put("fot.leyenda2" , "VUELVA PRONTO");		
-		parameters.put("fot.leyenda3" , "http://perfumeriamarlen.com.mx");		
-		parameters.put("fot.leyenda4" , "http://facebook.com/PerfumeriaMarlen");
-
-		return new JarpeReportsInfoDTO(parameters, records);
+		return GeneradorImpresionPedidoVenta.generaJarpeReportsInfoDTOTextTicket(es, esdList, suc, usuarioLogedin);		
 	}
 	
 }
