@@ -118,6 +118,7 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		
 		framePrincipal.getNotificaciones().addActionListener(this);
 		
+		framePrincipal.getCerrando().setVisible(false);
 	}
 	private static int nei=0;
 	public void estadoInicial() {
@@ -280,12 +281,20 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 			
 			cierreCajaDialog.dispose();
 			
-			int intentosEnviar=10;
+			framePrincipal.getAbrirSesion().setVisible(false);
+			
+			framePrincipal.getCerrarSesion().setEnabled(false);
+			
+			framePrincipal.getCerrando().setText("CERRANDO SESIÓN EN SERVIDOR, ESPERE ...");
+			
+			framePrincipal.getCerrando().setVisible(true);
+			
+			int intentosEnviar=100;
 			int numInt=0;
 			for(numInt=0;MemoryDAO.isEnviandoCierreCaja()&& numInt<intentosEnviar;numInt++) {
 				try {
-					Thread.sleep(100);
-					logger.debug("ESPERANDO["+numInt+"] Envio de Cierre de Caja");
+					Thread.sleep(250);
+					logger.debug("ESPERANDO["+numInt+"] Esperando respuesta de Envio de Cierre de Caja");
 				}catch(InterruptedException ie){
 					
 				}
@@ -293,16 +302,25 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 			
 			if(MemoryDAO.isEnviandoCierreCorrectmente()) {
 				logger.debug("Envio correcto, iniciaAppCorteCajaDTO, cerrando");
+				
 				ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
+				
+				//JOptionPane.showMessageDialog(framePrincipal, "La Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
+			
+				framePrincipal.dispose();
+				System.exit(0);
+
 			} else {
 				logger.debug("Envio de Cierre no se envio, :(");
+				
+				ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
+				
+				JOptionPane.showMessageDialog(framePrincipal, "No se pudo enviar al Servidor, pero la Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
+			
+				framePrincipal.dispose();
+				System.exit(1);
 			}
 			
-			
-			JOptionPane.showMessageDialog(framePrincipal, "La Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
-			
-			framePrincipal.dispose();
-			System.exit(0);
 		} else {
 		
 		}

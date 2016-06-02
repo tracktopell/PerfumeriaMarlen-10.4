@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
@@ -134,6 +135,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         abrirSesion = new javax.swing.JButton();
         cerrarSesion = new javax.swing.JButton();
+        cerrando = new javax.swing.JLabel();
         panelVenta = new PanelVenta();
         panelVentas = new PanelVentas();
         panelDevolucion = new PanelDevolucion();
@@ -209,6 +211,10 @@ public class FramePrincipal extends javax.swing.JFrame {
         cerrarSesion.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
         cerrarSesion.setText("CERRAR CAJA");
         jPanel2.add(cerrarSesion);
+
+        cerrando.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
+        cerrando.setText("C..");
+        jPanel2.add(cerrando);
 
         panelSesion.add(jPanel2, java.awt.BorderLayout.SOUTH);
 
@@ -379,6 +385,7 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem acercaDeMenu;
     private javax.swing.JMenu archivoMenu;
     private javax.swing.JMenuItem cancelarDevolMenu;
+    private javax.swing.JLabel cerrando;
     private javax.swing.JButton cerrarSesion;
     private javax.swing.JMenu configMenu;
     private javax.swing.JMenu devolMenu;
@@ -805,6 +812,10 @@ public class FramePrincipal extends javax.swing.JFrame {
 
 	public JMenuItem getPreferenciasMenu() {
 		return preferenciasMenu;
+	}
+
+	public JLabel getCerrando() {
+		return cerrando;
 	}
 	
 	

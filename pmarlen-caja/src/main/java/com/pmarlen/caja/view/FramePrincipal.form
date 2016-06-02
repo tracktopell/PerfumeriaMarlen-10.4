@@ -325,6 +325,14 @@
                     <Property name="text" type="java.lang.String" value="CERRAR CAJA"/>
                   </Properties>
                 </Component>
+                <Component class="javax.swing.JLabel" name="cerrando">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Dialog" size="48" style="1"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="C.."/>
+                  </Properties>
+                </Component>
               </SubComponents>
             </Container>
           </SubComponents>
