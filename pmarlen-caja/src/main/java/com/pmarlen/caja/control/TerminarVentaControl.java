@@ -111,11 +111,11 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == terminarVentaDlg.getRecibido()) {
-			recibido_ActionPerformed();
+			//recibido_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getCargo()) {
-			cargo_ActionPerformed();
+			//cargo_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getAutorizacion()) {
-			autorizacion_ActionPerformed();
+			//autorizacion_ActionPerformed();
 		} else if(e.getSource() == terminarVentaDlg.getCalcularCambio()){
 			calcularCambio_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getAceptar()) {
@@ -141,6 +141,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		logger.info("[USER]->aceptar_ActionPerformed()");
 		if (validateAll()) {
 			registrarVenta();
+			JOptionPane.showMessageDialog(terminarVentaDlg, "SE REGISTRO LA VENTA CORRECTAMENTE", "ACEPTAR", JOptionPane.INFORMATION_MESSAGE);
 			terminarVentaDlg.dispose();
 			//terminarVentaDlg = null;
 		}
@@ -159,7 +160,9 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				if (componentWithError instanceof JTextField) {
 					((JTextField) componentWithError).setText("");
 				}
-				//componentWithError.requestFocus();
+				if(componentWithError.isFocusable()){
+					componentWithError.requestFocus();
+				}
 				return false;
 			}
 		}
@@ -179,15 +182,22 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		final ES_ESD venta = ventaSesion.getVenta();
 		
 		String numTicket = null;
-		logger.debug("registrarVenta:ANTES:   numTicket="+numTicket+", importeRecibido="+venta.getEs().getIr()+", recibido="+recibido);
+		
 		numTicket = GeneradorNumTicket.getNumTicket(new Date(venta.getEs().getFc()),venta.getEs().getS(),venta.getEs().getJ());
-		logger.debug("registrarVenta:DESPUES: numTicket="+numTicket+", importeRecibido="+venta.getEs().getIr()+", recibido="+recibido);
+		
 		venta.getEs().setNt(numTicket);
 		venta.getEs().setC(Constants.ID_CLIENTE_MOSTRADOR);
 		venta.getEs().setFp(Constants.ID_FDP_1SOLA_E);
 		venta.getEs().setMp(((MetodoDePago)terminarVentaDlg.getMetodoDePago().getSelectedItem()).getId());
-		//venta.getEs().setIr(recibido);
+		venta.getEs().setIr(recibido);
 		venta.getEs().setAmc(autorizacion);
+		
+		final ComboBoxModel model = terminarVentaDlg.getMetodoDePago().getModel();
+		for(int i=0;i<model.getSize();i++){
+			Object mdpObj = model.getElementAt(i);
+			logger.debug("registrarVenta:MDP:"+mdpObj);
+		}
+		logger.debug("registrarVenta:DESPUES: numTicket="+numTicket+", importeRecibido="+venta.getEs().getIr()+", recibido="+recibido+", MetodoPago:"+venta.getEs().getMp()+"? terminarVentaDlg.getMetodoDePago()["+terminarVentaDlg.getMetodoDePago().getSelectedIndex()+"]");
 		
 		ESFileSystemJsonDAO.commit(venta);
 
@@ -204,11 +214,11 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	@Override
 	public void focusLost(FocusEvent fe) {
 		if (fe.getSource() == terminarVentaDlg.getRecibido()) {
-			recibido_ActionPerformed();
+			//recibido_ActionPerformed();
 		} else if (fe.getSource() == terminarVentaDlg.getCargo()) {
-			cargo_ActionPerformed();
+			//cargo_ActionPerformed();
 		} else if (fe.getSource() == terminarVentaDlg.getAutorizacion()) {
-			autorizacion_ActionPerformed();
+			//autorizacion_ActionPerformed();
 		}
 	}
 
@@ -218,15 +228,20 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 
 	@Override
 	public void validate() throws ValidacionCamposException {
+		
+		logger.debug("validate:==>>Total a PAGAR:"+ventaSesion.getTotal());
+		
 		MetodoDePago mdpSelected = (MetodoDePago) terminarVentaDlg.getMetodoDePago().getSelectedItem();
 		String recibidoText = terminarVentaDlg.getRecibido().getText().replace("$", "").replace(",", "").trim();
 		String cargoText = terminarVentaDlg.getCargo().getText().replace("$", "").replace(",", "").trim();
 		autorizacion = terminarVentaDlg.getAutorizacion().getText().trim();
 		if (mdpSelected.getId() == Constants.ID_MDP_EFECTIVO) {
+			logger.debug("validate:==>>mdpSelected=ID_MDP_EFECTIVO");
 			
 			calcularCambio();
 
 		} else if (mdpSelected.getId() == Constants.ID_MDP_TARJETA) {
+			logger.debug("validate:==>>mdpSelected=ID_MDP_TARJETA");
 			/*
 			try {
 				cargo = Double.parseDouble(cargoText);
@@ -246,13 +261,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 			}
 		} else if (mdpSelected.getId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA) {
 			
-			try {
-				cargo = Double.parseDouble(cargoText);
-			} catch (NumberFormatException nfe) {
-				this.terminarVentaDlg.getCargo().setText("");
-				throw new ValidacionCamposException("EL IMORTE DEL CARGO DEBE SER UN IMPORTE DE MONEDA", terminarVentaDlg.getCargo());
-			}
-			
+			logger.debug("validate:==>>mdpSelected=ID_MDP_EFECTIVO_Y_TARJETA");
 			try {
 				recibido = Double.parseDouble(recibidoText);
 			} catch (NumberFormatException nfe) {
@@ -266,8 +275,14 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 				this.terminarVentaDlg.getCambio().setText("");
 				throw new ValidacionCamposException("EL IMORTE RECIBIDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.01 A $99,999.99", terminarVentaDlg.getRecibido());
 			}
-
-
+								
+			try {
+				cargo = Double.parseDouble(cargoText);
+			} catch (NumberFormatException nfe) {
+				this.terminarVentaDlg.getCargo().setText("");
+				throw new ValidacionCamposException("EL IMORTE DEL CARGO DEBE SER UN IMPORTE DE MONEDA", terminarVentaDlg.getCargo());
+			}
+			
 			double difReal = (recibido + cargo) - totalRedondeado;
 
 			if (difReal < 0) {
@@ -391,8 +406,8 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		}
 
 		for (FormaDePago fdp : formaDePagoList) {
-			logger.trace("getFormasDePago:\t 1)for() : fdp=" + fdp);
-			if (fdp.getId() != Constants.ID_FDP_1SOLA_E) {
+			logger.debug("getFormasDePago:\t 1)for() : fdp=" + fdp.getId()+" : "+fdp.getDescripcion());
+			if (fdp.getId() == Constants.ID_FDP_1SOLA_E) {
 				v.add(fdp);
 			}
 		}
@@ -408,7 +423,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		Vector<MetodoDePago> v = new Vector<MetodoDePago>();
 
 		for (MetodoDePago mdp : formaDePagoList) {
-			logger.trace("getMetodosDePago:\t 1)for() : mdp=" + mdp);
+			logger.debug("getMetodosDePago:\t 1)for() : mdp=" + mdp.getId()+" : "+mdp.getDescripcion());
 			if (mdp.getId() == Constants.ID_MDP_EFECTIVO || mdp.getId() == Constants.ID_MDP_TARJETA || mdp.getId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA) {
 				v.add(mdp);
 			}

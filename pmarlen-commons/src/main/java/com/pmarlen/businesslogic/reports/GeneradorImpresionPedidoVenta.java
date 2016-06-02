@@ -563,7 +563,7 @@ public class GeneradorImpresionPedidoVenta {
 		return pdfBytes;
     }
 	
-	public static JarpeReportsInfoDTO generaJarpeReportsInfoDTOTextTicket(EntradaSalidaQuickView es,List<EntradaSalidaDetalleQuickView> esdList,Sucursal suc,Usuario usuarioLogedin){				
+	public static JarpeReportsInfoDTO generaJarpeReportsInfoDTOTextTicket(EntradaSalidaQuickView es,List<EntradaSalidaDetalleQuickView> esdList,Sucursal suc,Usuario usuarioLogedin,boolean logoTexto){
 		HashMap<String, Object> parameters = new HashMap<String, Object> (); 
 		Collection<Map<String,?>> records  = new ArrayList<Map<String, ?>>();
 		
@@ -620,11 +620,15 @@ public class GeneradorImpresionPedidoVenta {
 							" ## ···          MMMMM  MMM## " ,
 							"   ##  ··················##   " ,
 							"     ### ·DISTRUBUCIONES#     " ,
-							"           #########          "};		
-
-		for (int i = 1; i <= txtLogo.length; i++) {
-			parameters.put("logo.line" + i, txtLogo[i - 1]);
+							"           #########          "};
+		if(logoTexto){
+			for (int i = 1; i <= txtLogo.length; i++) {
+				parameters.put("logo.line" + i, txtLogo[i - 1]);
+			}
+		} else {
+			parameters.put("logo.line1" , "   ");
 		}
+
 		//parameters.put("sucursal.tels", "TELS.:"+MemoryDAO.getSucursal().getTelefonos());		
 		
 		parameters.put("L.fecha.creado", "FECHA V.:");
@@ -682,8 +686,19 @@ public class GeneradorImpresionPedidoVenta {
 		final String totalXval = Constants.df2Decimal.format(es.getTotal());
 		
 		parameters.put("fot.tot"			, totalXval);
-		parameters.put("fot.impRecib"		, Constants.df2Decimal.format(es.getImporteRecibido()));		
-		parameters.put("fot.cambio"		    , Constants.df2Decimal.format(es.getImporteRecibido()-es.getTotal()));		
+		
+		parameters.put("fot.metodoPago"		, es.getMetodoDePagoDescripcion());
+		
+		if(es.getMetodoDePagoId() == Constants.ID_MDP_EFECTIVO){
+			parameters.put("fot.impRecib"		, Constants.df2Decimal.format(es.getImporteRecibido()));		
+			parameters.put("fot.cambio"		    , Constants.df2Decimal.format(es.getImporteRecibido()-es.getTotal()));		
+		} else if(es.getMetodoDePagoId() == Constants.ID_MDP_TARJETA){
+			parameters.put("fot.numAuto"		, es.getAprobacionVisaMastercard());
+		} else if(es.getMetodoDePagoId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA){
+			parameters.put("fot.impRecib"		, Constants.df2Decimal.format(es.getImporteRecibido()));		
+			parameters.put("fot.numAuto"		, es.getAprobacionVisaMastercard());
+			parameters.put("fot.cargo"		    , Constants.df2Decimal.format(es.getTotal()-es.getImporteRecibido()));		
+		} 
 		
 		String intDecParts[] = totalXval.split("\\.");            
 		String letrasParteEntera  = NumeroCastellano.numeroACastellano(Long.parseLong(intDecParts[0])).trim();

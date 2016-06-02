@@ -284,7 +284,7 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 			int numInt=0;
 			for(numInt=0;MemoryDAO.isEnviandoCierreCaja()&& numInt<intentosEnviar;numInt++) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(100);
 					logger.debug("ESPERANDO["+numInt+"] Envio de Cierre de Caja");
 				}catch(InterruptedException ie){
 					

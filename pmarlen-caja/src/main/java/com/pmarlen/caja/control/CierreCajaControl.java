@@ -234,7 +234,35 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		MemoryDAO.saveCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
 		MemoryDAO.backupCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());
 		MemoryDAO.iniciaEnvioCierreCaja();
+		
 		cierreCorrecto=true;
+		cierreCajaDialog.dispose();
+		cierreCajaDialog = null;		
+	}
+	
+	boolean seguirEsperando=true;
+	
+	public void esperaACErrarPorEnvioCaja(){
+		logger.debug("esperaACErrarPorEnvioCaja:");
+		seguirEsperando=true;
+		try {
+			while(seguirEsperando){
+				if(MemoryDAO.isEnviandoCierreCaja()){
+					seguirEsperando = true;
+				}else{
+					seguirEsperando = false;
+				}
+				Thread.sleep(200);
+			}
+			if(MemoryDAO.isEnviandoCierreCorrectmente()){
+				logger.debug("SE ENVIO CORRCTAMENTE!");
+			}
+		}catch(InterruptedException ie){
+			logger.error("SE INTERRUMPIO ENVIO:", ie);
+		}
+		
+		cierreCajaDialog.dispose();
+		cierreCajaDialog = null;
 	}
 
 	@Override

@@ -465,28 +465,17 @@ public class TextReporter {
 	public static void setColumns(int columns) {
 		TextReporter.columns = columns;
 	}
-
-	public static String generateTicketTXT(JarpeReportsInfoDTO jrInfo) {
-		Date today = new Date();
-
-		String fileName = "TICKET_"+jrInfo.getParameters().get("venta.ticket")+"_" + Constants.sdfThinDate.format(today) + ".txt";
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(fileName);
-			processReport(TextReporter.class.getResourceAsStream("/textreports/TEXT_TICKET_V2.txt"), fos, jrInfo.getParameters(), jrInfo.getRecords(), columns);
-		} catch (IOException ioe) {
-
-		}
-		return fileName;
-	}
 	
 	public static byte[] generateTicketTXTBytes(JarpeReportsInfoDTO jrInfo) {
-		//String fileName = "TICKET_"+jrInfo.getParameters().get("venta.ticket")+"_" + Constants.sdfThinDate.format(today) + ".txt";
+		return generateTicketTXTBytes(jrInfo, "\n", "UTF-8");
+	}
+	
+	public static byte[] generateTicketTXTBytes(JarpeReportsInfoDTO jrInfo, String endLine, String encoding) {
 		ByteArrayOutputStream baos = null;
 		byte content[]=null;
 		try {
 			baos = new ByteArrayOutputStream();
-			processReport(TextReporter.class.getResourceAsStream("/textreports/TEXT_TICKET_V2.txt"), baos, jrInfo.getParameters(), jrInfo.getRecords(), columns);
+			processReport(TextReporter.class.getResourceAsStream("/textreports/TEXT_TICKET_V3.txt"), baos, jrInfo.getParameters(), jrInfo.getRecords(), columns, endLine,  encoding);
 			content = baos.toByteArray();
 		} catch (Exception ioe) {
 			ioe.printStackTrace(System.err);			
@@ -562,136 +551,4 @@ public class TextReporter {
 		
 		return result;
 	}
-	/*
-	public static void main(String[] args) {
-		
-		DEBUG=true;
-		if(args.length ==1){
-			columns = Integer.parseInt(args[0]);
-		}
-		
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-		List<HashMap<String, String>> records = new ArrayList<HashMap<String, String>>();
-
-		final Date today = new Date();
-		
-		parameters.put("fecha.actual", Constants.sdfShortDate.format(today));
-		parameters.put("hora.actual", Constants.sdfShortTime.format(today));
-		
-		
-		final String nombre = "PERFUMERIA MARLEN S.A. DE C.V. CENTRO DE DISTRIBUCIÓN TECAMAC";
-		parameters.put("L.venta.ticket"    , "NO. TICKET:");
-		parameters.put("venta.ticket"      , "84879683827497989900100005900");
-		parameters.put("sucursal.nombre", nombre);
-
-		final String nombre1 = nombre.substring(0, nombre.indexOf("S.A. DE C.V.") + 13);
-		final String nombre2 = nombre.substring(nombre.indexOf("S.A. DE C.V.") + 13);
-
-		parameters.put("sucursal.nombre1", nombre1);
-		parameters.put("sucursal.nombre2", nombre2);
-		String direccion = "CALLE REFORMA NO. 2, LOCAL 1 COL. CENTRO DE REYES ACOZAC, PLAZA COMERCIAL  “PASAJE REFORMA” MUNICIPIO DE TECÁMAC, ESTADO DE MÉXICO, C.P.L 55755";
-		List<String> direccionList = TextReporter.justifyText(direccion, TextReporter.columns);
-
-		parameters.put("sucursal.direccion", direccion);
-		for (int i = 1; i <= direccionList.size(); i++) {
-			parameters.put("sucursal.direccion" + i, direccionList.get(i - 1));
-		}
-
-		String[] txtLogo={  "          ##########          " ,
-							"       ###          ###       " ,
-							"    ###                ##     " ,
-							"   ##                    ##   " ,
-							"  ##  PPPPPPP           ...#  " ,
-							" ##  P  PP  PPP        ·   .# " ,
-							"##   P  PP   PP       ·    · #" ,
-							"#     P PP  PPP  MMM   MMMM. #" ,
-							"#       PPPPP     MMM  MMM   #" ,
-							"#       PP        MMM MMMM   #" ,
-							"#       PP        MM M  MM   #" ,
-							"##   . PPPP       MM    MM   #" ,
-							" #  ·.    PP      MM    MM  ##" ,
-							" ## ···          MMMMM  MMM## " ,
-							"  ## ····                 ##  " ,
-							"   ##  ··················##   " ,
-							"     ### ·DISTRUBUCIONES#     " ,
-							"        ###         ###       " ,
-							"           #########          "};
-		
-		String[] txtLogo2={ "           #########          " ,
-							"      ###             ###     " ,
-							"   ##                    ##   " ,
-							"  ##   PPPPPP           ...#  " ,
-							" ##  P  PP  PPP        ·   .# " ,
-							"##   P  PP   PP       ·    · #" ,
-							"#     P PP  PPP  MMM   MMMM. #" ,
-							"#       PPPPP     MMM  MMM   #" ,
-							"#       PP        MM M  MM   #" ,
-							"#    . PPPP       MM    MM   #" ,
-							" #  ·.    PP      MM    MM  ##" ,
-							" ## ···          MMMMM  MMM## " ,
-							"   ##  ··················##   " ,
-							"     ### ·DISTRUBUCIONES#     " ,
-							"           #########          "};		
-
-		for (int i = 1; i <= txtLogo.length; i++) {
-			parameters.put("logo.line" + i, txtLogo[i - 1]);
-		}
-		
-		parameters.put("sucursal.tels", "TELS.:" + "55-5936-2597");
-
-		parameters.put("fecha.creado", Constants.sdfShortTime.format(today));
-		parameters.put("usuario.creo.nombre", "USUARIO NOMBRE PATERNO MATERNO");
-		parameters.put("usuario.creo.clave", "1234");
-		parameters.put("fecha.creado", Constants.sdfShortTime.format(today));
-		parameters.put("sucursal.caja.creo", "10");
-		parameters.put("cliente.racSoc", "PUBLICO GENERAL");
-		
-		List<String> racSocList = TextReporter.justifyText("PERFUMERIA MARLEN S.A. DE C.V. CENTRO DE DISTRIBUCIÓN TECAMAC", TextReporter.columns - 11);
-		for (int i = 1; i <= direccionList.size(); i++) {
-			parameters.put("cliente.racSoc" + i, direccionList.get(i - 1));
-		}
-		
-		
-		for (int i = 0; i < 35; i++) {
-			HashMap<String, String> r = new HashMap<String, String>();
-			r.put("pvd.cant", "" + i);
-			r.put("pvd.producto.cb", "1234567890123" + i);
-			r.put("pvd.producto.nombre", "NOMBRE MUY LARGO PARA IMPRIMIRSE AQUI-" + i);
-			r.put("pvd.precio", "1234" + i + ".99");
-			r.put("pvd.imp", "10234" + i + ".99");
-			records.add(r);
-		}
-		
-		parameters.put("fot.neTotElem" , "234");
-		parameters.put("fot.neTotElemL", "<-- # PRODS.");
-		parameters.put("fot.subTot", "$12,345.56");
-		parameters.put("fot.desc"  , "6789.00");
-		final String totalXval = "99.65";
-		parameters.put("fot.tot"   , totalXval);
-		parameters.put("fot.impRecib", "6799900.00");
-		parameters.put("fot.cambio", "789.00");
-		
-		String intDecParts[] = totalXval.split("\\.");            
-		String letrasParteEntera  = NumeroCastellano.numeroACastellano(Long.parseLong(intDecParts[0])).trim();
-		final String importeTotal = "**("+(letrasParteEntera+" Pesos "+intDecParts[1]+" / 100 M.N.").toUpperCase()+")**";
-		List<String> totalLetraLineas = TextReporter.splitInLinesText(importeTotal, TextReporter.columns,'*');
-		
-		//parameters.put("fot.totLetra1" , "-----------------");
-		//parameters.put("fot.totLetra2" , "-----------------");
-		//parameters.put("fot.totLetra3" , "-----------------");
-		for (int i = 1; i <= totalLetraLineas.size(); i++) {
-			parameters.put("fot.totLetra" + i, totalLetraLineas.get(i - 1));
-		}
-		
-		parameters.put("fot.leyendaNoFiscal" , "ESTO NO ES UN COMPROBANTE FISCAL");
-		parameters.put("fot.leyenda1" , "¡ LE AGRADECEMOS SU COMPRA !");
-		parameters.put("fot.leyenda2" , "VUELVA PRONTO");		
-		parameters.put("fot.leyenda3" , "perfumeriamarlen.com.mx");		
-		parameters.put("fot.leyenda4" , "facebook.com/PerfumeriaMarlen");
-
-		System.out.println("TextReporter:DEBUG?" + DEBUG);
-		JarpeReportsInfoDTO jrInfo = new JarpeReportsInfoDTO(parameters, records);
-		generateTicketTXT(jrInfo);
-	}
-	*/
 }

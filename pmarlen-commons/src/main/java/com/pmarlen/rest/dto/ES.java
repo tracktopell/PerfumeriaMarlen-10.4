@@ -34,6 +34,7 @@ public class ES {
 	private double desc;
 	private double tot;
 	private int    nElem;	
+	private int    ed;
 	private String esTicketDev;
 	
 	public EntradaSalidaQuickView reverse(){
@@ -59,6 +60,8 @@ public class ES {
 		es.setSubTotalOpo(stO);
 		es.setSubTotalReg(stR);
 		es.setTotal(tot);
+		es.setNumElementos(nElem);		
+		es.setElemDet(ed);
 		return es;
 	}
 
@@ -367,6 +370,20 @@ public class ES {
 	 */
 	public void setStR(double stR) {
 		this.stR = stR;
+	}
+
+	/**
+	 * @return the ed
+	 */
+	public int getEd() {
+		return ed;
+	}
+
+	/**
+	 * @param ed the ed to set
+	 */
+	public void setEd(int ed) {
+		this.ed = ed;
 	}
 
 }

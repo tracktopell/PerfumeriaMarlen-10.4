@@ -45,8 +45,6 @@ public class VentaSesion {
 	private ES_ESD venta;
 	
 	private Cliente cliente;
-	private FormaDePago formaDePago;
-	private MetodoDePago metodoDePago;
 	private double importeRecibido;
 	private double subTotal1ra;	
 	private double subTotalOpo;
@@ -80,29 +78,11 @@ public class VentaSesion {
 		this.cliente = cliente;
 	}
 
-	public FormaDePago getFormaDePago() {
-		return formaDePago;
-	}
-	
-	public void setFormaDePago(FormaDePago formaDePago) {
-		this.formaDePago = formaDePago;
-	}
-
-	public MetodoDePago getMetodoDePago() {
-		return metodoDePago;
-	}
-	
-	public void setMetodoDePago(MetodoDePago metodoDePago) {
-		this.metodoDePago = metodoDePago;
-	}
-	
 	public void nuevaSesionVenta() {
 		logger.debug("nuevaSesionVenta:");
 		detalleVentaTableItemList = new ArrayList<PedidoVentaDetalleTableItem>();
 		cliente			= new ClienteQuickView	();
-		formaDePago     = new FormaDePago		(Constants.ID_FDP_1SOLA_E);
-		metodoDePago    = new MetodoDePago		(Constants.ID_MDP_EFECTIVO);
-
+		
 		importeRecibido = 0.0;
 		totalBruto		= 0.0;
 		total			= 0.0;
@@ -129,12 +109,14 @@ public class VentaSesion {
 		venta.getEs().setJ(MemoryDAO.getNumCaja());
 		venta.getEs().setC(cliente.getId());
 		venta.getEs().setFc(System.currentTimeMillis());
-		venta.getEs().setFp(formaDePago.getId());
+//		venta.getEs().setFp(Constants.ID_FDP_1SOLA_E);
+//		venta.getEs().setMp(Constants.ID_MDP_EFECTIVO);
+//		venta.getEs().setAmc(autorizacion);
 		venta.getEs().setIr(importeRecibido);
 		venta.getEs().setPdc(porcentajeDescuentoCalculado);
 		venta.getEs().setPde(porcentajeDescuentoExtra);		
-		venta.getEs().setMp(metodoDePago.getId());
-		venta.getEs().setAmc(autorizacion);
+		
+		
 		venta.getEs().setI(Constants.IVA);		
 		venta.getEs().setnElem(numElemVta);
 		venta.getEs().setS(MemoryDAO.getSucursalId());
@@ -149,6 +131,7 @@ public class VentaSesion {
 		venta.getEs().setDesc(descuentoCalculado);
 		venta.getEs().setTot(total);
 		venta.getEs().setnElem(numElemVta);
+		venta.getEs().setEd(detalleVentaTableItemList.size());
 
 		return venta;
 	}
@@ -319,9 +302,18 @@ public class VentaSesion {
 		MetodoDePago mp1 = MemoryDAO.getMetodoDePago(es.getMetodoDePagoId());
 		
 		es.setFormaDePagoDescripcion(fp1.getDescripcion());
-		es.setMetodoDePagoDescripcion(mp1.getDescripcion());
+		if(mp1.getDescripcion().length()>=15){
+			if(mp1.getId()==Constants.ID_MDP_EFECTIVO_Y_TARJETA){
+				es.setMetodoDePagoDescripcion("EFEC.+TARJ.");
+			} else{
+				es.setMetodoDePagoDescripcion(mp1.getDescripcion());
+			}
+		}else{
+			es.setMetodoDePagoDescripcion(mp1.getDescripcion());
+		}
+		logger.debug("->generaJarpeReportsInfoDTOTicket:numAuto="+es.getAprobacionVisaMastercard()+", FP{"+es.getFormaDePagoId()+","+es.getFormaDePagoDescripcion()+"},MP{"+es.getMetodoDePagoId()+","+es.getMetodoDePagoDescripcion()+"}, entradaSalidaFooter:\n"+entradaSalidaFooter);
 		
-		return GeneradorImpresionPedidoVenta.generaJarpeReportsInfoDTOTextTicket(es, esdList, suc, usuarioLogedin);		
+		return GeneradorImpresionPedidoVenta.generaJarpeReportsInfoDTOTextTicket(es, esdList, suc, usuarioLogedin,false);
 	}
 	
 }
