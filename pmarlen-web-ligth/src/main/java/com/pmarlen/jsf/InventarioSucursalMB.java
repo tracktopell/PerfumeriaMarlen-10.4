@@ -52,7 +52,8 @@ public class InventarioSucursalMB implements Serializable {
 	    
 	private AlmacenProductoQuickView selected;
 	@PostConstruct
-    public void init() {				
+    public void init() {
+		entityList =  null;
 		viewRows=10;
 		sucursalId = 2;
 		getSucursalesList();

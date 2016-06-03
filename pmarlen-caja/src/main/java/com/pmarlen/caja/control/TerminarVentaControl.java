@@ -62,6 +62,10 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 
 		this.terminarVentaDlg.getAceptar().addActionListener(this);
 		this.terminarVentaDlg.getCancelar().addActionListener(this);
+		
+		this.terminarVentaDlg.getAceptarTV().addActionListener(this);
+		this.terminarVentaDlg.getCancelarTV().addActionListener(this);
+		this.terminarVentaDlg.getCambioTV().addActionListener(this);
 	}
 
 	public TerminarVentaDlg getCierreCajaJFrame() {
@@ -111,17 +115,23 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == terminarVentaDlg.getRecibido()) {
-			//recibido_ActionPerformed();
+			recibido_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getCargo()) {
-			//cargo_ActionPerformed();
+			cargo_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getAutorizacion()) {
-			//autorizacion_ActionPerformed();
+			autorizacion_ActionPerformed();
 		} else if(e.getSource() == terminarVentaDlg.getCalcularCambio()){
 			calcularCambio_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getAceptar()) {
 			aceptar_ActionPerformed();
 		} else if (e.getSource() == terminarVentaDlg.getCancelar()) {
 			cancelar_ActionPerformed();
+		} else if (e.getSource() == terminarVentaDlg.getAceptarTV()) {
+			aceptar_ActionPerformed();
+		} else if (e.getSource() == terminarVentaDlg.getCancelarTV()) {
+			cancelar_ActionPerformed();
+		} else if(e.getSource() == terminarVentaDlg.getCambioTV()){
+			calcularCambio_ActionPerformed();
 		}
 	}
 	
@@ -141,7 +151,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		logger.info("[USER]->aceptar_ActionPerformed()");
 		if (validateAll()) {
 			registrarVenta();
-			JOptionPane.showMessageDialog(terminarVentaDlg, "SE REGISTRO LA VENTA CORRECTAMENTE", "ACEPTAR", JOptionPane.INFORMATION_MESSAGE);
+			//JOptionPane.showMessageDialog(terminarVentaDlg, "SE REGISTRO LA VENTA CORRECTAMENTE", "ACEPTAR", JOptionPane.INFORMATION_MESSAGE);
 			terminarVentaDlg.dispose();
 			//terminarVentaDlg = null;
 		}

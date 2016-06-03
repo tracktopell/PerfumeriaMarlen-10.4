@@ -158,7 +158,8 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		logger.info("[USER]->codigoBuscar_ActionPerformed:codigoBuscar=->" + codigoBuscar+"<-");
 		String[] linesCBArr = codigoBuscar.split("(\\r?\\n)|([ ]+)");
 		List<I> encontrados=new ArrayList<I>();
-		StringBuilder sbNoEncontrados=new StringBuilder();
+		StringBuilder sbNoEncontrados   = new StringBuilder();
+		StringBuilder sbNoHayExistencia = new StringBuilder();
 		I productoEncontrado = null;
 		I productoEncontradoSinExistencia = null;
 		
@@ -178,7 +179,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 				productoEncontrado = MemoryDAO.fastSearchProducto(cdLineCB);
 				if(productoEncontrado == null){
 					logger.trace("\t\t\tcodigoBuscar_ActionPerformed:producto no encontrado:"+cdLineCB);
-					sbNoEncontrados.append(cdLineCB).append(" ");
+					sbNoEncontrados.append(cdLineCB).append(" ");					
 				} else {
 					logger.trace("\t\t\tcodigoBuscar_ActionPerformed:producto encontrado:"+productoEncontrado);
 					encontrados.add(productoEncontrado);					
@@ -192,40 +193,51 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			final HashMap<Integer, Almacen> tipoAlmacen = ApplicationLogic.getInstance().getTipoAlmacen();
 			for(I i:encontrados){
 				productoEncontrado = i;
+				
+				final ArrayList<PedidoVentaDetalleTableItem> detalleVentaTableItemList = ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList();
+				int cantA=0;
+				for(PedidoVentaDetalleTableItem dvpi: detalleVentaTableItemList){
+					if(dvpi.getProducto().getCodigoBarras().equals(productoEncontrado.getCb()) && dvpi.getTipoAlmacen() == tipoAlmacenSeleccionado){
+						cantA += dvpi.getPvd().getC();
+					}
+				}
+				
 				if(!estadoChecando){
 					ESD esd = new ESD();
 					esd.setTa(tipoAlmacenSeleccionado);					
 					esd.setA(tipoAlmacen.get(tipoAlmacenSeleccionado).getId());
 					esd.setC(1);
-					boolean existencia=false;
 					
-					if(		productoEncontrado.getA1c() <= 0 ||
-							productoEncontrado.getaRc() <= 0 ||
-							productoEncontrado.getaOc() <= 0    ) {
-						logger.info("EN ALGUN ALMACEN NO HAY CANTIDAD SUFICIENTE ["+productoEncontrado.getA1c()+"|"+productoEncontrado.getaRc()+"|"+productoEncontrado.getaOc()+"] EN ALMACEN["+tipoAlmacenSeleccionado+"] PARA ="+productoEncontrado.getCb());
-					}
-					
-					
-					if(tipoAlmacenSeleccionado == Constants.ALMACEN_PRINCIPAL && productoEncontrado.getA1c() > 0) {
-						esd.setP(productoEncontrado.getA1p());
-						existencia = true;
+					boolean huboExistencia=false;
+								
+					if(tipoAlmacenSeleccionado == Constants.ALMACEN_PRINCIPAL) {
+						if((productoEncontrado.getA1c() - cantA ) >= 1){
+							esd.setP(productoEncontrado.getA1p());
+							huboExistencia = true;
+						}
+						
 					} else if(tipoAlmacenSeleccionado == Constants.ALMACEN_REGALIAS ) {
-						esd.setP(productoEncontrado.getaRp());
-						existencia = true;
+						if(( productoEncontrado.getaRc() - cantA ) >=1){
+							esd.setP(productoEncontrado.getaRp());
+							huboExistencia = true;
+						}
+						
 					} else if(tipoAlmacenSeleccionado == Constants.ALMACEN_OPORTUNIDAD ) {
-						esd.setP(productoEncontrado.getaOp());
-						existencia = true;
-					} else {
-						throw new IllegalStateException("NO HAY TIPO ALMACEN SELECCIONADO: tipoAlmacenSeleccionado="+tipoAlmacenSeleccionado);
+						if((productoEncontrado.getaOc() - cantA ) >=1){
+							esd.setP(productoEncontrado.getaOp());
+							huboExistencia = true;
+						}						
 					}
-					
-					if(existencia) {
+
+					if(huboExistencia) {
 						esd.setCb(productoEncontrado.getCb());
 						PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, tipoAlmacenSeleccionado);
 						logger.debug("\t\t=> + "+esd.getC()+" x "+esd.getCb()+"("+tipoAlmacenSeleccionado+") ["+esd.getA()+"]");
 						ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().add(detalleVentaTableItemNuevo);
 						contAgregados++;
 					} else {
+						logger.debug("\t\t=>   "+esd.getC()+" x "+esd.getCb()+"("+tipoAlmacenSeleccionado+") ["+esd.getA()+"] NO HAY EXISTENCIA: {"+productoEncontrado.getA1c()+" | "+productoEncontrado.getaRc()+" | "+productoEncontrado.getaOc()+" } + "+cantA);
+						sbNoHayExistencia.append(productoEncontrado.getCb()).append(" ");
 						productoEncontradoSinExistencia = productoEncontrado;
 					}
 				}
@@ -244,6 +256,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		}
 		
 		final String noEncotrados = sbNoEncontrados.toString().trim();
+		final String noHayExistencia = sbNoHayExistencia.toString().trim();
 		if(noEncotrados.length() > 1) {
 			new Thread() {
 				@Override
@@ -254,7 +267,30 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					logger.debug("\t\t\tcodigoBuscar_ActionPerformed:ROJO:["+noEncotrados+"]");
 					try {
 						for (int i = 0; i < 3; i++) {
-							panelVenta.getCodigoBuscar().setBackground(Color.red);
+							panelVenta.getCodigoBuscar().setBackground(Color.RED);
+							Thread.sleep(500);
+							panelVenta.getCodigoBuscar().setBackground(pc);
+							Thread.sleep(100);
+						}
+					} catch (InterruptedException ex) {
+						
+					} finally {
+						panelVenta.getCodigoBuscar().setBackground(pc);
+						panelVenta.getCodigoBuscar().setText("");
+					}
+				}
+			}.start();
+		} else if(noHayExistencia.length() > 1) {
+			new Thread() {
+				@Override
+				public void run() {
+					panelVenta.getCodigoBuscar().setText(noHayExistencia);
+					Color pc = panelVenta.getCodigoBuscar().getBackground();
+					panelVenta.getCodigoBuscar().setBackground(Color.red);
+					logger.debug("\t\t\tcodigoBuscar_ActionPerformed:ORANGE:["+noEncotrados+"]");
+					try {
+						for (int i = 0; i < 3; i++) {
+							panelVenta.getCodigoBuscar().setBackground(Color.ORANGE);
 							Thread.sleep(500);
 							panelVenta.getCodigoBuscar().setBackground(pc);
 							Thread.sleep(100);

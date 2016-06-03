@@ -30,7 +30,7 @@ descontinuados_DEVE:
 	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD) PMDB104_DEVE  < ../pmarlen-commons/db_resources/sql/DESCONTINUADOS.mysql.sql
 
 mmigrateTo_PM104_DEVE:
-#	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD)               < ../pmarlen-commons/db_resources/sql/DROP_PM104_DEVE.mysql.sql
+	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD)               < ../pmarlen-commons/db_resources/sql/DROP_PM104_DEVE.mysql.sql
 	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD) PMDB104_DEVE  < /usr/local/pmarlen_mysqldump/PMDB103_PROD_mysqldump_LAST.sql	
 	mysql --default-character-set=utf8 -u root -p$(MYSQL_ROOT_PASSWORD) PMDB104_DEVE  < ../pmarlen-commons/db_resources/sql/MIGRATION.mysql.sql
 

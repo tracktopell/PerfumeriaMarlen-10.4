@@ -45,23 +45,26 @@ public class EntradaSalidaFooter implements Serializable{
 		this.totalUnidades = 0;
 	}
 	
-	public void calculaTotalesSucDesde(EntradaSalida pv,List<? extends EntradaSalidaDetalle> dvpList){
+	public void calculaTotalesSucDesde(EntradaSalidaQuickView pv,List<? extends EntradaSalidaDetalle> dvpList){
 		logger.debug("calculaTotalesSucDesde: Suc:"+pv.getSucursalId()+"<-------------------------------------");
 		reset();
 		double importeReg = 0.0;
 		double importeRegNG = 0.0;
 		totalUnidades = 0;
-		int cantMayoreo = 0;
+		
 		
 		double subTotal1ra = 0.0;	
 		double subTotalOpo = 0.0;
 		double subTotalReg = 0.0;
-
-		for(EntradaSalidaDetalle dvp: dvpList){			
+		int totalUnidadesDescontables = 0;
+		for(EntradaSalidaDetalle dvp: dvpList){
 			totalUnidades     += dvp.getCantidad();
-			if(dvp.getCantidad()>cantMayoreo){
-				cantMayoreo = dvp.getCantidad();
-			}
+			if(dvp instanceof EntradaSalidaDetalleQuickView){
+				EntradaSalidaDetalleQuickView dvpq = (EntradaSalidaDetalleQuickView)dvp;
+				if(dvpq.getApTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+					totalUnidadesDescontables += dvp.getCantidad();
+				}
+			}			
 			importeReg         = dvp.getCantidad()*dvp.getPrecioVenta();
 			importeIVA        += importeReg - (importeReg / Constants.MAS_IVA);
 			importeRegNG       = (importeReg / Constants.MAS_IVA);
@@ -79,8 +82,8 @@ public class EntradaSalidaFooter implements Serializable{
 		logger.debug("calculaTotalesSucDesde: pdc="+pdc+", pde="+pde+", pv.getAutorizaDescuento()="+pv.getAutorizaDescuento()+",subTotalBruto="+subTotalBruto);
 		if(pv.getAutorizaDescuento()!=null && pv.getAutorizaDescuento().intValue()==1){			
 			
-			logger.debug("calculaTotalesSucDesde: Pedido de SUCURSAL, recalculando: cantMayoreo="+cantMayoreo);
-			if(cantMayoreo>=12){
+			logger.debug("calculaTotalesSucDesde: Pedido de SUCURSAL, recalculando: totalUnidades="+totalUnidades);
+			if(totalUnidadesDescontables>=12 || totalUnidades>=12){
 				descuentoCalculado = 10;
 			} else {
 				if (subTotalBruto >= 100.0 && subTotalBruto < 200.0) {
@@ -95,7 +98,6 @@ public class EntradaSalidaFooter implements Serializable{
 				descuentoExtra = 0;
 			}				
 
-			
 			descuentoAplicado         = descuentoCalculado + descuentoExtra;
 			importeDescuentoExtra     = (subTotalBruto * descuentoExtra)/100.0;						
 			importeDescuentoCalculado = (subTotalBruto * descuentoCalculado)/100.0;			

@@ -22,6 +22,7 @@ public class ESD {
 		esd.setCantidad(c);
 		esd.setPrecioVenta(p);
 		esd.setDev(dev);
+		esd.setApTipoAlmacen(ta);
 		return esd;
 	}
 

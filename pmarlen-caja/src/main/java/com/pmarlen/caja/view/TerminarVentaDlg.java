@@ -8,6 +8,7 @@ package com.pmarlen.caja.view;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 
 /**
@@ -69,6 +70,11 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jPanel2 = new javax.swing.JPanel();
         aceptar = new javax.swing.JButton();
         cancelar = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        aceptarTV = new javax.swing.JMenuItem();
+        cancelarTV = new javax.swing.JMenuItem();
+        cambioTV = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("TERMINAR VENTA");
@@ -184,7 +190,7 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 0));
 
         calcularCambio.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
-        calcularCambio.setText("CAMBIO :");
+        calcularCambio.setText("CAMBIO [ F5 ]:");
         calcularCambio.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         calcularCambio.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         calcularCambio.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -240,24 +246,45 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 50, 5));
 
         aceptar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        aceptar.setText("ACEPTAR");
+        aceptar.setText("ACEPTAR [ F1 ]");
         jPanel2.add(aceptar);
 
         cancelar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        cancelar.setText("CANCELAR");
+        cancelar.setText("CANCELAR [ F12 ]");
         jPanel2.add(cancelar);
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
+
+        jMenu1.setText("Archivo");
+
+        aceptarTV.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        aceptarTV.setText("ACEPTAR");
+        jMenu1.add(aceptarTV);
+
+        cancelarTV.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12, 0));
+        cancelarTV.setText("CANCELAR");
+        jMenu1.add(cancelarTV);
+
+        cambioTV.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        cambioTV.setText("CAMBIO");
+        jMenu1.add(cambioTV);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
 
         setSize(new java.awt.Dimension(987, 486));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aceptar;
+    private javax.swing.JMenuItem aceptarTV;
     private javax.swing.JTextField autorizacion;
     private javax.swing.JButton calcularCambio;
     private javax.swing.JTextField cambio;
+    private javax.swing.JMenuItem cambioTV;
     private javax.swing.JButton cancelar;
+    private javax.swing.JMenuItem cancelarTV;
     private javax.swing.JTextField cargo;
     private javax.swing.JTextField cleinteNombre;
     private javax.swing.JTextField descuento;
@@ -269,6 +296,8 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -365,5 +394,16 @@ public class TerminarVentaDlg extends javax.swing.JDialog {
 	public JLabel getTerminalTarjeta() {
 		return terminalTarjeta;
 	}
-	
+
+	public JMenuItem getAceptarTV() {
+		return aceptarTV;
+	}
+
+	public JMenuItem getCancelarTV() {
+		return cancelarTV;
+	}
+
+	public JMenuItem getCambioTV() {
+		return cambioTV;
+	}	
 }

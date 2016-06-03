@@ -177,11 +177,11 @@ public class VentaSesion {
 		}
 		numElemVta = nunElemDescontablesVta + numElemSinDescVta;
 		totalBruto = totalBrutoDescontable + totalBrutoFijo;
-		logger.debug("calcularTotales:totalBrutoDescontable="+totalBrutoDescontable+", nunElemDescontablesVta="+nunElemDescontablesVta+", max12="+max12);
+		logger.debug("calcularTotales:totalBrutoDescontable="+totalBrutoDescontable+", nunElemDescontablesVta="+nunElemDescontablesVta+", max12="+max12+", nunElemDescontablesVta="+nunElemDescontablesVta);
 		if(		MemoryDAO.getSucursal()!= null &&
 				(	MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=null && 
 					MemoryDAO.getSucursal().getDescuentoMayoreoHabilitado()!=0)){
-			if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY2_SUC || max12 >= 12){
+			if(totalBrutoDescontable >= Constants.IMPORTE_DES_MAY2_SUC || nunElemDescontablesVta >= 12){
 				descuentoFactor   = Constants.FACTOR_DES_MAY2_SUC;
 				porcentajeDescuentoCalculado     = 10;
 				descuentoAplicado = true;
