@@ -11,6 +11,7 @@ import com.pmarlen.caja.model.Notificacion;
 import com.pmarlen.caja.model.SyncUpdateListener;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
+import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.I;
 import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
@@ -55,7 +56,8 @@ public class MemoryDAO {
 	private static Properties properties = new Properties();
 	private static final String uriServiceIAmAlive    = "/rest/iamaliveservice/hello";
 	private static final String uriServiceZipSync     = "/rest/syncservice/sync";
-	private static final String uriSaldoEstimado      = "/rest/syncservice/saldoEstimado";	
+	private static final String uriSaldoEstimado      = "/rest/syncservice/saldoEstimado";
+	private static final String uriBuscarTicket       = "/rest/syncservice/ticket";	
 	private static boolean enviandoCierreCaja         = false;
 	private static boolean enviandoCierreCorrectmente = false;	
 	private static final String corteCajaDTOjsonFile    = "CorteCajaDTO.json";
@@ -818,7 +820,7 @@ public class MemoryDAO {
 		
 		try {
 			url = new URL(getServerContext()+uriSaldoEstimado+"/"+getSucursalId()+"/"+getNumCaja());
-			logger.debug("getRemoteSaldoEstimado: url::"+url);
+			logger.debug("getRemoteSaldoEstimado: url="+url);
 			HttpURLConnection conn = (HttpURLConnection)url.openConnection();			
 			conn.setConnectTimeout(URL_CONNECTION_TIMEOUT);			
 			conn.setReadTimeout(URL_CONNECTION_TIMEOUT);			
@@ -834,6 +836,49 @@ public class MemoryDAO {
 		return saldoEstimado;
 	}
 
+	public static ES_ESD getTicket(String ticket) throws IOException{
+		ES_ESD es_esd =  null;
+		
+		URL url = null;
+		InputStream is=null;
+		Gson gson=new Gson();
+		try {
+			url = new URL(getServerContext()+uriBuscarTicket+"/"+ticket);
+			logger.debug("getTicket: url="+url);
+			HttpURLConnection conn = (HttpURLConnection)url.openConnection();			
+			conn.setConnectTimeout(URL_CONNECTION_TIMEOUT);			
+			conn.setReadTimeout(URL_CONNECTION_TIMEOUT);			
+			is = conn.getInputStream();
+			
+			ByteArrayOutputStream baos= new ByteArrayOutputStream();
+			int r=0;
+			byte[] buffer=new byte[1024];
+			while((r=is.read(buffer))!=-1){
+				baos.write(buffer, 0, r);
+				baos.flush();
+			}
+			baos.close();
+			is.close();
+			logger.debug("getTicket:\tOK read.");
+
+			byte[]content = baos.toByteArray();
+			logger.debug("getTicket:\tcontent.length="+content.length);
+
+			String jsonContent=new String(content);					
+
+			logger.debug("getTicket:\tjsonContent.size="+jsonContent.length()+": jsonContent="+jsonContent);
+			
+			es_esd = gson.fromJson(jsonContent, ES_ESD.class);
+			
+			is.close();
+		}catch(Exception e){
+			logger.error("getTicket: error", e);
+			throw new IOException("No se puede Obtener Remotamente el saldo:"+e.getMessage());
+		}
+		return es_esd;
+	}
+	
+	
 	public static void iniciaEnvioCierreCaja() {
 		enviandoCierreCaja = true;
 		enviandoCierreCorrectmente = false;

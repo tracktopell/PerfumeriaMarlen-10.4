@@ -345,7 +345,6 @@ public class EntradaSalidaDAO {
 		return x;
 	}
 
-	@Deprecated
 	public ArrayList<EntradaSalidaDetalleQuickView> findAllESDByEntradaSalida(int pedidoVentaId) throws DAOException {
 		ArrayList<EntradaSalidaDetalleQuickView> r = new ArrayList<EntradaSalidaDetalleQuickView>();
 
@@ -356,7 +355,7 @@ public class EntradaSalidaDAO {
 			conn = getConnection();
 			
 			ps = conn.prepareStatement(
-					"SELECT   P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,AP.PRECIO,AP.CANTIDAD,AP.UBICACION,ESD.ID AS ESD_ID,A.ID AS ALMACEN_ID,A.TIPO_ALMACEN,ESD.CANTIDAD AS CANTIDAD_ESD,ESD.PRECIO_VENTA,ESD.DEV\n"
+					"SELECT   P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,AP.PRECIO,AP.CANTIDAD,AP.UBICACION,ESD.ID AS ESD_ID,A.ID AS ALMACEN_ID,A.TIPO_ALMACEN,ESD.CANTIDAD AS CANTIDAD_ESD,ESD.PRECIO_VENTA,ESD.DEV,ESD.ESD_ID_DEV\n"
 					+ "FROM   ENTRADA_SALIDA ES,\n"
 					+ "       ENTRADA_SALIDA_DETALLE ESD,\n"
 					+ "       PRODUCTO P,\n"
@@ -387,7 +386,8 @@ public class EntradaSalidaDAO {
 				x.setProductoContenido(rs.getString("CONTENIDO"));
 				x.setProductoUnidadMedida(rs.getString("UNIDAD_MEDIDA"));
 				x.setPrecioVenta(rs.getDouble("PRECIO_VENTA"));
-				x.setDev(rs.getString("DEV"));				
+				x.setDev((Integer)rs.getObject("DEV"));	
+				x.setDev((Integer)rs.getObject("ESD_ID_DEV"));	
 				x.setProductoUnidadEmpaque(rs.getString("UNIDAD_EMPAQUE"));
 				x.setProductoUnidadesPorCaja(rs.getString("UNIDADES_X_CAJA"));
 				x.setCantidad(rs.getInt("CANTIDAD_ESD"));
@@ -1131,8 +1131,8 @@ public class EntradaSalidaDAO {
 			}
 			ps.close();
 			logger.info("->EntradaSalida after Insert:"+x.getId());
-			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA) "
-					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA,DEV,ESD_ID_DEV) "
+					+ " VALUES(?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int rESD = 0;
 			for (EntradaSalidaDetalle esd1 : pvdList) {
 				int ciESD = 1;
@@ -1149,6 +1149,8 @@ public class EntradaSalidaDAO {
 				psESD.setInt(ciESD++, esd1.getAlmacenId());
 				psESD.setInt(ciESD++, esd1.getCantidad());
 				psESD.setDouble(ciESD++, esd1.getPrecioVenta());
+				psESD.setObject(ciESD++, esd1.getDev());
+				psESD.setObject(ciESD++, esd1.getEsIdDev());
 
 				rESD += psESD.executeUpdate();
 			}
@@ -1156,16 +1158,16 @@ public class EntradaSalidaDAO {
 			
 			logger.debug("x.getEsIdDev():"+x.getEsIdDev());
 			if(tipoMov == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION && x.getEsIdDev()!=null){
-				psESD = conn.prepareStatement("UPDATE ENTRADA_SALIDA_DETALLE SET DEV='S' WHERE ENTRADA_SALIDA_ID=? AND CODIGO_BARRAS=?");
+				psESD = conn.prepareStatement("UPDATE ENTRADA_SALIDA_DETALLE SET DEV=DEV+? WHERE ID=?");
 				int rESDd=0;
 				for (EntradaSalidaDetalle esd2 : pvdList) {
 					int iESDd = 1;
 
 					psESD.clearParameters();
 					psESD.clearWarnings();
-
+					
+					psESD.setInt    (iESDd++, esd2.getCantidad());
 					psESD.setInt	(iESDd++, x.getEsIdDev());
-					psESD.setString	(iESDd++, esd2.getProductoCodigoBarras());
 					
 					rESDd += psESD.executeUpdate();
 				}
@@ -1330,7 +1332,7 @@ public class EntradaSalidaDAO {
 				}
 			}
 			logger.info("->EntradaSalida after Insert:"+x.getId());
-			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA) "
+			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA,DEV,ESD_ID_DEV) "
 					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int rESD = 0;
 			for (EntradaSalidaDetalle pvd : pvdList) {
@@ -1348,6 +1350,8 @@ public class EntradaSalidaDAO {
 				psESD.setInt(ciESD++, pvd.getAlmacenId());
 				psESD.setInt(ciESD++, pvd.getCantidad());
 				psESD.setDouble(ciESD++, pvd.getPrecioVenta());
+				psESD.setObject(ciESD++, pvd.getDev());
+				psESD.setObject(ciESD++, pvd.getEsIdDev());
 
 				rESD += psESD.executeUpdate();
 			}
@@ -1432,8 +1436,8 @@ public class EntradaSalidaDAO {
 			int rESD = conn.createStatement().executeUpdate("DELETE FROM ENTRADA_SALIDA_DETALLE WHERE ENTRADA_SALIDA_ID=" + x.getId());
 			logger.info("=>DELETE FROM ENTRADA_SALIDA_DETALLE WHERE ENTRADA_SALIDA_ID=" + x.getId()+"; affected="+rESD);
 			
-			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA) "
-					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA,DEV,ESD_ID_DEV) "
+					+ " VALUES(?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			rESD = 0;
 			for (EntradaSalidaDetalle pvd : pvdList) {
 				int ciESD = 1;
@@ -1450,7 +1454,9 @@ public class EntradaSalidaDAO {
 				psESD.setInt(ciESD++, pvd.getAlmacenId());
 				psESD.setInt(ciESD++, pvd.getCantidad());
 				psESD.setDouble(ciESD++, pvd.getPrecioVenta());
-
+				psESD.setObject(ciESD++, pvd.getDev());
+				psESD.setObject(ciESD++, pvd.getEsIdDev());
+				
 				rESD += psESD.executeUpdate();
 				logger.info("\t=>INSERT INTO ENTRADA_SALIDA_DETALLE .... "+pvd.getCantidad()+" X "+pvd.getProductoCodigoBarras()+" @ "+pvd.getAlmacenId());
 			}

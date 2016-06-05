@@ -89,6 +89,29 @@ public class ES {
 //		this.nElem = 0;
 //		this.esTicketDev = null;
 	}
+	
+	public ES(EntradaSalidaQuickView x) {
+		this.tm = x.getTipoMov();
+		this.s = x.getSucursalId();
+		this.fc = x.getFechaCreo().getTime();
+		this.u = x.getUsuarioEmailCreo();
+		this.c = x.getClienteId();
+		this.fp = x.getFormaDePagoId();
+		this.j = x.getCaja();
+		this.i = x.getImporteRecibido();
+		this.nt = x.getNumeroTicket();
+		this.mp = x.getMetodoDePagoId();
+		this.ir = x.getImporteRecibido();
+		this.amc = x.getAprobacionVisaMastercard();
+		this.pdc = x.getPorcentajeDescuentoCalculado();
+		this.pde = x.getPorcentajeDescuentoExtra();
+//		this.stot = 0;
+//		this.desc = 0;
+//		this.tot = x.getTotal();
+		this.nElem = x.getNumElementos();
+		this.ed    = x.getElemDet()!=null?x.getElemDet().intValue():0;
+//		this.esTicketDev = null;
+	}
 
 	/**
 	 * @return the tm

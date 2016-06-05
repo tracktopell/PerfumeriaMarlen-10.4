@@ -11,6 +11,7 @@ import com.pmarlen.caja.view.AperturaCajaJFrame;
 import com.pmarlen.caja.view.CierreCajaJFrame;
 import com.pmarlen.caja.view.DialogConfiguracionBTImpresora;
 import com.pmarlen.caja.view.FramePrincipal;
+import com.pmarlen.caja.view.PanelDevolucion;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.PanelVentas;
 import com.pmarlen.caja.view.ParamsConfigDialog;
@@ -42,6 +43,7 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 	private FramePrincipal    framePrincipal;
 	private PanelVentaControl panelVentaControl;
 	private PanelVentasControl panelVentasControl;
+	private PanelDevolucionControl panelDevolucionControl;
 	boolean coloridoNotificacion=true;
 	private static FramePrincipalControl instance;
 	/**
@@ -69,6 +71,8 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		panelVentaControl  = new PanelVentaControl ((PanelVenta)framePrincipal.getPanelVenta());
 		
 		panelVentasControl = new PanelVentasControl((PanelVentas)framePrincipal.getPanelVentas());
+		
+		panelDevolucionControl = new PanelDevolucionControl((PanelDevolucion)framePrincipal.getPanelDevolucion());
 		
 		framePrincipal.getProductosMenu().addActionListener(this);
 		
@@ -119,6 +123,8 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		framePrincipal.getNotificaciones().addActionListener(this);
 		
 		framePrincipal.getCerrando().setVisible(false);
+		
+		
 	}
 	private static int nei=0;
 	public void estadoInicial() {
@@ -441,7 +447,7 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 	}
 
 	private void coneccionMenu_actionPerformed() {
-		logger.info("[USER]->coneccionMenu_actionPerformed:");		
+		logger.info("[USER]->coneccionMenu_actionPerformed:");
 	}
 	
 	private void preferenciasMenu_actionPerformed(){
@@ -452,7 +458,11 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 	}
 
 	private void nuevaDevolMenu_actionPerformed() {
-		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelDevolucion");		
+		logger.info("[USER]->nuevaDevolMenu_actionPerformed:");
+		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelDevolucion");
+		if(! panelDevolucionControl.isEstadoChecando()){
+			panelDevolucionControl.estadoInicial();
+		}
 	}
 
 	@Override

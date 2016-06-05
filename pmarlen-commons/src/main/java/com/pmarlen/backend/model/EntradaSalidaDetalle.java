@@ -43,9 +43,14 @@ public class EntradaSalidaDetalle implements java.io.Serializable {
     private double precioVenta;
 	
 	/**
-	 * entrada salida dev
+	 * cantidad devuelta
 	 */
-	private String  dev;
+	private Integer  dev;
+
+	/**
+	 * cantidad devuelta
+	 */
+	private Integer  esIdDev;
 
     /** 
      * Default Constructor
@@ -112,11 +117,11 @@ public class EntradaSalidaDetalle implements java.io.Serializable {
         this.precioVenta = v;
     }
 
-	public String getEsIdDev() {
+	public Integer getDev() {
 		return dev;
 	}
 
-	public void setDev(String dev) {
+	public void setDev(Integer dev) {
 		this.dev = dev;
 	}
 
@@ -148,4 +153,18 @@ public class EntradaSalidaDetalle implements java.io.Serializable {
     public String toString() {
         return "com.pmarlen.backend.model.EntradaSalidaDetalle[id = "+id+ "]";
     }
+
+	/**
+	 * @return the esIdDev
+	 */
+	public Integer getEsIdDev() {
+		return esIdDev;
+	}
+
+	/**
+	 * @param esIdDev the esIdDev to set
+	 */
+	public void setEsIdDev(Integer esIdDev) {
+		this.esIdDev = esIdDev;
+	}
 }

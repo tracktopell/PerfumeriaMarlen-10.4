@@ -13,27 +13,56 @@ public class ESD {
 	private int ta;
 	private int c;
 	private double p;
-	private String dev;
-	
+	private int dev;
+	private int esIdDev;
 	public EntradaSalidaDetalleQuickView reverse(){
 		EntradaSalidaDetalleQuickView esd=new EntradaSalidaDetalleQuickView();
 		esd.setProductoCodigoBarras(cb);
 		esd.setAlmacenId(a);
 		esd.setCantidad(c);
 		esd.setPrecioVenta(p);
-		esd.setDev(dev);
+		if(dev>0){
+			esd.setDev(dev);
+		}
+		if(esIdDev>0){
+			esd.setEsIdDev(esIdDev);
+		}
 		esd.setApTipoAlmacen(ta);
 		return esd;
 	}
 
 	public ESD() {
 	}
+
+	public ESD(ESD x) {
+		this.cb = x.cb;
+		this.a  = x.a;
+		this.ta = x.ta;
+		this.c  = x.c;
+		this.p  = x.p;
+		this.dev = x.dev;
+		this.esIdDev = x.esIdDev;
+	}
+	
+
 	
 	public ESD(EntradaSalidaDetalle esd) {
 		cb = esd.getProductoCodigoBarras();
 		a  = esd.getAlmacenId();
 		c  = esd.getCantidad();
 		p  = esd.getPrecioVenta();
+		dev = esd.getDev();
+		esIdDev = esd.getEsIdDev();
+	}
+	
+	public ESD(EntradaSalidaDetalleQuickView esdqv) {
+		cb = esdqv.getProductoCodigoBarras();
+		a  = esdqv.getAlmacenId();
+		c  = esdqv.getCantidad();
+		p  = esdqv.getPrecioVenta();
+		dev = esdqv.getDev()!=null?esdqv.getDev().intValue():0;
+		esIdDev = esdqv.getEsIdDev()!=null?esdqv.getEsIdDev().intValue():0;
+		ta = esdqv.getApTipoAlmacen();
 	}
 	
 
@@ -99,5 +128,13 @@ public class ESD {
 	 */
 	public void setP(double p) {
 		this.p = p;
+	}
+
+	public int getDev() {
+		return dev;
+	}
+
+	public void setDev(int dev) {
+		this.dev = dev;
 	}
 }

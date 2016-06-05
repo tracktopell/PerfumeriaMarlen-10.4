@@ -65,7 +65,7 @@ public class Constants {
 	public static final int TIPO_MOV_MODIFICACION_CODIGOBARRAS = 51;
 	public static final int TIPO_MOV_MODIFICACION_NOMBRE_DESCRIPCION = 52;
 	
-//--------------------------------------------------------------------------
+	//--------------------------------------------------------------------------
 	public static final int ALMACEN_PRINCIPAL = 1;
 	public static final int ALMACEN_OPORTUNIDAD = 2;
 	public static final int ALMACEN_REGALIAS = 3;

@@ -35,6 +35,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 /**
  * /rest/syncservice/sync
  * /rest/syncservice/saldoEstimado/1/2
+ * /rest/syncservice/ticket/1234567890
  * @author alfredo
  */
 @Path("/syncservice/")

@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -23,6 +24,20 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
 	private static DecimalFormat df = new DecimalFormat("$ ###,###,##0.00");
 	private static String imagesDir = null;
+
+	/**
+	 * @return the df
+	 */
+	public static DecimalFormat getDf() {
+		return df;
+	}
+
+	/**
+	 * @return the imagesDir
+	 */
+	public static String getImagesDir() {
+		return imagesDir;
+	}
 	/**
 	 * Creates new form PanelVenta
 	 */
@@ -43,8 +58,8 @@ public class PanelDevolucion extends javax.swing.JPanel {
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         labelTotal6 = new javax.swing.JLabel();
-        codigoBuscar1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        ticket = new javax.swing.JTextField();
+        buscar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         labelTotal4 = new javax.swing.JLabel();
         codigoBuscar = new javax.swing.JTextField();
@@ -66,20 +81,22 @@ public class PanelDevolucion extends javax.swing.JPanel {
         jPanel16 = new javax.swing.JPanel();
         labelTotal3 = new javax.swing.JLabel();
         total = new javax.swing.JTextField();
+        jPanel9 = new javax.swing.JPanel();
+        devolver = new javax.swing.JButton();
         jPanel19 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        detalleVentaJTable1 = new javax.swing.JTable();
+        detalleVentaJTableDev = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         jPanel20 = new javax.swing.JPanel();
         jPanel21 = new javax.swing.JPanel();
         labelTotal2 = new javax.swing.JLabel();
-        numArt1 = new javax.swing.JTextField();
+        numArtDev = new javax.swing.JTextField();
         jPanel23 = new javax.swing.JPanel();
         labelTotal5 = new javax.swing.JLabel();
-        total1 = new javax.swing.JTextField();
+        totalDev = new javax.swing.JTextField();
         jPanel18 = new javax.swing.JPanel();
         labelTotal7 = new javax.swing.JLabel();
-        total2 = new javax.swing.JTextField();
+        motivoDev = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         terminar = new javax.swing.JButton();
@@ -97,12 +114,12 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal6.setPreferredSize(new java.awt.Dimension(200, 30));
         jPanel8.add(labelTotal6);
 
-        codigoBuscar1.setColumns(10);
-        codigoBuscar1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jPanel8.add(codigoBuscar1);
+        ticket.setColumns(15);
+        ticket.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jPanel8.add(ticket);
 
-        jButton1.setText("BUSCAR");
-        jPanel8.add(jButton1);
+        buscar.setText("BUSCAR");
+        jPanel8.add(buscar);
 
         jPanel7.add(jPanel8);
 
@@ -114,7 +131,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal4.setPreferredSize(new java.awt.Dimension(200, 30));
         jPanel2.add(labelTotal4);
 
-        codigoBuscar.setColumns(10);
+        codigoBuscar.setColumns(15);
         codigoBuscar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jPanel2.add(codigoBuscar);
 
@@ -122,7 +139,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
         add(jPanel7, java.awt.BorderLayout.NORTH);
 
-        jPanel17.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
+        jPanel17.setLayout(new javax.swing.BoxLayout(jPanel17, javax.swing.BoxLayout.X_AXIS));
 
         jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ELEMENTOS DE VENTA", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
         jPanel13.setLayout(new java.awt.BorderLayout());
@@ -201,14 +218,21 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
         jPanel17.add(jPanel13);
 
+        jPanel9.setLayout(new javax.swing.BoxLayout(jPanel9, javax.swing.BoxLayout.Y_AXIS));
+
+        devolver.setText(">");
+        jPanel9.add(devolver);
+
+        jPanel17.add(jPanel9);
+
         jPanel19.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ELEMENTOS DEVUELTOS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
         jPanel19.setLayout(new java.awt.BorderLayout());
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(500, 200));
 
-        detalleVentaJTable1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        detalleVentaJTable1.setRowHeight(28);
-        jScrollPane2.setViewportView(detalleVentaJTable1);
+        detalleVentaJTableDev.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        detalleVentaJTableDev.setRowHeight(28);
+        jScrollPane2.setViewportView(detalleVentaJTableDev);
 
         jPanel19.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
@@ -222,11 +246,11 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal2.setText("# ART. :");
         jPanel21.add(labelTotal2);
 
-        numArt1.setEditable(false);
-        numArt1.setColumns(4);
-        numArt1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        numArt1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel21.add(numArt1);
+        numArtDev.setEditable(false);
+        numArtDev.setColumns(4);
+        numArtDev.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        numArtDev.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel21.add(numArtDev);
 
         jPanel20.add(jPanel21);
 
@@ -236,11 +260,11 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal5.setText("Total :");
         jPanel23.add(labelTotal5);
 
-        total1.setEditable(false);
-        total1.setColumns(6);
-        total1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        total1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel23.add(total1);
+        totalDev.setEditable(false);
+        totalDev.setColumns(6);
+        totalDev.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        totalDev.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel23.add(totalDev);
 
         jPanel20.add(jPanel23);
 
@@ -252,11 +276,11 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal7.setText("Motivo :");
         jPanel18.add(labelTotal7);
 
-        total2.setEditable(false);
-        total2.setColumns(15);
-        total2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        total2.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jPanel18.add(total2);
+        motivoDev.setEditable(false);
+        motivoDev.setColumns(15);
+        motivoDev.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        motivoDev.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel18.add(motivoDev);
 
         jPanel5.add(jPanel18);
 
@@ -291,13 +315,13 @@ public class PanelDevolucion extends javax.swing.JPanel {
     }//GEN-LAST:event_cancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buscar;
     private javax.swing.JButton cancelar;
     private javax.swing.JTextField codigoBuscar;
-    private javax.swing.JTextField codigoBuscar1;
     private javax.swing.JTextField descuento;
     private javax.swing.JTable detalleVentaJTable;
-    private javax.swing.JTable detalleVentaJTable1;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTable detalleVentaJTableDev;
+    private javax.swing.JButton devolver;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
@@ -317,6 +341,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelDescuento;
@@ -328,14 +353,15 @@ public class PanelDevolucion extends javax.swing.JPanel {
     private javax.swing.JLabel labelTotal5;
     private javax.swing.JLabel labelTotal6;
     private javax.swing.JLabel labelTotal7;
+    private javax.swing.JTextField motivoDev;
     private javax.swing.JTextField numArt;
-    private javax.swing.JTextField numArt1;
+    private javax.swing.JTextField numArtDev;
     private javax.swing.JTextField subtotal;
     private javax.swing.JButton terminar;
+    private javax.swing.JTextField ticket;
     private javax.swing.ButtonGroup tipoAlmacen;
     private javax.swing.JTextField total;
-    private javax.swing.JTextField total1;
-    private javax.swing.JTextField total2;
+    private javax.swing.JTextField totalDev;
     // End of variables declaration//GEN-END:variables
 
 
@@ -408,4 +434,50 @@ public class PanelDevolucion extends javax.swing.JPanel {
 		}
 	}
 
+	/**
+	 * @return the buscar
+	 */
+	public javax.swing.JButton getBuscar() {
+		return buscar;
+	}
+
+	/**
+	 * @return the detalleVentaJTableDev
+	 */
+	public javax.swing.JTable getDetalleVentaJTableDev() {
+		return detalleVentaJTableDev;
+	}
+
+	/**
+	 * @return the motivoDev
+	 */
+	public javax.swing.JTextField getMotivoDev() {
+		return motivoDev;
+	}
+
+	/**
+	 * @return the numArtDev
+	 */
+	public javax.swing.JTextField getNumArtDev() {
+		return numArtDev;
+	}
+
+	/**
+	 * @return the ticket
+	 */
+	public javax.swing.JTextField getTicket() {
+		return ticket;
+	}
+
+	/**
+	 * @return the totalDev
+	 */
+	public javax.swing.JTextField getTotalDev() {
+		return totalDev;
+	}
+
+	public JButton getDevolver() {
+		return devolver;
+	}
+	
 }

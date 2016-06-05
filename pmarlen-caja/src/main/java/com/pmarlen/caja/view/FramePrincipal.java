@@ -18,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import org.apache.log4j.Logger;
@@ -817,6 +818,8 @@ public class FramePrincipal extends javax.swing.JFrame {
 	public JLabel getCerrando() {
 		return cerrando;
 	}
-	
-	
+
+	public JPanel getPanelDevolucion() {
+		return panelDevolucion;
+	}
 }

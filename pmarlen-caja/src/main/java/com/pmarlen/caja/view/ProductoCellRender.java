@@ -78,6 +78,7 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
         precioLabel = new javax.swing.JLabel();
         codigoBarrasLabel = new javax.swing.JLabel();
 
+        setMinimumSize(new java.awt.Dimension(150, 30));
         setPreferredSize(new java.awt.Dimension(217, 60));
         setLayout(new java.awt.BorderLayout());
 

@@ -18,6 +18,12 @@ public class PedidoVentaDetalleTableItem {
 		this.pvd.setC(1);
 		this.tipoAlmacen = tipoAlmacen;
 	}
+
+	public PedidoVentaDetalleTableItem(PedidoVentaDetalleTableItem c) {
+		this.producto    = c.producto;
+		this.pvd         = new ESD(c.getPvd());		
+		this.tipoAlmacen = c.getTipoAlmacen();
+	}
 	
 	public String getShortDesc() {
 		return producto.getCodigoBarras()+" "+producto.getNombre()+"/"+producto.getPresentacion()+"("+producto.getContenido()+producto.getUnidadMedida()+")";
@@ -45,5 +51,10 @@ public class PedidoVentaDetalleTableItem {
 
 	public int getTipoAlmacen() {
 		return tipoAlmacen;
-	}	
+	}
+
+	@Override
+	public String toString() {
+		return producto.getCodigoBarras()+"\n"+producto.getNombre()+"/"+producto.getPresentacion()+"\n("+producto.getContenido()+producto.getUnidadMedida()+")";
+	}
 }
