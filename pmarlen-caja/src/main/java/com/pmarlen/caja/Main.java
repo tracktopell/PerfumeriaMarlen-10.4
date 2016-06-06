@@ -34,6 +34,7 @@ public class Main {
 	//public static final String INTELBTH = "intelbth";
 	public static boolean dinamicDebug=false;
 	public static boolean dinamicTrace=false;
+	public static final int EXIT_UPDATE_REBOOT = 5;
 	/**
 	 * @param args the command line arguments
 	 */
@@ -120,10 +121,10 @@ public class Main {
 		
 		if (ApplicationLogic.getInstance().needsUpdateApplciation()) {
 			int respuesta = JOptionPane.showConfirmDialog(null,
-					"HAY UNA NUEVA VERIÓN PARA INSTALAR,\n ¿ DESEA ACTUALIZAR DE LA VERSIÓN ACTUAL "+
+					"HAY UNA NUEVA VERISÓN PARA INSTALAR,\n ¿ DESEA ACTUALIZAR DE LA VERSIÓN ACTUAL "+
 					ApplicationLogic.getInstance().getVersion()+" A "+ApplicationLogic.getInstance().getVersionRead()+
-					"\n EN ESTE MOMENTO ?",
-					"ACTUALIZACION DISPONIBLE", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					"\n EN ESTE MOMENTO, PARA DESCARGARSE ?",
+					"ACTUALIZACIÓN DISPONIBLE", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			if (respuesta == JOptionPane.YES_OPTION) {
 				logger.info("[USER]->UpdateApp:YES");
@@ -141,7 +142,8 @@ public class Main {
 				
 				if(uafc.isReboot()) {
 					logger.info("[USER]->REBOT AFTER UPDATE");
-					System.exit(3);
+					
+					System.exit(EXIT_UPDATE_REBOOT);
 				}
 				
 				uaf  = null;

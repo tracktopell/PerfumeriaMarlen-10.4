@@ -26,28 +26,36 @@ public class UpadateApplicationJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        cancelar = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         progressUpdate = new javax.swing.JProgressBar();
-        jPanel2 = new javax.swing.JPanel();
-        cancelar = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DESCARGANDO ACTUALIZACIÓN");
-        getContentPane().setLayout(new java.awt.GridLayout(2, 1));
+
+        cancelar.setText("Cancelar");
+        jPanel2.add(cancelar);
+
+        getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
+
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabel1.setText("AVANCE :");
         jPanel1.add(jLabel1);
         jPanel1.add(progressUpdate);
 
-        getContentPane().add(jPanel1);
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        cancelar.setText("Cancelar");
-        jPanel2.add(cancelar);
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Software_update_1.png"))); // NOI18N
+        jPanel3.add(jLabel2);
 
-        getContentPane().add(jPanel2);
+        getContentPane().add(jPanel3, java.awt.BorderLayout.WEST);
 
-        setSize(new java.awt.Dimension(437, 113));
+        setSize(new java.awt.Dimension(464, 283));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -88,8 +96,10 @@ public class UpadateApplicationJFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JProgressBar progressUpdate;
     // End of variables declaration//GEN-END:variables
 

@@ -9,7 +9,6 @@ import com.pmarlen.caja.model.PedidoVentaDetalleTableModel;
 import com.pmarlen.caja.view.FramePrincipal;
 import com.pmarlen.caja.view.PanelDevolucion;
 import com.pmarlen.caja.view.ProductoCellRender;
-import com.pmarlen.caja.view.TerminarVentaDlg;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
@@ -19,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -120,15 +120,24 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		estadoChecando = true;
 	}
 	
-	public void estadoInicial() {		
+	public void estadoInicial() {
+		detalleVentaTableItemList  =  new ArrayList<PedidoVentaDetalleTableItem> ();
+		detalleVentaTableItemList2 =  new ArrayList<PedidoVentaDetalleTableItem> ();
+		devTM  = new DevolucionDetalleTableModel();
+		devTM2 = new PedidoVentaDetalleTableModel();
 		
-		ApplicationLogic.getInstance().getVentaSesion().nuevaSesionVenta();
-		devTM.setDetalleVentaTableItemList(detalleVentaTableItemList);
+		devTM.setDetalleVentaTableItemList(this.detalleVentaTableItemList);
+		devTM2.setDetalleVentaTableItemList(this.detalleVentaTableItemList2);
 		
+		panelDevolucion.getDetalleVentaJTable().setModel(this.devTM);
+		panelDevolucion.getDetalleVentaJTableDev().setModel(this.devTM2);
+
 		panelDevolucion.getTipoAlmacen().clearSelection();
 		panelDevolucion.getDetalleVentaJTable().updateUI();
 		estadoChecando = false;				
 		renderTotal();
+		panelDevolucion.getSucursal().setText("");
+		panelDevolucion.getSucursal().setBackground(panelDevolucion.getTicket().getBackground());
 		panelDevolucion.getTicket().setText("");
 		panelDevolucion.getCodigoBuscar().setText("");
 		panelDevolucion.getTicket().requestFocus();
@@ -231,7 +240,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 	
 	void cancelar_ActionPerformed() {
 		logger.info("[USER]->cancelar_ActionPerformed()");
-		int r = JOptionPane.showConfirmDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "¿Cancelar la Devolucion Actual?", "Devolucion", JOptionPane.YES_NO_OPTION);
+		int r = JOptionPane.showConfirmDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "¿Cancelar la Devolución Actual?", "Devolución", JOptionPane.YES_NO_OPTION);
 		if (r == JOptionPane.YES_OPTION) {
 			estadoInicial();
 			panelDevolucion.getTicket().requestFocus();
@@ -253,11 +262,32 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		int sr = panelDevolucion.getDetalleVentaJTable().getSelectedRow();
 		logger.debug("=>devolver_ActionPerformed:Selected:sr=" + sr);
 		if(sr != -1){
+			
 			PedidoVentaDetalleTableItem pvdDev = detalleVentaTableItemList.get(sr);
 			logger.debug("=>devolver_ActionPerformed:"+pvdDev.getPvd().getDev()+" < "+pvdDev.getPvd().getC()+" ?");
 			if(pvdDev.getPvd().getDev() < pvdDev.getPvd().getC() ){
-				detalleVentaTableItemList2.add(new PedidoVentaDetalleTableItem(pvdDev));
-				pvdDev.getPvd().setDev(pvdDev.getPvd().getDev()+1);
+				PedidoVentaDetalleTableItem pvdiDR = null;
+				
+				for(PedidoVentaDetalleTableItem pvdiDX:detalleVentaTableItemList2){
+					if(	pvdiDX.getProducto().getCodigoBarras().equals(pvdDev.getProducto().getCodigoBarras()) &&
+						pvdiDX.getTipoAlmacen() == pvdDev.getTipoAlmacen()) {
+						pvdiDR = pvdiDX;
+					}
+				}
+				
+				if(pvdiDR == null){
+					pvdiDR = new PedidoVentaDetalleTableItem(pvdDev);
+					
+					pvdiDR.getPvd().setC(1);
+					
+					devolucion.getEsdList().add(pvdiDR.getPvd());
+					detalleVentaTableItemList2.add(pvdiDR);
+					
+				} else {
+					pvdiDR.getPvd().setC(pvdiDR.getPvd().getC() + 1);
+				}
+				
+				pvdDev.getPvd().setDev(pvdDev.getPvd().getDev() + 1);
 				
 				panelDevolucion.getDetalleVentaJTable().updateUI();
 				panelDevolucion.getDetalleVentaJTableDev().updateUI();
@@ -266,6 +296,8 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 					panelDevolucion.getCodigoBuscar().requestFocus();
 					panelDevolucion.getDevolver().setEnabled(false);
 				}
+				
+				renderTotalDev();
 			}
 		} else {
 			panelDevolucion.getDevolver().setEnabled(false);
@@ -277,8 +309,22 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 			public void run(){
 				pedidoVenta = null;
 				try {
+					logger.info("[USER]->buscarEnServidor():");
 					pedidoVenta = MemoryDAO.getTicket(ticketBuscar);
-					logger.info("[USER]->buscarEnServidor(): devolucion="+pedidoVenta);
+					devolucion  = new ES_ESD();
+					devolucion.getEs().setPdc(pedidoVenta.getEs().getPdc());
+					devolucion.getEs().setPde(pedidoVenta.getEs().getPde());
+					logger.debug("buscarEnServidor(): ventaOrigen=\n"+pedidoVenta);
+					int idSuc = pedidoVenta.getEs().getS();
+					String sn = pedidoVenta.getEs().getSn();
+					
+					if(sn != null && sn.contains(Constants.PM_SADECV)){
+						sn = sn.replace(Constants.PM_SADECV, "* ");
+					}
+					panelDevolucion.getSucursal().setText(sn);
+					Date fecha = new Date(pedidoVenta.getEs().getFc());
+					panelDevolucion.getCaja().setText(String.valueOf(pedidoVenta.getEs().getJ()));
+					panelDevolucion.getFecha().setText(Constants.sdfHmnDate.format(fecha));
 					List<ESD> esdList = pedidoVenta.getEsdList();
 					for(ESD esd: esdList){
 						Producto producto = MemoryDAO.fastSearchProducto(esd.getCb()).reverse();
@@ -287,10 +333,23 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 					}
 					
 					panelDevolucion.getDetalleVentaJTable().updateUI();
+					
 					panelDevolucion.getTicket().setEnabled(false);
 					panelDevolucion.getBuscar().setEnabled(false);
-					panelDevolucion.getCodigoBuscar().requestFocus();
-					panelDevolucion.getDevolver().setEnabled(false);
+					panelDevolucion.getDevolver().setEnabled(false);	
+					if(idSuc == MemoryDAO.getSucursalId()){
+						panelDevolucion.getCodigoBuscar().setEnabled(true);
+						panelDevolucion.getDetalleVentaJTable().setEnabled(true);						
+						panelDevolucion.getCodigoBuscar().requestFocus();
+						
+					} else {
+						panelDevolucion.getSucursal().setBackground(Color.RED);
+						panelDevolucion.getCaja().setEnabled(false);
+						panelDevolucion.getCodigoBuscar().setEnabled(false);
+						panelDevolucion.getDetalleVentaJTable().setEnabled(false);
+						
+						panelDevolucion.getTerminar().setEnabled(false);
+					}
 					renderTotal();
 				}catch(Exception e){
 					logger.error("->buscarEnServidor:", e);
@@ -307,20 +366,94 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		renderTotal();
 	}
 	
-	private void renderTotal() {	
+	private void renderTotal() {
+		final List<ESD> esdList = pedidoVenta.getEsdList();
+		double subTotal     = 0.0;
+		double subTotal1ra  = 0.0;
+		double subTotalOpo  = 0.0;
+		double subTotalReg  = 0.0;
+		double importeDesc  = 0.0;
+		double importe      = 0.0;
+		double total             = 0.0;
+		int    numProds = 0;
+		for(ESD esd: esdList){
+			numProds += esd.getC(); 
+			int tipoAlmacen = esd.getTa();
+			importe = esd.getC() * esd.getP();
+			subTotal += importe;
+			if(tipoAlmacen == Constants.ALMACEN_PRINCIPAL){
+				subTotal1ra += importe;
+			} else if(tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD){
+				subTotalOpo += importe;
+			} else if(tipoAlmacen == Constants.ALMACEN_REGALIAS){
+				subTotalReg += importe;
+			}
+		}
+		
+		importeDesc = ((pedidoVenta.getEs().getPdc() + pedidoVenta.getEs().getPde()) * subTotal1ra ) /100.0;
+		total = subTotal - importeDesc;
+		
+		logger.info("renderTotal(): numProds="+numProds);
+		pedidoVenta.getEs().setEd(numProds);
+		
 		logger.info("renderTotal(): devolucion.getEs().getEd()="+pedidoVenta.getEs().getEd());
 		panelDevolucion.getNumArt()    .setText(String.valueOf(pedidoVenta.getEs().getEd()));		
-		final double st = pedidoVenta.getEs().getSt1() + pedidoVenta.getEs().getStO() + pedidoVenta.getEs().getStR();
-		logger.info("renderTotal(): st="+st);
-		panelDevolucion.getSubtotal()  .setText(Constants.df2Decimal.format(st));
-		double desc = pedidoVenta.getEs().getPdc() * st / 100.0;
-		logger.info("renderTotal(): desc="+desc);
-		panelDevolucion.getDescuento() .setText(pedidoVenta.getEs().getPdc()+"% = "+Constants.df2Decimal.format(desc));
-		final double t = st - desc; 
-		logger.info("renderTotal(): t="+t);
-		panelDevolucion.getTotal().setText(Constants.df2Decimal.format(t));
+		
+		logger.info("renderTotal(): subTotal1ra += importe;="+subTotal);
+		panelDevolucion.getSubtotal()  .setText(Constants.df2Decimal.format(subTotal));
+		
+		logger.info("renderTotal(): importeDesc="+importeDesc);
+		String descPorc = pedidoVenta.getEs().getPdc()+"% + "+pedidoVenta.getEs().getPde()+"%";
+		panelDevolucion.getDescuento() .setToolTipText(descPorc);		
+		panelDevolucion.getDescuento() .setText(Constants.df2Decimal.format(importeDesc));
+		
+		logger.info("renderTotal(): total="+total);
+		panelDevolucion.getTotal().setText(Constants.df2Decimal.format(total));
+		
 	}
 
+	private void renderTotalDev() {
+		final List<ESD> esdList = devolucion.getEsdList();
+		double subTotal     = 0.0;
+		double subTotal1ra  = 0.0;
+		double subTotalOpo  = 0.0;
+		double subTotalReg  = 0.0;
+		double importeDesc  = 0.0;
+		double importe      = 0.0;
+		double total             = 0.0;
+		int    numProds = 0;
+		for(ESD esd: esdList){
+			numProds += esd.getC(); 
+			int tipoAlmacen = esd.getTa();
+			importe = esd.getC() * esd.getP();
+			subTotal += importe;
+			if(tipoAlmacen == Constants.ALMACEN_PRINCIPAL){
+				subTotal1ra += importe;
+			} else if(tipoAlmacen == Constants.ALMACEN_OPORTUNIDAD){
+				subTotalOpo += importe;
+			} else if(tipoAlmacen == Constants.ALMACEN_REGALIAS){
+				subTotalReg += importe;
+			}
+		}
+		
+		importeDesc = ((devolucion.getEs().getPdc() + devolucion.getEs().getPde()) * subTotal1ra ) /100.0;
+		total = subTotal - importeDesc;
+		
+		logger.info("renderTotalDev(): numProds="+numProds);
+		devolucion.getEs().setEd(numProds);
+		
+		logger.info("renderTotalDev(): devolucion.getEs().getEd()="+devolucion.getEs().getEd());
+		panelDevolucion.getNumArtDev().setText(String.valueOf(devolucion.getEs().getEd()));		
+		
+		logger.info("renderTotalDev(): subTotal1ra += importe;="+subTotal);
+		logger.info("renderTotalDev(): importeDesc="+importeDesc);
+		
+		logger.info("renderTotalDev(): total="+total);
+		panelDevolucion.getTotalDev().setText(Constants.df2Decimal.format(total));
+		
+	}
+
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == panelDevolucion.getDetalleVentaJTable()) {

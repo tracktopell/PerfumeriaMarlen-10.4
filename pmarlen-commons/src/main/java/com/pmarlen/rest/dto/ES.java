@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 public class ES {
 	private int tm;
 	private int s;
+	private String sn;
 	private long fc;
 	private String u;
 	private int c;
@@ -61,7 +62,7 @@ public class ES {
 		es.setSubTotalReg(stR);
 		es.setTotal(tot);
 		es.setNumElementos(nElem);		
-		es.setElemDet(ed);
+		es.setTotProds(ed);
 		return es;
 	}
 
@@ -70,7 +71,7 @@ public class ES {
 	
 	public ES(EntradaSalida x) {
 		this.tm = x.getTipoMov();
-		this.s = x.getSucursalId();
+		this.s = x.getSucursalId();		
 		this.fc = x.getFechaCreo().getTime();
 		this.u = x.getUsuarioEmailCreo();
 		this.c = x.getClienteId();
@@ -93,6 +94,7 @@ public class ES {
 	public ES(EntradaSalidaQuickView x) {
 		this.tm = x.getTipoMov();
 		this.s = x.getSucursalId();
+		this.sn = x.getSucursalNombre();
 		this.fc = x.getFechaCreo().getTime();
 		this.u = x.getUsuarioEmailCreo();
 		this.c = x.getClienteId();
@@ -409,4 +411,7 @@ public class ES {
 		this.ed = ed;
 	}
 
+	public String getSn() {
+		return sn;
+	}	
 }

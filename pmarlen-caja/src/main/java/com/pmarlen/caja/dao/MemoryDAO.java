@@ -586,7 +586,7 @@ public class MemoryDAO {
 					int compare = ApplicationLogic.getInstance().compareRemoteVersion(remoteCurrentPMCajaVersion);
 					logger.debug("readLocally:paqueteSinc:compare="+compare);
 					if(compare < 0){
-						Notificacion nuevaNotificacion=new Notificacion("UP_"+remoteCurrentPMCajaVersion,"HAY UNA NUEVA VERSIÓN:"+remoteCurrentPMCajaVersion+" DEBE REINICIAR.");
+						Notificacion nuevaNotificacion=new Notificacion("UP_"+remoteCurrentPMCajaVersion,"HAY UNA NUEVA ACTUALIZACION: Ver."+remoteCurrentPMCajaVersion+"\nDEBE REINICIAR POR FAVOR LA APLICACION DE CAJA.");
 						ApplicationLogic.getInstance().add(nuevaNotificacion);
 					}
 				}

@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  * Constants
  */
 public class Constants {
-
+	public static final String PM_SADECV = "PERFUMERIA MARLEN S.A. DE C.V.";
 	public static final String PERFIL_ROOT = "root";
 	public static final String PERFIL_PMARLENUSER = "pmarlenuser";
 	public static final String PERFIL_ADMIN = "admin";

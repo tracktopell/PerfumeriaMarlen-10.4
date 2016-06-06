@@ -55,14 +55,6 @@ public class PanelDevolucion extends javax.swing.JPanel {
     private void initComponents() {
 
         tipoAlmacen = new javax.swing.ButtonGroup();
-        jPanel7 = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
-        labelTotal6 = new javax.swing.JLabel();
-        ticket = new javax.swing.JTextField();
-        buscar = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        labelTotal4 = new javax.swing.JLabel();
-        codigoBuscar = new javax.swing.JTextField();
         jPanel17 = new javax.swing.JPanel();
         jPanel13 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -101,43 +93,25 @@ public class PanelDevolucion extends javax.swing.JPanel {
         jPanel4 = new javax.swing.JPanel();
         terminar = new javax.swing.JButton();
         cancelar = new javax.swing.JButton();
+        jPanel22 = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        labelTotal8 = new javax.swing.JLabel();
+        codigoBuscar = new javax.swing.JTextField();
+        jPanel7 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        labelTotal6 = new javax.swing.JLabel();
+        ticket = new javax.swing.JTextField();
+        buscar = new javax.swing.JButton();
+        jPanel11 = new javax.swing.JPanel();
+        labelTotal9 = new javax.swing.JLabel();
+        sucursal = new javax.swing.JTextField();
+        labelTotal10 = new javax.swing.JLabel();
+        caja = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        labelTotal4 = new javax.swing.JLabel();
+        fecha = new javax.swing.JTextField();
 
         setLayout(new java.awt.BorderLayout());
-
-        jPanel7.setLayout(new java.awt.GridLayout(2, 1));
-
-        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-
-        labelTotal6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        labelTotal6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        labelTotal6.setText("TICKET VENTA :");
-        labelTotal6.setPreferredSize(new java.awt.Dimension(200, 30));
-        jPanel8.add(labelTotal6);
-
-        ticket.setColumns(15);
-        ticket.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jPanel8.add(ticket);
-
-        buscar.setText("BUSCAR");
-        jPanel8.add(buscar);
-
-        jPanel7.add(jPanel8);
-
-        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-
-        labelTotal4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        labelTotal4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        labelTotal4.setText("PRODUCTO :");
-        labelTotal4.setPreferredSize(new java.awt.Dimension(200, 30));
-        jPanel2.add(labelTotal4);
-
-        codigoBuscar.setColumns(15);
-        codigoBuscar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jPanel2.add(codigoBuscar);
-
-        jPanel7.add(jPanel2);
-
-        add(jPanel7, java.awt.BorderLayout.NORTH);
 
         jPanel17.setLayout(new javax.swing.BoxLayout(jPanel17, javax.swing.BoxLayout.X_AXIS));
 
@@ -220,6 +194,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
         jPanel9.setLayout(new javax.swing.BoxLayout(jPanel9, javax.swing.BoxLayout.Y_AXIS));
 
+        devolver.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
         devolver.setText(">");
         jPanel9.add(devolver);
 
@@ -308,6 +283,84 @@ public class PanelDevolucion extends javax.swing.JPanel {
         jPanel3.add(jPanel4);
 
         add(jPanel3, java.awt.BorderLayout.SOUTH);
+
+        jPanel22.setLayout(new java.awt.BorderLayout());
+
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        labelTotal8.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelTotal8.setText("PRODUCTO :");
+        labelTotal8.setPreferredSize(new java.awt.Dimension(200, 30));
+        jPanel10.add(labelTotal8);
+
+        codigoBuscar.setColumns(13);
+        codigoBuscar.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jPanel10.add(codigoBuscar);
+
+        jPanel22.add(jPanel10, java.awt.BorderLayout.SOUTH);
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "VENTA ORIGEN", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 18))); // NOI18N
+        jPanel7.setLayout(new java.awt.GridLayout(3, 1));
+
+        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        labelTotal6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelTotal6.setText("# TICKET :");
+        labelTotal6.setPreferredSize(new java.awt.Dimension(200, 30));
+        jPanel8.add(labelTotal6);
+
+        ticket.setColumns(13);
+        ticket.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jPanel8.add(ticket);
+
+        buscar.setText("BUSCAR");
+        jPanel8.add(buscar);
+
+        jPanel7.add(jPanel8);
+
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        labelTotal9.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelTotal9.setText("SUCURSAL :");
+        labelTotal9.setPreferredSize(new java.awt.Dimension(200, 30));
+        jPanel11.add(labelTotal9);
+
+        sucursal.setColumns(20);
+        sucursal.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jPanel11.add(sucursal);
+
+        labelTotal10.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelTotal10.setText("CAJA :");
+        labelTotal10.setPreferredSize(new java.awt.Dimension(100, 30));
+        jPanel11.add(labelTotal10);
+
+        caja.setColumns(2);
+        caja.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jPanel11.add(caja);
+
+        jPanel7.add(jPanel11);
+
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        labelTotal4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelTotal4.setText("FECHA :");
+        labelTotal4.setPreferredSize(new java.awt.Dimension(200, 30));
+        jPanel2.add(labelTotal4);
+
+        fecha.setColumns(10);
+        fecha.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jPanel2.add(fecha);
+
+        jPanel7.add(jPanel2);
+
+        jPanel22.add(jPanel7, java.awt.BorderLayout.NORTH);
+
+        add(jPanel22, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarActionPerformed
@@ -316,13 +369,17 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buscar;
+    private javax.swing.JTextField caja;
     private javax.swing.JButton cancelar;
     private javax.swing.JTextField codigoBuscar;
     private javax.swing.JTextField descuento;
     private javax.swing.JTable detalleVentaJTable;
     private javax.swing.JTable detalleVentaJTableDev;
     private javax.swing.JButton devolver;
+    private javax.swing.JTextField fecha;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
@@ -334,6 +391,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel22;
     private javax.swing.JPanel jPanel23;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -347,16 +405,20 @@ public class PanelDevolucion extends javax.swing.JPanel {
     private javax.swing.JLabel labelDescuento;
     private javax.swing.JLabel labelTotal;
     private javax.swing.JLabel labelTotal1;
+    private javax.swing.JLabel labelTotal10;
     private javax.swing.JLabel labelTotal2;
     private javax.swing.JLabel labelTotal3;
     private javax.swing.JLabel labelTotal4;
     private javax.swing.JLabel labelTotal5;
     private javax.swing.JLabel labelTotal6;
     private javax.swing.JLabel labelTotal7;
+    private javax.swing.JLabel labelTotal8;
+    private javax.swing.JLabel labelTotal9;
     private javax.swing.JTextField motivoDev;
     private javax.swing.JTextField numArt;
     private javax.swing.JTextField numArtDev;
     private javax.swing.JTextField subtotal;
+    private javax.swing.JTextField sucursal;
     private javax.swing.JButton terminar;
     private javax.swing.JTextField ticket;
     private javax.swing.ButtonGroup tipoAlmacen;
@@ -376,7 +438,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
 	 * @return the codigoBuscar
 	 */
 	public javax.swing.JTextField getCodigoBuscar() {
-		return codigoBuscar;
+		return fecha;
 	}
 
 	/**
@@ -423,8 +485,8 @@ public class PanelDevolucion extends javax.swing.JPanel {
 	@Override
 	public void setFont(Font font) {
 		super.setFont(font); //To change body of generated methods, choose Tools | Templates.
-		if(codigoBuscar!=null) {
-			codigoBuscar.setFont(font);
+		if(fecha!=null) {
+			fecha.setFont(font);
 			labelTotal.setFont(font);
 			total.setFont(font);
 			terminar.setFont(font);
@@ -478,6 +540,18 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
 	public JButton getDevolver() {
 		return devolver;
+	}
+
+	public JTextField getSucursal() {
+		return sucursal;
+	}
+
+	public JTextField getCaja() {
+		return caja;
+	}
+
+	public JTextField getFecha() {
+		return fecha;
 	}
 	
 }
