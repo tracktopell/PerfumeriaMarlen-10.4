@@ -258,12 +258,14 @@
 									<fileset dir="${basedir}" includes="productos*.pdf"/>
 									<fileset dir="${basedir}" includes="reportes*.pdf"/>
 									<fileset dir="${basedir}" includes="PM*.log"/>
+									<fileset dir="${basedir}" includes="derby.log"/>
 								</delete>
 							</target>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>			
+			</plugin>	
+					
 		</plugins>
 	</build>
 

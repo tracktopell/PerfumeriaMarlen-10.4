@@ -15,18 +15,18 @@ public class ESD {
 	private int ta;
 	private int c;
 	private double p;
-	private int dev;
-	private int esIdDev;
+	private Integer dev;
+	private Integer esIdDev;
 	public EntradaSalidaDetalleQuickView reverse(){
 		EntradaSalidaDetalleQuickView esd=new EntradaSalidaDetalleQuickView();
 		esd.setProductoCodigoBarras(cb);
 		esd.setAlmacenId(a);
 		esd.setCantidad(c);
 		esd.setPrecioVenta(p);
-		if(dev>0){
+		if(dev != null){
 			esd.setDev(dev);
 		}
-		if(esIdDev>0){
+		if(esIdDev != null){
 			esd.setEsIdDev(esIdDev);
 		}
 		esd.setApTipoAlmacen(ta);
@@ -132,11 +132,25 @@ public class ESD {
 		this.p = p;
 	}
 
-	public int getDev() {
+	public Integer getDev() {
 		return dev;
 	}
 
-	public void setDev(int dev) {
+	public void setDev(Integer dev) {
 		this.dev = dev;
+	}
+
+	/**
+	 * @return the esIdDev
+	 */
+	public Integer getEsIdDev() {
+		return esIdDev;
+	}
+
+	/**
+	 * @param esIdDev the esIdDev to set
+	 */
+	public void setEsIdDev(Integer esIdDev) {
+		this.esIdDev = esIdDev;
 	}
 }

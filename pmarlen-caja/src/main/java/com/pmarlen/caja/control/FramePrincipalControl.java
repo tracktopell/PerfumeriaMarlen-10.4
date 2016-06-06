@@ -188,19 +188,19 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 					coloridoNotificacion = !coloridoNotificacion;
 					if(coloridoNotificacion){
 						//framePrincipal.getNotificaciones().setForeground(Color.RED);
-						framePrincipal.getNotificaciones().setForeground(Color.RED);
+						framePrincipal.getNotificaciones().setBackground(Color.RED);
 					}else{
-						//framePrincipal.getNotificaciones().setForeground(Color.BLACK);
-						framePrincipal.getNotificaciones().setForeground(backgroundC);
+						//framePrincipal.getNotificaciones().setForeground(backgroundC);
+						framePrincipal.getNotificaciones().setBackground(backgroundC);
 					}
 				} else {
-					framePrincipal.getNotificaciones().setForeground(Color.BLACK);
+					framePrincipal.getNotificaciones().setBackground(backgroundC);					
 				}				
 				framePrincipal.getNotificaciones().updateUI();
 			}catch(InterruptedException ie){
 				ie.printStackTrace(System.err);
 				framePrincipal.getStatusCenter().setText(":(");
-				framePrincipal.getNotificaciones().setForeground(backgroundC);
+				framePrincipal.getNotificaciones().setBackground(backgroundC);
 			}
 		}
 	}
