@@ -1,5 +1,6 @@
 package com.pmarlen.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 
@@ -7,6 +8,7 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
  *
  * @author alfredo
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ESD {
 	private String cb;
 	private int a;
