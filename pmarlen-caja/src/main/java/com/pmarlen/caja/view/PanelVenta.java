@@ -109,17 +109,17 @@ public class PanelVenta extends javax.swing.JPanel {
         tipoAlmacen.add(desdeLinea);
         desdeLinea.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         desdeLinea.setSelected(true);
-        desdeLinea.setText("1RA LINEA [F5]");
+        desdeLinea.setText("1RA LINEA [F3]");
         jPanel2.add(desdeLinea);
 
         tipoAlmacen.add(desdeOportunidad);
         desdeOportunidad.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        desdeOportunidad.setText("OPORTUNIDAD[F6]");
+        desdeOportunidad.setText("OPORTUNIDAD[F4]");
         jPanel2.add(desdeOportunidad);
 
         tipoAlmacen.add(desdeRegalias);
         desdeRegalias.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        desdeRegalias.setText("REGALIAS[F7]");
+        desdeRegalias.setText("REGALIAS[F5]");
         jPanel2.add(desdeRegalias);
 
         add(jPanel2, java.awt.BorderLayout.NORTH);

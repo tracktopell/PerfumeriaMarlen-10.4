@@ -17,6 +17,7 @@ public class ES_ESD {
 
 	public ES_ESD() {
 		this.es = new ES();
+		this.esdList = new ArrayList<ESD>();
 		this.s  = STATUS_SYNC_LOCAL;
 	}
 

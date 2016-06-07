@@ -110,12 +110,14 @@ public class PanelDevolucion extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         labelTotal4 = new javax.swing.JLabel();
         fecha = new javax.swing.JTextField();
+        labelTotal11 = new javax.swing.JLabel();
+        atendio = new javax.swing.JTextField();
 
         setLayout(new java.awt.BorderLayout());
 
         jPanel17.setLayout(new javax.swing.BoxLayout(jPanel17, javax.swing.BoxLayout.X_AXIS));
 
-        jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ELEMENTOS DE VENTA", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
+        jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ELEMENTOS QUE FUERON VENDIDOS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
         jPanel13.setLayout(new java.awt.BorderLayout());
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(500, 200));
@@ -130,14 +132,16 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
         jPanel14.setLayout(new javax.swing.BoxLayout(jPanel14, javax.swing.BoxLayout.LINE_AXIS));
 
-        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         labelTotal1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal1.setText("# ART. :");
+        labelTotal1.setPreferredSize(new java.awt.Dimension(100, 30));
         jPanel12.add(labelTotal1);
 
         numArt.setEditable(false);
-        numArt.setColumns(4);
+        numArt.setColumns(3);
         numArt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         numArt.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel12.add(numArt);
@@ -194,13 +198,12 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
         jPanel9.setLayout(new javax.swing.BoxLayout(jPanel9, javax.swing.BoxLayout.Y_AXIS));
 
-        devolver.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
         devolver.setText(">");
         jPanel9.add(devolver);
 
         jPanel17.add(jPanel9);
 
-        jPanel19.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ELEMENTOS DEVUELTOS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
+        jPanel19.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ELEMENTOS A DEVOLVER", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
         jPanel19.setLayout(new java.awt.BorderLayout());
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(500, 200));
@@ -215,14 +218,16 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
         jPanel20.setLayout(new javax.swing.BoxLayout(jPanel20, javax.swing.BoxLayout.LINE_AXIS));
 
-        jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         labelTotal2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal2.setText("# ART. :");
+        labelTotal2.setPreferredSize(new java.awt.Dimension(100, 30));
         jPanel21.add(labelTotal2);
 
         numArtDev.setEditable(false);
-        numArtDev.setColumns(4);
+        numArtDev.setColumns(3);
         numArtDev.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         numArtDev.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel21.add(numArtDev);
@@ -232,7 +237,9 @@ public class PanelDevolucion extends javax.swing.JPanel {
         jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 0));
 
         labelTotal5.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal5.setText("Total :");
+        labelTotal5.setPreferredSize(new java.awt.Dimension(100, 30));
         jPanel23.add(labelTotal5);
 
         totalDev.setEditable(false);
@@ -248,7 +255,9 @@ public class PanelDevolucion extends javax.swing.JPanel {
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
         labelTotal7.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal7.setText("Motivo :");
+        labelTotal7.setPreferredSize(new java.awt.Dimension(100, 30));
         jPanel18.add(labelTotal7);
 
         motivoDev.setEditable(false);
@@ -269,10 +278,10 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 5));
 
-        terminar.setText("TERMINAR DEVOLUCIÓN [ F1 ]");
+        terminar.setText("TERMINAR DEVOLUCIÓN [ F7 ]");
         jPanel4.add(terminar);
 
-        cancelar.setText("CANCELAR [ F12 ]");
+        cancelar.setText("CANCELAR [ F11 ]");
         cancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelarActionPerformed(evt);
@@ -291,7 +300,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal8.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         labelTotal8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal8.setText("PRODUCTO :");
-        labelTotal8.setPreferredSize(new java.awt.Dimension(200, 30));
+        labelTotal8.setPreferredSize(new java.awt.Dimension(160, 30));
         jPanel10.add(labelTotal8);
 
         codigoBuscar.setColumns(13);
@@ -308,7 +317,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         labelTotal6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal6.setText("# TICKET :");
-        labelTotal6.setPreferredSize(new java.awt.Dimension(200, 30));
+        labelTotal6.setPreferredSize(new java.awt.Dimension(160, 30));
         jPanel8.add(labelTotal6);
 
         ticket.setColumns(13);
@@ -325,21 +334,26 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal9.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         labelTotal9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal9.setText("SUCURSAL :");
-        labelTotal9.setPreferredSize(new java.awt.Dimension(200, 30));
+        labelTotal9.setPreferredSize(new java.awt.Dimension(160, 30));
         jPanel11.add(labelTotal9);
 
-        sucursal.setColumns(20);
+        sucursal.setEditable(false);
+        sucursal.setColumns(16);
         sucursal.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        sucursal.setEnabled(false);
         jPanel11.add(sucursal);
 
         labelTotal10.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         labelTotal10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        labelTotal10.setText("CAJA :");
+        labelTotal10.setText("CAJA #:");
         labelTotal10.setPreferredSize(new java.awt.Dimension(100, 30));
         jPanel11.add(labelTotal10);
 
+        caja.setEditable(false);
         caja.setColumns(2);
         caja.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        caja.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        caja.setEnabled(false);
         jPanel11.add(caja);
 
         jPanel7.add(jPanel11);
@@ -349,12 +363,26 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         labelTotal4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal4.setText("FECHA :");
-        labelTotal4.setPreferredSize(new java.awt.Dimension(200, 30));
+        labelTotal4.setPreferredSize(new java.awt.Dimension(160, 30));
         jPanel2.add(labelTotal4);
 
+        fecha.setEditable(false);
         fecha.setColumns(10);
         fecha.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        fecha.setEnabled(false);
         jPanel2.add(fecha);
+
+        labelTotal11.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        labelTotal11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelTotal11.setText("ATENDIÓ :");
+        labelTotal11.setPreferredSize(new java.awt.Dimension(150, 30));
+        jPanel2.add(labelTotal11);
+
+        atendio.setEditable(false);
+        atendio.setColumns(20);
+        atendio.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        atendio.setEnabled(false);
+        jPanel2.add(atendio);
 
         jPanel7.add(jPanel2);
 
@@ -368,6 +396,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
     }//GEN-LAST:event_cancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField atendio;
     private javax.swing.JButton buscar;
     private javax.swing.JTextField caja;
     private javax.swing.JButton cancelar;
@@ -406,6 +435,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
     private javax.swing.JLabel labelTotal;
     private javax.swing.JLabel labelTotal1;
     private javax.swing.JLabel labelTotal10;
+    private javax.swing.JLabel labelTotal11;
     private javax.swing.JLabel labelTotal2;
     private javax.swing.JLabel labelTotal3;
     private javax.swing.JLabel labelTotal4;
@@ -552,6 +582,10 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
 	public JTextField getFecha() {
 		return fecha;
+	}
+
+	public JTextField getAtendio() {
+		return atendio;
 	}
 	
 }

@@ -13,6 +13,8 @@ import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
 import java.awt.Color;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -21,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
@@ -46,10 +50,49 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 	private boolean estadoChecando = false;
 	private FramePrincipal framePrincipal = null;
 	private String ticketBuscar  = null;
+	
+	
 	public PanelDevolucionControl(PanelDevolucion panelDevolucion) {
 		this.panelDevolucion = panelDevolucion;
+//		
+		panelDevolucion.getDetalleVentaJTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				boolean valueIsAdjusting = e.getValueIsAdjusting();
+				if (!valueIsAdjusting) {
+					updateSelectedRow();
+				}
+			}
+		});
+		
+		panelDevolucion.getDetalleVentaJTableDev().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				boolean valueIsAdjusting = e.getValueIsAdjusting();				
+				if (!valueIsAdjusting) {
+					updateSelectedRow2();
+				}
+			}
+		});
+		
+		this.panelDevolucion.getTicket().addActionListener(this);
+		this.panelDevolucion.getCodigoBuscar().addActionListener(this);
+		this.panelDevolucion.getBuscar().addActionListener(this);
+		this.panelDevolucion.getTerminar().addActionListener(this);
+		this.panelDevolucion.getCancelar().addActionListener(this);
+		this.panelDevolucion.getDevolver().addActionListener(this);
+		
+		editando       = false;
+		estadoChecando = false;
+	}
+	
+	public void estadoInicial() {
+		
+		logger.debug("->estadoInicial()");
+		
 		this.detalleVentaTableItemList  =  new ArrayList<PedidoVentaDetalleTableItem> ();
 		this.detalleVentaTableItemList2 =  new ArrayList<PedidoVentaDetalleTableItem> ();
+
 		this.devTM  = new DevolucionDetalleTableModel();
 		this.devTM2 = new PedidoVentaDetalleTableModel();
 		
@@ -79,15 +122,6 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		panelDevolucion.getDetalleVentaJTable().getColumnModel().getColumn(3).setCellRenderer(importeCellRender);
 		panelDevolucion.getDetalleVentaJTable().getColumnModel().getColumn(4).setCellRenderer(importeCellRender);		
 		panelDevolucion.getDetalleVentaJTable().addComponentListener(new JTableColumnAutoResizeHelper(new int[]{8,8,54,13,17}));
-		panelDevolucion.getDetalleVentaJTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				boolean valueIsAdjusting = e.getValueIsAdjusting();
-				if (!valueIsAdjusting) {
-					updateSelectedRow();
-				}
-			}
-		});
 		panelDevolucion.getDetalleVentaJTable().setRowHeight(50);
 		panelDevolucion.getDetalleVentaJTable().updateUI();
 
@@ -97,54 +131,24 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		panelDevolucion.getDetalleVentaJTableDev().getColumnModel().getColumn(2).setCellRenderer(importeCellRender);
 		panelDevolucion.getDetalleVentaJTableDev().getColumnModel().getColumn(3).setCellRenderer(importeCellRender);		
 		panelDevolucion.getDetalleVentaJTableDev().addComponentListener(new JTableColumnAutoResizeHelper(new int[]{6,62,14,18}));
-		panelDevolucion.getDetalleVentaJTableDev().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				boolean valueIsAdjusting = e.getValueIsAdjusting();				
-				if (!valueIsAdjusting) {
-					updateSelectedRow2();
-				}
-			}
-		});
 		panelDevolucion.getDetalleVentaJTableDev().setRowHeight(50);
 		panelDevolucion.getDetalleVentaJTableDev().updateUI();
-
-		this.panelDevolucion.getTicket().addActionListener(this);
-		this.panelDevolucion.getCodigoBuscar().addActionListener(this);
-		this.panelDevolucion.getBuscar().addActionListener(this);
-		this.panelDevolucion.getTerminar().addActionListener(this);
-		this.panelDevolucion.getCancelar().addActionListener(this);
-		this.panelDevolucion.getDevolver().addActionListener(this);
-		
-		editando       = true;
-		estadoChecando = true;
-	}
-	
-	public void estadoInicial() {
-		detalleVentaTableItemList  =  new ArrayList<PedidoVentaDetalleTableItem> ();
-		detalleVentaTableItemList2 =  new ArrayList<PedidoVentaDetalleTableItem> ();
-		devTM  = new DevolucionDetalleTableModel();
-		devTM2 = new PedidoVentaDetalleTableModel();
-		
-		devTM.setDetalleVentaTableItemList(this.detalleVentaTableItemList);
-		devTM2.setDetalleVentaTableItemList(this.detalleVentaTableItemList2);
-		
-		panelDevolucion.getDetalleVentaJTable().setModel(this.devTM);
-		panelDevolucion.getDetalleVentaJTableDev().setModel(this.devTM2);
-
-		panelDevolucion.getTipoAlmacen().clearSelection();
-		panelDevolucion.getDetalleVentaJTable().updateUI();
-		estadoChecando = false;				
-		renderTotal();
+				
+		//renderTotal();
 		panelDevolucion.getSucursal().setText("");
+		panelDevolucion.getSucursal().setEnabled(false);
 		panelDevolucion.getSucursal().setBackground(panelDevolucion.getTicket().getBackground());
 		panelDevolucion.getTicket().setText("");
-		panelDevolucion.getCodigoBuscar().setText("");
+		panelDevolucion.getCodigoBuscar().setText("");		
+		panelDevolucion.getCaja().setEnabled(false);
+		panelDevolucion.getFecha().setText("");		
+		panelDevolucion.getFecha().setEnabled(false);
 		panelDevolucion.getTicket().requestFocus();
 		panelDevolucion.getDevolver().setEnabled(false);
 		panelDevolucion.getTicket().setEnabled(true);
 		panelDevolucion.getBuscar().setEnabled(true);
-					
+
+		estadoChecando = false;
 	}
 
 	public FramePrincipal getFramePrincipal() {
@@ -174,13 +178,89 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 
 	}
 	
-	//private Producto productoBuscar = new Producto();
+	
+	private int     indexBuscado;
+	private boolean codigoEncontrado;
+	
 	private void codigoBuscar_ActionPerformed() {
 		String codigoBuscar = panelDevolucion.getCodigoBuscar().getText().trim();
 		
 		logger.info("[USER]->codigoBuscar_ActionPerformed:codigoBuscar=->" + codigoBuscar+"<-");
-				
+		
+		int i=0;
+		indexBuscado=-1;
+		codigoEncontrado=false;
+		for(PedidoVentaDetalleTableItem dvt:detalleVentaTableItemList){
+			if(dvt.getProducto().getCodigoBarras().equals(codigoBuscar) ){
+				codigoEncontrado=true;
+				logger.debug("codigoBuscar_ActionPerformed:codigoBarras="+dvt.getProducto().getCodigoBarras()+", dev="+dvt.getPvd().getDev()+", cant="+dvt.getPvd().getC());
+				if(dvt.getPvd().getDev()<dvt.getPvd().getC()){
+					indexBuscado =  i;
+					break;
+				}				
+			}
+			i++;
+		}
+		
+		if(codigoEncontrado && indexBuscado >= 0){
+			logger.debug("codigoBuscar_ActionPerformed:indexBuscado="+indexBuscado);
+			panelDevolucion.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(indexBuscado, indexBuscado);
+			scrollToVisible(panelDevolucion.getDetalleVentaJTable(), indexBuscado, indexBuscado);
+			devolver_ActionPerformed();
+		} else {
+			new Thread() {
+				@Override
+				public void run() {
+					
+					Color pc = panelDevolucion.getCodigoBuscar().getBackground();
+					Color xc = null;
+					if(codigoEncontrado){
+						xc = Color.ORANGE;
+					} else {
+						xc = Color.RED;
+					}
+					
+					try {
+						for (int i = 0; i < 3; i++) {
+							panelDevolucion.getCodigoBuscar().setBackground(xc);
+							Thread.sleep(500);
+							panelDevolucion.getCodigoBuscar().setBackground(pc);
+							Thread.sleep(100);
+						}
+					} catch (InterruptedException ex) {
+						
+					} finally {
+						panelDevolucion.getCodigoBuscar().setBackground(pc);
+						panelDevolucion.getCodigoBuscar().setText("");
+					}
+				}
+			}.start();
+		}
 	}
+	
+	public void scrollToVisible(JTable table, int rowIndex, int vColIndex) {
+        if (!(table.getParent() instanceof JViewport)) {
+            return;
+        }
+        JViewport viewport = (JViewport)table.getParent();
+
+        // This rectangle is relative to the table where the
+        // northwest corner of cell (0,0) is always (0,0).
+        Rectangle rect = table.getCellRect(rowIndex, vColIndex, true);
+
+        // The location of the viewport relative to the table
+        Point pt = viewport.getViewPosition();
+
+        // Translate the cell location so that it is relative
+        // to the view, assuming the northwest corner of the
+        // view is (0,0)
+        rect.setLocation(rect.x-pt.x, rect.y-pt.y);
+
+        table.scrollRectToVisible(rect);
+
+        // Scroll the area into view
+        //viewport.scrollRectToVisible(rect);
+    }
 	
 
 	void terminar_ActionPerformed() {
@@ -309,51 +389,69 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 			public void run(){
 				pedidoVenta = null;
 				try {
-					logger.info("[USER]->buscarEnServidor():");
+					logger.info("[USER]->buscarEnServidor()");
 					pedidoVenta = MemoryDAO.getTicket(ticketBuscar);
-					devolucion  = new ES_ESD();
-					devolucion.getEs().setPdc(pedidoVenta.getEs().getPdc());
-					devolucion.getEs().setPde(pedidoVenta.getEs().getPde());
-					logger.debug("buscarEnServidor(): ventaOrigen=\n"+pedidoVenta);
-					int idSuc = pedidoVenta.getEs().getS();
-					String sn = pedidoVenta.getEs().getSn();
-					
-					if(sn != null && sn.contains(Constants.PM_SADECV)){
-						sn = sn.replace(Constants.PM_SADECV, "* ");
-					}
-					panelDevolucion.getSucursal().setText(sn);
-					Date fecha = new Date(pedidoVenta.getEs().getFc());
-					panelDevolucion.getCaja().setText(String.valueOf(pedidoVenta.getEs().getJ()));
-					panelDevolucion.getFecha().setText(Constants.sdfHmnDate.format(fecha));
-					List<ESD> esdList = pedidoVenta.getEsdList();
-					for(ESD esd: esdList){
-						Producto producto = MemoryDAO.fastSearchProducto(esd.getCb()).reverse();
-						PedidoVentaDetalleTableItem pvdti = new PedidoVentaDetalleTableItem(producto, esd, esd.getTa());
-						detalleVentaTableItemList.add(pvdti);
-					}
-					
-					panelDevolucion.getDetalleVentaJTable().updateUI();
-					
-					panelDevolucion.getTicket().setEnabled(false);
-					panelDevolucion.getBuscar().setEnabled(false);
-					panelDevolucion.getDevolver().setEnabled(false);	
-					if(idSuc == MemoryDAO.getSucursalId()){
-						panelDevolucion.getCodigoBuscar().setEnabled(true);
-						panelDevolucion.getDetalleVentaJTable().setEnabled(true);						
-						panelDevolucion.getCodigoBuscar().requestFocus();
-						
-					} else {
-						panelDevolucion.getSucursal().setBackground(Color.RED);
-						panelDevolucion.getCaja().setEnabled(false);
-						panelDevolucion.getCodigoBuscar().setEnabled(false);
-						panelDevolucion.getDetalleVentaJTable().setEnabled(false);
-						
-						panelDevolucion.getTerminar().setEnabled(false);
-					}
-					renderTotal();
 				}catch(Exception e){
 					logger.error("->buscarEnServidor:", e);
 					JOptionPane.showMessageDialog(getFramePrincipal(), "No se encotro Ticket:"+ticketBuscar, "BUSCAR", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				devolucion  = new ES_ESD();
+				devolucion.getEs().setPdc(pedidoVenta.getEs().getPdc());
+				devolucion.getEs().setPde(pedidoVenta.getEs().getPde());
+				logger.debug("buscarEnServidor(): ventaOrigen=\n"+pedidoVenta);
+				int idSuc = pedidoVenta.getEs().getS();
+				String sn = pedidoVenta.getEs().getSn();
+
+				if(sn != null && sn.contains(Constants.PM_SADECV)){
+					sn = sn.replace(Constants.PM_SADECV, "... ");
+				}					
+				panelDevolucion.getAtendio().setText(pedidoVenta.getEs().getU());
+				panelDevolucion.getSucursal().setText(sn);
+				Date fecha = new Date(pedidoVenta.getEs().getFc());
+				panelDevolucion.getCaja().setText(String.valueOf(pedidoVenta.getEs().getJ()));
+				panelDevolucion.getFecha().setText(Constants.sdfShortDateTime.format(fecha));
+				List<ESD> esdList = pedidoVenta.getEsdList();
+				boolean quedaQueDevolver = false;
+				for(ESD esd: esdList){
+
+					if(esd.getDev()<esd.getC()){
+						quedaQueDevolver = true;
+					}
+
+					Producto producto = MemoryDAO.fastSearchProducto(esd.getCb()).reverse();
+					PedidoVentaDetalleTableItem pvdti = new PedidoVentaDetalleTableItem(producto, esd, esd.getTa());
+
+					detalleVentaTableItemList.add(pvdti);
+				}
+				
+				renderTotal();
+				
+				panelDevolucion.getDetalleVentaJTable().updateUI();
+
+				panelDevolucion.getTicket().setEnabled(false);
+				panelDevolucion.getBuscar().setEnabled(false);
+				panelDevolucion.getDevolver().setEnabled(false);	
+
+				if(idSuc == MemoryDAO.getSucursalId()){
+					if( quedaQueDevolver ){
+						panelDevolucion.getSucursal().setBackground(Color.GREEN);
+						panelDevolucion.getCodigoBuscar().setEnabled(true);
+						panelDevolucion.getDetalleVentaJTable().setEnabled(true);						
+						panelDevolucion.getCodigoBuscar().requestFocus();						
+					} else{
+						panelDevolucion.getSucursal().setBackground(Color.ORANGE);
+						panelDevolucion.getCodigoBuscar().setEnabled(false);
+						panelDevolucion.getDetalleVentaJTable().setEnabled(false);
+
+						panelDevolucion.getTerminar().setEnabled(false);
+					}
+				} else {
+					panelDevolucion.getSucursal().setBackground(Color.RED);				
+					panelDevolucion.getCodigoBuscar().setEnabled(false);
+					panelDevolucion.getDetalleVentaJTable().setEnabled(false);
+
+					panelDevolucion.getTerminar().setEnabled(false);
 				}
 			}
 		}.start();	
@@ -366,7 +464,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		renderTotal();
 	}
 	
-	private void renderTotal() {
+	private void renderTotal() {		
 		final List<ESD> esdList = pedidoVenta.getEsdList();
 		double subTotal     = 0.0;
 		double subTotal1ra  = 0.0;
@@ -511,10 +609,12 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 	}
 
 	public boolean isEstadoChecando() {
+		logger.debug("isEditando:estadoChecando="+estadoChecando);
 		return estadoChecando;
 	}
 
 	public boolean isEditando() {
+		logger.debug("isEditando:editando="+editando);
 		return editando;
 	}
 

@@ -192,8 +192,8 @@ public class MemoryDAO {
 	public final static int SYNC_STATE_ERROR                 = 99;
 	
 	private final static long TIMESLEEP_MS        = 1000L;
-	private final static int  DOWNLOADPERIOD_SECS = 30;
-	private final static int  IMALIVEPERIOD_SECS  = 10;
+	private final static int  DOWNLOADPERIOD_SECS = 120;
+	private final static int  IMALIVEPERIOD_SECS  = 30;
 	
 	public static void getPaqueteSyncPoll() {
 		
@@ -248,7 +248,7 @@ public class MemoryDAO {
 			}
 			
 			try {
-				logger.trace("getPaqueteSyncPoll:\t----------------->> while running, sleep for "+TIMESLEEP_MS+" ms .., syncPollState="+syncPollState);
+				logger.trace("getPaqueteSyncPoll:\t----------------->> while running, sleep for TIMESLEEP_MS="+TIMESLEEP_MS+" ms , DOWNLOADPERIOD_SECS="+DOWNLOADPERIOD_SECS+" ms.., syncPollState="+syncPollState);
 				Thread.sleep(TIMESLEEP_MS);
 			}catch(Exception e){
 				logger.error("getPaqueteSyncPoll:->sleep ? ",e);

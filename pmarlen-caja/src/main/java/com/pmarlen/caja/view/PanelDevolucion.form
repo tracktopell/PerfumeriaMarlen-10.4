@@ -35,7 +35,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="ELEMENTOS DE VENTA">
+                <TitledBorder title="ELEMENTOS QUE FUERON VENDIDOS">
                   <Font PropertyName="font" name="Tahoma" size="18" style="0"/>
                 </TitledBorder>
               </Border>
@@ -91,6 +91,8 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="0"/>
+                        <Property name="horizontalGap" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JLabel" name="labelTotal1">
@@ -98,13 +100,17 @@
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Tahoma" size="24" style="0"/>
                             </Property>
+                            <Property name="horizontalAlignment" type="int" value="4"/>
                             <Property name="text" type="java.lang.String" value="# ART. :"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[100, 30]"/>
+                            </Property>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="numArt">
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
-                            <Property name="columns" type="int" value="4"/>
+                            <Property name="columns" type="int" value="3"/>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Tahoma" size="24" style="0"/>
                             </Property>
@@ -211,9 +217,6 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="devolver">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Lucida Grande" size="24" style="0"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="&gt;"/>
               </Properties>
             </Component>
@@ -223,7 +226,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="ELEMENTOS DEVUELTOS">
+                <TitledBorder title="ELEMENTOS A DEVOLVER">
                   <Font PropertyName="font" name="Tahoma" size="18" style="0"/>
                 </TitledBorder>
               </Border>
@@ -279,6 +282,8 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                         <Property name="alignment" type="int" value="0"/>
+                        <Property name="horizontalGap" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JLabel" name="labelTotal2">
@@ -286,13 +291,17 @@
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Tahoma" size="24" style="0"/>
                             </Property>
+                            <Property name="horizontalAlignment" type="int" value="4"/>
                             <Property name="text" type="java.lang.String" value="# ART. :"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[100, 30]"/>
+                            </Property>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="numArtDev">
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
-                            <Property name="columns" type="int" value="4"/>
+                            <Property name="columns" type="int" value="3"/>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Tahoma" size="24" style="0"/>
                             </Property>
@@ -314,7 +323,11 @@
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Tahoma" size="24" style="0"/>
                             </Property>
+                            <Property name="horizontalAlignment" type="int" value="4"/>
                             <Property name="text" type="java.lang.String" value="Total :"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[100, 30]"/>
+                            </Property>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="totalDev">
@@ -344,7 +357,11 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Tahoma" size="24" style="0"/>
                         </Property>
+                        <Property name="horizontalAlignment" type="int" value="4"/>
                         <Property name="text" type="java.lang.String" value="Motivo :"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[100, 30]"/>
+                        </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="motivoDev">
@@ -385,12 +402,12 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="terminar">
               <Properties>
-                <Property name="text" type="java.lang.String" value="TERMINAR DEVOLUCI&#xd3;N [ F1 ]"/>
+                <Property name="text" type="java.lang.String" value="TERMINAR DEVOLUCI&#xd3;N [ F7 ]"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="cancelar">
               <Properties>
-                <Property name="text" type="java.lang.String" value="CANCELAR [ F12 ]"/>
+                <Property name="text" type="java.lang.String" value="CANCELAR [ F11 ]"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelarActionPerformed"/>
@@ -428,7 +445,7 @@
                 <Property name="horizontalAlignment" type="int" value="4"/>
                 <Property name="text" type="java.lang.String" value="PRODUCTO :"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[200, 30]"/>
+                  <Dimension value="[160, 30]"/>
                 </Property>
               </Properties>
             </Component>
@@ -477,7 +494,7 @@
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="text" type="java.lang.String" value="# TICKET :"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[200, 30]"/>
+                      <Dimension value="[160, 30]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -510,16 +527,18 @@
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="text" type="java.lang.String" value="SUCURSAL :"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[200, 30]"/>
+                      <Dimension value="[160, 30]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="sucursal">
                   <Properties>
-                    <Property name="columns" type="int" value="20"/>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="columns" type="int" value="16"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="24" style="0"/>
                     </Property>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="labelTotal10">
@@ -528,7 +547,7 @@
                       <Font name="Tahoma" size="24" style="0"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="4"/>
-                    <Property name="text" type="java.lang.String" value="CAJA :"/>
+                    <Property name="text" type="java.lang.String" value="CAJA #:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[100, 30]"/>
                     </Property>
@@ -536,10 +555,13 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="caja">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="columns" type="int" value="2"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="24" style="0"/>
                     </Property>
+                    <Property name="horizontalAlignment" type="int" value="4"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -558,16 +580,40 @@
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="text" type="java.lang.String" value="FECHA :"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[200, 30]"/>
+                      <Dimension value="[160, 30]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="fecha">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="columns" type="int" value="10"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="24" style="0"/>
                     </Property>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="labelTotal11">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="24" style="0"/>
+                    </Property>
+                    <Property name="horizontalAlignment" type="int" value="4"/>
+                    <Property name="text" type="java.lang.String" value="ATENDI&#xd3; :"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[150, 30]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="atendio">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="columns" type="int" value="20"/>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="24" style="0"/>
+                    </Property>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>

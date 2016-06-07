@@ -111,43 +111,52 @@ public class ProductoCellRender extends javax.swing.JPanel implements TableCellR
 		ProductoCellRender pcr= new ProductoCellRender();
 		
 		PedidoVentaDetalleTableItem dvti = (PedidoVentaDetalleTableItem)value;
-		Producto p=dvti.getProducto();
-		
-		pcr.codigoBarrasLabel.setText(p.getCodigoBarras().toUpperCase());		
-		pcr.nombreLabel.setText(p.getNombre().toUpperCase());		
-		pcr.descripcionLabel.setText(p.getPresentacion().toUpperCase());
-		pcr.precioLabel.setText(p.getContenido()+p.getUnidadMedida());
-		
-		if(isSelected){
-			if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
-				pcr.codigoBarrasLabel.setText("["+p.getCodigoBarras().toUpperCase()+"] 1RA LINEA");
-				pcr.setBackground(princColorSel);
-				pcr.setForeground(fgc);
-			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
-				pcr.codigoBarrasLabel.setText("("+p.getCodigoBarras().toUpperCase()+") OPORTUNIDAD");
-				pcr.setBackground(oprtColorSel);
-				pcr.setForeground(fgc);
-			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
-				pcr.codigoBarrasLabel.setText("{"+p.getCodigoBarras().toUpperCase()+"} REGALIAS");
-				pcr.setBackground(regaColorSel);
-				pcr.setForeground(fgc);
+		if(dvti != null){
+			Producto productoInCell=dvti.getProducto();
+			if(productoInCell != null){
+
+				pcr.codigoBarrasLabel.setText(productoInCell.getCodigoBarras().toUpperCase());		
+				pcr.nombreLabel.setText(productoInCell.getNombre().toUpperCase());		
+				pcr.descripcionLabel.setText(productoInCell.getPresentacion().toUpperCase());
+				pcr.precioLabel.setText(productoInCell.getContenido()+productoInCell.getUnidadMedida());
+
+				if(isSelected){
+					if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+						pcr.codigoBarrasLabel.setText("["+productoInCell.getCodigoBarras().toUpperCase()+"] 1RA LINEA");
+						pcr.setBackground(princColorSel);
+						pcr.setForeground(fgc);
+					} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
+						pcr.codigoBarrasLabel.setText("("+productoInCell.getCodigoBarras().toUpperCase()+") OPORTUNIDAD");
+						pcr.setBackground(oprtColorSel);
+						pcr.setForeground(fgc);
+					} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
+						pcr.codigoBarrasLabel.setText("{"+productoInCell.getCodigoBarras().toUpperCase()+"} REGALIAS");
+						pcr.setBackground(regaColorSel);
+						pcr.setForeground(fgc);
+					}
+				} else {
+					if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+						pcr.codigoBarrasLabel.setText("["+productoInCell.getCodigoBarras().toUpperCase()+"] 1RA LINEA");
+						pcr.setBackground(princColorNot);
+						pcr.setForeground(fgc);
+					} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
+						pcr.codigoBarrasLabel.setText("("+productoInCell.getCodigoBarras().toUpperCase()+") OPORTUNIDAD");
+						pcr.setBackground(oprtColorNot);
+						pcr.setForeground(fgc);
+					} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
+						pcr.codigoBarrasLabel.setText("{"+productoInCell.getCodigoBarras().toUpperCase()+"} REGALIAS");
+						pcr.setBackground(regaColorNot);
+						pcr.setForeground(fgc);
+					}
+				}
 			}
 		} else {
-			if(dvti.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
-				pcr.codigoBarrasLabel.setText("["+p.getCodigoBarras().toUpperCase()+"] 1RA LINEA");
-				pcr.setBackground(princColorNot);
-				pcr.setForeground(fgc);
-			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
-				pcr.codigoBarrasLabel.setText("("+p.getCodigoBarras().toUpperCase()+") OPORTUNIDAD");
-				pcr.setBackground(oprtColorNot);
-				pcr.setForeground(fgc);
-			} else if(dvti.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
-				pcr.codigoBarrasLabel.setText("{"+p.getCodigoBarras().toUpperCase()+"} REGALIAS");
-				pcr.setBackground(regaColorNot);
-				pcr.setForeground(fgc);
-			}
+			pcr.codigoBarrasLabel.setText("[NULL]");		
+			pcr.nombreLabel.setText("N U L L");		
+			pcr.descripcionLabel.setText("-NULL-");
+			pcr.precioLabel.setText("$ NULL");
+
 		}
-		
 		if(hasFocus){			
 			pcr.setBorder(new LineBorder(sbgc!=null?sbgc:Color.MAGENTA, 1, false));
 		}

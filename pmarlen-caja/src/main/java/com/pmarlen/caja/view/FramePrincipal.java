@@ -295,15 +295,15 @@ public class FramePrincipal extends javax.swing.JFrame {
         ventaActualMenu.setText("Actual");
         ventaMenu.add(ventaActualMenu);
 
-        ventaLineaMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        ventaLineaMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
         ventaLineaMenu.setText("1ra Linea");
         ventaMenu.add(ventaLineaMenu);
 
-        ventaOportunidadMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        ventaOportunidadMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         ventaOportunidadMenu.setText("Oportunidad");
         ventaMenu.add(ventaOportunidadMenu);
 
-        ventaRegaliasMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
+        ventaRegaliasMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         ventaRegaliasMenu.setText("Regalias");
         ventaMenu.add(ventaRegaliasMenu);
 
@@ -323,12 +323,15 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         devolMenu.setText("Devolución");
 
+        nuevaDevolMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
         nuevaDevolMenu.setText("Nueva");
         devolMenu.add(nuevaDevolMenu);
 
+        terminarDevolMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
         terminarDevolMenu.setText("Terminar");
         devolMenu.add(terminarDevolMenu);
 
+        cancelarDevolMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
         cancelarDevolMenu.setText("Cancelar");
         devolMenu.add(cancelarDevolMenu);
 
