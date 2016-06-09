@@ -61,8 +61,9 @@ public class ES {
 		es.setSubTotalOpo(stO);
 		es.setSubTotalReg(stR);
 		es.setTotal(tot);
-		es.setNumElementos(nElem);		
-		es.setTotProds(ed);
+		es.setNumElementos(ed);
+		es.setTotProds(nElem);
+
 		return es;
 	}
 

@@ -190,7 +190,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	
 	private void generaFrase_ActionPerformed() {
 		GeneradorDeToken gt = new GeneradorDeToken();		
-		cierreCajaDialog.getFrase().setText(gt.getFrase());
+		cierreCajaDialog.getFrase().setText(gt.getFrase2());
 	}
 
 	private boolean validateAll() {
@@ -355,7 +355,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 				} else {
 					GeneradorDeToken gt=new GeneradorDeToken();
 					String tokenObtenido = gt.getToken(fraseGenerada);
-					if(!gt.isValid(fraseGenerada, tokenEscrito)) {
+					if(!gt.isValid2(fraseGenerada, tokenEscrito)) {
 						logger.debug("validate:tokenObtenido="+tokenObtenido+", tokenEscrito="+tokenEscrito);
 						throw new ValidacionCamposException("EL TOKEN ES INVALIDO", cierreCajaDialog.getToken());	
 					}

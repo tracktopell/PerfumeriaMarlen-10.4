@@ -40,9 +40,11 @@ public class GeneradorTokenMB  implements Serializable {
 	 * @return the token
 	 */
 	public String getToken() {
-		if(frase != null) {
+		if(frase != null && frase.length()==6) {
 			GeneradorDeToken gt= new GeneradorDeToken();
 			token = gt.getToken(frase);
+		} else {
+			token = "";
 		}
 		return token;
 	}

@@ -78,6 +78,12 @@ INSERT INTO USUARIO_PERFIL(EMAIL,PERFIL) VALUES('carubio@perfumeriamarlen.com.mx
 INSERT INTO USUARIO_PERFIL(EMAIL,PERFIL) VALUES('carubio@perfumeriamarlen.com.mx','stock');
 INSERT INTO USUARIO_PERFIL(EMAIL,PERFIL) VALUES('carubio@perfumeriamarlen.com.mx','sales');
 
+INSERT INTO USUARIO VALUES('apacheco@perfumeriamarlen.com.mx',1,'ANAHY GUADALUPE PACHECO AHUMADA','23aa3d279b3f2b6488c98edd387d34b0',0,NULL, 3);
+
+INSERT INTO USUARIO_PERFIL(EMAIL,PERFIL) VALUES('apacheco@perfumeriamarlen.com.mx','pmarlenuser');
+INSERT INTO USUARIO_PERFIL(EMAIL,PERFIL) VALUES('apacheco@perfumeriamarlen.com.mx','stock');
+INSERT INTO USUARIO_PERFIL(EMAIL,PERFIL) VALUES('apacheco@perfumeriamarlen.com.mx','sales');
+
 INSERT INTO USUARIO_PERFIL(EMAIL,PERFIL) VALUES('zrocha@perfumeriamarlen.com.mx','sucadmin');
 
 INSERT INTO USUARIO VALUES('alortega@perfumeriamarlen.com.mx',1,'AMERICA LIZBETH ORTEGA ZABALA','8187ec60e4928a0dc51c72f2881a1ca5',0,NULL, 5);

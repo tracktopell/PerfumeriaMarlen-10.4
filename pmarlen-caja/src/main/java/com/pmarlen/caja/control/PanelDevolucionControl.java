@@ -1,6 +1,8 @@
 package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Producto;
+import com.pmarlen.businesslogic.GeneradorNumTicket;
+import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.PedidoVentaDetalleTableItem;
 import com.pmarlen.caja.model.DevolucionDetalleTableModel;
@@ -9,6 +11,7 @@ import com.pmarlen.caja.model.PedidoVentaDetalleTableModel;
 import com.pmarlen.caja.view.FramePrincipal;
 import com.pmarlen.caja.view.PanelDevolucion;
 import com.pmarlen.caja.view.ProductoCellRender;
+import com.pmarlen.caja.view.TokenFrame;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
@@ -46,7 +49,6 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 	private ES_ESD devolucion;
 	private DevolucionDetalleTableModel  devTM;
 	private PedidoVentaDetalleTableModel devTM2;
-	private boolean editando       = false;
 	private boolean estadoChecando = false;
 	private FramePrincipal framePrincipal = null;
 	private String ticketBuscar  = null;
@@ -82,7 +84,6 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		this.panelDevolucion.getCancelar().addActionListener(this);
 		this.panelDevolucion.getDevolver().addActionListener(this);
 		
-		editando       = false;
 		estadoChecando = false;
 	}
 	
@@ -136,17 +137,29 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 				
 		//renderTotal();
 		panelDevolucion.getSucursal().setText("");
-		panelDevolucion.getSucursal().setEnabled(false);
-		panelDevolucion.getSucursal().setBackground(panelDevolucion.getTicket().getBackground());
-		panelDevolucion.getTicket().setText("");
+		panelDevolucion.getSucursal().setBackground(panelDevolucion.getCaja().getBackground());
+		panelDevolucion.getTicket().setText("");		
 		panelDevolucion.getCodigoBuscar().setText("");		
-		panelDevolucion.getCaja().setEnabled(false);
+		panelDevolucion.getTicket().setText("");
+		panelDevolucion.getAtendio().setText("");
 		panelDevolucion.getFecha().setText("");		
-		panelDevolucion.getFecha().setEnabled(false);
+		
+		panelDevolucion.getNumArt().setText("");
+		panelDevolucion.getNumArtDev().setText("");
+		panelDevolucion.getSubtotal().setText("");
+		panelDevolucion.getDescuento().setToolTipText(null);		
+		panelDevolucion.getDescuento().setText("");		
+		panelDevolucion.getTotal().setText("");
+		panelDevolucion.getTotalDev().setText("");
+		panelDevolucion.getMotivoDev().setText("");
+		panelDevolucion.getMotivoDev().setEnabled(true);
+		
 		panelDevolucion.getTicket().requestFocus();
 		panelDevolucion.getDevolver().setEnabled(false);
 		panelDevolucion.getTicket().setEnabled(true);
 		panelDevolucion.getBuscar().setEnabled(true);
+		
+		panelDevolucion.getTerminar().setEnabled(false);
 
 		estadoChecando = false;
 	}
@@ -264,57 +277,42 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 	
 
 	void terminar_ActionPerformed() {
-		logger.info("[USER]->terminar_ActionPerformed");
-		/*
-		if (ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().size() == 0) {
-			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(),
-					"Cuando termine de agregar más productos, podra terminar esta venta", "Terminar Venta",
-					JOptionPane.WARNING_MESSAGE);
-
-			panelDevolucion.getCodigoBuscar().requestFocus();
-			
+		logger.info("[USER]->terminar_ActionPerformed: estadoChecando="+estadoChecando+", detalleVentaTableItemList2.size()="+detalleVentaTableItemList2.size());
+		
+		if(!estadoChecando || detalleVentaTableItemList2.size()==0 ){
 			return;
 		}
-
-		try {
-			TerminarVentaDlg tvDlg = new TerminarVentaDlg(FramePrincipalControl.getInstance().getFramePrincipal(), true);
-			TerminarVentaControl tvdControl = new TerminarVentaControl(tvDlg);
-
-			tvdControl.estadoInicial();
-			
-			if(!tvdControl.isCierreCorrecto()){
-				return;
-			}
-			
-			pedidoVenta = ApplicationLogic.getInstance().getVentaSesion().getVenta();
-			
-			logger.debug("terminar_ActionPerformed(): TERMINADA Y ANTES DE IMPRIMIR TICKET:"+pedidoVenta.getEs().getNt()+", ImporteRecibido="+pedidoVenta.getEs().getIr()+", MP="+pedidoVenta.getEs().getMp());
-			
-			//TotalesCalculados ct = LogicaFinaciera.calculaTotales(esesdLAstForPrint.getEs(), esesdLAstForPrint.getEsdList(), true, 0.0);
-			//logger.info("terminar_ActionPerformed:-->>LogicaFinaciera.calculaTotales: TotalesCalculados:\n"+ct);
-			
-			logger.debug("terminar_ActionPerformed(): TICKET:"+pedidoVenta.getEs().getNt()+", ImporteRecibido="+pedidoVenta.getEs().getIr()+", MP="+pedidoVenta.getEs().getMp());
-			
-			if (ApplicationLogic.getInstance().isPrintingEnabled()) {
-				new Thread() {
-					@Override
-					public void run() {
-						logger.debug("terminar_ActionPerformed(): despues de cerrar dialogo: TICKET:"+pedidoVenta.getEs().getNt()+", ImporteRecibido="+pedidoVenta.getEs().getIr()+", MP="+pedidoVenta.getEs().getMp());
-						
-					}
-				}.start();
-			}
-
-			estadoInicial();
-
-		} catch (Exception ex) {
-			ex.printStackTrace(System.err);
-			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), ex.getMessage(), "Venta", JOptionPane.ERROR_MESSAGE);
-
-		} finally {
-			panelDevolucion.getCodigoBuscar().requestFocus();
+		
+		final String motivoCompleto = panelDevolucion.getMotivoDev().getText().trim();
+		
+		if(motivoCompleto.length()<10){
+			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Tiene que escribir un motivo de esta devolución", "Terminar Devolución", JOptionPane.WARNING_MESSAGE);
+			return;
 		}
-		*/
+		
+		TokenFrame tf = new TokenFrame(FramePrincipalControl.getInstance().getFramePrincipal());
+		
+		tf.setVisible(true);
+		
+		if(tf.isAccepted()){
+			logger.info("terminar_ActionPerformed: OK commit !");
+		}
+		String numTicket = null;
+		
+		numTicket = GeneradorNumTicket.getNumTicket(new Date(devolucion.getEs().getFc()),devolucion.getEs().getS(),devolucion.getEs().getJ());
+		
+		devolucion.getEs().setNt(numTicket);		
+		devolucion.getEs().setC(Constants.ID_CLIENTE_MOSTRADOR);
+		devolucion.getEs().setFp(Constants.ID_FDP_1SOLA_E);
+		devolucion.getEs().setMp(Constants.ID_MDP_EFECTIVO);
+		devolucion.getEs().setIr(0.0);		
+		devolucion.getEs().setAmc("");
+		
+		ESFileSystemJsonDAO.commit(devolucion);
+
+		JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "SE PROCESO LA DEVOLUCUÓN", "Terminar Devolución", JOptionPane.INFORMATION_MESSAGE);
+		
+		estadoInicial();
 	}
 	
 	
@@ -359,9 +357,11 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 					pvdiDR = new PedidoVentaDetalleTableItem(pvdDev);
 					
 					pvdiDR.getPvd().setC(1);
+					pvdiDR.getPvd().setEsIdDev(pvdDev.getPvd().getId());
 					
 					devolucion.getEsdList().add(pvdiDR.getPvd());
 					detalleVentaTableItemList2.add(pvdiDR);
+					panelDevolucion.getTerminar().setEnabled(true);
 					
 				} else {
 					pvdiDR.getPvd().setC(pvdiDR.getPvd().getC() + 1);
@@ -394,6 +394,8 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 				}catch(Exception e){
 					logger.error("->buscarEnServidor:", e);
 					JOptionPane.showMessageDialog(getFramePrincipal(), "No se encotro Ticket:"+ticketBuscar, "BUSCAR", JOptionPane.WARNING_MESSAGE);
+					panelDevolucion.getTicket().setText("");
+					panelDevolucion.getTicket().requestFocus();
 					return;
 				}
 				devolucion  = new ES_ESD();
@@ -421,24 +423,29 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 
 					Producto producto = MemoryDAO.fastSearchProducto(esd.getCb()).reverse();
 					PedidoVentaDetalleTableItem pvdti = new PedidoVentaDetalleTableItem(producto, esd, esd.getTa());
-
+					
 					detalleVentaTableItemList.add(pvdti);
 				}
 				
 				renderTotal();
-				
+				estadoChecando = true;
 				panelDevolucion.getDetalleVentaJTable().updateUI();
 
 				panelDevolucion.getTicket().setEnabled(false);
 				panelDevolucion.getBuscar().setEnabled(false);
 				panelDevolucion.getDevolver().setEnabled(false);	
+				
 
 				if(idSuc == MemoryDAO.getSucursalId()){
 					if( quedaQueDevolver ){
 						panelDevolucion.getSucursal().setBackground(Color.GREEN);
 						panelDevolucion.getCodigoBuscar().setEnabled(true);
 						panelDevolucion.getDetalleVentaJTable().setEnabled(true);						
-						panelDevolucion.getCodigoBuscar().requestFocus();						
+						panelDevolucion.getCodigoBuscar().requestFocus();
+						
+						panelDevolucion.getMotivoDev().setText("");
+						panelDevolucion.getMotivoDev().setEnabled(true);
+		
 					} else{
 						panelDevolucion.getSucursal().setBackground(Color.ORANGE);
 						panelDevolucion.getCodigoBuscar().setEnabled(false);
@@ -611,11 +618,6 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 	public boolean isEstadoChecando() {
 		logger.debug("isEditando:estadoChecando="+estadoChecando);
 		return estadoChecando;
-	}
-
-	public boolean isEditando() {
-		logger.debug("isEditando:editando="+editando);
-		return editando;
 	}
 
 }

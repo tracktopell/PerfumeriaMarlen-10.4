@@ -260,7 +260,6 @@ public class PanelDevolucion extends javax.swing.JPanel {
         labelTotal7.setPreferredSize(new java.awt.Dimension(100, 30));
         jPanel18.add(labelTotal7);
 
-        motivoDev.setEditable(false);
         motivoDev.setColumns(15);
         motivoDev.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         motivoDev.setHorizontalAlignment(javax.swing.JTextField.RIGHT);

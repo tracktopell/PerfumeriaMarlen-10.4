@@ -15,7 +15,7 @@ public class PedidoVentaDetalleTableItem {
 	public PedidoVentaDetalleTableItem(Producto producto, ESD esd, int tipoAlmacen) {
 		this.producto = producto;
 		this.pvd = esd;
-		this.pvd.setC(1);
+		//this.pvd.setC(esd.getC());
 		this.tipoAlmacen = tipoAlmacen;
 	}
 

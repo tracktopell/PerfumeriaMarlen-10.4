@@ -82,9 +82,7 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		
 		framePrincipal.getSalirMenu().addActionListener(this);
 		
-		//---------------------------------------------------
-		framePrincipal.getNuevaDevolMenu().addActionListener(this);
-		
+		//---------------------------------------------------		
 		framePrincipal.getPreferenciasMenu().addActionListener(this);
 		
 		framePrincipal.getVentaActualMenu().addActionListener(this);
@@ -100,6 +98,12 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		framePrincipal.getVentaeliminarProdMenu().addActionListener(this);
 		
 		framePrincipal.getVentaCancelarMenu().addActionListener(this);
+		//---------------------------------------------------
+		framePrincipal.getNuevaDevolMenu().addActionListener(this);
+		
+		framePrincipal.getTerminarDevolMenu().addActionListener(this);
+		
+		framePrincipal.getCancelarDevolMenu().addActionListener(this);
 		//---------------------------------------------------
 		
 		framePrincipal.getNotificacionesMenu().addActionListener(this);
@@ -244,7 +248,12 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 			preferenciasMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getNuevaDevolMenu()){
 			nuevaDevolMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getTerminarDevolMenu()){
+			terminarDevolMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getCancelarDevolMenu()){
+			cancelarDevolMenu_actionPerformed();
 		} else {
+			logger.error("actionPerformed: ActionEvent missing ? e="+e);
 		}
 		
 	}
@@ -463,6 +472,18 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		if(! panelDevolucionControl.isEstadoChecando()){
 			panelDevolucionControl.estadoInicial();
 		}
+	}
+	
+	private void terminarDevolMenu_actionPerformed() {
+		logger.info("[USER]->terminarDevolMenu_actionPerformed:");
+		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelDevolucion");
+		panelDevolucionControl.terminar_ActionPerformed();
+	}
+	
+	private void cancelarDevolMenu_actionPerformed() {
+		logger.info("[USER]->cancelarDevolMenu_actionPerformed:");
+		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelDevolucion");
+		panelDevolucionControl.cancelar_ActionPerformed();		
 	}
 
 	@Override

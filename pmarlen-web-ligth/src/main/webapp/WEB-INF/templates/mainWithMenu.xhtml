@@ -195,13 +195,17 @@
 			
 			<h:panelGroup class="footer-bar-#{systemInfoMB.environment}">
 				<h:form>
-					<h:panelGrid columns="3" columnClasses="columnWidth5 leftAlign,columnWidth90 centerAlign, columnWidth5 rightAlign" width="100%">
+					<h:panelGrid columns="4" columnClasses="columnWidth5 leftAlign,columnWidth90 centerAlign, columnWidth5 rightAlign" width="100%">
 						<span id="txtTimeoutClock" class="txtTimeoutClock" style="color: greenyellow;" title="TIEMPO RESTANTE PARA EXPIRE LA SESI&Oacute;N"></span>
 						<h:panelGroup>
 							<h:outputText	value="Perfumeria Marlen - L30 | "/>
 							<h:outputText	value="Construido: #{systemInfoMB.buildTimestamp} | " 
 											title="Ver. #{systemInfoMB.systemVersion} ( #{systemInfoMB.environment} ) Git RevID: #{systemInfoMB.gitSHA1}" />
-							<h:outputText	value="UA"
+							<h:outputLink id="link1" value="#{request.contextPath}/pmcajaupdate/version.properties">
+								<h:outputText	value="PMCaja Ver." title="PM Caja Ver."/>
+							</h:outputLink>
+						
+							<h:outputText	value="| UA"
 										    title="#{sessionUserMB.uaInfo}"/>
 						</h:panelGroup>
 						<h:outputText id="txtFoter" class="txtFoter" value="#{systemInfoMB.sessionDate}" style="color: greenyellow;" title="HORA DEL SISTEMA, VERDE: ESTA EN LINEA, ROJO: DESCONECTADO" />

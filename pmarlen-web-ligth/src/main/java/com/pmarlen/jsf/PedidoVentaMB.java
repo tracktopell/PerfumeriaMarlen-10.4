@@ -17,6 +17,7 @@ import com.pmarlen.businesslogic.GeneradorNumTicket;
 import com.pmarlen.model.Constants;
 import com.pmarlen.web.security.managedbean.SessionUserMB;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -661,6 +662,7 @@ public class PedidoVentaMB  implements Serializable{
 		String numTiket =null;
 		try{
 			entradaSalida.setCaja(1);
+			entradaSalida.setFechaCreo(new Timestamp(System.currentTimeMillis()));
 			entradaSalida.setFactorIva(Constants.IVA);
 			//pedidoVenta.setNumDeCuenta(null);
 			entradaSalida.setNumeroTicket("0");

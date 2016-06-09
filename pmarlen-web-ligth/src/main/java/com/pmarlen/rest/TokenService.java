@@ -40,7 +40,7 @@ public class TokenService {
 	@Produces(MediaType.TEXT_PLAIN + ";charset=" + encodingUTF8)
 	public String frase() throws WebApplicationException {
 		GeneradorDeToken gt = new GeneradorDeToken();
-		final String frase = gt.getFrase();
+		final String frase = gt.getFrase2();
 		logger.debug("token: frase:" + frase);
 		return frase;
 	}

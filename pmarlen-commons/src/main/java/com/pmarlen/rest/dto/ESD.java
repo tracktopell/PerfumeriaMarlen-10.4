@@ -11,6 +11,7 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ESD {
 	private String cb;
+	private Integer id;
 	private int a;
 	private int ta;
 	private int c;
@@ -46,9 +47,8 @@ public class ESD {
 		this.esIdDev = x.esIdDev;
 	}
 	
-
-	
 	public ESD(EntradaSalidaDetalle esd) {
+		id = esd.getId()!=null?esd.getId().intValue():0;
 		cb = esd.getProductoCodigoBarras();
 		a  = esd.getAlmacenId();
 		c  = esd.getCantidad();
@@ -58,6 +58,7 @@ public class ESD {
 	}
 	
 	public ESD(EntradaSalidaDetalleQuickView esdqv) {
+		id = esdqv.getId()!=null?esdqv.getId().intValue():0;
 		cb = esdqv.getProductoCodigoBarras();
 		a  = esdqv.getAlmacenId();
 		c  = esdqv.getCantidad();
@@ -66,8 +67,11 @@ public class ESD {
 		esIdDev = esdqv.getEsIdDev()!=null?esdqv.getEsIdDev().intValue():0;
 		ta = esdqv.getApTipoAlmacen();
 	}
-	
 
+	public Integer getId() {
+		return id;
+	}
+	
 	/**
 	 * @return the cb
 	 */
