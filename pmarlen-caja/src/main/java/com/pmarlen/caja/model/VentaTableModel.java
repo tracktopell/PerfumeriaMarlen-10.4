@@ -130,4 +130,8 @@ public class VentaTableModel implements TableModel{
 		}
 	}
 	
+	public ES_ESD getES_ESDAt(int i){
+		return ventaList.get(i);
+	}
+	
 }

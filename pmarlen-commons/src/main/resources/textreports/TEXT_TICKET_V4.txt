@@ -1,0 +1,69 @@
+${fecha.actual,l,10,L} ${hora.actual,r,10,R}
+?{logo.line1,c,100%,R}
+?{logo.line2,c,100%,R}
+?{logo.line3,c,100%,R}
+?{logo.line4,c,100%,R}
+?{logo.line5,c,100%,R}
+?{logo.line6,c,100%,R}
+?{logo.line7,c,100%,R}
+?{logo.line8,c,100%,R}
+?{logo.line9,c,100%,R}
+?{logo.line10,c,100%,R}
+?{logo.line12,c,100%,R}
+?{logo.line13,c,100%,R}
+?{logo.line14,c,100%,R}
+?{logo.line15,c,100%,R}
+?{logo.line16,c,100%,R}
+?{logo.line17,c,100%,R}
+?{logo.line18,c,100%,R}
+?{logo.line19,c,100%,R}
+?{logo.line20,c,100%,R}
+${sucursal.nombre1,c,100%,R}
+${sucursal.nombre2,c,100%,R}
+
+${sucursal.direccion1,c,100%,C}
+?{sucursal.direccion2,c,100%,C}
+?{sucursal.direccion3,c,100%,C}
+?{sucursal.direccion4,c,100%,C}
+?{sucursal.direccion5,c,100%,C}
+?{sucursal.tels,c,100%,C}
+
+?{fot.titulo,c,100%,C}
+?{fot.subTitulo,c,100%,C}
+
+  # TICKET:${venta.ticketFacil,l,22,F}
+     FECHA:${fecha.creado,l,16,F}
+   ATENDIO:?{usuario.creo.clave,l,4,F}
+  IMPRIMIO:?{usuario.imprimio.clave,l,4,F}
+    CAJA #:?{sucursal.caja.creo,l,3,F}
+   CLIENTE:?{cliente.racSoc1,l,-11,F}
+           ?{cliente.racSoc2,l,-11,F}
+           ?{cliente.racSoc3,l,-11,F}
+${=,c,100%,C}
+#{pvd.cant,r,5,L} #{pvd.producto.cb,r,15,F} #{pvd.producto.nombre,l,-22,R}
+      X  #{pvd.precio,r,9,F} #{pvd.imp,r,15,R}
+${-,l,100%,C}
+${fot.neTotElem,r,5,L} ${fot.neTotElemL,l,14,F}
+              SUBTOTAL: ?{fot.subTot,r,15,R}
+            -DESCUENTO: ?{fot.desc,r,15,R}
+${_,c,17,R}
+            T O T A L : ${fot.tot,r,15,R}
+
+       METODO DE PAGO : ?{fot.metodoPago,r,15,R}
+     NUM.AUTORIZACION : ?{fot.numAuto,r,15,R}
+             RECIBIDO : ?{fot.impRecib,r,15,R}
+        CARGO A TARJ. : ?{fot.cargo,r,15,R}
+            SU CAMBIO : ?{fot.cambio,r,15,R}
+?{fot.leyendaIVA,l,100%,C}
+
+${fot.totLetra1,l,100%,C}
+?{fot.totLetra2,l,100%,C}
+?{fot.totLetra3,l,100%,C}
+?{fot.totLetra4,l,100%,C}
+?{fot.leyendaNoFiscal,c,100%,C}
+
+?{fot.leyenda1,c,100%,C}
+?{fot.leyenda2,c,100%,C}
+?{fot.leyenda3,c,100%,C}
+?{fot.leyenda4,c,100%,C}
+${-,c,100%,C}

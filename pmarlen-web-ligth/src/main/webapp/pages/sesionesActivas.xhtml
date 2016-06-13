@@ -56,15 +56,13 @@
 										
 					</f:facet>
 					
-					<p:column width="5%">
-						-
+					<p:column width="5%">						
+						<p:commandButton update=":form1:corteCajaDetail" oncomplete="PF('corteCajaOP').show('#{component.clientId}')" icon="ui-icon-search" title="VER DETALLE DE SESION">
+							<f:setPropertyActionListener value="#{sessionCajaInfo}" target="#{sesionesActivasMB.cajaSessionInfoSelected}" />
+						</p:commandButton>
 					</p:column>
 					
-					<p:column headerText="SESSION ID" width="20%">
-						<h:outputText value="#{sessionCajaInfo.sessionId}" />
-					</p:column>
-					
-					<p:column headerText="SUCURSAL" width="10%">
+					<p:column headerText="SUCURSAL" width="20%">
 						<h:outputText value="#{sesionesActivasMB.getSucursalInfo(sessionCajaInfo.sucursal)}" />
 					</p:column>
 					
@@ -73,7 +71,7 @@
 					</p:column>
 					
 					<p:column headerText="USUARIO AUTENTICADO" width="25%">
-						<h:outputText value="#{sessionCajaInfo.loggedIn}" />
+						<h:outputText value="#{sessionCajaInfo.loggedIn}" title="#{sessionCajaInfo.sessionId}" />						
 					</p:column>
 					
 					<p:column headerText="T.CONECTADO / ULT. AC."  width="10%">
@@ -86,19 +84,62 @@
 						<h:outputText value="#{sessionCajaInfo.remoteAddr}" />
 					</p:column>
 					
-					<p:column headerText="USER-AGENT" width="25%">						
-						<h:outputText value="java-ver:#{sessionCajaInfo.userAgent.javaVersion}" />
-						<h:outputText value="os:#{sessionCajaInfo.userAgent.os}" />
-						<h:outputText value="user:#{sessionCajaInfo.userAgent.userInSession}" />
-						<h:outputText value="ver:#{sessionCajaInfo.userAgent.version}" />
-						<h:outputText value="dir:#{sessionCajaInfo.userAgent.workingDirectory}" />
+					<p:column headerText="USER-AGENT" width="35%">
+						<h:panelGrid columns="1">
+							<h:outputText value="java-ver:#{sessionCajaInfo.userAgent.javaVersion}" />
+							<h:outputText value="os:#{sessionCajaInfo.userAgent.os}" />
+							<h:outputText value="user:#{sessionCajaInfo.userAgent.userInSession}" />
+							<h:outputText value="ver:#{sessionCajaInfo.userAgent.version}" />
+							<h:outputText value="dir:#{sessionCajaInfo.userAgent.workingDirectory}" />
+						</h:panelGrid>
 					</p:column>
 
 				</p:dataTable>
-
 				
 				<p:poll interval="5" listener="#{systemInfoMB.updateTime}" update="entityTable,entityTable2" />				
 
+				<p:overlayPanel widgetVar="corteCajaOP" showEffect="fade" hideEffect="fade" dismissable="false" showCloseIcon="true">
+					<p:outputPanel id="corteCajaDetail">
+						
+						<p:panelGrid  columns="1" rendered="#{not empty sesionesActivasMB.cajaSessionInfoSelected}" columnClasses="label,value">
+							<f:facet name="header">
+								HISTORICO DE MOVIMIENTOS DE OPERACIÓN DE APLICACIÓN SUCURSAL / CAJA
+								<!--
+								<p:graphicImage name="demo/images/car/#{sesionesActivasMB.cajaSessionInfoSelected}-big.gif"/> 
+								-->
+							</f:facet>
+
+							<h:panelGrid columns="1">
+								<h:outputText value="SUCURSAL :#{sesionesActivasMB.sucursalIdVerCorte}" />
+								<h:outputText value="CAJA :#{sesionesActivasMB.cajaCorte}" />								
+							</h:panelGrid>
+							
+							<p:dataTable value="#{sesionesActivasMB.corteCajaBySucursalAndCaja}" var="cc" scrollable="true" scrollHeight="150" style="width: 800px;">
+								<p:column headerText="FECHA" width="10%">
+									<h:outputText value="#{cc.fecha}" />
+								</p:column>								
+								<p:column headerText="USAURIO" width="30%">
+									<h:outputText value="#{cc.usuarioEmail}" />
+								</p:column>
+								<p:column headerText="EVENTO" width="20%">
+									<h:outputText value="APP_INICIADA" rendered="#{cc.tipoEvento eq 0}"/>
+									<h:outputText value="AUTENTICADO"  rendered="#{cc.tipoEvento eq 1}"/>
+									<h:outputText value="APERTURA"     rendered="#{cc.tipoEvento eq 2}"/>
+									<h:outputText value="SUSPENDIDA"   rendered="#{cc.tipoEvento eq 3}"/>
+									<h:outputText value="REANUDAR"     rendered="#{cc.tipoEvento eq 4}"/>
+									<h:outputText value="ERRORGRAVE"   rendered="#{cc.tipoEvento eq 8}"/>
+									<h:outputText value="CIERRE"              rendered="#{cc.tipoEvento eq 9}"/>
+									<h:outputText value="? #{cc.tipoEvento}"  rendered="#{cc.tipoEvento gt 9}"/>									
+								</p:column>
+								<p:column headerText="COMENTARIO" width="30%">
+									<h:outputText value="#{cc.comentarios}" />
+								</p:column>
+							</p:dataTable>
+							
+						</p:panelGrid>
+					</p:outputPanel>
+				</p:overlayPanel>
+				
 			</h:panelGrid>
 						
 		</h:form>		

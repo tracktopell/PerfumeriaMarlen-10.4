@@ -100,12 +100,14 @@ public class Main {
 		if (!MemoryDAO.isExsistFile()) {
 			logger.debug("main: 1st Time");
 			ParamsConfigDialog dlg1stTime =  new ParamsConfigDialog();
+			logger.debug("main: dlg1stTime created");
 			ParamsConfigDialogControl pcd1stTimeControl=new ParamsConfigDialogControl(dlg1stTime);
+			logger.debug("main: pcd1stTimeControl created, -> pcd1stTimeControl.estadoInicial()");
 			pcd1stTimeControl.estadoInicial();
 
 			while (pcd1stTimeControl.isConfiguring()) {
 				try {
-					logger.trace("main:configuring, ...wait");
+					logger.trace("main:configuring, ...waith !!");
 					Thread.sleep(500);
 				} catch (InterruptedException ie) {
 					logger.trace("main:InterruptedException");
@@ -117,6 +119,7 @@ public class Main {
 				System.exit(2);
 			}
 			pcd1stTimeControl = null;
+			logger.debug("main: after dlg1stTime");
 		}
 		
 		if (ApplicationLogic.getInstance().needsUpdateApplciation()) {
@@ -153,8 +156,9 @@ public class Main {
 			}	
 		}
 		
-		logger.debug("main:Ready for Preload.");
+		logger.debug("main:Ready for MemoryDAO.preLoad()");
 		MemoryDAO.preLoad();
+		logger.debug("main:Ready for ApplicationLogic.getInstance().iniciaAppCorteCajaDTO()");
 		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();		
 		logger.debug("main:[*BUG*] CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
 

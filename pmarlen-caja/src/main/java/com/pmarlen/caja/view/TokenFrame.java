@@ -288,6 +288,7 @@ public class TokenFrame extends javax.swing.JDialog {
 				status.setText("CORRECTO");
 				status.setForeground(Color.GREEN);
 				cerrar = true;
+				accepted = true;
 				aceptar.setEnabled(false);
 				token.setEnabled(false);
 				cancelar.setEnabled(false);

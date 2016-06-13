@@ -5,14 +5,13 @@
 package com.pmarlen.web.servlet;
 
 import com.pmarlen.rest.dto.UserAgent;
-import java.util.Date;
-import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 
 /**
  *
  * @author alfredo
  */
-public class AppSessionInfo {
+public class AppSessionInfo implements Serializable{
 	protected long applicationContextCreationTime;
 	protected String remoteAddr;
 	protected UserAgent userAgent;

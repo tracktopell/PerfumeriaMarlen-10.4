@@ -143,11 +143,13 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 			throw new ValidacionCamposException("EL SALDO NO PARECE SER UN IMPORTE RAZONABLE: DEBE SER $0.00 A $9,999.99", aperturaCajaDialog.getSaldoInicial());
 		}
 		
-		String observaciones = aperturaCajaDialog.getObservaciones().getText().trim();
+		String obs = aperturaCajaDialog.getObservaciones().getText().trim();
 		
-		if(observaciones.length() > 0 ){
-			if(observaciones.length() > OBSERVACIONES_MAX_LENGTH) {
-				observaciones = observaciones.substring(0, OBSERVACIONES_MAX_LENGTH);
+		if(obs.length() > 0 ){
+			if(obs.length() > OBSERVACIONES_MAX_LENGTH) {
+				observaciones = obs.substring(0, OBSERVACIONES_MAX_LENGTH);
+			} else {
+				observaciones = obs;
 			}
 		}		
 	}

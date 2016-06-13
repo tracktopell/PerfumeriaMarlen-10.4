@@ -475,7 +475,7 @@ public class TextReporter {
 		byte content[]=null;
 		try {
 			baos = new ByteArrayOutputStream();
-			processReport(TextReporter.class.getResourceAsStream("/textreports/TEXT_TICKET_V3.txt"), baos, jrInfo.getParameters(), jrInfo.getRecords(), columns, endLine,  encoding);
+			processReport(TextReporter.class.getResourceAsStream("/textreports/TEXT_TICKET_V4.txt"), baos, jrInfo.getParameters(), jrInfo.getRecords(), columns, endLine,  encoding);
 			content = baos.toByteArray();
 		} catch (Exception ioe) {
 			ioe.printStackTrace(System.err);			

@@ -4,11 +4,13 @@
  */
 package com.pmarlen.web.servlet;
 
+import java.io.Serializable;
+
 /**
  *
  * @author alfredo
  */
-public class CajaSessionInfo extends AppSessionInfo{
+public class CajaSessionInfo extends AppSessionInfo  implements Serializable{
 	
 	public static final long TIMEOUT = 70000;
 	

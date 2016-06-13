@@ -6,13 +6,14 @@
 package com.pmarlen.jsf.model;
 
 import com.pmarlen.backend.model.quickviews.PagerInfo;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  *
  * @author alfredo
  */
-public class EntradaSalidaDTOPageHelper {
+public class EntradaSalidaDTOPageHelper implements Serializable{
 	private int       tipoMov;
 	private int       sucursalId;
 	private boolean   active;

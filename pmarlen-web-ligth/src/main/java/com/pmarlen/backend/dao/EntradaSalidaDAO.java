@@ -355,7 +355,8 @@ public class EntradaSalidaDAO {
 			conn = getConnection();
 			
 			ps = conn.prepareStatement(
-					"SELECT   P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,AP.PRECIO,AP.CANTIDAD,AP.UBICACION,ESD.ID AS ESD_ID,A.ID AS ALMACEN_ID,A.TIPO_ALMACEN,ESD.CANTIDAD AS CANTIDAD_ESD,ESD.PRECIO_VENTA,ESD.DEV,ESD.ESD_ID_DEV\n"
+					"SELECT   P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,AP.PRECIO,AP.CANTIDAD,"
+							+ "AP.UBICACION,ESD.ID AS ESD_ID,A.ID AS ALMACEN_ID,A.TIPO_ALMACEN,ESD.CANTIDAD AS CANTIDAD_ESD,ESD.PRECIO_VENTA,ESD.DEV,ESD.ESD_ID_DEV\n"
 					+ "FROM   ENTRADA_SALIDA ES,\n"
 					+ "       ENTRADA_SALIDA_DETALLE ESD,\n"
 					+ "       PRODUCTO P,\n"
@@ -387,7 +388,7 @@ public class EntradaSalidaDAO {
 				x.setProductoUnidadMedida(rs.getString("UNIDAD_MEDIDA"));
 				x.setPrecioVenta(rs.getDouble("PRECIO_VENTA"));
 				x.setDev((Integer)rs.getObject("DEV"));	
-				x.setDev((Integer)rs.getObject("ESD_ID_DEV"));	
+				x.setEsIdDev((Integer)rs.getObject("ESD_ID_DEV"));	
 				x.setProductoUnidadEmpaque(rs.getString("UNIDAD_EMPAQUE"));
 				x.setProductoUnidadesPorCaja(rs.getString("UNIDADES_X_CAJA"));
 				x.setCantidad(rs.getInt("CANTIDAD_ESD"));
@@ -399,7 +400,7 @@ public class EntradaSalidaDAO {
 				
 				x.setRowId(ct++);
 				
-				logger.info("\t==>>"+x.getCantidad()+" X ["+x.getProductoCodigoBarras()+"] @ "+x.getAlmacenId()+" ("+x.getProductoUnidadEmpaque()+":"+x.getProductoContenido()+" "+x.getProductoUnidadMedida()+")["+x.getProductoUnidadesPorCaja()+"]");
+				logger.debug("\t==>>"+x.getCantidad()+" X ["+x.getProductoCodigoBarras()+"] @ "+x.getAlmacenId()+" ("+x.getProductoUnidadEmpaque()+":"+x.getProductoContenido()+" "+x.getProductoUnidadMedida()+")["+x.getProductoUnidadesPorCaja()+"]");
 				r.add(x);
 			}
 
@@ -599,7 +600,8 @@ public class EntradaSalidaDAO {
 			conn = getConnection();
 			
 			String fq0 = 
-					",ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
+					",ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,"
+					+ "ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
 					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,TOT_PRODS,ES.ES_ID_DEV,ES.ES_ID_TRA_ORI,ES.SUCURSAL_ID_TRA_ORI,SUCURSAL_ID_TRA_DES,\n"
 					+ "CFD.ID AS CFD_ID,\n"
 					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
@@ -1097,8 +1099,8 @@ public class EntradaSalidaDAO {
 		
 		try {
 			//Timestamp now = new Timestamp(System.currentTimeMillis());
-			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,METODO_DE_PAGO_ID,FACTOR_IVA,COMENTARIOS,CFD_ID,NUMERO_TICKET,CAJA,IMPORTE_RECIBIDO,APROBACION_VISA_MASTERCARD,PORCENTAJE_DESCUENTO_CALCULADO,PORCENTAJE_DESCUENTO_EXTRA,CONDICIONES_DE_PAGO,NUM_DE_CUENTA,AUTORIZA_DESCUENTO,ELEM_DET,TOT_PRODS) "
-					+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,METODO_DE_PAGO_ID,FACTOR_IVA,COMENTARIOS,CFD_ID,NUMERO_TICKET,CAJA,IMPORTE_RECIBIDO,APROBACION_VISA_MASTERCARD,PORCENTAJE_DESCUENTO_CALCULADO,PORCENTAJE_DESCUENTO_EXTRA,CONDICIONES_DE_PAGO,NUM_DE_CUENTA,AUTORIZA_DESCUENTO,ELEM_DET,TOT_PRODS,ES_ID_DEV) "
+					+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int ci = 1;
 			ps.setObject(ci++, tipoMov);
 			ps.setObject(ci++, x.getSucursalId());
@@ -1122,6 +1124,7 @@ public class EntradaSalidaDAO {
 			ps.setObject(ci++, x.getAutorizaDescuento());
 			ps.setObject(ci++, x.getElemDet());
 			ps.setObject(ci++, x.getTotProds());
+			ps.setObject(ci++, x.getEsIdDev());
 			
 			logger.info("insertEntradaSalidaSucursal:before Insert:"+x.getId());
 			r = ps.executeUpdate();					
@@ -1152,7 +1155,7 @@ public class EntradaSalidaDAO {
 				psESD.setInt(ciESD++, esd1.getAlmacenId());
 				psESD.setInt(ciESD++, esd1.getCantidad());
 				psESD.setDouble(ciESD++, esd1.getPrecioVenta());
-				psESD.setObject(ciESD++, esd1.getDev());
+				psESD.setObject(ciESD++, esd1.getDev()!=null?esd1.getDev().intValue():0);
 				psESD.setObject(ciESD++, esd1.getEsIdDev());
 
 				rESD += psESD.executeUpdate();
@@ -1160,12 +1163,12 @@ public class EntradaSalidaDAO {
 			psESD.close();
 			
 			logger.debug("insertEntradaSalidaSucursal: Es Devolucion ? x.getEsIdDev():"+x.getEsIdDev());
-			if(tipoMov == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION && x.getEsIdDev()!=null){
-				logger.debug("insertEntradaSalidaSucursal: Actualizando Venta Origen: ");
+			if(tipoMov == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION){
+				logger.debug("insertEntradaSalidaSucursal: ES DEVOLUCION, Actualizando Venta Origen: ");
 				psESD = conn.prepareStatement("UPDATE ENTRADA_SALIDA_DETALLE SET DEV=DEV+? WHERE ID=?");
 				int rESDd=0;
 				for (EntradaSalidaDetalle esd2 : pvdList) {
-					if(x.getEsIdDev()==null || (x.getEsIdDev()!=null&&x.getEsIdDev().intValue()<=0)){
+					if(esd2.getEsIdDev()==null || (esd2.getEsIdDev()!=null && esd2.getEsIdDev().intValue()<=0)){
 						throw new IllegalStateException("En el datalle de devolución, no tiene el ID del Registro Detalle Origen: ENTRADA_SALIDA_ID="+x.getId()+" No.TICKET="+x.getNumeroTicket());
 					}
 					
@@ -1175,9 +1178,10 @@ public class EntradaSalidaDAO {
 					psESD.clearWarnings();
 					
 					psESD.setInt    (iESDd++, esd2.getCantidad());
-					psESD.setInt	(iESDd++, x.getEsIdDev());
+					psESD.setInt	(iESDd++, esd2.getEsIdDev());
 					
-					rESDd += psESD.executeUpdate();
+					rESDd += psESD.executeUpdate();					
+					logger.debug("\tinsertEntradaSalidaSucursal: Actualizando Venta ESD: DEV = DEV+"+esd2.getCantidad()+"  WHERE ID="+esd2.getEsIdDev());
 				}
 				psESD.close();
 				logger.debug("rESDd="+rESDd);
@@ -1304,8 +1308,8 @@ public class EntradaSalidaDAO {
 //			conn = getConnectionCommiteable();
 
 			Timestamp now = new Timestamp(System.currentTimeMillis());
-			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,METODO_DE_PAGO_ID,FACTOR_IVA,COMENTARIOS,CFD_ID,NUMERO_TICKET,CAJA,IMPORTE_RECIBIDO,APROBACION_VISA_MASTERCARD,PORCENTAJE_DESCUENTO_CALCULADO,PORCENTAJE_DESCUENTO_EXTRA,CONDICIONES_DE_PAGO,NUM_DE_CUENTA,AUTORIZA_DESCUENTO,ES_ID_TRA_ORI,SUCURSAL_ID_TRA_ORI,SUCURSAL_ID_TRA_DES,ELEM_DET,TOT_PRODS) "
-					+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,METODO_DE_PAGO_ID,FACTOR_IVA,COMENTARIOS,CFD_ID,NUMERO_TICKET,CAJA,IMPORTE_RECIBIDO,APROBACION_VISA_MASTERCARD,PORCENTAJE_DESCUENTO_CALCULADO,PORCENTAJE_DESCUENTO_EXTRA,CONDICIONES_DE_PAGO,NUM_DE_CUENTA,AUTORIZA_DESCUENTO,ES_ID_TRA_ORI,SUCURSAL_ID_TRA_ORI,SUCURSAL_ID_TRA_DES,ELEM_DET,TOT_PRODS,ES_ID_DEV) "
+					+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int ci = 1;
 			ps.setObject(ci++, tipoMov);
 			ps.setObject(ci++, x.getSucursalId());
@@ -1332,6 +1336,7 @@ public class EntradaSalidaDAO {
 			ps.setObject(ci++, x.getSucursalIdTraDes());
 			ps.setObject(ci++, x.getElemDet());
 			ps.setObject(ci++, x.getTotProds());
+			ps.setObject(ci++, x.getEsIdDev());
 			logger.info("->EntradaSalida before Insert:"+x.getId());
 			r = ps.executeUpdate();					
 			
@@ -1343,7 +1348,7 @@ public class EntradaSalidaDAO {
 			}
 			logger.info("->EntradaSalida after Insert:"+x.getId());
 			psESD = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA_DETALLE(ENTRADA_SALIDA_ID,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,CANTIDAD,PRECIO_VENTA,DEV,ESD_ID_DEV) "
-					+ " VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+					+ " VALUES(?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			int rESD = 0;
 			for (EntradaSalidaDetalle pvd : pvdList) {
 				int ciESD = 1;
@@ -1360,7 +1365,7 @@ public class EntradaSalidaDAO {
 				psESD.setInt(ciESD++, pvd.getAlmacenId());
 				psESD.setInt(ciESD++, pvd.getCantidad());
 				psESD.setDouble(ciESD++, pvd.getPrecioVenta());
-				psESD.setObject(ciESD++, pvd.getDev());
+				psESD.setObject(ciESD++, pvd.getDev()!=null?pvd.getDev().intValue():0);
 				psESD.setObject(ciESD++, pvd.getEsIdDev());
 
 				rESD += psESD.executeUpdate();
@@ -1466,7 +1471,7 @@ public class EntradaSalidaDAO {
 				psESD.setInt(ciESD++, pvd.getAlmacenId());
 				psESD.setInt(ciESD++, pvd.getCantidad());
 				psESD.setDouble(ciESD++, pvd.getPrecioVenta());
-				psESD.setObject(ciESD++, pvd.getDev());
+				psESD.setObject(ciESD++, pvd.getDev()!=null?pvd.getDev().intValue():0);
 				psESD.setObject(ciESD++, pvd.getEsIdDev());
 				
 				rESD += psESD.executeUpdate();

@@ -54,7 +54,7 @@
 						<p:commandButton value="RECARGAR" actionListener="#{ventasSucursalesMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
 					</f:facet>
 					
-					<p:column headerText="#" width="7%" filterBy="#{pv.id}" filterMatchMode="contains" filterStyle="width:30px;" >
+					<p:column headerText="#" width="10%" filterBy="#{pv.id}" filterMatchMode="contains" filterStyle="width:30px;" >
 						<p:panelGrid columns="1" columnClasses="centerAlign" >		
 							<!--
 							<p:commandButton actionListener="#{ventasSucursalesMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
@@ -75,7 +75,7 @@
 						</p:panelGrid>
 					</p:column>
 					
-					<p:column headerText="CREADO / ACTUAL" width="18%">
+					<p:column headerText="CREADO / ACTUAL" width="20%">
 						<p:panelGrid columns="1" columnClasses="centerAlign" style="border: none; border-collapse: none; ">							
 							<h:outputText value="CREADO / #{pv.fechaCreo} (#{pv.usuarioEmailCreo}) "/>
 							<h:outputText value="#{pv.estadoDescripcion} / #{pv.estadoActualFecha} (#{pv.estadoActualUsuarioEmail}" />							
@@ -83,7 +83,7 @@
 						
 					</p:column>
 					
-					<p:column headerText="DATOS" width="40%">
+					<p:column headerText="DATOS" width="30%">
 						<p:panelGrid columns="2" columnClasses="columnWidth30 rightAlign,columnWidth70 leftAlign">
 							<h:outputText value="R.F.C. :" />
 							<h:outputText value="#{pv.clienteRFC}" />

@@ -1,8 +1,11 @@
 package com.pmarlen.jsf;
 
+import com.pmarlen.backend.dao.CorteCajaDAO;
 import com.pmarlen.backend.dao.DAOException;
 import com.pmarlen.backend.dao.SucursalDAO;
+import com.pmarlen.backend.model.CorteCaja;
 import com.pmarlen.backend.model.Sucursal;
+import com.pmarlen.backend.model.quickviews.UsuarioQuickView;
 import com.pmarlen.model.Constants;
 import com.pmarlen.web.servlet.CajaSessionInfo;
 import com.pmarlen.web.servlet.ContextAndSessionListener;
@@ -16,7 +19,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import org.apache.batik.dom.util.HashTable;
 import org.apache.log4j.Logger;
 
 @ManagedBean(name="sesionesActivasMB")
@@ -65,6 +67,27 @@ public class SesionesActivasMB implements Serializable{
 		return sesionesCajaActivas;
 	}
 	
+	private Integer sucursalIdVerCorte;	
+	private Integer cajaCorte;
+	private Date    fechaInicial;
+	private Date    fechaFinal;
+	private CajaSessionInfo cajaSessionInfoSelected;
+	
+	public List<CorteCaja> getCorteCajaBySucursalAndCaja(){
+		ArrayList<CorteCaja> corteCajaList = null;
+		try{
+			if(sucursalIdVerCorte !=null && cajaCorte != null){
+				corteCajaList = CorteCajaDAO.getInstance().findAllBy(sucursalIdVerCorte, cajaCorte,fechaInicial, fechaFinal);
+			}
+		}catch(DAOException de){
+			logger.error(de.getMessage());
+			corteCajaList = new ArrayList<CorteCaja>();
+		}
+		return corteCajaList;
+	}
+
+	
+	
 	private static Hashtable<Integer,String> sucursalInfo= null;
 
 	public static Hashtable<Integer, String> getSucursalInfo() {		
@@ -74,7 +97,7 @@ public class SesionesActivasMB implements Serializable{
 				sucursales = SucursalDAO.getInstance().findAll();
 				sucursalInfo=new Hashtable<Integer,String>();
 				for(Sucursal s: sucursales){
-					sucursalInfo.put(s.getId(), s.getNombre());
+					sucursalInfo.put(s.getId(), s.getNombre().replace("PERFUMERIA MARLEN S.A. DE C.V. ", "..."));
 				}
 			}catch(DAOException de){
 				logger.error("No se cargaron las Sucursales:"+de.getMessage());
@@ -87,6 +110,79 @@ public class SesionesActivasMB implements Serializable{
 	
 	public String getSucursalInfo(int sucId){		
 		return getSucursalInfo().get(sucId);
+	}
+
+	/**
+	 * @return the sucursalIdVerCorte
+	 */
+	public Integer getSucursalIdVerCorte() {
+		return sucursalIdVerCorte;
+	}
+
+	/**
+	 * @param sucursalIdVerCorte the sucursalIdVerCorte to set
+	 */
+	public void setSucursalIdVerCorte(Integer sucursalIdVerCorte) {
+		this.sucursalIdVerCorte = sucursalIdVerCorte;
+	}
+
+	/**
+	 * @return the cajaCorte
+	 */
+	public Integer getCajaCorte() {
+		return cajaCorte;
+	}
+
+	/**
+	 * @param cajaCorte the cajaCorte to set
+	 */
+	public void setCajaCorte(Integer cajaCorte) {
+		this.cajaCorte = cajaCorte;
+	}
+
+	/**
+	 * @return the fechaInicial
+	 */
+	public Date getFechaInicial() {
+		return fechaInicial;
+	}
+
+	/**
+	 * @param fechaInicial the fechaInicial to set
+	 */
+	public void setFechaInicial(Date fechaInicial) {
+		this.fechaInicial = fechaInicial;
+	}
+
+	/**
+	 * @return the fechaFinal
+	 */
+	public Date getFechaFinal() {
+		return fechaFinal;
+	}
+
+	/**
+	 * @param fechaFinal the fechaFinal to set
+	 */
+	public void setFechaFinal(Date fechaFinal) {
+		this.fechaFinal = fechaFinal;
+	}
+
+	/**
+	 * @return the cajaSessionInfoSelected
+	 */
+	public CajaSessionInfo getCajaSessionInfoSelected() {
+		return cajaSessionInfoSelected;
+	}
+
+	/**
+	 * @param cajaSessionInfoSelected the cajaSessionInfoSelected to set
+	 */
+	public void setCajaSessionInfoSelected(CajaSessionInfo cajaSessionInfoSelected) {
+		this.cajaSessionInfoSelected = cajaSessionInfoSelected;
+		this.sucursalIdVerCorte		 = Integer.parseInt(this.cajaSessionInfoSelected.getSucursal());
+		this.cajaCorte				 = Integer.parseInt(this.cajaSessionInfoSelected.getCaja());
+		logger.info("setCajaSessionInfoSelected:this.cajaSessionInfoSelected="+this.cajaSessionInfoSelected+", this.sucursalIdVerCorte="+this.sucursalIdVerCorte+", this.cajaCorte="+this.cajaCorte);
 	}
 
 }

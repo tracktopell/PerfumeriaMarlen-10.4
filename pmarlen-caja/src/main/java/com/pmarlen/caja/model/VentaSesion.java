@@ -295,9 +295,14 @@ public class VentaSesion {
 		
 		
 		U uc = MemoryDAO.getUsuario(es.getUsuarioEmailCreo());
-		es.setUsuarioClave(uc.getC());
-		es.setUsuarioNombreCompleto(uc.getN());
-
+		if(uc!=null){
+			es.setUsuarioClave(uc.getC());
+			es.setUsuarioNombreCompleto(uc.getN());
+		} else {
+			logger.error("generaJarpeReportsInfoDTOTicket:es.getUsuarioEmailCreo()="+es.getUsuarioEmailCreo());
+			es.setUsuarioClave(-1);
+			es.setUsuarioNombreCompleto("?");
+		}
 		FormaDePago  fp1 = MemoryDAO.getFormaDePago(es.getFormaDePagoId());
 		MetodoDePago mp1 = MemoryDAO.getMetodoDePago(es.getMetodoDePagoId());
 		

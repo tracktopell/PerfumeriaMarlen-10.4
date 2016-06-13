@@ -2,19 +2,26 @@ package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Producto;
 import com.pmarlen.businesslogic.GeneradorNumTicket;
+import com.pmarlen.businesslogic.reports.TextReporter;
+import com.pmarlen.caja.Main;
 import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.PedidoVentaDetalleTableItem;
 import com.pmarlen.caja.model.DevolucionDetalleTableModel;
 import com.pmarlen.caja.model.ImporteCellRender;
 import com.pmarlen.caja.model.PedidoVentaDetalleTableModel;
+import com.pmarlen.caja.model.VentaSesion;
 import com.pmarlen.caja.view.FramePrincipal;
 import com.pmarlen.caja.view.PanelDevolucion;
 import com.pmarlen.caja.view.ProductoCellRender;
 import com.pmarlen.caja.view.TokenFrame;
 import com.pmarlen.model.Constants;
+import com.pmarlen.model.JarpeReportsInfoDTO;
+import com.pmarlen.model.OSValidator;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
+import com.pmarlen.ticket.systemprinter.SendFileToSystemPrinter;
+import com.pmarlen.ticket.systemprinter.UnixSendToLP;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -22,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +55,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 	private ArrayList<PedidoVentaDetalleTableItem> detalleVentaTableItemList2;
 	private ES_ESD pedidoVenta;
 	private ES_ESD devolucion;
+	private ES_ESD devolucionImpr;
 	private DevolucionDetalleTableModel  devTM;
 	private PedidoVentaDetalleTableModel devTM2;
 	private boolean estadoChecando = false;
@@ -219,6 +228,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 			logger.debug("codigoBuscar_ActionPerformed:indexBuscado="+indexBuscado);
 			panelDevolucion.getDetalleVentaJTable().getSelectionModel().setSelectionInterval(indexBuscado, indexBuscado);
 			scrollToVisible(panelDevolucion.getDetalleVentaJTable(), indexBuscado, indexBuscado);
+			panelDevolucion.getCodigoBuscar().setText(null);
 			devolver_ActionPerformed();
 		} else {
 			new Thread() {
@@ -294,12 +304,25 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		
 		tf.setVisible(true);
 		
-		if(tf.isAccepted()){
-			logger.info("terminar_ActionPerformed: OK commit !");
+		if(!tf.isAccepted()){
+			logger.debug("terminar_ActionPerformed: No se autorizo!");
+			return;
 		}
-		String numTicket = null;
 		
-		numTicket = GeneradorNumTicket.getNumTicket(new Date(devolucion.getEs().getFc()),devolucion.getEs().getS(),devolucion.getEs().getJ());
+		int idSuc = pedidoVenta.getEs().getS();
+		logger.debug("terminar_ActionPerformed(): idSuc=\n"+idSuc);
+		devolucion.getEs().setS(idSuc);
+		devolucion.getEs().setTm(Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION);
+		devolucion.getEs().setJ (pedidoVenta.getEs().getJ());
+		devolucion.getEs().setFc(System.currentTimeMillis());
+		devolucion.getEs().setFc(System.currentTimeMillis());
+		devolucion.getEs().setU(ApplicationLogic.getInstance().getLogged().getE());
+		devolucion.getEs().setEsDev(pedidoVenta.getEs().getId());
+		String numTicket = null;
+		Date fechaDev = new Date(devolucion.getEs().getFc());
+		
+		numTicket = GeneradorNumTicket.getNumTicket(fechaDev,devolucion.getEs().getS(),devolucion.getEs().getJ());
+		logger.debug("terminar_ActionPerformed: Ticket Generado con :fechaDev="+fechaDev+", Suc="+devolucion.getEs().getS()+", Caja="+devolucion.getEs().getJ()+", ");
 		
 		devolucion.getEs().setNt(numTicket);		
 		devolucion.getEs().setC(Constants.ID_CLIENTE_MOSTRADOR);
@@ -312,6 +335,18 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 
 		JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "SE PROCESO LA DEVOLUCUÓN", "Terminar Devolución", JOptionPane.INFORMATION_MESSAGE);
 		
+		devolucionImpr = devolucion;
+		
+		if (ApplicationLogic.getInstance().isPrintingEnabled()) {
+			new Thread() {
+				@Override
+				public void run() {
+					logger.debug("terminar_ActionPerformed(): despues de cerrar dialogo: TICKET:"+devolucionImpr.getEs().getNt()+", ImporteRecibido="+devolucionImpr.getEs().getIr()+", MP="+devolucionImpr.getEs().getMp());
+					imprimirTicket();
+				}
+			}.start();
+		}
+
 		estadoInicial();
 	}
 	
@@ -358,6 +393,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 					
 					pvdiDR.getPvd().setC(1);
 					pvdiDR.getPvd().setEsIdDev(pvdDev.getPvd().getId());
+					pvdiDR.getPvd().setDev(0);
 					
 					devolucion.getEsdList().add(pvdiDR.getPvd());
 					detalleVentaTableItemList2.add(pvdiDR);
@@ -388,12 +424,19 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		new Thread(){
 			public void run(){
 				pedidoVenta = null;
+				String ticketBuscarReal = null;
 				try {
-					logger.info("[USER]->buscarEnServidor()");
-					pedidoVenta = MemoryDAO.getTicket(ticketBuscar);
+					logger.info("[USER]->buscarEnServidor():ticketBuscar="+ticketBuscar);
+					ticketBuscarReal = ticketBuscar.replace("-","");					
+					pedidoVenta = MemoryDAO.getTicket(ticketBuscarReal);
+					
+					if(pedidoVenta.getEs().getTm() != Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA) {
+						throw new IllegalArgumentException("NO ES UNA VENTA: TimpoMovimiento Encontrado:"+pedidoVenta.getEs().getTm());
+					}				
+					panelDevolucion.getTicket().setText(ticketBuscarReal);
 				}catch(Exception e){
 					logger.error("->buscarEnServidor:", e);
-					JOptionPane.showMessageDialog(getFramePrincipal(), "No se encotro Ticket:"+ticketBuscar, "BUSCAR", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(getFramePrincipal(), "No se encotró la VENTA en el SERVIDOR con El Ticket #:"+ticketBuscarReal, "BUSCAR", JOptionPane.ERROR_MESSAGE);
 					panelDevolucion.getTicket().setText("");
 					panelDevolucion.getTicket().requestFocus();
 					return;
@@ -403,6 +446,10 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 				devolucion.getEs().setPde(pedidoVenta.getEs().getPde());
 				logger.debug("buscarEnServidor(): ventaOrigen=\n"+pedidoVenta);
 				int idSuc = pedidoVenta.getEs().getS();
+				logger.debug("buscarEnServidor(): idSuc=\n"+idSuc);
+				devolucion.getEs().setS(idSuc);
+				devolucion.getEs().setTm(Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION);
+				devolucion.getEs().setEsDev(pedidoVenta.getEs().getId());
 				String sn = pedidoVenta.getEs().getSn();
 
 				if(sn != null && sn.contains(Constants.PM_SADECV)){
@@ -423,7 +470,6 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 
 					Producto producto = MemoryDAO.fastSearchProducto(esd.getCb()).reverse();
 					PedidoVentaDetalleTableItem pvdti = new PedidoVentaDetalleTableItem(producto, esd, esd.getTa());
-					
 					detalleVentaTableItemList.add(pvdti);
 				}
 				
@@ -454,6 +500,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 						panelDevolucion.getTerminar().setEnabled(false);
 					}
 				} else {
+					JOptionPane.showMessageDialog(getFramePrincipal(), "La VENTA con El Ticket #:"+ticketBuscarReal+", No fue hecha en esta sucursal", "BUSCAR", JOptionPane.WARNING_MESSAGE);
 					panelDevolucion.getSucursal().setBackground(Color.RED);				
 					panelDevolucion.getCodigoBuscar().setEnabled(false);
 					panelDevolucion.getDetalleVentaJTable().setEnabled(false);
@@ -546,6 +593,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		
 		logger.info("renderTotalDev(): numProds="+numProds);
 		devolucion.getEs().setEd(numProds);
+		devolucion.getEs().setnElem(numProds);		
 		
 		logger.info("renderTotalDev(): devolucion.getEs().getEd()="+devolucion.getEs().getEd());
 		panelDevolucion.getNumArtDev().setText(String.valueOf(devolucion.getEs().getEd()));		
@@ -554,9 +602,78 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		logger.info("renderTotalDev(): importeDesc="+importeDesc);
 		
 		logger.info("renderTotalDev(): total="+total);
+		devolucion.getEs().setTot(total);
 		panelDevolucion.getTotalDev().setText(Constants.df2Decimal.format(total));
 		
 	}
+	
+	void imprimirTicket() {
+		
+		boolean printed = false;
+		try {
+			if(Main.dinamicDebug){
+				TextReporter.DEBUG = true;
+			} else {
+				TextReporter.DEBUG = false;
+			}
+			
+			TextReporter.setColumns(MemoryDAO.getTextSystemPrinterColumns());
+			
+			if(Main.dinamicTrace){
+				TextReporter.DEBUG =true;
+			} else {
+				TextReporter.DEBUG =false;
+			}
+			logger.debug("imprimirTicket:devolucion.getEs().getNt()="+devolucionImpr.getEs().getNt()+", ImporteREcibido="+devolucionImpr.getEs().getIr()+", MP:"+devolucionImpr.getEs().getMp());
+			
+			JarpeReportsInfoDTO infoDTOTicket = VentaSesion.generaJarpeReportsInfoDTOTicket(devolucionImpr);
+			logger.debug("imprimirTicket:fileTicket="+infoDTOTicket);			
+			byte[] generateTicketTXTBytes = TextReporter.generateTicketTXTBytes(infoDTOTicket);
+			logger.debug("imprimirTicket:fileTicket:{\n"+new String(generateTicketTXTBytes)+"\n}");
+			Date today = new Date();
+			
+			String fileTicket     = "TICKET_"+infoDTOTicket.getParameters().get("venta.ticket")+"_" + Constants.sdfThinDate.format(today) + ".txt";
+			String dirPrintTicket = "./";
+			FileOutputStream fos = null;
+			String realTicketFileName = null;
+			try{
+				realTicketFileName = dirPrintTicket+fileTicket;
+				fos = new FileOutputStream(realTicketFileName);
+				
+				logger.debug("imprimirTicket:ticketFileName:"+realTicketFileName);
+				
+				fos.write(generateTicketTXTBytes);
+				fos.flush();
+				fos.close();
+				
+				logger.debug("imprimirTicket:OSValidator.isUnix()?:"+OSValidator.isUnix());
+				logger.debug("imprimirTicket:OSValidator.isMac():"+OSValidator.isMac());
+				
+				if(OSValidator.isUnix() || OSValidator.isMac()){
+					logger.debug("imprimirTicket: calling UnixSendToLP.printFile");
+					UnixSendToLP.printFile((String)fileTicket);
+				}else{
+					logger.debug("imprimirTicket: calling SendFileToSystemPrinter.printFile");
+					SendFileToSystemPrinter.printFile((String)fileTicket);
+				}
+				printed = true;
+			}catch(Exception e){
+				printed = false;
+				throw new Exception(e.getMessage());
+			}
+		} catch (Exception ioe) {
+			logger.error("imprimiedo",ioe);
+			//JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
+		} finally {
+			logger.debug("DESPUES DE IMPRIMIR TICKET: printed?"+printed);
+			if (!printed) {
+				logger.debug("ERROR AL IMPRIMIR");
+				//t.printStackTrace(System.err);
+				JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "Error grave al imprimir Ticket", "Imprimir Ticket", JOptionPane.ERROR_MESSAGE);
+			}			
+		}
+	}
+
 
 	
 	@Override

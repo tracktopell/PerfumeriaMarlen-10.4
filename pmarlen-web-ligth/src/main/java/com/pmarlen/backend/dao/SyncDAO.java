@@ -137,7 +137,7 @@ public class SyncDAO {
 					for(ESD esd: esdl){
 						esdList.add(esd.reverse());
 					}
-					logger.debug("syncTransaction:\tprepare for insertPedidoVentaSucursal:");
+					logger.debug("syncTransaction:\tprepare for insertPedidoVentaSucursal: DEVOLUCIONES");
 					s.processingES(indexProccessing++);
 					EntradaSalidaDAO.getInstance().insertEntradaSalidaSucursal(conn,es,esdList);
 					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:");
@@ -188,7 +188,7 @@ public class SyncDAO {
 		final ArrayList<UsuarioQuickView> usuariosList = UsuarioDAO.getInstance().findAll();
 		logger.debug("syncTransaction: usuariosList=");		
 		for(UsuarioQuickView u: usuariosList){
-			logger.debug("\tsyncTransaction: USUARIO="+u);
+			logger.trace("\tsyncTransaction: USUARIO="+u);
 		}
 		s.setUsuarioQVList(usuariosList);
 		ArrayList<ClienteQuickView> clientesQVList = ClienteDAO.getInstance().findAll();

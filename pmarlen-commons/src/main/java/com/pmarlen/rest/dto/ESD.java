@@ -18,19 +18,22 @@ public class ESD {
 	private double p;
 	private Integer dev;
 	private Integer esIdDev;
+	
 	public EntradaSalidaDetalleQuickView reverse(){
 		EntradaSalidaDetalleQuickView esd=new EntradaSalidaDetalleQuickView();
 		esd.setProductoCodigoBarras(cb);
 		esd.setAlmacenId(a);
 		esd.setCantidad(c);
+		esd.setApTipoAlmacen(ta);
 		esd.setPrecioVenta(p);
 		if(dev != null){
 			esd.setDev(dev);
+		} else {
+			esd.setDev(0);
 		}
 		if(esIdDev != null){
 			esd.setEsIdDev(esIdDev);
 		}
-		esd.setApTipoAlmacen(ta);
 		return esd;
 	}
 

@@ -14,6 +14,7 @@ import java.sql.Timestamp;
  * @author alfredo
  */
 public class ES {
+	private Integer id;
 	private int tm;
 	private int s;
 	private String sn;
@@ -36,6 +37,7 @@ public class ES {
 	private double tot;
 	private int    nElem;	
 	private int    ed;
+	private Integer esDev;
 	private String esTicketDev;
 	
 	public EntradaSalidaQuickView reverse(){
@@ -62,7 +64,8 @@ public class ES {
 		es.setSubTotalReg(stR);
 		es.setTotal(tot);
 		es.setNumElementos(ed);
-		es.setTotProds(nElem);
+		es.setTotProds(nElem);		
+		es.setEsIdDev(esDev);
 
 		return es;
 	}
@@ -71,6 +74,7 @@ public class ES {
 	}
 	
 	public ES(EntradaSalida x) {
+		this.id = x.getId();	
 		this.tm = x.getTipoMov();
 		this.s = x.getSucursalId();		
 		this.fc = x.getFechaCreo().getTime();
@@ -93,6 +97,7 @@ public class ES {
 	}
 	
 	public ES(EntradaSalidaQuickView x) {
+		this.id = x.getId();
 		this.tm = x.getTipoMov();
 		this.s = x.getSucursalId();
 		this.sn = x.getSucursalNombre();
@@ -415,4 +420,32 @@ public class ES {
 	public String getSn() {
 		return sn;
 	}	
+
+	/**
+	 * @return the esDev
+	 */
+	public Integer getEsDev() {
+		return esDev;
+	}
+
+	/**
+	 * @param esDev the esDev to set
+	 */
+	public void setEsDev(Integer esDev) {
+		this.esDev = esDev;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public Integer getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

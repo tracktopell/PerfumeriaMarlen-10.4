@@ -6,11 +6,13 @@
 
 package com.pmarlen.rest.dto;
 
+import java.io.Serializable;
+
 /**
  *
  * @author alfredo
  */
-public class UserAgent {
+public class UserAgent  implements Serializable{
 	private String version;
 	private String os;
 	private String javaVersion;

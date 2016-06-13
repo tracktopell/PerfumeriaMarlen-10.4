@@ -210,7 +210,7 @@ public class CorteCajaDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			StringBuilder sq = new StringBuilder("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO FROM CORTE_CAJA");
+			StringBuilder sq = new StringBuilder("SELECT ID,TIPO_EVENTO,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO FROM CORTE_CAJA");
 			sq.append("\n");
 			sq.append("WHERE 1=1\n");
 			
@@ -247,6 +247,7 @@ public class CorteCajaDAO {
 			while(rs.next()) {
 				CorteCaja x = new CorteCaja();
 				x.setId((Integer)rs.getObject("ID"));
+				x.setTipoEvento((Integer)rs.getObject("TIPO_EVENTO"));
 				x.setFecha((Timestamp)rs.getObject("FECHA"));
 				x.setSucursalId((Integer)rs.getObject("SUCURSAL_ID"));
 				x.setCaja((Integer)rs.getObject("CAJA"));
@@ -283,12 +284,13 @@ public class CorteCajaDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO,TIPO_EVENTO FROM CORTE_CAJA");
+			ps = conn.prepareStatement("SELECT ID,TIPO_EVENTO,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO,TIPO_EVENTO FROM CORTE_CAJA ORDER BY SUCURSAL_ID,CAJA,FECHA");
 			
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				CorteCaja x = new CorteCaja();
 				x.setId((Integer)rs.getObject("ID"));
+				x.setTipoEvento((Integer)rs.getObject("ID"));
 				x.setFecha((Timestamp)rs.getObject("FECHA"));
 				x.setSucursalId((Integer)rs.getObject("SUCURSAL_ID"));
 				x.setCaja((Integer)rs.getObject("CAJA"));

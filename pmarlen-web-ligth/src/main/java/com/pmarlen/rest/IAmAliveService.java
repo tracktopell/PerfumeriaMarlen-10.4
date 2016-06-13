@@ -104,7 +104,7 @@ public class IAmAliveService {
 				ArrayList<CorteCaja> llBySucCaja = CorteCajaDAO.getInstance().findAllBy(cc.getSucursalId(), cc.getCaja(), null, null);
 				logger.debug("registerCorteCaja: FOR REVIEW LIST: ");
 				for(CorteCaja ccu: llBySucCaja){
-					logger.debug("\tregisterCorteCaja:CorteCaja"+ccu);				
+					logger.trace("\tregisterCorteCaja:CorteCaja"+ccu);				
 				}
 				
 			}			

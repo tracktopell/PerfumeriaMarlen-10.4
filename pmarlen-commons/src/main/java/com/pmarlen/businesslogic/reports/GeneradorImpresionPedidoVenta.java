@@ -567,8 +567,6 @@ public class GeneradorImpresionPedidoVenta {
 		HashMap<String, Object> parameters = new HashMap<String, Object> (); 
 		Collection<Map<String,?>> records  = new ArrayList<Map<String, ?>>();
 		
-		parameters.put("L.venta.ticket"    , "NO. TICKET:");
-		parameters.put("venta.ticket"      , es.getNumeroTicket());
 		final String sucNom = suc.getNombre();
 		final String sucDir = suc.getDireccion();
 		parameters.put("sucursal.nombre"   , sucNom);
@@ -629,7 +627,22 @@ public class GeneradorImpresionPedidoVenta {
 			parameters.put("logo.line1" , "   ");
 		}
 
-		//parameters.put("sucursal.tels", "TELS.:"+MemoryDAO.getSucursal().getTelefonos());		
+		//parameters.put("sucursal.tels", "TELS.: ????-????");		
+		
+		parameters.put("L.venta.ticket"    , "NO. TICKET:");
+		parameters.put("venta.ticket"      , es.getNumeroTicket());
+		
+		String titulo = "";
+		if(es.getTipoMov() == Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA){
+			titulo = "VENTA DE MOSTRADOR";
+		} else if(es.getTipoMov() == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION){
+			titulo = "DEVOLUCIÓN DE ART(S). VENTA";
+		} else {
+			titulo = "MOV."+es.getTipoMov();
+		}
+
+		parameters.put("fot.titulo"       , titulo);		
+		parameters.put("venta.ticketFacil",ticketConGuiones(es.getNumeroTicket(),'-'));
 		
 		parameters.put("L.fecha.creado", "FECHA V.:");
 		parameters.put("fecha.creado", Constants.sdfShortDateTime.format(es.getFechaCreo()));
@@ -646,7 +659,7 @@ public class GeneradorImpresionPedidoVenta {
 		parameters.put("usuario.imprimio.email" , usuarioLogedin.getEmail());
 		parameters.put("usuario.imprimio.nombre", usuarioLogedin.getNombreCompleto());
 		parameters.put("usuario.imprimio.clave" , usuarioLogedin.getClave());
-		//parameters.put("sucursal.caja.actual", MemoryDAO.getNumCaja());
+
 		parameters.put("sucursal.caja.creo", es.getCaja());
 		
 		parameters.put("cliente.rfc"  , es.getClienteRFC());
@@ -674,31 +687,37 @@ public class GeneradorImpresionPedidoVenta {
 			records.add(r);
 
 		}
-				
-		parameters.put("fot.neDesc"			, String.valueOf(0.0));
-		parameters.put("fot.neSinDesc"		, String.valueOf(0.0));
-		parameters.put("fot.neTotElem"		, String.valueOf(es.getNumElementos()));
-		parameters.put("fot.neTotElemL"		, " <-- # PRODS.");
-		
-		parameters.put("fot.subTot"			, Constants.df2Decimal.format(es.getSubTotal1ra() + es.getSubTotalOpo() + es.getSubTotalReg()));
-		parameters.put("fot.desc"			, Constants.df2Decimal.format(es.getImporteDescuento()));
-		
 		final String totalXval = Constants.df2Decimal.format(es.getTotal());
 		
 		parameters.put("fot.tot"			, totalXval);
 		
-		parameters.put("fot.metodoPago"		, es.getMetodoDePagoDescripcion());
+		double valorIVA = ( es.getTotal() / Constants.MAS_IVA ) * Constants.IVA;
 		
-		if(es.getMetodoDePagoId() == Constants.ID_MDP_EFECTIVO){
-			parameters.put("fot.impRecib"		, Constants.df2Decimal.format(es.getImporteRecibido()));		
-			parameters.put("fot.cambio"		    , Constants.df2Decimal.format(es.getImporteRecibido()-es.getTotal()));		
-		} else if(es.getMetodoDePagoId() == Constants.ID_MDP_TARJETA){
-			parameters.put("fot.numAuto"		, es.getAprobacionVisaMastercard());
-		} else if(es.getMetodoDePagoId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA){
-			parameters.put("fot.impRecib"		, Constants.df2Decimal.format(es.getImporteRecibido()));		
-			parameters.put("fot.numAuto"		, es.getAprobacionVisaMastercard());
-			parameters.put("fot.cargo"		    , Constants.df2Decimal.format(es.getTotal()-es.getImporteRecibido()));		
-		} 
+						
+		parameters.put("fot.neDesc"			, String.valueOf(0.0));
+		parameters.put("fot.neSinDesc"		, String.valueOf(0.0));
+		parameters.put("fot.neTotElem"		, String.valueOf(es.getTotProds()));
+		parameters.put("fot.neTotElemL"		, " <-- # PRODS.");
+		if(es.getTipoMov() == Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA){
+			parameters.put("fot.subTot"			, Constants.df2Decimal.format(es.getSubTotal1ra() + es.getSubTotalOpo() + es.getSubTotalReg()));
+			parameters.put("fot.desc"			, Constants.df2Decimal.format(es.getImporteDescuento()));
+			parameters.put("fot.metodoPago"		, es.getMetodoDePagoDescripcion());
+			if(es.getMetodoDePagoId() == Constants.ID_MDP_EFECTIVO){
+				parameters.put("fot.impRecib"		, Constants.df2Decimal.format(es.getImporteRecibido()));		
+				parameters.put("fot.cambio"		    , Constants.df2Decimal.format(es.getImporteRecibido()-es.getTotal()));		
+			} else if(es.getMetodoDePagoId() == Constants.ID_MDP_TARJETA){
+				parameters.put("fot.numAuto"		, es.getAprobacionVisaMastercard());
+			} else if(es.getMetodoDePagoId() == Constants.ID_MDP_EFECTIVO_Y_TARJETA){
+				parameters.put("fot.impRecib"		, Constants.df2Decimal.format(es.getImporteRecibido()));		
+				parameters.put("fot.numAuto"		, es.getAprobacionVisaMastercard());
+				parameters.put("fot.cargo"		    , Constants.df2Decimal.format(es.getTotal()-es.getImporteRecibido()));		
+			}
+			parameters.put("fot.leyendaIVA" , "* "+Constants.df2Decimal.format(valorIVA)+"  I.V.A. al 16% Yá Incluido.");
+			parameters.put("fot.leyenda1" , "¡ LE AGRADECEMOS SU COMPRA !");
+			parameters.put("fot.leyenda2" , "VUELVA PRONTO");
+		} else if(es.getTipoMov() == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION){
+			parameters.put("fot.leyenda2" , "VUELVA PRONTO");
+		}
 		
 		String intDecParts[] = totalXval.split("\\.");            
 		String letrasParteEntera  = NumeroCastellano.numeroACastellano(Long.parseLong(intDecParts[0])).trim();
@@ -716,12 +735,26 @@ public class GeneradorImpresionPedidoVenta {
 		}
 		
 		parameters.put("fot.leyendaNoFiscal" , "ESTE NO ES UN COMPROBANTE FISCAL");
-		parameters.put("fot.leyenda1" , "¡ LE AGRADECEMOS SU COMPRA !");
-		parameters.put("fot.leyenda2" , "VUELVA PRONTO");		
 		parameters.put("fot.leyenda3" , "http://perfumeriamarlen.com.mx");		
 		parameters.put("fot.leyenda4" , "http://facebook.com/PerfumeriaMarlen");
 
 		return new JarpeReportsInfoDTO(parameters, records);
+	}
+	
+	public static String ticketConGuiones(String ticket,char sep){
+		StringBuilder sb = new StringBuilder();
+		
+		final char[] ticketCA = ticket.toCharArray();
+		int i=0;
+		for(char c: ticketCA){
+			sb.append(c);
+			i++;
+			if(i%4==0){
+				sb.append(sep);
+			}
+		}
+		
+		return sb.toString();
 	}
 
 	

@@ -873,7 +873,7 @@ public class MemoryDAO {
 			is.close();
 		}catch(Exception e){
 			logger.error("getTicket: error", e);
-			throw new IOException("No se puede Obtener Remotamente el saldo:"+e.getMessage());
+			throw new IOException("No se puede Obtener Remotamente el Ticket:"+e.getMessage());
 		}
 		return es_esd;
 	}

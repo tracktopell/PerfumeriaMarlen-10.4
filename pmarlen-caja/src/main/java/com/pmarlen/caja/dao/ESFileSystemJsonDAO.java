@@ -38,12 +38,14 @@ public class ESFileSystemJsonDAO {
 		
 		if(			tm>=Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA &&
 					tm <=Constants.TIPO_MOV_SALIDA_MERMA){
+			logger.debug("commit:<<<=== SALIDA");
 			add = -1;
 		} else if(	tm >=Constants.TIPO_MOV_ENTRADA_ALMACEN_COMPRA &&
 					tm <=Constants.TIPO_MOV_ENTRADA_ALMACEN_TRASPASO){
+			logger.debug("commit:===>>> ENTRADA");
 			add = 1;
 		}
-		logger.debug("\tcommit:TICKET:"+escd.getEs().getNt());
+		logger.debug("commit:TICKET:"+escd.getEs().getNt()+", SUC/CAJA="+escd.getEs().getS()+"/"+escd.getEs().getJ()+" TM:"+tm);
 		for(ESD d:escd.getEsdList()){
 			I p = MemoryDAO.fastSearchProducto(d.getCb());
 			

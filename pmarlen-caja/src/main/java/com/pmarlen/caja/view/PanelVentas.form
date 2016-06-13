@@ -39,17 +39,13 @@
         </Constraint>
       </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-        <Property name="columns" type="int" value="1"/>
-        <Property name="rows" type="int" value="1"/>
-      </Layout>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="jPanel4">
-
-          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-            <Property name="horizontalGap" type="int" value="25"/>
-          </Layout>
-        </Container>
+        <Component class="javax.swing.JButton" name="reimprimir">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="REIMPRIMIR TICKET"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

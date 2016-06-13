@@ -21,6 +21,14 @@ public class GeneradorNumTicket{
 	private static final long bigLongT2 = 9999999999999999L;
 	private static final long bigLongT3 = 999999999999999999L;
 	
+	/**
+	 * EJEMPLO:  091984087839388979
+	 * @param d
+	 * @param sucId
+	 * @param caja
+	 * @return 
+	 */
+	
 	public static String getNumTicket(Date d,int sucId,int caja){
 		StringBuilder sb= new StringBuilder();		
 		

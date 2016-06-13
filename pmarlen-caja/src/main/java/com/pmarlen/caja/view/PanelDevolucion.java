@@ -467,7 +467,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
 	 * @return the codigoBuscar
 	 */
 	public javax.swing.JTextField getCodigoBuscar() {
-		return fecha;
+		return codigoBuscar;
 	}
 
 	/**
