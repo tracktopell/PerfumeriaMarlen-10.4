@@ -7,13 +7,14 @@ package com.pmarlen.rest.dto;
 
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  *
  * @author alfredo
  */
-public class ES {
+public class ES implements Serializable{
 	private Integer id;
 	private int tm;
 	private int s;

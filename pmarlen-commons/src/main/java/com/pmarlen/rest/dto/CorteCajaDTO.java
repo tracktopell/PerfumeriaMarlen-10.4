@@ -2,6 +2,7 @@ package com.pmarlen.rest.dto;
 
 import com.pmarlen.backend.model.CorteCaja;
 import com.pmarlen.model.Constants;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -9,7 +10,7 @@ import java.util.Date;
  *
  * @author alfredo
  */
-public class CorteCajaDTO {
+public class CorteCajaDTO implements Serializable{
 	    
     /**
     * fecha

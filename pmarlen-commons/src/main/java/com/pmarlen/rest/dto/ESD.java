@@ -3,13 +3,14 @@ package com.pmarlen.rest.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
+import java.io.Serializable;
 
 /**
  *
  * @author alfredo
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ESD {
+public class ESD implements Serializable{
 	private String cb;
 	private Integer id;
 	private int a;

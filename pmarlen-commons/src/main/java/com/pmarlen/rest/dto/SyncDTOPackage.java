@@ -7,6 +7,7 @@ import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.Usuario;
 import com.pmarlen.backend.model.quickviews.UsuarioQuickView;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author alfredo
  */
-public class SyncDTOPackage {
+public class SyncDTOPackage implements Serializable{
 	public static final int SYNC_OK					= 0;
 	public static final int SYNC_EMPTY_TRANSACTION  = 1;
 	public static final int SYNC_FAIL_INTEGRITY     = 2;

@@ -45,7 +45,7 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 		this.panelVentas = panelVentas;
 		ventasTM = new VentaTableModel();
 		this.panelVentas.getVentasJTable().setModel(ventasTM);
-		ventasTM.setVentaList(ESFileSystemJsonDAO.getEsList());
+		//ventasTM.setVentaList(ESFileSystemJsonDAO.getEsVentasList());
 		ventasTM.addTableModelListener( this);
 		
 		panelVentas.getReimprimir().addActionListener(this);
@@ -97,6 +97,7 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 	public void estadoInicial(){
 		refrescar();
 		panelVentas.getReimprimir().setEnabled(false);
+		ventasTM.setVentaList(ESFileSystemJsonDAO.getEsVentasList());
 		panelVentas.getVentasJTable().updateUI();		
 		panelVentas.getVentasJTable().getSelectionModel().clearSelection();
 	}

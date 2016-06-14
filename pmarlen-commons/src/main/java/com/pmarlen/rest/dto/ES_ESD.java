@@ -1,5 +1,6 @@
 package com.pmarlen.rest.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  *
  * @author alfredo
  */
-public class ES_ESD {
+public class ES_ESD implements Serializable{
 	public static final byte STATUS_SYNC_LOCAL=0;
 	public static final byte STATUS_SYNC_SENT =1;
 	public static final byte STATUS_SYNC_ERROR=2;

@@ -163,7 +163,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		I productoEncontrado = null;
 		I productoEncontradoSinExistencia = null;
 		
-		logger.debug("\tcodigoBuscar_ActionPerformed: panelVenta.getTipoAlmacen="+panelVenta.getTipoAlmacen());
+		logger.debug("\tcodigoBuscar_ActionPerformed: panelVenta.getTipoAlmacen="+panelVenta.getTipoAlmacen().getSelection().getSelectedObjects());
 		int contAgregados=0;
 		int tipoAlmacenSeleccionado =	panelVenta.getDesdeLinea().isSelected()			?	Constants.ALMACEN_PRINCIPAL:
 										panelVenta.getDesdeOportunidad().isSelected()	?	Constants.ALMACEN_OPORTUNIDAD:
@@ -204,7 +204,8 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 				
 				if(!estadoChecando){
 					ESD esd = new ESD();
-					esd.setTa(tipoAlmacenSeleccionado);					
+					esd.setTa(tipoAlmacenSeleccionado);
+					esd.setCb(productoEncontrado.getCb());
 					esd.setA(tipoAlmacen.get(tipoAlmacenSeleccionado).getId());
 					esd.setC(1);
 					
@@ -215,7 +216,6 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 							esd.setP(productoEncontrado.getA1p());
 							huboExistencia = true;
 						}
-						
 					} else if(tipoAlmacenSeleccionado == Constants.ALMACEN_REGALIAS ) {
 						if(( productoEncontrado.getaRc() - cantA ) >=1){
 							esd.setP(productoEncontrado.getaRp());

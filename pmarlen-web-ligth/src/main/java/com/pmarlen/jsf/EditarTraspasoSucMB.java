@@ -188,6 +188,11 @@ public class EditarTraspasoSucMB extends EditarPedidoVentaMB{
 			return 180;
 		}
 	}
+	
+	@Override
+	public boolean isPosibleSurtir(){
+		return true;
+	}
 
 	
 }

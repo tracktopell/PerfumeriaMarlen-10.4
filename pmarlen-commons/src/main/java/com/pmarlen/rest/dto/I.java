@@ -1,12 +1,13 @@
 package com.pmarlen.rest.dto;
 
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
+import java.io.Serializable;
 
 /**
  *
  * @author alfredo
  */
-public class I {
+public class I implements Serializable{
 	private int    a1c;
 	private double a1p;
 	private int    aOc;

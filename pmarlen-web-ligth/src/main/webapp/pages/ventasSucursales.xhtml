@@ -48,10 +48,19 @@
 							  rows="#{ventasSucursalesMB.viewRows}"
 							  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{ventasSucursalesMB.sizeList}]"
 							  rowsPerPageTemplate="10,25,100">
-					
 					<f:facet name="header">
 						OPCIONES :								
 						<p:commandButton value="RECARGAR" actionListener="#{ventasSucursalesMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
+						<p:spacer width="100" height="10"/>
+						<h:commandLink>
+							<p:graphicImage value="/images/excel_file.png" width="16"/>
+							<p:dataExporter type="xls" target="pvTable" fileName="VentasSucursales" />
+						</h:commandLink>
+						<p:spacer width="30" height="10"/>
+						<h:commandLink>
+							<p:graphicImage value="/images/pdf_file.png" width="16"/>
+							<p:dataExporter type="pdf" target="pvTable" fileName="VentasSucursales" />
+						</h:commandLink>
 					</f:facet>
 					
 					<p:column headerText="#" width="10%" filterBy="#{pv.id}" filterMatchMode="contains" filterStyle="width:30px;" >

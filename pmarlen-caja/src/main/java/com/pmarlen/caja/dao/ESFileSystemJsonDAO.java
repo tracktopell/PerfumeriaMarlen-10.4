@@ -48,15 +48,22 @@ public class ESFileSystemJsonDAO {
 		logger.debug("commit:TICKET:"+escd.getEs().getNt()+", SUC/CAJA="+escd.getEs().getS()+"/"+escd.getEs().getJ()+" TM:"+tm);
 		for(ESD d:escd.getEsdList()){
 			I p = MemoryDAO.fastSearchProducto(d.getCb());
-			
+			int ci = 0;
+			int cf = 0;
 			if(d.getTa()== Constants.ALMACEN_PRINCIPAL){
-				p.setA1c(p.getA1c() * d.getC() * add);
+				ci = p.getA1c();
+				cf = p.getA1c() + d.getC() * add;
+				p.setA1c(cf);
 			} else if(d.getTa() == Constants.ALMACEN_REGALIAS){
-				p.setaRc(p.getaRc()* d.getC() * add);
+				ci = p.getaRc();
+				cf = p.getaRc() + d.getC() * add;
+				p.setaRc(cf);
 			} else if(d.getTa() == Constants.ALMACEN_OPORTUNIDAD){
-				p.setaOc(p.getaOc()* d.getC() * add);
+				ci = p.getaOc();
+				cf = p.getaOc() + d.getC() * add;
+				p.setaOc(cf);
 			}
-			logger.debug("\tcommit:"+d.getC()+" x "+d.getCb()+"["+d.getTa()+"]");
+			logger.debug("\tcommit:"+d.getC()+" x "+d.getCb()+"["+d.getTa()+"]:("+ci+")<-("+cf+")");
 		}
 		
 		esList.add(escd);
@@ -141,6 +148,30 @@ public class ESFileSystemJsonDAO {
 
 	public static ArrayList<ES_ESD> getEsList() {
 		return esList;
+	}
+	
+	public static ArrayList<ES_ESD> getEsVentasList() {
+		ArrayList<ES_ESD> nsList=new ArrayList<ES_ESD>();
+		
+		for(ES_ESD e: esList){
+			if(e.getEs().getTm()==Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA){
+				nsList.add(e);
+			}
+		}
+		
+		return nsList;
+	}
+	
+	public static ArrayList<ES_ESD> getEsDevolucionesList() {
+		ArrayList<ES_ESD> nsList=new ArrayList<ES_ESD>();
+		
+		for(ES_ESD e: esList){
+			if(e.getEs().getTm()==Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION){
+				nsList.add(e);
+			}
+		}
+		
+		return nsList;
 	}
 
 	public static ArrayList<ES_ESD> getEsListNotSent() {
