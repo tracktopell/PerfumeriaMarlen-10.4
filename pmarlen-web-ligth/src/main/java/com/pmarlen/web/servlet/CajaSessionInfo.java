@@ -18,6 +18,7 @@ public class CajaSessionInfo extends AppSessionInfo  implements Serializable{
 	private String sucursal;
 	private String caja;
 	private String loggedIn;
+	private boolean requestedResetAll;
 	
 	private long lastAccesedTime;
 	
@@ -26,6 +27,7 @@ public class CajaSessionInfo extends AppSessionInfo  implements Serializable{
 		this.sucursal = "?";
 		this.caja = "?";
 		this.loggedIn = "?";
+		requestedResetAll = false;
 	}
 
 	/**
@@ -106,5 +108,12 @@ public class CajaSessionInfo extends AppSessionInfo  implements Serializable{
 	public void setLoggedIn(String loggedIn) {
 		this.loggedIn = loggedIn.equalsIgnoreCase("null")?"?":loggedIn;
 	}
+	
+	public boolean isRequestedResetAll() {
+		return requestedResetAll;
+	}
 
+	public void setRequestedResetAll(boolean b) {
+		requestedResetAll = b;
+	}
 }

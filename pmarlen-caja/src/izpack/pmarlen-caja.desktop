@@ -1,28 +1,11 @@
-
 [Desktop Entry]
-Categories=
-Comment=pmarlen-caja
-Comment[es]=pmarlen-caja
-Encoding=UTF-8
-Exec=${INSTALL_PATH}/run.sh 
-GenericName=pmarlen-caja
-GenericName[es]=pmarlen-caja
-Icon=${INSTALL_PATH}/L30_64x64_Ver1.png
-MimeType=
-Name=pmarlen-caja
-Name[es]=pmarlen-caja
-Path=${INSTALL_PATH}
-ServiceTypes=
-SwallowExec=
-SwallowTitle=
-Terminal=false
-TerminalOptions=
+Version=1.0
 Type=Application
-URL=
-X-KDE-SubstituteUID=false
-X-KDE-Username=root
-
-# created by com.izforge.izpack.util.os.Unix_Shortcut $Revision$
-# $Id$
-StartupNotify=true
-Name[es_MX]=pmarlen-caja
+Name=PML30-Caja
+Comment=Perfumeria Marlen L30 Sistema de Caja para Sucursales
+Exec=INSTALL_PATH/run.sh
+Icon=INSTALL_PATH/L30_64x64_Ver2.png
+Path=INSTALL_PATH/
+Terminal=false
+StartupNotify=false
+GenericName=PML30-Caja

@@ -498,4 +498,12 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 	public void updateProhibidaVentReg(boolean estatus){
 		panelVentaControl.abilitarVentaRegalias(estatus);
 	}
+
+	@Override
+	public void resetAll() {
+		logger.info("resetAll:");
+		JOptionPane.showMessageDialog(framePrincipal, "SE REINICIARA TOTALMENTE LA APLICACION DE CAJA", "REINICIAR", JOptionPane.WARNING_MESSAGE);
+		MemoryDAO.resetAll();
+		System.exit(16);
+	}
 }

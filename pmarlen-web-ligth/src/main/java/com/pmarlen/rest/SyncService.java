@@ -11,8 +11,11 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ESD;
 import com.pmarlen.rest.dto.ES_ESD;
+import com.pmarlen.rest.dto.IAmAliveDTORequest;
 import com.pmarlen.rest.dto.SyncDTOPackage;
 import com.pmarlen.rest.dto.SyncDTORequest;
+import com.pmarlen.web.servlet.CajaSessionInfo;
+import com.pmarlen.web.servlet.ContextAndSessionListener;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +56,7 @@ public class SyncService {
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public byte[] sync(SyncDTORequest syncDTORequest) throws WebApplicationException {
 		logger.debug("getSyncDTOPackageZipped: syncDTORequest="+syncDTORequest);
+		final IAmAliveDTORequest iAmAliveDTORequest = syncDTORequest.getiAmAliveDTORequest();
 		byte zipData[]=null;
         SyncDTOPackage s=null;
 		
@@ -65,9 +69,20 @@ public class SyncService {
 		ByteArrayOutputStream baos = null;
 		try {
 			baos = new ByteArrayOutputStream();
-			s = SyncDAO.getInstance().syncTransaction(syncDTORequest);
-			logger.debug("->registerHello"); 
-			IAmAliveService.registerHello(syncDTORequest.getiAmAliveDTORequest(), callerIpAddress);
+			boolean getAllData = true;
+			
+			logger.debug("->registerHello:");
+			IAmAliveService.registerHello(iAmAliveDTORequest, callerIpAddress);
+			
+			CajaSessionInfo cajaSessionInfo = null;		
+			cajaSessionInfo = ContextAndSessionListener.cajaSessionInfoHT.get(iAmAliveDTORequest.getSessionId());
+			
+			if(cajaSessionInfo.isRequestedResetAll()){
+				cajaSessionInfo.setRequestedResetAll(false);
+			}
+			
+			logger.debug("->syncTransaction:");
+			s = SyncDAO.getInstance().syncTransaction(syncDTORequest,getAllData);
 			logger.debug("<- dto ?");
 			ObjectMapper mapper = new ObjectMapper();
 			ZipOutputStream zos = new ZipOutputStream(baos);

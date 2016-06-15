@@ -518,6 +518,28 @@ public class MemoryDAO {
 	}
 	
 	private static int numReadSync=0;
+	
+	public static void resetAll(){
+		File[] filesToDelete = new File(".").listFiles();
+		boolean deleteFile = false;
+		for(File fd: filesToDelete){
+			deleteFile = false;
+			logger.info("->resetAll:filesToDelete:"+fd);
+			if(fd.getName().contains("CorteCajaDTO")){
+				deleteFile = true;
+			} else if(fd.getName().contains("fileModel.zip")){
+				deleteFile = true;
+			} else if(fd.getName().contains("EntradaSalida")){
+				deleteFile = true;
+			}
+			
+			if(deleteFile){
+				logger.info("->resetAll:\tDELETE:"+fd);
+				boolean resultDelte = fd.delete();
+				logger.info("->resetAll:\t\tDELETED ?:"+resultDelte);
+			}
+		}	
+	}
 
 	private static void readLocally() {
 		logger.debug("readLocally:");
@@ -580,6 +602,17 @@ public class MemoryDAO {
 				numReadSync++;
 				logger.debug("readLocally:paqueteSinc["+numReadSync+"]=->"+paqueteSinc+"<-");
 				logger.debug("readLocally:paqueteSinc:paqueteSinc.getSyncDBStatus():"+Integer.toBinaryString(paqueteSinc.getSyncDBStatus())+"<-");
+				
+				if(paqueteSinc.getNextSyncSpecialAction()!=null){
+					logger.info("readLocally:paqueteSinc:nextSyncSpecialAction="+paqueteSinc.getNextSyncSpecialAction());
+					if(paqueteSinc.getNextSyncSpecialAction() == SyncDTOPackage.SPECIAL_ACTION_RESET_ALL) {
+						logger.info("readLocally:paqueteSinc:SPECIAL_ACTION_RESET_ALL");
+						if(syncUpdateListener != null){
+							syncUpdateListener.resetAll();
+						}
+					}
+				}
+				
 				String remoteCurrentPMCajaVersion = paqueteSinc.getCurrentPMCajaVersion();
 				logger.debug("readLocally:paqueteSinc:paqueteSinc.getCurrentPMCajaVersion="+remoteCurrentPMCajaVersion);
 				if(remoteCurrentPMCajaVersion != null){

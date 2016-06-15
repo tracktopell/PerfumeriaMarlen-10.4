@@ -627,7 +627,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 	private Icon getPml30ImageIcon() {
 		if(pml30ImageIcon ==null){
 			try{
-				pml30ImageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/imgs/L30_252x252_Ver1.png")));
+				pml30ImageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/imgs/L30_252x252_Ver2.png")));
 			} catch(Exception e){
 				e.printStackTrace(System.err);
 			}
@@ -639,7 +639,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 	public Image getPml30WindowImageIcon() {		
 		if(pml30WindowImageIcon == null){
 			try{
-				pml30WindowImageIcon = ImageIO.read(getClass().getResourceAsStream("/imgs/L30_64x64_Ver1.png"));
+				pml30WindowImageIcon = ImageIO.read(getClass().getResourceAsStream("/imgs/L30_64x64_Ver2.png"));
 			} catch(Exception e){
 				e.printStackTrace(System.err);
 			}

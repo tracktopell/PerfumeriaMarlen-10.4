@@ -22,6 +22,8 @@ public class SyncDTOPackage implements Serializable{
 	public static final int SYNC_FAIL_JDBC          = 4;
 	public static final int SYNC_FAIL			    = 128;
 	
+	public static final int SPECIAL_ACTION_RESET_ALL = 128;
+	
 	private int     syncDBStatus;
 	private String  currentPMCajaVersion;
 	private List<Integer> listIndexProccessed;
@@ -32,6 +34,7 @@ public class SyncDTOPackage implements Serializable{
 	private List<FormaDePago> formaDePagoList;
 	private Sucursal sucursal;
 	private List<Almacen> almacenList;
+	private Integer nextSyncSpecialAction;
 
 	public SyncDTOPackage() {
 		listIndexProccessed =  new ArrayList<Integer>();
@@ -183,4 +186,9 @@ public class SyncDTOPackage implements Serializable{
 	public void setAlmacenList(List<Almacen> almacenList) {
 		this.almacenList = almacenList;
 	}
+
+	public Integer getNextSyncSpecialAction() {
+		return nextSyncSpecialAction;
+	}
+	
 }

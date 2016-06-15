@@ -169,27 +169,15 @@
 								<p:spacer width="10"/>
 								
 								<h:outputLink value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{editarTraspasoSucMB.traspaso.id}.pdf" target="_blank">
-									<h:graphicImage value="/images/nota_sola.png" title="PDF NOTA DE VENTA ##{editarTraspasoSucMB.traspaso.id}"/>
+									<h:graphicImage value="/images/nota_sola.png" title="PDF TRASPASO ##{editarTraspasoSucMB.traspaso.id}"/>
 								</h:outputLink>
 								<p:spacer width="10"/>
 								<h:outputLink value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{editarTraspasoSucMB.traspaso.id}_paraImprimir.pdf" target="_blank">
-									<h:graphicImage value="/images/nota_sola.png" title="PDF NOTA DE VENTA ##{editarTraspasoSucMB.traspaso.id} EN HOJA MEMBRETADA"/>
+									<h:graphicImage value="/images/nota_sola.png" title="PDF TRASPASO ##{editarTraspasoSucMB.traspaso.id} EN HOJA MEMBRETADA"/>
 								</h:outputLink>
 								<p:spacer width="10"/>
 								<h:outputLink value="#{request.contextPath}/docs/notas/Nota_interna_PerfumeriaMarlen_No_#{editarTraspasoSucMB.traspaso.id}.pdf" target="_blank">
-									<h:graphicImage value="/images/nota_interna.png" title="PDF NOTA DE VENTA ##{editarTraspasoSucMB.traspaso.id} INTERNA P/ALMACÉN"/>
-								</h:outputLink>
-								<p:spacer width="10"/>
-								<h:outputLink value="#{request.contextPath}/docs/facturas/Factura_PerfumeriaMarlen_No_#{editarTraspasoSucMB.traspaso.id}.pdf" rendered="#{not empty editarTraspasoSucMB.traspaso.cdfNumCFD}" target="_blank">
-									<h:graphicImage value="/images/factura_email.png" title="PDF FACTURA DE VENTA ##{editarTraspasoSucMB.traspaso.id}"/>
-								</h:outputLink>
-								<p:spacer width="10"/>
-								<h:outputLink value="#{request.contextPath}/docs/facturas/Factura_PerfumeriaMarlen_No_#{editarTraspasoSucMB.traspaso.id}_paraImprimir.pdf" rendered="#{not empty editarTraspasoSucMB.traspaso.cdfNumCFD}" target="_blank">
-									<h:graphicImage value="/images/factura_imprimir.png" title="PDF FACTURA DE VENTA ##{editarTraspasoSucMB.traspaso.id} PARA IMPRIMIR EN HOJA MEMBRETADA"/>
-								</h:outputLink>
-								<p:spacer width="10"/>
-								<h:outputLink value="#{request.contextPath}/docs/cfdi/CFDI_PerfumeriaMarlen_No_#{editarTraspasoSucMB.traspaso.id}.xml" rendered="#{not empty editarTraspasoSucMB.traspaso.cdfNumCFD}" target="_blank">
-									<h:graphicImage value="/images/xml_file.png" title="XML DE FACTURA DE VENTA ##{editarTraspasoSucMB.traspaso.id}"/>
+									<h:graphicImage value="/images/nota_interna.png" title="PDF TRASPASO ##{editarTraspasoSucMB.traspaso.id} INTERNA P/ALMACÉN"/>
 								</h:outputLink>
 								
 							</f:facet>

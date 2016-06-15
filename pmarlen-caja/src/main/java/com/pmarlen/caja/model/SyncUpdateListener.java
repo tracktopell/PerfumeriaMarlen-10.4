@@ -6,6 +6,7 @@ package com.pmarlen.caja.model;
  */
 public interface SyncUpdateListener {
 	void updateSyncInfo();
+	void resetAll();
 	void updateProhibidaVentOpo(boolean estatus);
 	void updateProhibidaVentReg(boolean estatus);
 }

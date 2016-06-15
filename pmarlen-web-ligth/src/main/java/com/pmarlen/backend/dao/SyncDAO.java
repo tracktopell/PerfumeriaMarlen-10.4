@@ -56,7 +56,7 @@ public class SyncDAO {
 		return DataSourceFacade.getStrategy().getConnectionCommiteable();
 	}
 	
-	public SyncDTOPackage syncTransaction(SyncDTORequest syncDTORequest) throws DAOException{
+	public SyncDTOPackage syncTransaction(SyncDTORequest syncDTORequest, boolean getAllData) throws DAOException{
 		SyncDTOPackage s= new SyncDTOPackage();
 		int sucId=syncDTORequest.getiAmAliveDTORequest().getSucursalId();
 		List<ES_ESD> escdList = syncDTORequest.getEscdList();		
@@ -177,29 +177,29 @@ public class SyncDAO {
 			s.setSyncDBStatus(SyncDTOPackage.SYNC_EMPTY_TRANSACTION);
 		}
 		
-		logger.debug("syncTransaction:----------------REGULAR DataGet -----------------");
-		
-		ArrayList<InventarioSucursalQuickView> inventarioBigList = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
-		List<I> inventarioSucursalList = new ArrayList<I>();
-		for(InventarioSucursalQuickView bigI: inventarioBigList){
-			inventarioSucursalList.add(new I(bigI));
+		logger.debug("syncTransaction:----------------REGULAR DataGet ("+getAllData+")-----------------");
+		if(getAllData){
+			ArrayList<InventarioSucursalQuickView> inventarioBigList = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
+			List<I> inventarioSucursalList = new ArrayList<I>();
+			for(InventarioSucursalQuickView bigI: inventarioBigList){
+				inventarioSucursalList.add(new I(bigI));
+			}
+			s.setInventarioSucursalList(inventarioSucursalList);
+			final ArrayList<UsuarioQuickView> usuariosList = UsuarioDAO.getInstance().findAll();
+			logger.debug("syncTransaction: usuariosList=");		
+			for(UsuarioQuickView u: usuariosList){
+				logger.trace("\tsyncTransaction: USUARIO="+u);
+			}
+			s.setUsuarioQVList(usuariosList);
+			ArrayList<ClienteQuickView> clientesQVList = ClienteDAO.getInstance().findAll();
+			ArrayList<Cliente> clientesList = new ArrayList<Cliente>();
+			clientesList.addAll(clientesQVList);
+			s.setClienteList(clientesList);
+			s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
+			s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
+			s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
+			s.setAlmacenList(AlmacenDAO.getInstance().findBySucursal(sucId));
 		}
-		s.setInventarioSucursalList(inventarioSucursalList);
-		final ArrayList<UsuarioQuickView> usuariosList = UsuarioDAO.getInstance().findAll();
-		logger.debug("syncTransaction: usuariosList=");		
-		for(UsuarioQuickView u: usuariosList){
-			logger.trace("\tsyncTransaction: USUARIO="+u);
-		}
-		s.setUsuarioQVList(usuariosList);
-		ArrayList<ClienteQuickView> clientesQVList = ClienteDAO.getInstance().findAll();
-		ArrayList<Cliente> clientesList = new ArrayList<Cliente>();
-		clientesList.addAll(clientesQVList);
-		s.setClienteList(clientesList);
-		s.setMetodoDePagoList(MetodoDePagoDAO.getInstance().findAll());
-		s.setFormaDePagoList(FormaDePagoDAO.getInstance().findAll());
-		s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
-		s.setAlmacenList(AlmacenDAO.getInstance().findBySucursal(sucId));
-
 		return s;
 				
 	}

@@ -42,6 +42,7 @@ public class Main {
 	 */
 	private static SplashFrame splashFrame;
 	public static void main(String[] args) {
+		CorteCajaDTO putaMadre = new CorteCajaDTO();
 		System.out.println("main:Main args[]={");
 		SplashFrame splashFrame = new SplashFrame();
 		splashFrame.setVisible(true);
@@ -83,7 +84,7 @@ public class Main {
 		}
 		splashFrame.addMessage("...IS SINGLE INSTANCE RUNNING ?");
 		
-		CorteCajaDTO putaMadre = new CorteCajaDTO();
+		
 		
 		isSingleInstanceRunning();
 
@@ -197,7 +198,7 @@ public class Main {
 
 		MemoryDAO.startPaqueteSyncService();
 		splashFrame.addMessage("...start Paquete Sync Service");
-		try {
+		try {			
 			DialogLogin dialogLogin = DialogLogin.getInstance(FramePrincipalControl.getInstance().getFramePrincipal());
 			DialogLoginControl dlc = new DialogLoginControl(dialogLogin);
 			
@@ -216,7 +217,6 @@ public class Main {
 			splashFrame.dispose();
 			splashFrame =  null;
 			dlc.estadoInicial();
-
 			if (!dlc.isLoggedIn()) {
 				throw new IllegalAccessException();
 			} else {
