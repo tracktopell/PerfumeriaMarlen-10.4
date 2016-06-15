@@ -8,7 +8,7 @@
 		<version>10.4.1</version>
 	</parent>
 	<artifactId>pmarlen-caja</artifactId>
-	<version>10.4.1.116</version>
+	<version>10.4.1.117</version>
 	<name>Perfumeria Marlen 10.4.x - Caja</name>
 	
 	<properties>
