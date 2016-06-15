@@ -34,7 +34,6 @@ public class SplashFrame extends javax.swing.JFrame {
         status = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setAlwaysOnTop(true);
         setUndecorated(true);
 
         imgLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Fractal_Lion_Stars_BG.jpg"))); // NOI18N

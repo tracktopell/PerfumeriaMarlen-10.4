@@ -406,13 +406,14 @@ public class MigrarInventarioPM901_PM1041 {
 				int lastpvId = -1;
 				int contPV = 0;
 				int advImpVtas = 0;
+				Timestamp fechaPedido = null;
 				while (ventasRS.next()) {
 					insertES = false;
 
 					//PV.ID,PVE.ESTADO_ID,PVE.FECHA,PV.FORMA_DE_PAGO_ID,PV.USUARIO_ID,A.TIPO_ALMACEN,PV.FACTORIVA,PV.COMENTARIOS,PV.DESCUENTO_APLICADO,PVD.CANTIDAD,P.CODIGO_BARRAS,PVD.PRECIO_VENTA
 					//    1              2        3                    4             5              6            7             8                     9           10              11               12 
 					pvId = ventasRS.getInt(1);
-
+					fechaPedido = ventasRS.getTimestamp(3);
 					if (firstRec) {
 						pv = new EntradaSalida(pvId);
 						pvdListPV = new ArrayList<EntradaSalidaDetalle>();
@@ -527,7 +528,7 @@ public class MigrarInventarioPM901_PM1041 {
 					t2 = System.currentTimeMillis();
 					//System.out.println("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ] PV=["+lastpvId+" > "+pvId+"] #"+contPV+"["+pvdListPV.size()+"](ERROR CB:" + contCBNoExiste + ")");
 					advImpVtas = (contPV  * 100) / numVentas;
-					System.out.print("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ]  #" + contPV + "/ "+numVentas+" = "+advImpVtas+"% \t(ERROR CB:" + contCBNoExiste + ")\r");
+					System.out.print("ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t2) + " ] PVF=["+sdf.format(fechaPedido)+"] #" + contPV + "/ "+numVentas+" = "+advImpVtas+"% \t(ERROR CB:" + contCBNoExiste + ")\r");
 				}
 
 				if (pv != null && pvdListPV.size() > 0) {					
@@ -536,8 +537,8 @@ public class MigrarInventarioPM901_PM1041 {
 
 				advImpVtas = (contPV  * 100) / numVentas;
 				t3 = System.currentTimeMillis();
-				System.out.println();				
-				System.out.print("END: ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t3) + " ]  #" + contPV + "/ "+numVentas+" = "+advImpVtas+"% \t(ERROR CB:" + contCBNoExiste + ")");
+				System.out.println();
+				System.out.print("END: ADVANCE: \t" + i + " [ TIME: " + enalapsed(t0, t3) + " ] PVF=["+sdf.format(fechaPedido)+"] #" + contPV + "/ "+numVentas+" = "+advImpVtas+"% \t(ERROR CB:" + contCBNoExiste + ")");
 
 				ventasRS.close();
 

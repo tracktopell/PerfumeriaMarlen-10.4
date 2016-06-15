@@ -148,6 +148,7 @@ public class Main {
 		splashFrame.addMessage("...UPDATE ?");
 		if (ApplicationLogic.getInstance().needsUpdateApplciation()) {
 			splashFrame.addMessage("...ASK !");
+			splashFrame.setVisible(false);
 			int respuesta = JOptionPane.showConfirmDialog(null,
 					"HAY UNA NUEVA VERISÓN PARA INSTALAR,\n ¿ DESEA ACTUALIZAR DE LA VERSIÓN ACTUAL "+
 					ApplicationLogic.getInstance().getVersion()+" A "+ApplicationLogic.getInstance().getVersionRead()+
@@ -181,6 +182,7 @@ public class Main {
 				uafc = null;
 			} else {
 				logger.info("[USER]->UpdateApp:NO");
+				splashFrame.setVisible(true);
 			}	
 		}
 		
