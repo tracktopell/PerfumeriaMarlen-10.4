@@ -168,15 +168,7 @@
 								<p:spacer width="10"/>
 								<p:spacer width="10"/>
 								
-								<h:outputLink value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{editarTraspasoSucMB.traspaso.id}.pdf" target="_blank">
-									<h:graphicImage value="/images/nota_sola.png" title="PDF TRASPASO ##{editarTraspasoSucMB.traspaso.id}"/>
-								</h:outputLink>
-								<p:spacer width="10"/>
-								<h:outputLink value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{editarTraspasoSucMB.traspaso.id}_paraImprimir.pdf" target="_blank">
-									<h:graphicImage value="/images/nota_sola.png" title="PDF TRASPASO ##{editarTraspasoSucMB.traspaso.id} EN HOJA MEMBRETADA"/>
-								</h:outputLink>
-								<p:spacer width="10"/>
-								<h:outputLink value="#{request.contextPath}/docs/notas/Nota_interna_PerfumeriaMarlen_No_#{editarTraspasoSucMB.traspaso.id}.pdf" target="_blank">
+								<h:outputLink value="#{request.contextPath}/docs/traspasos/Traspaso_No_#{editarTraspasoSucMB.traspaso.id}.pdf" target="_blank">
 									<h:graphicImage value="/images/nota_interna.png" title="PDF TRASPASO ##{editarTraspasoSucMB.traspaso.id} INTERNA P/ALMACÉN"/>
 								</h:outputLink>
 								

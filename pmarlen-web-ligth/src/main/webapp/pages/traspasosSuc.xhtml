@@ -42,12 +42,8 @@
 						<p:panelGrid columns="1" columnClasses="centerAlign" >
 							<p:commandButton actionListener="#{traspasosSucMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
 							<h:panelGroup>
-								<h:outputLink id="pdfLink" value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pv.id}.pdf" target="_blank">
+								<h:outputLink id="pdfLink" value="#{request.contextPath}/docs/traspasos/Traspaso_No_#{pv.id}.pdf" target="_blank">
 									<h:graphicImage value="/images/nota_16x16.png" title="PDF TRASPASO ##{pv.id}"/>
-								</h:outputLink>
-								<p:spacer width="5"/>
-								<h:outputLink id="pdfLinkNoImages" value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pv.id}_paraImprimir.pdf" target="_blank">
-									<h:graphicImage value="/images/nota_16x16.png" title="PDF TRASPASO ##{pv.id} PARA IMPRIMIR HOJAS MEMBRETADAS"/>
 								</h:outputLink>
 								
 							</h:panelGroup>

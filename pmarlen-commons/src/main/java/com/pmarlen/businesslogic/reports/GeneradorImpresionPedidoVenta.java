@@ -45,6 +45,149 @@ public class GeneradorImpresionPedidoVenta {
 		return generaPdfPedidoVenta(null,pedidoVenta, esdListOriginal, clienteVenta, fullPrint, interna, usuarioImr);
 	}
     
+	public static byte[] generaPdfTraspaso(Sucursal suc,Sucursal sucDestino,EntradaSalidaQuickView traspaso,ArrayList<EntradaSalidaDetalleQuickView> esdListOriginal,String usuarioImr,boolean fullPrint) {
+		byte[] pdfBytes = null;
+		ArrayList<EntradaSalidaDetalleQuickView> esdList=null;
+		try {
+			String reportFileName;
+			String reportPath;
+			String compiledReportPath = "";
+			String compiledReportClassPath = "";
+            
+			logger.debug("Default Locale:"+Locale.getDefault());
+            
+			reportFileName = "traspaso";
+			esdList=esdListOriginal;
+				
+			
+			reportPath = reportDesignDir + reportFileName + ".jrxml";
+			compiledReportClassPath = reportDesignDir + reportFileName + ".jasper";
+			compiledReportPath = "./"+ reportFileName + ".jasper";
+			
+            Collection<Map<String,?>> col = new ArrayList<Map<String,?>>();
+            DecimalFormat    df    = new  DecimalFormat("$###,###,###,##0.00");
+            DecimalFormat    dfEnt = new  DecimalFormat("###########0.00");
+            logger.debug("Ok, jrxml loaded");
+			logger.debug("Ok, jrxml loaded:"+traspaso.getAutorizaDescuento()+"?,"+traspaso.getPorcentajeDescuentoCalculado()+"%+"+traspaso.getPorcentajeDescuentoExtra()+"%");
+            int n;
+			EntradaSalidaFooter esf=new EntradaSalidaFooter();
+			esf.calculaTotalesDesde(traspaso, esdList);
+			for(EntradaSalidaDetalleQuickView pvd:esdList){
+				Map<String,Object> vals = new HashMap<String,Object> ();
+                
+                n = pvd.getCantidad();
+                
+                vals.put("clave",pvd.getProductoCodigoBarras());
+                vals.put("cantidad",n);
+				vals.put("ta",Constants.getDescripcionTipoAlmacen(pvd.getApTipoAlmacen()).substring(0,3));
+                vals.put("codigoBarras",pvd.getProductoCodigoBarras());                
+                vals.put("descripcion",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
+				vals.put("descripcionCont",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion()+" ("+pvd.getProductoContenido()+pvd.getProductoUnidadMedida()+")");
+				vals.put("precio",df.format(pvd.getPrecioVenta()));
+                vals.put("ppc"  ,pvd.getProductoUnidadesPorCaja());
+				if(pvd.getApUbicacion() == null){
+					vals.put("ubic"  ,"--N/D--");
+				} else {
+					vals.put("ubic"  ,pvd.getApUbicacion());
+				}
+				vals.put("ue"  ,pvd.getProductoUnidadEmpaque());
+                vals.put("importe",df.format(n*pvd.getPrecioVenta()));
+                vals.put("cont",pvd.getProductoContenido()+" "+pvd.getProductoUnidadMedida());
+                
+                col.add(vals);
+			}
+			
+            JRDataSource beanColDataSource = new JRMapCollectionDataSource(col);
+            logger.debug("Ok, JRDataSource created");
+            
+            Map parameters = new HashMap();
+            SimpleDateFormat sdf_cdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            
+            SimpleDateFormat sdf_f1 = new SimpleDateFormat("yyyy/MM/dd");
+            SimpleDateFormat sdf_h1 = new SimpleDateFormat("HH:mm");
+            
+            Date fechaReporte = new Date();
+            
+            parameters.put("printImages" ,fullPrint);
+            
+			parameters.put("usuario",traspaso.getUsuarioNombreCompleto());
+			parameters.put("usuarioImpr",usuarioImr);
+			parameters.put("pedidoVentaId",traspaso.getId());
+			
+			parameters.put("sucDestino","["+sucDestino.getClave()+"]"+sucDestino.getNombre());
+			
+			parameters.put("pedidoVentaEstado",traspaso.getEstadoDescripcion());
+			
+			//parameters.put("tipoAlmacen", "TA");
+			
+			parameters.put("fechaHoraImpr",sdf_cdf.format(new Date()));
+			String dirSuc = null;
+			if(suc != null){
+				dirSuc = suc.getDireccion().toUpperCase();
+				parameters.put("dirSuc",dirSuc);
+				parameters.put("telsSuc","TEL. "+suc.getTelefonos().toUpperCase());
+			} else {
+				dirSuc = "CALLE FRANCISCO VILLA LT3 MZ 98 NO. 121, Col. SAN MARTÍN AZCATEPEC, TÉCAMAC. EDO. DE MÉX. C.P. 55740";
+				parameters.put("dirSuc",dirSuc);				
+				parameters.put("telsSuc","TEL. (55)5936-7894");
+			}
+			
+			
+            String direccionValue = null;
+			
+            if(traspaso.getComentarios()!=null && traspaso.getComentarios().trim().length()>1){
+				parameters.put("comentarios" ,traspaso.getComentarios());
+			} else{
+				parameters.put("comentarios" ,null);
+			}
+			parameters.put("total" ,"");  
+            parameters.put("total" ,df.format(esf.getTotal()));  
+            JasperReport jasperReport = null;
+            
+			try {
+				File compiledReportPathFile=new File(compiledReportPath);
+				if(! compiledReportPathFile.exists()){
+					InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream(reportPath);
+					JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
+					JasperCompileManager.compileReportToStream(jasperDesign,new FileOutputStream(compiledReportPathFile));
+					logger.debug("Ok, JasperReport compiled and saved 1st time, to:"+compiledReportPath);				
+				} else {
+					logger.debug("Ok,JasperReport loadfrom:"+compiledReportPath);
+				}
+				jasperReport = (JasperReport)JRLoader.loadObject(compiledReportPathFile);
+				logger.debug("Ok,JasperReport compiled:"+jasperReport.getName());
+			}catch(Exception e){
+				logger.error("JasperReport:"+e.getMessage());
+				InputStream inputStream = GeneradorImpresionPedidoVenta.class.getResourceAsStream(reportPath);
+				JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
+				jasperReport = JasperCompileManager.compileReport(jasperDesign);
+				logger.debug("Ok,Emergency JasperReport runtime compiled from:"+reportPath+", name:"+jasperReport.getName());
+			}
+			
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
+            logger.debug("Ok, JasperPrint created.");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			JRPdfExporter exporter = new JRPdfExporter(DefaultJasperReportsContext.getInstance());
+    
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(baos));
+			
+			SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+			configuration.setMetadataAuthor("PerfumeriaMarlen_SAA_10.3");						
+			exporter.setConfiguration(configuration);
+			
+			exporter.exportReport();
+			logger.debug("Ok, JasperExportManager executed");
+			pdfBytes = baos.toByteArray();            
+            logger.debug("Ok, finished");
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+            //System.exit(1);
+        }
+		return pdfBytes;
+    }
+	
+	
 	public static byte[] generaPdfPedidoVenta(Sucursal suc,EntradaSalidaQuickView pedidoVenta,ArrayList<EntradaSalidaDetalleQuickView> esdListOriginal,Cliente clienteVenta,boolean fullPrint,boolean interna,String usuarioImr) {
 		byte[] pdfBytes = null;
 		ArrayList<EntradaSalidaDetalleQuickView> esdList=null;
@@ -63,7 +206,6 @@ public class GeneradorImpresionPedidoVenta {
 			} else{
 				esdList=esdListOriginal;
 				reportFileName = "pedidoVentaDesignCliente";
-				
 			}
 			reportPath = reportDesignDir + reportFileName + ".jrxml";
 			compiledReportClassPath = reportDesignDir + reportFileName + ".jasper";
@@ -118,6 +260,13 @@ public class GeneradorImpresionPedidoVenta {
 			parameters.put("usuario",pedidoVenta.getUsuarioNombreCompleto());
 			parameters.put("usuarioImpr",usuarioImr);
 			parameters.put("pedidoVentaId",pedidoVenta.getId());
+			if(pedidoVenta.getTipoMov() == Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA){
+				parameters.put("mov.titulo","NOTA DE PEDIDO");
+				parameters.put("mov.subtitulo","NO. PEDIDO");
+			} else if(pedidoVenta.getTipoMov() == Constants.TIPO_MOV_SALIDA_TRASPASO){
+				parameters.put("mov.titulo","TRASPASO");
+				parameters.put("mov.subtitulo","NO. TRASPASO");
+			}
 			parameters.put("pedidoVentaEstado",pedidoVenta.getEstadoDescripcion());
 			
 			//parameters.put("tipoAlmacen", "TA");

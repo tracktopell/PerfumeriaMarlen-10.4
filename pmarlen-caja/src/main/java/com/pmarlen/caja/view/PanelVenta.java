@@ -471,6 +471,7 @@ public class PanelVenta extends javax.swing.JPanel {
 	}
 	
 	String imagePath = "med_png/";
+	String imageMinPath = "min_png/";
 	
 	private ImageIcon getProductoImageIcon(Producto p){
 		logger.debug("getProductoImageIcon(" + p +")");

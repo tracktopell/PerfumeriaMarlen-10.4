@@ -74,7 +74,10 @@ public class NuevoTraspasoSucMB extends PedidoVentaMB{
 		logger.trace("guardar:");
 		try{
 			entradaSalida.setCaja(1);
-			entradaSalida.setFactorIva(Constants.IVA);			
+			entradaSalida.setFactorIva(Constants.IVA);
+			entradaSalida.setClienteId(Constants.ID_CLIENTE_MOSTRADOR);
+			entradaSalida.setMetodoDePagoId(Constants.ID_MDP_EFECTIVO);
+			entradaSalida.setFormaDePagoId(Constants.ID_FDP_1SOLA_E);
 			entradaSalida.setNumDeCuenta(null);
 			entradaSalida.setNumeroTicket("0");
 			entradaSalida.setSucursalId(sessionUserMB.getSucursalId());
