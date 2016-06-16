@@ -208,8 +208,11 @@ public class EntradaSalidaFooter implements Serializable{
 				}				
 			}
 			descuentoAplicado         = descuentoCalculado + descuentoExtra;
-			importeDescuentoExtra     = (subTotalBruto * descuentoExtra)/100.0;						
-			importeDescuentoCalculado = (subTotalBruto * descuentoCalculado)/100.0;			
+			//importeDescuentoExtra     = (subTotalBruto * descuentoExtra)/100.0;						
+			//importeDescuentoCalculado = (subTotalBruto * descuentoCalculado)/100.0;			
+			importeDescuentoExtra     = (subTotalNoGrabado * descuentoExtra)/100.0;						
+			importeDescuentoCalculado = (subTotalNoGrabado * descuentoCalculado)/100.0;			
+			
 			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;			
 		}
 		logger.info("->calculaParaFacturaTotalesDesde: FACTURA subTotalBruto="+subTotalBruto);
