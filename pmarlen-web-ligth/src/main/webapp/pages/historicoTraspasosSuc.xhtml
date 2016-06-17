@@ -6,7 +6,7 @@
                 template="/WEB-INF/templates/mainWithMenu.xhtml">
 
     <ui:define name="title">
-        TRASPASOS ALM A SUC
+        HISTORICO TRASPASOS ALM A SUC
     </ui:define>
 
     <ui:define name="body-title">
@@ -19,20 +19,20 @@
 
 			<h:panelGrid columns="1" cellpadding="0" id="panel3" columnClasses="leftAlign" width="100%" >						
 
-				<p:dataTable  var="pv" value="#{traspasosSucMB.lazyModel}"
+				<p:dataTable  var="pv" value="#{historicoTraspasosSucMB.lazyModel}"
 							  paginator="true" lazy="true"
 							  id="pvTable" emptyMessage="-- SIN ELEMENTOS --" 							  
-							  rows="#{traspasosSucMB.viewRows}"
-							  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{traspasosSucMB.sizeList}]"
+							  rows="#{historicoTraspasosSucMB.viewRows}"
+							  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{historicoTraspasosSucMB.sizeList}]"
 							  rowsPerPageTemplate="25,100,250,500">
 					
 					<f:facet name="header">
 						OPCIONES :		
-						<p:commandButton value="RECARGAR" actionListener="#{traspasosSucMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
+						<p:commandButton value="RECARGAR" actionListener="#{historicoTraspasosSucMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
 						<p:spacer width="10"/>
 						VER:
-						<p:inputSwitch id="autorizaDescuento" value="#{traspasosSucMB.soloSurtidos}" onLabel="EN PROCESO" offLabel="HISTORICO">
-							<p:ajax listener="#{traspasosSucMB.refrescar}" process=":form1" update=":form1"/>
+						<p:inputSwitch id="autorizaDescuento" value="#{historicoTraspasosSucMB.soloSurtidos}" onLabel="EN PROCESO" offLabel="HISTORICO">
+							<p:ajax listener="#{historicoTraspasosSucMB.refrescar}" process=":form1" update=":form1"/>
 						</p:inputSwitch>
 
 						
@@ -40,7 +40,7 @@
 					
 					<p:column headerText="#" width="5%" filterBy="#{pv.id}" filterMatchMode="contains">						
 						<p:panelGrid columns="1" columnClasses="centerAlign" >
-							<p:commandButton actionListener="#{traspasosSucMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
+							<p:commandButton actionListener="#{historicoTraspasosSucMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
 							<h:panelGroup>
 								<h:outputLink id="pdfLink" value="#{request.contextPath}/docs/traspasos/Traspaso_No_#{pv.id}.pdf" target="_blank">
 									<h:graphicImage value="/images/nota_16x16.png" title="PDF TRASPASO ##{pv.id}"/>
@@ -84,7 +84,7 @@
 							</h:outputText>
 							
 							<h:outputText value="IMPORTE I.V.A. :" />
-							<h:outputText value="#{pv.importeIVA}" title="FACTOR I.V.A.= ${traspasosSucMB.getImporteMoneda(pv.factorIva)}" >
+							<h:outputText value="#{pv.importeIVA}" title="FACTOR I.V.A.= ${historicoTraspasosSucMB.getImporteMoneda(pv.factorIva)}" >
 								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
 							</h:outputText>									
 														
@@ -97,7 +97,7 @@
 
 					<f:facet name="footer">
 
-						<h:outputText value="ELEMENTOS : #{traspasosSucMB.sizeList}" rendered="true"/>
+						<h:outputText value="ELEMENTOS : #{historicoTraspasosSucMB.sizeList}" rendered="true"/>
 
 					</f:facet>
 				</p:dataTable>
