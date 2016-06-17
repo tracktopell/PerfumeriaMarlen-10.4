@@ -190,11 +190,23 @@
 								<h:outputText value="#{pvd.cantidad}" rendered="#{editarTraspasoSucMB.tableDraggableEnabled or not (editarTraspasoSucMB.verificable or editarTraspasoSucMB.surtible)}"/>
 								
 								<h:panelGroup rendered="#{not editarTraspasoSucMB.tableDraggableEnabled and (editarTraspasoSucMB.verificable or editarTraspasoSucMB.surtible)}">
+									<!--
 									<h:inputText value="#{pvd.cantidad}" size="2" validatorMessage="LA CANTIDAD ES INCORRECTA, DEBE SER > 0" converterMessage="DEBE SER UN NUMERO ENTERO > 0" >
 										<f:convertNumber integerOnly="true" />
 										<f:validateLongRange minimum="1" maximum="99999"/>
 									</h:inputText>
-									
+									-->
+									<h:inputText value="#{pvd.cantidad}" size="2" validatorMessage="LA CANTIDAD ES INCORRECTA, DEBE SER > 0" converterMessage="DEBE SER UN NUMERO ENTERO > 0" 
+												 rendered="#{pvd.cantidad le pvd.apCantidad}">
+										<f:convertNumber integerOnly="true" />
+										<f:validateLongRange minimum="1" maximum="99999"/>
+									</h:inputText>
+
+									<h:inputText value="#{pvd.cantidad}" size="2" validatorMessage="LA CANTIDAD ES INCORRECTA, DEBE SER > 0" converterMessage="DEBE SER UN NUMERO ENTERO > 0" 
+												 rendered="#{pvd.cantidad gt pvd.apCantidad}" style="#{editarPedidoVentaMB.estiloInsuficiente}" title="NO SE PODRA SURTIR PEDIDO HASTA QUE HAYA SUFICIENTE">
+										<f:convertNumber integerOnly="true" />
+										<f:validateLongRange minimum="1" maximum="99999"/>
+									</h:inputText>
 									<p:spacer width="5"/>
 									<p:commandButton	icon="ui-icon-arrowrefresh-1-s" process=":form3"  title="SI ACTUALIZA CANTIDAD, ACTUALIZAR IMPORTE Y TOTALES"
 														update=":form3,:form4:panel4_3" oncomplete="updateComponentsOnWindowResize();"
@@ -210,7 +222,7 @@
 							</p:column>
 							
 							<p:column headerText="C.A." width="5%" >
-								<h:outputText value="#{pvd.apCantidad}" class="rightAlignColumn" title="HAY #{pvd.apCantidad} EN ALMACEN"/>
+								<h:outputText value="#{pvd.apCantidad}" class="rightAlignColumn" title="HAY #{pvd.apCantidad} EN ALMACEN"/>								
 							</p:column>
 							
 							<p:column width="2%" rendered="true">
