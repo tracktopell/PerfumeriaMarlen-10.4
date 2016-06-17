@@ -190,12 +190,7 @@
 								<h:outputText value="#{pvd.cantidad}" rendered="#{editarTraspasoSucMB.tableDraggableEnabled or not (editarTraspasoSucMB.verificable or editarTraspasoSucMB.surtible)}"/>
 								
 								<h:panelGroup rendered="#{not editarTraspasoSucMB.tableDraggableEnabled and (editarTraspasoSucMB.verificable or editarTraspasoSucMB.surtible)}">
-									<!--
-									<h:inputText value="#{pvd.cantidad}" size="2" validatorMessage="LA CANTIDAD ES INCORRECTA, DEBE SER > 0" converterMessage="DEBE SER UN NUMERO ENTERO > 0" >
-										<f:convertNumber integerOnly="true" />
-										<f:validateLongRange minimum="1" maximum="99999"/>
-									</h:inputText>
-									-->
+
 									<h:inputText value="#{pvd.cantidad}" size="2" validatorMessage="LA CANTIDAD ES INCORRECTA, DEBE SER > 0" converterMessage="DEBE SER UN NUMERO ENTERO > 0" 
 												 rendered="#{pvd.cantidad le pvd.apCantidad}">
 										<f:convertNumber integerOnly="true" />
@@ -203,7 +198,7 @@
 									</h:inputText>
 
 									<h:inputText value="#{pvd.cantidad}" size="2" validatorMessage="LA CANTIDAD ES INCORRECTA, DEBE SER > 0" converterMessage="DEBE SER UN NUMERO ENTERO > 0" 
-												 rendered="#{pvd.cantidad gt pvd.apCantidad}" style="#{editarPedidoVentaMB.estiloInsuficiente}" title="NO SE PODRA SURTIR PEDIDO HASTA QUE HAYA SUFICIENTE">
+												 rendered="#{pvd.cantidad gt pvd.apCantidad}" style="#{editarTraspasoSucMB.estiloInsuficiente}" title="NO SE PODRA SURTIR PEDIDO HASTA QUE HAYA SUFICIENTE">
 										<f:convertNumber integerOnly="true" />
 										<f:validateLongRange minimum="1" maximum="99999"/>
 									</h:inputText>
