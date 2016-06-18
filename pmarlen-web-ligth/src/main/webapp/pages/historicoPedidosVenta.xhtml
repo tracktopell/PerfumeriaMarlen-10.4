@@ -19,24 +19,24 @@
 
 			<h:panelGrid columns="1" cellpadding="0" id="panel3" columnClasses="leftAlign" width="100%" >						
 
-				<p:dataTable  var="pv" value="#{historicoTraspasosSucMB.lazyModel}"
+				<p:dataTable  var="pv" value="#{historicoPedidosVentaMB.lazyModel}"
 							  paginator="true" lazy="true"
 							  id="pvTable" emptyMessage="-- SIN ELEMENTOS --" 							  
-							  rows="#{historicoTraspasosSucMB.viewRows}"
-							  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{historicoTraspasosSucMB.sizeList}]"
+							  rows="#{historicoPedidosVentaMB.viewRows}"
+							  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{historicoPedidosVentaMB.sizeList}]"
 							  rowsPerPageTemplate="10,25,100">
 					
 					<f:facet name="header">
 						<h:panelGroup>
 							OPCIONES :		
-							<p:commandButton value="RECARGAR" actionListener="#{historicoTraspasosSucMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
+							<p:commandButton value="RECARGAR" actionListener="#{historicoPedidosVentaMB.refrescar}" update=":form1" icon="ui-icon-arrowrefresh-1-s"/>
 						</h:panelGroup>
 
 					</f:facet>
 					
 					<p:column headerText="#" width="10%" filterBy="#{pv.id}" filterMatchMode="contains">						
 						<p:panelGrid columns="1" columnClasses="centerAlign" >
-							<p:commandButton actionListener="#{historicoTraspasosSucMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
+							<p:commandButton actionListener="#{historicoPedidosVentaMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
 							<h:panelGroup>
 								<h:outputLink id="pdfLink" value="#{request.contextPath}/docs/traspasos/Traspaso_No_#{pv.id}.pdf" target="_blank">
 									<h:graphicImage value="/images/nota_16x16.png" title="PDF TRASPASO ##{pv.id}"/>
@@ -95,10 +95,10 @@
 							</h:outputText>
 							
 							<h:outputText value="- DESCUENTOS :" />
-							<h:outputText value="#{pv.porcentajeDescuentoCalculado}% + #{pv.porcentajeDescuentoExtra}%  = #{historicoTraspasosSucMB.getImporteMoneda(pv.importeDescuento)}" />
+							<h:outputText value="#{pv.porcentajeDescuentoCalculado}% + #{pv.porcentajeDescuentoExtra}%  = #{historicoPedidosVentaMB.getImporteMoneda(pv.importeDescuento)}" />
 							
 							<h:outputText value="+ I.V.A. :" />
-							<h:outputText value="#{pv.importeIVA}" title="FACTOR I.V.A.= ${historicoTraspasosSucMB.getImporteMoneda(pv.factorIva)}" >
+							<h:outputText value="#{pv.importeIVA}" title="FACTOR I.V.A.= ${historicoPedidosVentaMB.getImporteMoneda(pv.factorIva)}" >
 								<f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
 							</h:outputText>									
 							
@@ -111,7 +111,7 @@
 
 					<f:facet name="footer">
 
-						<h:outputText value="ELEMENTOS : #{historicoTraspasosSucMB.sizeList}" rendered="true"/>
+						<h:outputText value="ELEMENTOS : #{historicoPedidosVentaMB.sizeList}" rendered="true"/>
 
 					</f:facet>
 				</p:dataTable>
