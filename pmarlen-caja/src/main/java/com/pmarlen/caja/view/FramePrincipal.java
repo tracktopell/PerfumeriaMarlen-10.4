@@ -134,8 +134,10 @@ public class FramePrincipal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         logoLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
         abrirSesion = new javax.swing.JButton();
         cerrarSesion = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
         cerrando = new javax.swing.JLabel();
         panelVenta = new PanelVenta();
         panelVentas = new PanelVentas();
@@ -201,21 +203,27 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         panelSesion.add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 50));
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
         abrirSesion.setBackground(java.awt.Color.green);
         abrirSesion.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
         abrirSesion.setText("ABRIR CAJA");
-        jPanel2.add(abrirSesion);
+        jPanel5.add(abrirSesion);
 
         cerrarSesion.setBackground(new java.awt.Color(255, 0, 0));
         cerrarSesion.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
         cerrarSesion.setText("CERRAR CAJA");
-        jPanel2.add(cerrarSesion);
+        jPanel5.add(cerrarSesion);
+
+        jPanel2.add(jPanel5);
 
         cerrando.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        cerrando.setText("C..");
-        jPanel2.add(cerrando);
+        cerrando.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        cerrando.setText(" ");
+        cerrando.setPreferredSize(new java.awt.Dimension(800, 70));
+        jPanel6.add(cerrando);
+
+        jPanel2.add(jPanel6);
 
         panelSesion.add(jPanel2, java.awt.BorderLayout.SOUTH);
 
@@ -405,6 +413,8 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;

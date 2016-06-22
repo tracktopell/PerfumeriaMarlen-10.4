@@ -1091,13 +1091,26 @@ public class EntradaSalidaDAO {
 		}
 		
 		int r=-1;
-		
-		PreparedStatement ps = null;
+		PreparedStatement psX = null;
+		PreparedStatement ps  = null;
 		PreparedStatement psESE = null;
 		PreparedStatement psESD = null;
 		PreparedStatement psMHP = null;
-		
+		ResultSet           rsX = null;
 		try {
+			psX = conn.prepareStatement("SELECT COUNT(*) FROM ENTRADA_SALIDA WHERE NUMERO_TICKET=?");
+			psX.setString(1, x.getNumeroTicket());
+			rsX = psX.executeQuery();
+			int countTicket=0;
+			if(rsX.next()){
+				countTicket=rsX.getInt(1);
+			}
+			rsX.close();
+			psX.close();
+			if(countTicket > 0){
+				throw new DAOException("NUMERO_TICKET=" + x.getNumeroTicket()+ " EXISTE (COUNT="+countTicket+")");
+			}
+			
 			//Timestamp now = new Timestamp(System.currentTimeMillis());
 			ps = conn.prepareStatement("INSERT INTO ENTRADA_SALIDA(TIPO_MOV,SUCURSAL_ID,ESTADO_ID,FECHA_CREO,USUARIO_EMAIL_CREO,CLIENTE_ID,FORMA_DE_PAGO_ID,METODO_DE_PAGO_ID,FACTOR_IVA,COMENTARIOS,CFD_ID,NUMERO_TICKET,CAJA,IMPORTE_RECIBIDO,APROBACION_VISA_MASTERCARD,PORCENTAJE_DESCUENTO_CALCULADO,PORCENTAJE_DESCUENTO_EXTRA,CONDICIONES_DE_PAGO,NUM_DE_CUENTA,AUTORIZA_DESCUENTO,ELEM_DET,TOT_PRODS,ES_ID_DEV) "
 					+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);

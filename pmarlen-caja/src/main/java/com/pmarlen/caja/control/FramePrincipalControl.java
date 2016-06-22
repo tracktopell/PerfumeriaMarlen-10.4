@@ -18,9 +18,11 @@ import com.pmarlen.caja.view.ParamsConfigDialog;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.U;
+import com.sun.awt.AWTUtilities;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -288,56 +290,83 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 
 	private void cerrarSesion_actionPerformed() {
 		logger.info("[USER]->cerrarSesion_actionPerformed:");
-		//JOptionPane.showMessageDialog(framePrincipal, "NO IMPLEMENTADO", "CERRAR", JOptionPane.ERROR_MESSAGE);
+		
+		framePrincipal.getAbrirSesion().setEnabled(false);
+		framePrincipal.getCerrarSesion().setEnabled(false);
+		
 		CierreCajaJFrame cierreCajaDialog = new CierreCajaJFrame(framePrincipal);
 		CierreCajaControl cierreCajaControl = new CierreCajaControl(cierreCajaDialog);
+		
+		framePrincipal.getAbrirSesion().setVisible(false);
+		framePrincipal.getCerrarSesion().setVisible(false);		
+		
+		framePrincipal.getCerrando().setText(" ");		
+		framePrincipal.getCerrando().setVisible(true);
+		framePrincipal.getCerrando().updateUI();
+		
 		cierreCajaControl.estadoInicial();
+		
+		framePrincipal.getCerrando().setText("...ENVIANDO, ESPERE");		
+		framePrincipal.getCerrando().setVisible(true);
+		framePrincipal.getCerrando().updateUI();
+		
 		if(cierreCajaControl.isCierreCorrecto()){
-			
-			cierreCajaDialog.dispose();
-			
-			framePrincipal.getAbrirSesion().setVisible(false);
-			
-			framePrincipal.getCerrarSesion().setEnabled(false);
-			
-			framePrincipal.getCerrando().setText("CERRANDO SESIÓN EN SERVIDOR, ESPERE ...");
-			
-			framePrincipal.getCerrando().setVisible(true);
-			
-			int intentosEnviar=100;
-			int numInt=0;
-			for(numInt=0;MemoryDAO.isEnviandoCierreCaja()&& numInt<intentosEnviar;numInt++) {
-				try {
-					Thread.sleep(250);
-					logger.debug("ESPERANDO["+numInt+"] Esperando respuesta de Envio de Cierre de Caja");
-				}catch(InterruptedException ie){
-					
+			cierreCajaDialog.dispose();	
+			java.awt.EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					esperarAEnviar();
 				}
-			}
+			});			
+		} else {
+			framePrincipal.getCerrando().setText(" ");		
+			framePrincipal.getCerrando().setVisible(false);
+			framePrincipal.getCerrando().updateUI();
 			
-			if(MemoryDAO.isEnviandoCierreCorrectmente()) {
-				logger.debug("Envio correcto, iniciaAppCorteCajaDTO, cerrando");
-				
-				ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
-				
-				//JOptionPane.showMessageDialog(framePrincipal, "La Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
-			
-				framePrincipal.dispose();
-				System.exit(0);
+			framePrincipal.getCerrarSesion().setVisible(true);		
+			framePrincipal.getCerrarSesion().setEnabled(true);		
+		}
+	}
 
-			} else {
-				logger.debug("Envio de Cierre no se envio, :(");
+	private void esperarAEnviar() throws HeadlessException {
+		
+		framePrincipal.getAbrirSesion().setVisible(false);
+		
+		framePrincipal.getCerrarSesion().setEnabled(false);
+		
+		framePrincipal.getCerrando().setText("CERRANDO SESIÓN EN SERVIDOR, ESPERE ...");
+		
+		framePrincipal.getCerrando().setVisible(true);
+		
+		int intentosEnviar=100;
+		int numInt=0;
+		for(numInt=0;MemoryDAO.isEnviandoCierreCaja()&& numInt<intentosEnviar;numInt++) {
+			try {
+				Thread.sleep(250);
+				logger.debug("ESPERANDO["+numInt+"] Esperando respuesta de Envio de Cierre de Caja");
+			}catch(InterruptedException ie){
 				
-				ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
-				
-				JOptionPane.showMessageDialog(framePrincipal, "No se pudo enviar al Servidor, pero la Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
-			
-				framePrincipal.dispose();
-				System.exit(1);
 			}
+		}
+		
+		if(MemoryDAO.isEnviandoCierreCorrectmente()) {
+			logger.debug("Envio correcto, iniciaAppCorteCajaDTO, cerrando");
+			
+			ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
+			
+			//JOptionPane.showMessageDialog(framePrincipal, "La Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
+			
+			framePrincipal.dispose();
+			System.exit(0);
 			
 		} else {
-		
+			logger.debug("Envio de Cierre no se envio, :(");
+			
+			ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
+			
+			JOptionPane.showMessageDialog(framePrincipal, "No se pudo enviar al Servidor, pero la Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
+			
+			framePrincipal.dispose();
+			System.exit(1);
 		}
 	}
 	

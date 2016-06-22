@@ -246,13 +246,18 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		logger.debug("esperaACErrarPorEnvioCaja:");
 		seguirEsperando=true;
 		try {
+			int numEspera=0;
+			//cierreCajaDialog
+			FramePrincipalControl.getInstance().getFramePrincipal().getCerrando().setText("....AHORA SI CERRANDO");
 			while(seguirEsperando){
+				logger.debug("\tesperaACErrarPorEnvioCaja:-------->>["+numEspera+"]");
+				FramePrincipalControl.getInstance().getFramePrincipal().getCerrando().setText("...ENVIANDO T=["+numEspera+"] :(  ...ESPERA");
 				if(MemoryDAO.isEnviandoCierreCaja()){
 					seguirEsperando = true;
 				}else{
 					seguirEsperando = false;
 				}
-				Thread.sleep(200);
+				Thread.sleep(1000);
 			}
 			if(MemoryDAO.isEnviandoCierreCorrectmente()){
 				logger.debug("SE ENVIO CORRCTAMENTE!");

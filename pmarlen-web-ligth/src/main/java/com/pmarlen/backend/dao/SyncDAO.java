@@ -100,9 +100,9 @@ public class SyncDAO {
 				for(ES_ESD escd: escdList){
 					int tipoMov = escd.getEs().getTm();
 					if(tipoMov == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION){
-						escdListVtas.add(escd);
-					} else {
 						escdListDevs.add(escd);
+					} else if(tipoMov == Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA){
+						escdListVtas.add(escd);
 					}
 				}
 				

@@ -307,41 +307,56 @@
                 </Constraint>
               </Constraints>
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                <Property name="horizontalGap" type="int" value="0"/>
-                <Property name="verticalGap" type="int" value="50"/>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
+                <Property name="axis" type="int" value="1"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JButton" name="abrirSesion">
-                  <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="ff" id="green" palette="1" red="0" type="palette"/>
-                    </Property>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Dialog" size="48" style="1"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="ABRIR CAJA"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="cerrarSesion">
-                  <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" red="ff" type="rgb"/>
-                    </Property>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Dialog" size="48" style="1"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="CERRAR CAJA"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="cerrando">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Dialog" size="48" style="1"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="C.."/>
-                  </Properties>
-                </Component>
+                <Container class="javax.swing.JPanel" name="jPanel5">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JButton" name="abrirSesion">
+                      <Properties>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="0" green="ff" id="green" palette="1" red="0" type="palette"/>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Dialog" size="48" style="1"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="ABRIR CAJA"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="cerrarSesion">
+                      <Properties>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="0" green="0" red="ff" type="rgb"/>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Dialog" size="48" style="1"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="CERRAR CAJA"/>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jPanel6">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="cerrando">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Dialog" size="48" style="1"/>
+                        </Property>
+                        <Property name="horizontalAlignment" type="int" value="0"/>
+                        <Property name="text" type="java.lang.String" value=" "/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[800, 70]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
               </SubComponents>
             </Container>
           </SubComponents>
