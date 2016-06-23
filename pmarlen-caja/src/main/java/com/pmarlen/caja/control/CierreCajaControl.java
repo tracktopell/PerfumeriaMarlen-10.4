@@ -48,15 +48,11 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	
 	public CierreCajaControl(CierreCajaJFrame dialogLogin) {
 		this.cierreCajaDialog = dialogLogin;
-		//this.cierreCajaDialog.getSaldoFinal().addFocusListener(this);
 		this.cierreCajaDialog.getSaldoFinal().addActionListener(this);
 		this.cierreCajaDialog.getAceptar() .addActionListener(this);
-		this.cierreCajaDialog.getCancelar().addActionListener(this);
-		//this.cierreCajaDialog.getObservaciones().addFocusListener(this);
-		this.cierreCajaDialog.getObservaciones().addActionListener(this);
-		this.cierreCajaDialog.getGeneraFrase().addActionListener(this);
-		//this.cierreCajaDialog.getToken().addFocusListener(this);
-		this.cierreCajaDialog.getToken().addActionListener(this);
+		this.cierreCajaDialog.getCancelar().addActionListener(this);		
+		this.cierreCajaDialog.getLimpiar().addActionListener(this);
+		this.cierreCajaDialog.getValidar().addActionListener(this);
 	}
 
 	public CierreCajaJFrame getCierreCajaJFrame() {
@@ -76,6 +72,14 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
 		cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));
 		cierreCajaDialog.getAceptar().setEnabled(false);
+		
+		saldoEstimado = saldoInicial;
+		buscarSaldoFinalEstimado();
+		saldoNeto     = saldoEstimado - saldoInicial;
+		cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
+		cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));
+		
+		
 		
 		setEnableAnormalControls(false);
 		cierreCajaDialog.getCierreAnormalPanel().setVisible(false);
@@ -102,18 +106,16 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 
 	private void setEnableAnormalControls(boolean d) {				
 		cierreCajaDialog.getDiferencia().setEnabled(d);
-		cierreCajaDialog.getObservaciones().setEnabled(d);
+		cierreCajaDialog.getJustificacion().setEnabled(d);
 		cierreCajaDialog.getUsuarioAutorizo().setEnabled(d);
-		cierreCajaDialog.getGeneraFrase().setEnabled(d);
-		cierreCajaDialog.getFrase().setEnabled(d);
-		cierreCajaDialog.getToken().setEnabled(d);
 	}
-	
+	private double  totalVentas       = 0.0;
+	private double  totalDevoluciones = 0.0;
 	private void buscarSaldoFinalEstimado(){
 		logger.debug("buscarSaldoFinalEstimado: -->> new Thread().start()");
 		new Thread("RemoteSaldoEstimado"){
 			public void run(){
-				try {					
+				try {
 					final CorteCajaDTO aperturaCajaDTO = MemoryDAO.readLastSavedCorteCajaDTO();
 					logger.debug("buscarSaldoFinalEstimado: [LOCAL] corteCajaDTO="+aperturaCajaDTO);
 					
@@ -121,35 +123,49 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 						logger.debug("buscarSaldoFinalEstimado: [LOCAL] searching :");
 						final ArrayList<ES_ESD> esList = ESFileSystemJsonDAO.getEsList();
 						double ttX = 0.0;
+						totalVentas       = 0.0;
+						totalDevoluciones = 0.0;
+	
 						for(ES_ESD esesd: esList){
 							if(esesd.getEs().getFc()>=aperturaCajaDTO.getFecha()){
 								final ES es = esesd.getEs(); 
 								final int tm=es.getTm();
 								int add = 0;
-		
+								double rxTx = 0.0;
 								if(	tm == Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA ){
 									add = +1;
+									rxTx = (es.getTot())*add;
+									totalVentas       += rxTx;
 								} else if(	tm ==Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION){
 									add = -1;
+									rxTx = (es.getTot())*add;
+									totalDevoluciones += rxTx;
 								}
-								double rxTx = (es.getTot())*add;
+								
 								ttX += rxTx;
 								logger.debug("\tbuscarSaldoFinalEstimado: [LOCAL] + "+rxTx);
 							}
 						}
 						logger.debug("buscarSaldoFinalEstimado:  [LOCAL] Suma:"+ttX);
 						
-						saldoEstimado = saldoInicial + ttX;						
-						saldoNeto     = saldoEstimado - saldoInicial;
+						saldoEstimado = ttX;
+						saldoNeto     = saldoEstimado + saldoInicial;
 						
 						logger.debug("buscarSaldoFinalEstimado[LOCAL]:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
 					} else {					
-						saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getRemoteSaldoFinalEstimado();
-						saldoNeto     = saldoEstimado - saldoInicial;
+						saldoEstimado = ApplicationLogic.getInstance().getRemoteSaldoFinalEstimado();
+						saldoNeto     = saldoEstimado + saldoInicial;
 						logger.debug("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
+					}
+					
+					if(totalVentas != 0 && totalDevoluciones!= 0){
+						cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(totalVentas)+" - "+Constants.df2Decimal.format(totalDevoluciones)+" = "+Constants.df2Decimal.format(saldoEstimado));
+					} else {
+						cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
 					}
 					cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
 					cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));
+					cierreCajaDialog.getSaldoFinal().setText(Constants.df2Decimal.format(saldoNeto));
 				}catch(IOException ioe){
 					logger.error("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:: error al consultar el saldo.", ioe);
 					JOptionPane.showMessageDialog(cierreCajaDialog, "NO SE PUEDE OBTENER EL SALDO FINAL ESTIMADO", "CIERRE CAJA", JOptionPane.ERROR_MESSAGE);
@@ -165,14 +181,14 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 			saldoFinal_focusLost();
 		} else if (e.getSource() == cierreCajaDialog.getAceptar()) {
 			aceptar_ActionPerformed();
-		} else if (e.getSource() == cierreCajaDialog.getToken()) {
-			aceptar_ActionPerformed();
-		} else if (e.getSource() == cierreCajaDialog.getObservaciones()) {
+		} else if (e.getSource() == cierreCajaDialog.getValidar()) {
+			validar_ActionPerformed();
+		} else if (e.getSource() == cierreCajaDialog.getJustificacion()) {
 			aceptar_ActionPerformed();
 		} else if (e.getSource() == cierreCajaDialog.getCancelar()) {
 			cancelar_ActionPerformed();
-		} else if (e.getSource() == cierreCajaDialog.getGeneraFrase()) {
-			generaFrase_ActionPerformed();
+		} else if (e.getSource() == cierreCajaDialog.getLimpiar()) {
+			limpiar_ActionPerformed();
 		}		
 	}
 	
@@ -188,11 +204,6 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		registraCirreCaja();
 	}
 	
-	private void generaFrase_ActionPerformed() {
-		GeneradorDeToken gt = new GeneradorDeToken();		
-		cierreCajaDialog.getFrase().setText(gt.getFrase2());
-	}
-
 	private boolean validateAll() {
 		JComponent componentWithError;
 		try {
@@ -326,45 +337,26 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 			setEnableAnormalControls(true);
 			cierreCajaDialog.getCierreAnormalPanel().setVisible(true);
 			
-			if( cierreCajaDialog.getObservaciones().getText().trim().length() < 10) {
-				throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN COHERENTE DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getObservaciones());
+			if( cierreCajaDialog.getJustificacion().getText().trim().length() < 10) {
+				throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN COHERENTE DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getJustificacion());
 			} else {				
-				observaciones = cierreCajaDialog.getObservaciones().getText().trim();
+				observaciones = cierreCajaDialog.getJustificacion().getText().trim();
 				
 				if(observaciones.length() > 0 ){
 					if(observaciones.length() > OBSERVACIONES_MAX_LENGTH) {
 						observaciones = observaciones.substring(0, OBSERVACIONES_MAX_LENGTH-3)+"...";
 					} else if(observaciones.length() <= 10) {
-						throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN CON COHERENCIA Y EXPLICITA, NO PUEDE SER UNA(S) SIMPLE(S) PALABRA(S)", cierreCajaDialog.getObservaciones());	
+						throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN CON COHERENCIA Y EXPLICITA, NO PUEDE SER UNA(S) SIMPLE(S) PALABRA(S)", cierreCajaDialog.getJustificacion());	
 					}
 				} else {
-					throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA, NO PUEDE QUEDAR EN BLANCO ", cierreCajaDialog.getObservaciones());	
+					throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA, NO PUEDE QUEDAR EN BLANCO ", cierreCajaDialog.getJustificacion());	
 				}
 			}
 			
 			if(grave){				
 				if(cierreCajaDialog.getUsuarioAutorizo().getSelectedIndex()==0){
 					throw new ValidacionCamposException("DEBE ELEGIR QUIÉN AUTORIZARÁ", cierreCajaDialog.getUsuarioAutorizo());	
-				}
-				String fraseGenerada = cierreCajaDialog.getFrase().getText().trim();
-
-				if(fraseGenerada.length() == 0){
-					throw new ValidacionCamposException("DEBE OBTENER FRASE CON EL BOTÓN", cierreCajaDialog.getGeneraFrase());	
-				}
-
-				String tokenEscrito = cierreCajaDialog.getToken().getText().trim();			
-				if(cierreCajaDialog.getToken().getText().trim().length() == 0 ) {
-					throw new ValidacionCamposException("LLAME A SU ADMINISTRADOR QUE ELIGIO PARA OBTENER EL TOKEN SEGUN LA FRASE", cierreCajaDialog.getToken());	
-				} else if(! tokenEscrito.matches("[0-9]{6}")){
-					throw new ValidacionCamposException("EL TOKEN DEBE SER 6 DIGITOS", cierreCajaDialog.getToken());	
-				} else {
-					GeneradorDeToken gt=new GeneradorDeToken();
-					String tokenObtenido = gt.getToken(fraseGenerada);
-					if(!gt.isValid2(fraseGenerada, tokenEscrito)) {
-						logger.debug("validate:tokenObtenido="+tokenObtenido+", tokenEscrito="+tokenEscrito);
-						throw new ValidacionCamposException("EL TOKEN ES INVALIDO", cierreCajaDialog.getToken());	
-					}
-				}
+				}				
 			}
 		} else {
 			setEnableAnormalControls(false);
@@ -412,6 +404,14 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		ComboBoxModel m =  new DefaultComboBoxModel(v);
 		
 		return m;
+	}
+
+	private void validar_ActionPerformed() {
+		validateAll();
+	}
+
+	private void limpiar_ActionPerformed() {
+		estadoInicial();
 	}
 	
 	
