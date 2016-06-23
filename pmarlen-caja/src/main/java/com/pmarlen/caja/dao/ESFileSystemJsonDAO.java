@@ -30,7 +30,7 @@ public class ESFileSystemJsonDAO {
 	private static Logger logger = Logger.getLogger(ESFileSystemJsonDAO.class.getName());
 	private static final String fileName = "EntradaSalida.json";
 	private static final ArrayList<ES_ESD> esList = new ArrayList<ES_ESD>();
-	
+    private static boolean firstLoad=false;
 	public static void commit(ES_ESD escd){
 		
 		int tm = escd.getEs().getTm();
@@ -70,8 +70,9 @@ public class ESFileSystemJsonDAO {
 		
 		persist();
 	}
-	
-	static void old_reset(){
+    
+	@Deprecated
+	static void _old_reset(){
 		logger.debug("old_reset:");
 		Date now=new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdddHHmmss");
@@ -87,33 +88,50 @@ public class ESFileSystemJsonDAO {
 	}
 	
 	static void reset(){
-		logger.debug("reset: esList.getClass():"+esList.getClass()+", esList="+esList.getClass());
-		Iterator ix = esList.iterator();
+		logger.debug("reset: esList="+esList.size());
+        if(!firstLoad){
+            laod();
+        }
 		int ixc=0;
-		while(ix.hasNext()){
-			logger.debug("reset:-> esList["+ixc+"]: class:"+ix.next().getClass());
-			ixc++;
-		}
-		for(ES_ESD e: esList) {
-			if(e.getS()==ES_ESD.STATUS_SYNC_LOCAL){
-				e.setS(ES_ESD.STATUS_SYNC_SENT);
+		for(ES_ESD es_esd: esList) {
+            logger.debug("reset:\t-> esList["+ixc+"]: es="+es_esd.getEs());
+			if(es_esd.getS()==ES_ESD.STATUS_SYNC_LOCAL){
+				es_esd.setS(ES_ESD.STATUS_SYNC_SENT);
 			}
 		}
 	}
 	
-	static void laod(){
+    static void resetFailedSent(){
+		logger.debug("resetFailedSent(): esList="+esList.size());
+        if(!firstLoad){
+            laod();
+        }
+		int ixc=0;
+		for(ES_ESD es_esd: esList) {
+            logger.debug("resetFailedSent():\t-> esList["+ixc+"]: es="+es_esd.getEs());
+			if(es_esd.getS()==ES_ESD.STATUS_SYNC_LOCAL){
+				es_esd.setS(ES_ESD.STATUS_SYNC_ERROR);
+			}
+		}
+
+	}
+    
+	static void laod(){        
 		File fileToLoad = new File(fileName);
 		if(fileToLoad.exists() && esList.isEmpty()){
-			logger.debug("load:File found:"+fileName);
+			logger.debug("load:Json File found:"+fileName);
 			Gson gson=new Gson();
 			try {
 				FileReader fr = new FileReader(fileToLoad);
-				logger.debug("\tReading:");
+				logger.debug("load:Reading:");
 				//final ArrayList fromJson = gson.fromJson(fr, esList.getClass());
-				final ArrayList fromJson = gson.fromJson(fr, new TypeToken<ArrayList<ES_ESD>>(){}.getType());
-				logger.debug("\t\tRead:fromJson="+fromJson);
+				final ArrayList fromJson = gson.fromJson(fr, new TypeToken<ArrayList<ES_ESD>>(){}.getType());				
 				esList.addAll(fromJson);
-				logger.debug("\tOK, esList.size="+esList.size());				
+				logger.debug("load: After read, added, esList.size="+esList.size());
+                for(ES_ESD esd_es:esList){
+                    logger.debug("load:\tes_esd="+esd_es);
+                }
+                firstLoad=true;
 			}catch(IOException ioe){
 				logger.error("load, fail:",ioe);
 			}
@@ -134,7 +152,7 @@ public class ESFileSystemJsonDAO {
 			
 			File x=new File(fileName);
 			
-			logger.debug("persist: created file="+x.getAbsolutePath()+" ? "+x.exists()+", size="+x.length());
+			logger.debug("persist: created file="+x.getAbsolutePath()+" ? "+x.exists()+", size="+x.length()+" bytes.");
 			
 			
 		}catch(IOException ioe){
@@ -178,7 +196,7 @@ public class ESFileSystemJsonDAO {
 		ArrayList<ES_ESD> nsList=new ArrayList<ES_ESD>();
 		
 		for(ES_ESD e: esList){
-			if(e.getS()==ES_ESD.STATUS_SYNC_LOCAL){
+			if(e.getS()==ES_ESD.STATUS_SYNC_LOCAL ||e.getS()==ES_ESD.STATUS_SYNC_ERROR){
 				nsList.add(e);
 			}
 		}

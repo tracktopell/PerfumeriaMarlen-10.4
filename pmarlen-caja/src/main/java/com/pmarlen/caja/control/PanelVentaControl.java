@@ -564,7 +564,7 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			logger.debug("imprimirTicket:esesdLAstForPrint.getEs().getNt()="+esesdLAstForPrint.getEs().getNt()+", ImporteREcibido="+esesdLAstForPrint.getEs().getIr()+", MP:"+esesdLAstForPrint.getEs().getMp());
 			
 			JarpeReportsInfoDTO infoDTOTicket = VentaSesion.generaJarpeReportsInfoDTOTicket(esesdLAstForPrint);
-			logger.debug("imprimirTicket:fileTicket="+infoDTOTicket);			
+			logger.trace("imprimirTicket:fileTicket="+infoDTOTicket);			
 			byte[] generateTicketTXTBytes = TextReporter.generateTicketTXTBytes(infoDTOTicket);
 			logger.debug("imprimirTicket:fileTicket:{\n"+new String(generateTicketTXTBytes)+"\n}");
 			Date today = new Date();

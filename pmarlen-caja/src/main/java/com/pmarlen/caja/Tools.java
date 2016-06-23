@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ES_ESD;
+import com.pmarlen.rest.dto.SyncDTOPackage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class Tools {
 		}
 		
 		if(fileName == null){
-			System.err.println("Usage: com.pmarlen.caja.Tools -jsonFile=PathToJsonFile");
+			System.err.println("Usage: java -cp xx.jar com.pmarlen.caja.Tools -jsonFile=PathToJsonFile  -fechaFiltro=AAAAMMDD");
 			System.exit(1);
 		}
 		
@@ -55,7 +56,10 @@ public class Tools {
 				logger.error("load, fail:",ioe);
 				System.exit(2);
 			}
-		}
+		} else {
+            System.err.println("Archivo:"+fileName+", Error al abrir.");
+			System.exit(3);
+        }
 		
 		System.out.print("------------>>>EntrasaSalida:");
 		System.out.print("fechaFiltro="+fechaFiltro);
@@ -70,9 +74,9 @@ public class Tools {
 				continue;
 			}
 			System.out.print(es.getNt());
-			System.out.print("\t");
-			System.out.print(es.getS());
-			System.out.print("\t");
+			System.out.print("\t[");
+			System.out.print(es_esd.getS()==ES_ESD.STATUS_SYNC_LOCAL?"LOC":es_esd.getS()==ES_ESD.STATUS_SYNC_SENT?"ENV":es_esd.getS()==ES_ESD.STATUS_SYNC_ERROR?"ERR":"???");
+			System.out.print("]\t");
 			
 			int   fac = 1;
 			if(es.getTm()==Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA){

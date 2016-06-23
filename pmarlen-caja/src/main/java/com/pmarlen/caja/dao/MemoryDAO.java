@@ -631,9 +631,12 @@ public class MemoryDAO {
 					} else if( (paqueteSinc.getSyncDBStatus() & SyncDTOPackage.SYNC_FAIL_JDBC) == SyncDTOPackage.SYNC_FAIL_JDBC) {
 						logger.debug("readLocally:paqueteSinc=->SYNC_FAIL_JDBC:");
 					}
+                    ESFileSystemJsonDAO.resetFailedSent();
+                    ESFileSystemJsonDAO.persist();
 				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_OK) {
-					logger.debug("readLocally:paqueteSinc:->SYNC_OK");
-					ESFileSystemJsonDAO.reset();					
+					logger.debug("readLocally:paqueteSinc:->SYNC_OK, all List<es> -> SENT");
+					ESFileSystemJsonDAO.reset();
+                    ESFileSystemJsonDAO.persist();
 				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_EMPTY_TRANSACTION) {
 					logger.debug("readLocally:paqueteSinc:->SYNC_EMPTY_TRANSACTION");
 				}

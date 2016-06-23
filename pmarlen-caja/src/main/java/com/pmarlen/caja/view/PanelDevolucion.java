@@ -196,9 +196,11 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
         jPanel17.add(jPanel13);
 
-        jPanel9.setLayout(new javax.swing.BoxLayout(jPanel9, javax.swing.BoxLayout.Y_AXIS));
+        jPanel9.setPreferredSize(new java.awt.Dimension(30, 40));
+        jPanel9.setLayout(new javax.swing.BoxLayout(jPanel9, javax.swing.BoxLayout.LINE_AXIS));
 
         devolver.setText(">");
+        devolver.setMargin(new java.awt.Insets(2, 2, 2, 2));
         jPanel9.add(devolver);
 
         jPanel17.add(jPanel9);
@@ -262,7 +264,7 @@ public class PanelDevolucion extends javax.swing.JPanel {
 
         motivoDev.setColumns(15);
         motivoDev.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        motivoDev.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        motivoDev.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         jPanel18.add(motivoDev);
 
         jPanel5.add(jPanel18);

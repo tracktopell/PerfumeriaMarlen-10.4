@@ -591,10 +591,10 @@ public class FramePrincipal extends javax.swing.JFrame {
 			statusConeccion.setText("DATOS DESCARGADOS");
 		} else if(s == MemoryDAO.SYNC_STATE_READ ) {
 			statusConeccion.setBackground(Color.GREEN);
-			statusConeccion.setText("EN LINEA / DATOS");
+			statusConeccion.setText("EN LINEA / REC. DATOS");
 		} else if(s == MemoryDAO.SYNC_STATE_IMLIVE ) {
 			statusConeccion.setBackground(Color.GREEN);
-			statusConeccion.setText("EN LINEA / REGISTRO");
+			statusConeccion.setText("EN LINEA / REGISTRADO");
 		} else if(s == MemoryDAO.SYNC_STATE_SERVER_4XX ) {
 			statusConeccion.setBackground(Color.RED);
 			statusConeccion.setText("ERROR SERV 4XX");
@@ -614,7 +614,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 			statusConeccion.setBackground(Color.GRAY);
 			statusConeccion.setText("ERROR ???");
 		}
-		String serverContext= "CONECTADO A ["+MemoryDAO.getServerContext()+"] STATUS:"+s;
+		String serverContext= "CONECTADO A ["+MemoryDAO.getServerContext()+"]";
 		statusConeccion.setToolTipText(serverContext);				
 	}
 	

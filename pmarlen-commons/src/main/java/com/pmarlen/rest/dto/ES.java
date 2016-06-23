@@ -7,8 +7,10 @@ package com.pmarlen.rest.dto;
 
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
+import com.pmarlen.model.Constants;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import org.eclipse.jdt.internal.compiler.impl.Constant;
 
 /**
  *
@@ -449,4 +451,11 @@ public class ES implements Serializable{
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+    public String toShrotString() {
+        int ff=tm==Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA?1:-1;
+        return Constants.sdfLogFile.format(fc)+"\t"+nt+"\t"+(ff==1?"VENTA":"DEVOL")+"\t"+Constants.df2Decimal.format(tot*ff);
+    }
+    
+    
 }

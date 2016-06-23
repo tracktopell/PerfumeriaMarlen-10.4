@@ -61,7 +61,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 	private boolean estadoChecando = false;
 	private FramePrincipal framePrincipal = null;
 	private String ticketBuscar  = null;
-	
+    private double descOriginal = 0.0;
 	
 	public PanelDevolucionControl(PanelDevolucion panelDevolucion) {
 		this.panelDevolucion = panelDevolucion;
@@ -99,7 +99,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 	public void estadoInicial() {
 		
 		logger.debug("->estadoInicial()");
-		
+        descOriginal = 0.0;
 		this.detalleVentaTableItemList  =  new ArrayList<PedidoVentaDetalleTableItem> ();
 		this.detalleVentaTableItemList2 =  new ArrayList<PedidoVentaDetalleTableItem> ();
 
@@ -197,7 +197,6 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		} else if (e.getSource() == this.panelDevolucion.getTicket()) {
 			buscar_ActionPerformed();
 		}
-
 	}
 	
 	
@@ -374,11 +373,11 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 		logger.info("[USER]->devolver_ActionPerformed()");
 		int sr = panelDevolucion.getDetalleVentaJTable().getSelectedRow();
 		logger.debug("=>devolver_ActionPerformed:Selected:sr=" + sr);
-		if(sr != -1){
-			
+		if(sr != -1){			
 			PedidoVentaDetalleTableItem pvdDev = detalleVentaTableItemList.get(sr);
 			logger.debug("=>devolver_ActionPerformed:"+pvdDev.getPvd().getDev()+" < "+pvdDev.getPvd().getC()+" ?");
-			if(pvdDev.getPvd().getDev() < pvdDev.getPvd().getC() ){
+            
+            if(pvdDev.getPvd().getDev() < pvdDev.getPvd().getC() ){
 				PedidoVentaDetalleTableItem pvdiDR = null;
 				
 				for(PedidoVentaDetalleTableItem pvdiDX:detalleVentaTableItemList2){
@@ -391,7 +390,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 				if(pvdiDR == null){
 					pvdiDR = new PedidoVentaDetalleTableItem(pvdDev);
 					
-					pvdiDR.getPvd().setC(1);
+					pvdiDR.getPvd().setC(1);                    
 					pvdiDR.getPvd().setEsIdDev(pvdDev.getPvd().getId());
 					pvdiDR.getPvd().setDev(0);
 					
@@ -444,12 +443,17 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 				devolucion  = new ES_ESD();
 				devolucion.getEs().setPdc(pedidoVenta.getEs().getPdc());
 				devolucion.getEs().setPde(pedidoVenta.getEs().getPde());
-				logger.debug("buscarEnServidor(): ventaOrigen=\n"+pedidoVenta);
+				logger.debug("buscarEnServidor(): ventaOrigen="+pedidoVenta);
 				int idSuc = pedidoVenta.getEs().getS();
-				logger.debug("buscarEnServidor(): idSuc=\n"+idSuc);
+				logger.debug("buscarEnServidor(): idSuc="+idSuc);
 				devolucion.getEs().setS(idSuc);
 				devolucion.getEs().setTm(Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION);
 				devolucion.getEs().setEsDev(pedidoVenta.getEs().getId());
+                descOriginal = 0.0;
+                if(pedidoVenta.getEs().getPdc()+pedidoVenta.getEs().getPde() > 0){
+                    descOriginal = (pedidoVenta.getEs().getPdc()+pedidoVenta.getEs().getPde())/100.0;
+                    logger.debug("buscarEnServidor(): descOriginal="+descOriginal);
+                }
 				String sn = pedidoVenta.getEs().getSn();
 
 				if(sn != null && sn.contains(Constants.PM_SADECV)){
@@ -588,7 +592,7 @@ public class PanelDevolucionControl implements ActionListener, TableModelListene
 			}
 		}
 		
-		importeDesc = ((devolucion.getEs().getPdc() + devolucion.getEs().getPde()) * subTotal1ra ) /100.0;
+		importeDesc = descOriginal * subTotal1ra ;
 		total = subTotal - importeDesc;
 		
 		logger.info("renderTotalDev(): numProds="+numProds);

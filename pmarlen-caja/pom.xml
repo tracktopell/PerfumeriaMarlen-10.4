@@ -156,7 +156,7 @@
 									<fileset dir="${basedir}" includes="CorteCajaDTO*.json "/>
 									<fileset dir="${basedir}" includes="EntradaSalida*.json "/>
 									<fileset dir="${basedir}" includes="PML30-CAJA*"/>
-									<fileset dir="${basedir}" includes="P*.log"/>
+									<fileset dir="${basedir}" includes="PM*.log"/>
 									<fileset dir="${basedir}" includes="TICKET*.txt"/>
 									<fileset dir="${basedir}" includes="system.properties"/>
 								</delete>
@@ -198,15 +198,18 @@
 							<target>
 								<echo message="======================= preprare-bins-installer , in package phase, basedir=${basedir}, create ZIP for UPDATE ==============>>>"/>
 								<copy file="${project.build.directory}/${finalJar.filename}.jar" toFile="${project.build.directory}/${project.artifactId}.jar"/>
+                                <copy file="${project.build.directory}/${finalJar.filename}.jar" toFile="${staging.dir}/${project.artifactId}.jar"/>
 								<zip destfile="${project.build.directory}/update.zip">
 									<!-- -->
-									<zipfileset dir="${staging.dir}/dependency-jars"		prefix="dependency-jars/"	 includes="*.jar"/>
+									<zipfileset dir="${staging.dir}/dependency-jars"		prefix="dependency-jars/"	 includes="*.jar"/>                                    
 									<!-- -->
 									<zipfileset dir="${project.build.directory}/classes/"	includes="run*.*"/>
 									<zipfileset dir="${staging.dir}/../"					includes="${project.artifactId}.jar"/>
 									
 									<zipfileset dir="${basedir}/src/izpack"				includes="*.png"/>
 									<zipfileset dir="${basedir}/src/izpack"				includes="*.desktop"/>
+                                    <zipfileset dir="${basedir}/src/izpack"				includes="*.sh"/>
+                                    <zipfileset dir="${basedir}/src/izpack"				includes="*.cmd"/>
 									<zipfileset dir="${basedir}/src/izpack/resources"	prefix="resources/" includes="*.txt"/>									
 								</zip>
 										

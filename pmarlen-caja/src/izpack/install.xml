@@ -75,7 +75,10 @@
 			
             <parsable   targetfile="$INSTALL_PATH/run.sh"/>
 			<executable targetfile="$INSTALL_PATH/run.sh" os="unix" type="bin"/>
-			
+			<parsable   targetfile="$INSTALL_PATH/es.sh"/>
+			<executable targetfile="$INSTALL_PATH/es.sh" os="unix" type="bin"/>
+			<executable targetfile="$INSTALL_PATH/pmarlen-caja.desktop" os="unix" type="bin"/>
+            
 			<file src="L30_16x16_Ver2.png"   targetdir="$INSTALL_PATH"/>
 			<file src="L30_32x32_Ver2.png"   targetdir="$INSTALL_PATH"/>
 			<file src="L30_64x64_Ver2.png"   targetdir="$INSTALL_PATH"/>
@@ -92,7 +95,9 @@
 			
             <parsable   targetfile="$INSTALL_PATH/run.cmd"/>
 			<executable targetfile="$INSTALL_PATH/run.cmd" os="windows" type="bin"/>
-			<executable targetfile="$INSTALL_PATH/pmarlen-caja.desktop" os="unix" type="bin"/>
+			<parsable   targetfile="$INSTALL_PATH/es.cmd"/>
+			<executable targetfile="$INSTALL_PATH/es.cmd" os="windows" type="bin"/>
+			
 
             <!-- The file will be parsed -->
         </pack>

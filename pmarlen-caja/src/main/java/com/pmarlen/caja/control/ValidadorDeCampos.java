@@ -10,5 +10,5 @@ package com.pmarlen.caja.control;
  * @author alfredo
  */
 public interface ValidadorDeCampos {
-	void validate() throws ValidacionCamposException;
+	void validateNormal() throws ValidacionCamposException;
 }

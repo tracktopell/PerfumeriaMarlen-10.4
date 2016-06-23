@@ -63,4 +63,11 @@ public class ES_ESD implements Serializable{
 	public int getS() {
 		return s;
 	}
+
+    @Override
+    public String toString() {
+        return "ES_ESD{s="+s+",es="+es+",esd="+esdList+"}";
+    }
+    
+    
 }

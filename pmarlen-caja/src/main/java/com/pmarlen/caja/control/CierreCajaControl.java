@@ -3,14 +3,13 @@ package com.pmarlen.caja.control;
 import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.view.CierreCajaJFrame;
+import com.pmarlen.caja.view.TokenFrame;
 import com.pmarlen.model.Constants;
-import com.pmarlen.model.GeneradorDeToken;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.rest.dto.U;
 import java.awt.Color;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -44,6 +43,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	private String observaciones;
 	private boolean cierreCorrecto;
 	private boolean hayInconsistencia=false;
+    private boolean autorizadoPorToken=false;
 	public static final int OBSERVACIONES_MAX_LENGTH = 255;
 	
 	public CierreCajaControl(CierreCajaJFrame dialogLogin) {
@@ -53,6 +53,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		this.cierreCajaDialog.getCancelar().addActionListener(this);		
 		this.cierreCajaDialog.getLimpiar().addActionListener(this);
 		this.cierreCajaDialog.getValidar().addActionListener(this);
+        this.cierreCajaDialog.getSolicAut().addActionListener(this);
 	}
 
 	public CierreCajaJFrame getCierreCajaJFrame() {
@@ -60,6 +61,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	}
 	
 	public void estadoInicial(){
+        autorizadoPorToken=false;
 		saldoInicial  = ApplicationLogic.getInstance().getCorteCajaDTO().getSaldoInicial().doubleValue();
 		//saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getRemoteSaldoFinalEstimado();
 		saldoEstimado = saldoInicial;
@@ -74,7 +76,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		cierreCajaDialog.getAceptar().setEnabled(false);
 		
 		saldoEstimado = saldoInicial;
-		buscarSaldoFinalEstimado();
+		//buscarSaldoFinalEstimado();
 		saldoNeto     = saldoEstimado - saldoInicial;
 		cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
 		cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));
@@ -86,8 +88,12 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		
 		cierreCajaDialog.getUsuarioAutorizo().setModel(getAdministradores());
 		enfocarSaldoFinal();
+        
+        cierreCajaDialog.getAutorizado().setText("No se ha solicitado Autorización");
+        cierreCajaDialog.getAutorizado().setForeground(Color.GRAY);
+        
 		cierreCajaDialog.setVisible(true);
-		
+        
 	}
 	
 	private void enfocarSaldoFinal() {
@@ -111,22 +117,27 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	}
 	private double  totalVentas       = 0.0;
 	private double  totalDevoluciones = 0.0;
+    
+    private static  boolean serachLocal = false;
+    
 	private void buscarSaldoFinalEstimado(){
 		logger.debug("buscarSaldoFinalEstimado: -->> new Thread().start()");
-		new Thread("RemoteSaldoEstimado"){
+		new Thread("RemoteSaldoEstimado:(serachLocal?"+serachLocal+")"){
 			public void run(){
 				try {
 					final CorteCajaDTO aperturaCajaDTO = MemoryDAO.readLastSavedCorteCajaDTO();
-					logger.debug("buscarSaldoFinalEstimado: [LOCAL] corteCajaDTO="+aperturaCajaDTO);
+					logger.debug("buscarSaldoFinalEstimado: ("+serachLocal+")corteCajaDTO="+aperturaCajaDTO);
 					
-					if(aperturaCajaDTO != null){
-						logger.debug("buscarSaldoFinalEstimado: [LOCAL] searching :");
+					if(aperturaCajaDTO != null && serachLocal){
+						logger.debug("buscarSaldoFinalEstimado: [LOCAL] searching : aperturaCajaDTO="+aperturaCajaDTO);
 						final ArrayList<ES_ESD> esList = ESFileSystemJsonDAO.getEsList();
+                        logger.debug("buscarSaldoFinalEstimado: [LOCAL] esList.size()="+esList.size());
 						double ttX = 0.0;
 						totalVentas       = 0.0;
 						totalDevoluciones = 0.0;
 	
 						for(ES_ESD esesd: esList){
+                            logger.debug("buscarSaldoFinalEstimado: [LOCAL] \t"+esesd.getEs().toShrotString());
 							if(esesd.getEs().getFc()>=aperturaCajaDTO.getFecha()){
 								final ES es = esesd.getEs(); 
 								final int tm=es.getTm();
@@ -143,7 +154,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 								}
 								
 								ttX += rxTx;
-								logger.debug("\tbuscarSaldoFinalEstimado: [LOCAL] + "+rxTx);
+								logger.debug("\tbuscarSaldoFinalEstimado: [LOCAL] \t\t+ "+rxTx);
 							}
 						}
 						logger.debug("buscarSaldoFinalEstimado:  [LOCAL] Suma:"+ttX);
@@ -189,7 +200,9 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 			cancelar_ActionPerformed();
 		} else if (e.getSource() == cierreCajaDialog.getLimpiar()) {
 			limpiar_ActionPerformed();
-		}		
+		} else if(e.getSource() == cierreCajaDialog.getSolicAut()){
+            solicAut_ActionPerformed();
+        }
 	}
 	
 	private void aceptar_ActionPerformed(){
@@ -207,7 +220,13 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	private boolean validateAll() {
 		JComponent componentWithError;
 		try {
-			validate();
+			validateNormal();
+            if(hayInconsistencia){
+                validateInconsistencias();
+                if(autorizadoPorToken){
+                    throw new ValidacionCamposException("Debe Solicitar Autorización por TOKEN",cierreCajaDialog.getSolicAut());
+                }
+            }
 		} catch (ValidacionCamposException ve) {
 			componentWithError = ve.getSource();
 			if (componentWithError != null) {
@@ -297,10 +316,8 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		cierreCajaDialog.setFont(new java.awt.Font("Tahoma", 0, 24));
 	}
 
-	@Override
-	public void validate() throws ValidacionCamposException {
-		String saldoFinalValue = cierreCajaDialog.getSaldoFinal().getText().replace("$", "").replace(",", "").trim();
-		hayInconsistencia=false;
+	public void validateNormal() throws ValidacionCamposException {
+		String saldoFinalValue = cierreCajaDialog.getSaldoFinal().getText().replace("$", "").replace(",", "").trim();		
 		try {
 			saldoFinal = Double.parseDouble(saldoFinalValue);		
 		} catch(NumberFormatException nfe){
@@ -335,32 +352,40 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 			}
 			
 			setEnableAnormalControls(true);
-			cierreCajaDialog.getCierreAnormalPanel().setVisible(true);
-			
-			if( cierreCajaDialog.getJustificacion().getText().trim().length() < 10) {
-				throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN COHERENTE DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getJustificacion());
-			} else {				
-				observaciones = cierreCajaDialog.getJustificacion().getText().trim();
-				
-				if(observaciones.length() > 0 ){
-					if(observaciones.length() > OBSERVACIONES_MAX_LENGTH) {
-						observaciones = observaciones.substring(0, OBSERVACIONES_MAX_LENGTH-3)+"...";
-					} else if(observaciones.length() <= 10) {
-						throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN CON COHERENCIA Y EXPLICITA, NO PUEDE SER UNA(S) SIMPLE(S) PALABRA(S)", cierreCajaDialog.getJustificacion());	
-					}
-				} else {
-					throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA, NO PUEDE QUEDAR EN BLANCO ", cierreCajaDialog.getJustificacion());	
-				}
-			}
-			
-			if(grave){				
-				if(cierreCajaDialog.getUsuarioAutorizo().getSelectedIndex()==0){
-					throw new ValidacionCamposException("DEBE ELEGIR QUIÉN AUTORIZARÁ", cierreCajaDialog.getUsuarioAutorizo());	
-				}				
-			}
+            
+			hayInconsistencia=true;
 		} else {
+            hayInconsistencia=false;
 			setEnableAnormalControls(false);
 		}
+	}
+    
+    public void validateInconsistencias() throws ValidacionCamposException {
+		String saldoFinalValue = cierreCajaDialog.getSaldoFinal().getText().replace("$", "").replace(",", "").trim();		
+			
+        if( cierreCajaDialog.getJustificacion().getText().trim().length() < 10) {
+            cierreCajaDialog.getJustificacion().setEnabled(true);
+            throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN COHERENTE DE LA DIFERENCIA Y PEDIR AUTORIZACIÓN", cierreCajaDialog.getJustificacion());
+        } else {				
+            observaciones = cierreCajaDialog.getJustificacion().getText().trim();
+
+            if(observaciones.length() > 0 ){
+                if(observaciones.length() > OBSERVACIONES_MAX_LENGTH) {
+                    observaciones = observaciones.substring(0, OBSERVACIONES_MAX_LENGTH-3)+"...";
+                } else if(observaciones.length() <= 10) {
+                    cierreCajaDialog.getJustificacion().setEnabled(true);
+                    throw new ValidacionCamposException("DEBE ESCRIBIR UNA RAZÓN CON COHERENCIA Y EXPLICITA, NO PUEDE SER UNA(S) SIMPLE(S) PALABRA(S)", cierreCajaDialog.getJustificacion());	
+                    
+                }
+            } else {
+                cierreCajaDialog.getJustificacion().setEnabled(true);
+                throw new ValidacionCamposException("DEBE ESCRIBIR LA RAZÓN DE LA DIFERENCIA, NO PUEDE QUEDAR EN BLANCO ", cierreCajaDialog.getJustificacion());	
+            }
+        }
+        
+        if(cierreCajaDialog.getUsuarioAutorizo().getSelectedIndex()==0){
+            throw new ValidacionCamposException("DEBE ELEGIR QUIÉN AUTORIZARÁ", cierreCajaDialog.getUsuarioAutorizo());	
+        }
 	}
 
 	private void 	saldoFinal_focusLost() {
@@ -413,6 +438,25 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	private void limpiar_ActionPerformed() {
 		estadoInicial();
 	}
-	
+
+    private void solicAut_ActionPerformed() {
+        autorizadoPorToken=false;
+   		TokenFrame tf = new TokenFrame(FramePrincipalControl.getInstance().getFramePrincipal());
+		
+		tf.setVisible(true);
+		
+		if(tf.isAccepted()){
+            autorizadoPorToken = true;
+			logger.debug("terminar_ActionPerformed: Se autorizo.");
+            cierreCajaDialog.getAutorizado().setText("OK, AUTORIZADO POR TOKEN");
+            cierreCajaDialog.getAutorizado().setForeground(Color.GREEN);
+            cierreCajaDialog.getSolicAut().setEnabled(false);
+            cierreCajaDialog.getAceptar().setEnabled(true);
+            cierreCajaDialog.getJustificacion().setEnabled(false);
+		} else {
+            cierreCajaDialog.getAutorizado().setText("AUTORIZACIÓN INCORRECTA, REINTENTE");
+            cierreCajaDialog.getAutorizado().setForeground(Color.RED);
+        }
+    }
 	
 }

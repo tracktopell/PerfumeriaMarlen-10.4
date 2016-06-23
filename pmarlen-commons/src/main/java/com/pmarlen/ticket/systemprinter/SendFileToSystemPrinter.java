@@ -34,8 +34,7 @@ public class SendFileToSystemPrinter {
 
 	private static Logger logger = Logger.getLogger(SendFileToSystemPrinter.class.getSimpleName());
 
-	public static void printFile(String file) throws IOException {
-		logger.debug("==========================================================");
+	public static void printFile(String file) throws IOException {		
 		logger.debug("printFile:file="+file);
 		FileInputStream textstream = null;
 		try {
@@ -57,18 +56,18 @@ public class SendFileToSystemPrinter {
 		if(printServices != null){
 			for (PrintService ps : printServices) {
 				boolean servieSelected= ps.equals(defaultPrintService);
-				logger.debug("\tprintFile: Printer["+i+"]: " +(servieSelected?" -> ":"    ")+ps.getName()); 
+				logger.trace("\tprintFile: Printer["+i+"]: " +(servieSelected?" -> ":"    ")+ps.getName()); 
 				i++;
 				DocFlavor[] supportedDocFlavors = ps.getSupportedDocFlavors();
 				int j=0;
-				logger.debug("\t\tprintFile:supportedDocFlavors:"+supportedDocFlavors);
+				logger.trace("\t\tprintFile:supportedDocFlavors:"+supportedDocFlavors);
 				if(supportedDocFlavors!=null){
 					for(DocFlavor df: supportedDocFlavors){
 						boolean likeMyFlavor=false;
 						if(df.getMimeType().equalsIgnoreCase(theFlavor.getMimeType())){
 							likeMyFlavor = true;
 						}
-						logger.debug("\t\tprintFile:supportedDocFlavors["+j+"]: "+(likeMyFlavor?"-> ":"   ")+"MimeType="+df.getMimeType()+", MediaType="+df.getMediaType()+", MediaSubtype="+df.getMediaSubtype());
+						logger.trace("\t\tprintFile:supportedDocFlavors["+j+"]: "+(likeMyFlavor?"-> ":"   ")+"MimeType="+df.getMimeType()+", MediaType="+df.getMediaType()+", MediaSubtype="+df.getMediaSubtype());
 						if(likeMyFlavor && servieSelected){
 							otherFlavor = df;
 						}
@@ -77,13 +76,13 @@ public class SendFileToSystemPrinter {
 				}
 			}
 		}		
-		logger.debug("printFile:flavors.... ? ");
+		logger.trace("printFile:flavors.... ? ");
 		if(defaultPrintService!=null && !defaultPrintService.isDocFlavorSupported(theFlavor) && otherFlavor!=null){
-			logger.debug("printFile:not defaultPrintService.isDocFlavorSupported("+theFlavor+"): Dam it !! , changing the flavor to:"+otherFlavor);
+			logger.trace("printFile:not defaultPrintService.isDocFlavorSupported("+theFlavor+"): Dam it !! , changing the flavor to:"+otherFlavor);
 			if(!defaultPrintService.isDocFlavorSupported(otherFlavor)){
-				logger.debug("printFile: no defaultPrintService.isDocFlavorSupported("+otherFlavor+"): Dam it !! , changing the flavor to:"+binFlavor);
+				logger.trace("printFile: no defaultPrintService.isDocFlavorSupported("+otherFlavor+"): Dam it !! , changing the flavor to:"+binFlavor);
 				if(!defaultPrintService.isDocFlavorSupported(binFlavor)){
-					logger.debug("printFile: no defaultPrintService.isDocFlavorSupported("+binFlavor+"): Dam it !!   :(   WE CAN'T PRINT ");
+					logger.trace("printFile: no defaultPrintService.isDocFlavorSupported("+binFlavor+"): Dam it !!   :(   WE CAN'T PRINT ");
 				} else {
 					theFlavor = binFlavor;
 				}
@@ -93,11 +92,11 @@ public class SendFileToSystemPrinter {
 		
 		
 			DocPrintJob job = defaultPrintService.createPrintJob();
-			logger.debug("printFile:job="+job);
+			logger.trace("printFile:job="+job);
 			// Set the document type
 			// Create a Doc
 			Doc myDoc = new SimpleDoc(textstream, theFlavor, null);
-			logger.debug("printFile:myDoc="+myDoc);
+			logger.trace("printFile:myDoc="+myDoc);
 
 			try {
 				PrintRequestAttributeSet printAtt = new HashPrintRequestAttributeSet();
@@ -106,16 +105,16 @@ public class SendFileToSystemPrinter {
 				printAtt.add(new JobName("JAVA_PRINTJOB_"+sdf.format(today),Locale.getDefault())); 
 				MyPrintListener pl = new MyPrintListener();
 				job.addPrintJobListener(pl);
-				logger.debug("printFile: ["+defaultPrintService.getName()+"] before print, with flavor:"+theFlavor);
+				logger.trace("printFile: ["+defaultPrintService.getName()+"] before print, with flavor:"+theFlavor);
 				job.print(myDoc, printAtt);
-				logger.debug("printFile:after print");
+				logger.trace("printFile:after print");
 				try {
 					while(pl.jobRunning){
 						Thread.sleep(1000L);
-						logger.debug("printFile:...waiting 1 sec.");
+						logger.trace("printFile:...waiting 1 sec.");
 					}
 				}catch(InterruptedException ie){
-					logger.debug("printFile: ie:"+ie.getMessage());
+					logger.trace("printFile: ie:"+ie.getMessage());
 				}
 			} catch (PrintException pe) {
 				logger.error("printFile:", pe);
@@ -133,36 +132,36 @@ public class SendFileToSystemPrinter {
 		
 		@Override
 		public void printDataTransferCompleted(PrintJobEvent pje) {
-			logger.debug("printDataTransferCompleted:pje"+pje);
+			logger.trace("printDataTransferCompleted:pje"+pje);
 			jobRunning = false;
 		}
 
 		@Override
 		public void printJobCanceled(PrintJobEvent pje) {
-			logger.debug("printJobCanceled:pje"+pje);
+			logger.trace("printJobCanceled:pje"+pje);
 			jobRunning = false;
 		}
 
 		@Override
 		public void printJobCompleted(PrintJobEvent pje) {
-			logger.debug("printJobCompleted:pje"+pje);
+			logger.trace("printJobCompleted:pje"+pje);
 			jobRunning = false;
 		}
 
 		@Override
 		public void printJobFailed(PrintJobEvent pje) {
-			logger.debug("printJobFailed:pje"+pje);
+			logger.trace("printJobFailed:pje"+pje);
 			jobRunning = false;
 		}
 
 		@Override
 		public void printJobNoMoreEvents(PrintJobEvent pje) {
-			logger.debug("printJobNoMoreEvents:pje"+pje);
+			logger.trace("printJobNoMoreEvents:pje"+pje);
 		}
 
 		@Override
 		public void printJobRequiresAttention(PrintJobEvent pje) {
-			logger.debug("printJobRequiresAttention:pje"+pje);
+			logger.trace("printJobRequiresAttention:pje"+pje);
 		}
 	}
 

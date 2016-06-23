@@ -6,6 +6,8 @@
 package com.pmarlen.caja.view;
 
 import java.awt.Frame;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -67,7 +69,9 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jPanel7 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         usuarioAutorizo = new javax.swing.JComboBox();
+        solicAut = new javax.swing.JButton();
         jPanel10 = new javax.swing.JPanel();
+        autorizado = new javax.swing.JLabel();
 
         setTitle("CIERRE DE CAJA");
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.X_AXIS));
@@ -153,7 +157,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("SALDO TOTAL ENTREGADO:");
+        jLabel3.setText("SALDO A ENTREGAR:");
         jLabel3.setPreferredSize(new java.awt.Dimension(430, 32));
         jPanel3.add(jLabel3);
 
@@ -230,9 +234,19 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         usuarioAutorizo.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jPanel7.add(usuarioAutorizo);
 
+        solicAut.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        solicAut.setText("AUT.");
+        jPanel7.add(solicAut);
+
         cierreAnormalPanel.add(jPanel7);
 
-        jPanel10.setLayout(new javax.swing.BoxLayout(jPanel10, javax.swing.BoxLayout.Y_AXIS));
+        autorizado.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        autorizado.setForeground(new java.awt.Color(153, 153, 153));
+        autorizado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        autorizado.setText("No se ha solicitado Autorización");
+        autorizado.setPreferredSize(new java.awt.Dimension(800, 35));
+        jPanel10.add(autorizado);
+
         cierreAnormalPanel.add(jPanel10);
 
         panelsParametros.addTab("INCONSISTENCIAS", cierreAnormalPanel);
@@ -247,6 +261,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aceptar;
+    private javax.swing.JLabel autorizado;
     private javax.swing.JButton cancelar;
     private javax.swing.JPanel cierreAnormalPanel;
     private javax.swing.JPanel cierreNormalPanel;
@@ -280,6 +295,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
     private javax.swing.JLabel resultadoToken;
     private javax.swing.JTextField saldoFinal;
     private javax.swing.JTextField saldoInicial;
+    private javax.swing.JButton solicAut;
     private javax.swing.JComboBox usuarioAutorizo;
     private javax.swing.JButton validar;
     // End of variables declaration//GEN-END:variables
@@ -376,5 +392,12 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
 	public javax.swing.JButton getValidar() {
 		return validar;
 	}
-	
+
+    public JButton getSolicAut() {
+        return solicAut;
+    }
+
+    public JLabel getAutorizado() {
+        return autorizado;
+    }
 }

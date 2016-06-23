@@ -43,4 +43,11 @@ public class SyncDTORequest implements Serializable{
 	public void setEscdList(List<ES_ESD> escdList) {
 		this.escdList = escdList;
 	}
+
+    @Override
+    public String toString() {
+        return "SyncDTORequest{escdList.size()="+escdList+"}";
+    }
+    
+    
 }

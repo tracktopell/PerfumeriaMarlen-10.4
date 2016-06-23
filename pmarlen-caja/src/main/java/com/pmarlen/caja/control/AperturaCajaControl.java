@@ -74,7 +74,7 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 	private boolean validateAll() {
 		JComponent componentWithError;
 		try {
-			validate();
+			validateNormal();
 		} catch (ValidacionCamposException ve) {
 			componentWithError = ve.getSource();
 			if (componentWithError != null) {
@@ -130,7 +130,7 @@ public class AperturaCajaControl implements ActionListener , FocusListener, Vali
 	}
 
 	@Override
-	public void validate() throws ValidacionCamposException {
+	public void validateNormal() throws ValidacionCamposException {
 		String saldoInicialValue = aperturaCajaDialog.getSaldoInicial().getText().replace("$", "").replace(",", "").trim();
 		
 		try {

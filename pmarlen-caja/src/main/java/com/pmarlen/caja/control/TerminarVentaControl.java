@@ -160,7 +160,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	private boolean validateAll() {
 		JComponent componentWithError;
 		try {
-			validate();
+			validateNormal();
 		} catch (ValidacionCamposException ve) {
 			componentWithError = ve.getSource();
 			if (componentWithError != null) {
@@ -237,7 +237,7 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 	}
 
 	@Override
-	public void validate() throws ValidacionCamposException {
+	public void validateNormal() throws ValidacionCamposException {
 		
 		logger.debug("validate:==>>Total a PAGAR:"+ventaSesion.getTotal());
 		
