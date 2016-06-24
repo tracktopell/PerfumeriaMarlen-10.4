@@ -146,7 +146,7 @@ public class CierreCajaJFrame extends javax.swing.JDialog {
         jPanel4.add(jLabel4);
 
         estimado.setEditable(false);
-        estimado.setColumns(18);
+        estimado.setColumns(6);
         estimado.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         estimado.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel4.add(estimado);

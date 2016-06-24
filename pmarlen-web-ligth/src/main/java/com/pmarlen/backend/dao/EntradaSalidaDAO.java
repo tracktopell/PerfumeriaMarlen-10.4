@@ -1108,7 +1108,8 @@ public class EntradaSalidaDAO {
 			rsX.close();
 			psX.close();
 			if(countTicket > 0){
-				throw new DAOException("NUMERO_TICKET=" + x.getNumeroTicket()+ " EXISTE (COUNT="+countTicket+")");
+				//throw new DAOException("NUMERO_TICKET=" + x.getNumeroTicket()+ " EXISTE (COUNT="+countTicket+")");
+				return -1;
 			}
 			
 			//Timestamp now = new Timestamp(System.currentTimeMillis());

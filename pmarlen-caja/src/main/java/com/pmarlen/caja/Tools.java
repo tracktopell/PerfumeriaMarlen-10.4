@@ -33,7 +33,7 @@ public class Tools {
 		}
 		
 		if(fileName == null){
-			System.err.println("Usage: java -cp xx.jar com.pmarlen.caja.Tools -jsonFile=PathToJsonFile  -fechaFiltro=AAAAMMDD");
+			System.err.println("Usage: java -cp xx.jar com.pmarlen.caja.Tools -jsonFile=EntradaSalida.json  -fechaFiltro=AAAAMMDD");
 			System.exit(1);
 		}
 		

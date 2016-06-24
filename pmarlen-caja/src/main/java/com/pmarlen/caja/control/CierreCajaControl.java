@@ -176,7 +176,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 					}
 					cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
 					cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));
-					cierreCajaDialog.getSaldoFinal().setText(Constants.df2Decimal.format(saldoNeto));
+					cierreCajaDialog.getSaldoFinal().setText(Constants.df2Decimal.format(saldoEstimado));
 				}catch(IOException ioe){
 					logger.error("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:: error al consultar el saldo.", ioe);
 					JOptionPane.showMessageDialog(cierreCajaDialog, "NO SE PUEDE OBTENER EL SALDO FINAL ESTIMADO", "CIERRE CAJA", JOptionPane.ERROR_MESSAGE);
@@ -432,7 +432,11 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	}
 
 	private void validar_ActionPerformed() {
-		validateAll();
+		if(validateAll()) {
+			cierreCajaDialog.getAceptar().setEnabled(true);
+		} else {
+			cierreCajaDialog.getAceptar().setEnabled(false);
+		}
 	}
 
 	private void limpiar_ActionPerformed() {

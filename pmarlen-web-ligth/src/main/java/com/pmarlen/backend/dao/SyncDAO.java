@@ -117,8 +117,8 @@ public class SyncDAO {
 					}
 					logger.debug("syncTransaction:\tprepare for insertPedidoVentaSucursal:");
 					s.processingES(indexProccessing++);
-					EntradaSalidaDAO.getInstance().insertEntradaSalidaSucursal(conn,es,esdList);
-					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:");
+					int r=EntradaSalidaDAO.getInstance().insertEntradaSalidaSucursal(conn,es,esdList);
+					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:r="+r);
 				}
 				
 				for(ES_ESD escd: escdListDevs){
@@ -139,8 +139,8 @@ public class SyncDAO {
 					}
 					logger.debug("syncTransaction:\tprepare for insertPedidoVentaSucursal: DEVOLUCIONES");
 					s.processingES(indexProccessing++);
-					EntradaSalidaDAO.getInstance().insertEntradaSalidaSucursal(conn,es,esdList);
-					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:");
+					int r=EntradaSalidaDAO.getInstance().insertEntradaSalidaSucursal(conn,es,esdList);
+					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:r="+r);
 				}
 				
 				
