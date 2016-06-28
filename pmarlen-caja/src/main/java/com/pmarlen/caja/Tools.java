@@ -2,10 +2,10 @@ package com.pmarlen.caja;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.pmarlen.backend.model.CorteCaja;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ES_ESD;
-import com.pmarlen.rest.dto.SyncDTOPackage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,28 +21,31 @@ import org.apache.log4j.Logger;
 public class Tools {
 	private static Logger logger = Logger.getLogger(Tools.class.getName());
 	public static void main(String[] args) {
-		String fileName = null;
+		String pathToEntradaSalidaJsonFile = null;
+		String pathToCorteCajaJsonFile = null;
 		String fechaFiltro = null;
 		for(String arg: args){
 			String[] argVal = arg.split("=");
-			if(argVal[0].startsWith("-jsonFile")){
-				fileName = argVal[1];
-			} else if(argVal[0].startsWith("-fechaFiltro")){
+			if(argVal[0].startsWith("-ES")){
+				pathToEntradaSalidaJsonFile = argVal[1];
+			} else if(argVal[0].startsWith("-CC")){
+				pathToCorteCajaJsonFile     = argVal[1];
+			} else if(argVal[0].startsWith("-FF")){
 				fechaFiltro = argVal[1];
 			}
 		}
 		
-		if(fileName == null){
-			System.err.println("Usage: java -cp xx.jar com.pmarlen.caja.Tools -jsonFile=EntradaSalida.json  -fechaFiltro=AAAAMMDD");
+		if(pathToEntradaSalidaJsonFile == null){
+			System.err.println("Usage: java -cp xx.jar com.pmarlen.caja.Tools -ES=EntradaSalida.json -CC=CorteCaja.json -FF=AAAAMMDD");
 			System.exit(1);
 		}
 		
 		InputStream is = null;
 		File fileToLoad = null;
 		ArrayList<ES_ESD> esList = new ArrayList<ES_ESD>();
-		fileToLoad = new File(fileName);
+		fileToLoad = new File(pathToEntradaSalidaJsonFile);
 		if(fileToLoad.exists() ){
-			logger.debug("load:File found:"+fileName);
+			logger.debug("load:File found:"+pathToEntradaSalidaJsonFile);
 			Gson gson=new Gson();
 			try {
 				FileReader fr = new FileReader(fileToLoad);
@@ -57,10 +60,9 @@ public class Tools {
 				System.exit(2);
 			}
 		} else {
-            System.err.println("Archivo:"+fileName+", Error al abrir.");
+            System.err.println("Archivo:"+pathToEntradaSalidaJsonFile+", Error al abrir.");
 			System.exit(3);
         }
-		
 		System.out.print("------------>>>EntrasaSalida:");
 		System.out.print("fechaFiltro="+fechaFiltro);
 		System.out.println();
@@ -95,8 +97,29 @@ public class Tools {
 			System.out.println();
 		}
 		System.out.println("\tTot="+Constants.df2Decimal.format(tot));
-		
+		if(pathToCorteCajaJsonFile != null){
+			is = null;
+			fileToLoad = null;
+			CorteCaja cc=  null;
+			fileToLoad = new File(pathToCorteCajaJsonFile);
+			if(fileToLoad.exists() ){
+				logger.debug("load:CorteCaja:File found:"+pathToEntradaSalidaJsonFile);
+				Gson gson=new Gson();
+				try {
+					FileReader fr = new FileReader(fileToLoad);
+					logger.debug("\tReading:");
 
+					cc = gson.fromJson(fr, new TypeToken<CorteCaja>(){}.getType());
+					logger.debug("\t\tRead:CorteCaja="+cc);								
+				}catch(IOException ioe){
+					logger.error("load, fail:",ioe);
+					System.exit(4);
+				}
+			} else {
+				System.err.println("Archivo:"+pathToCorteCajaJsonFile+", Error al abrir.");
+				System.exit(5);
+			}
+		}
 	}
 	
 }
