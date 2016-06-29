@@ -436,11 +436,10 @@ public class ApplicationLogic {
 			} else {
 				getCorteCajaDTO().setSaldoInicial(lastSavedCC.getSaldoInicial());
 				getCorteCajaDTO().setSaldoFinal  (lastSavedCC.getSaldoFinal());		
-			}
-			getCorteCajaDTO().setTipoEvento(lastSavedCC.getTipoEvento());
+			}			
 		}
 
-		//getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AP_INICIADA);
+		getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AP_INICIADA);
 		
 		if(logged!=null) {
 			getCorteCajaDTO().setUsuarioEmail(logged.getE());

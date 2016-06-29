@@ -1,5 +1,6 @@
 package com.pmarlen.caja.control;
 
+import com.google.zxing.FormatException;
 import com.pmarlen.caja.dao.ESFileSystemJsonDAO;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.view.CierreCajaJFrame;
@@ -16,7 +17,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
@@ -118,15 +121,23 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	private double  totalVentas       = 0.0;
 	private double  totalDevoluciones = 0.0;
     
-    private static  boolean serachLocal = false;
+    private static  boolean serachLocal = true;
     
 	private void buscarSaldoFinalEstimado(){
 		logger.debug("buscarSaldoFinalEstimado: -->> new Thread().start()");
 		new Thread("RemoteSaldoEstimado:(serachLocal?"+serachLocal+")"){
 			public void run(){
 				try {
-					final CorteCajaDTO aperturaCajaDTO = MemoryDAO.readLastSavedCorteCajaDTO();
+					final CorteCajaDTO aperturaCajaDTO = MemoryDAO.readLastSavedCorteCajaDTOApertura();
 					logger.debug("buscarSaldoFinalEstimado: ("+serachLocal+")corteCajaDTO="+aperturaCajaDTO);
+					SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+					Date beginingDay = null;
+					try{
+						beginingDay = sdfDate.parse(sdfDate.format(new Date()));
+					}catch(ParseException ex){
+						beginingDay = new Date();
+					}
+					logger.debug("buscarSaldoFinalEstimado: beginingDay="+Constants.sdfLogTS.format(beginingDay));
 					
 					if(aperturaCajaDTO != null && serachLocal){
 						logger.debug("buscarSaldoFinalEstimado: [LOCAL] searching : aperturaCajaDTO="+aperturaCajaDTO);
@@ -138,7 +149,7 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	
 						for(ES_ESD esesd: esList){
                             logger.debug("buscarSaldoFinalEstimado: [LOCAL] \t"+esesd.getEs().toShrotString());
-							if(esesd.getEs().getFc()>=aperturaCajaDTO.getFecha()){
+							if(esesd.getEs().getFc()>=aperturaCajaDTO.getFecha() && esesd.getEs().getFc() >= beginingDay.getTime()){
 								final ES es = esesd.getEs(); 
 								final int tm=es.getTm();
 								int add = 0;
@@ -160,12 +171,14 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 						logger.debug("buscarSaldoFinalEstimado:  [LOCAL] Suma:"+ttX);
 						
 						saldoEstimado = ttX;
-						saldoNeto     = saldoEstimado + saldoInicial;
+						saldoNeto      = saldoEstimado + saldoInicial;
+						saldoFinal     = saldoEstimado;
 						
 						logger.debug("buscarSaldoFinalEstimado[LOCAL]:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
 					} else {					
 						saldoEstimado = ApplicationLogic.getInstance().getRemoteSaldoFinalEstimado();
-						saldoNeto     = saldoEstimado + saldoInicial;
+						saldoNeto      = saldoEstimado + saldoInicial;
+						saldoFinal     = saldoEstimado;
 						logger.debug("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:saldoInicial="+saldoInicial+", saldoEstimado="+saldoEstimado+", saldoNeto="+saldoNeto);
 					}
 					
@@ -174,9 +187,11 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 					} else {
 						cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
 					}
-					cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));
+					
 					cierreCajaDialog.getNeto().setText(Constants.df2Decimal.format(saldoNeto));
-					cierreCajaDialog.getSaldoFinal().setText(Constants.df2Decimal.format(saldoEstimado));
+					cierreCajaDialog.getEstimado().setText(Constants.df2Decimal.format(saldoEstimado));					
+					cierreCajaDialog.getSaldoFinal().setText(Constants.df2Decimal.format(saldoFinal));
+					
 				}catch(IOException ioe){
 					logger.error("buscarSaldoFinalEstimado[RemoteSaldoEstimado]:: error al consultar el saldo.", ioe);
 					JOptionPane.showMessageDialog(cierreCajaDialog, "NO SE PUEDE OBTENER EL SALDO FINAL ESTIMADO", "CIERRE CAJA", JOptionPane.ERROR_MESSAGE);

@@ -113,14 +113,15 @@ public class DialogLoginControl implements ActionListener , FocusListener{
 			if(lastSavedCC == null ) {
 				ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AUTENTICADO);
 			} else {
-				if(lastSavedCC.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA){
-					ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_APERTURA);
-					ApplicationLogic.getInstance().getCorteCajaDTO().setSaldoInicial(lastSavedCC.getSaldoInicial());
-					logger.debug("autheticate: SE INICIO , RECUPERANDO DE SESION ABIERTA ("+lastSavedCC.getUsuarioEmail()+") y Entro:"+logged.getE());
-				} else {
+//				if(lastSavedCC.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA){
+//					ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_APERTURA);
+//					ApplicationLogic.getInstance().getCorteCajaDTO().setSaldoInicial(lastSavedCC.getSaldoInicial());
+//					logger.debug("autheticate: SE INICIO , RECUPERANDO DE SESION ABIERTA ("+lastSavedCC.getUsuarioEmail()+") y Entro:"+logged.getE());
+//				} else {
 					ApplicationLogic.getInstance().getCorteCajaDTO().setTipoEvento(Constants.TIPO_EVENTO_AUTENTICADO);
-					logger.debug("autheticate: SE INICIO , PERO NUNCA SE AUNTENTICO ANTERIORMENTE");
-				}
+					logger.debug("autheticate: SE AUTENTICO");
+//					logger.debug("autheticate: SE INICIO , PERO NUNCA SE AUNTENTICO ANTERIORMENTE");
+//				}
 			}
 			
 			MemoryDAO.saveCorteCajaDTO(ApplicationLogic.getInstance().getCorteCajaDTO());

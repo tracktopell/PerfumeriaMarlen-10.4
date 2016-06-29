@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,6 +39,8 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -61,6 +64,7 @@ public class MemoryDAO {
 	private static boolean enviandoCierreCaja         = false;
 	private static boolean enviandoCierreCorrectmente = false;	
 	private static final String corteCajaDTOjsonFile    = "CorteCajaDTO.json";
+	private static final String corteCajaDTOjsonHistoryFile    = "CorteCajaDTO([0-9])+_([0-9])+\\.json";
 	//private static final String aperturaCajaDTOjsonFile = "AperturaCajaDTO.json";
 	public static final int URL_CONNECTION_TIMEOUT = 5000;	
 	private static SyncUpdateListener  syncUpdateListener;
@@ -830,6 +834,104 @@ public class MemoryDAO {
 			logger.debug("readLastSavedCorteCajaDTO: No existe el archivo:"+ioe.getMessage());
 		}
 		return cc;
+	}
+	
+	public static boolean readLastSavedCorteCajaDTOHasApertura(){
+		logger.debug("readLastSavedCorteCajaDTOHasApertura: read from :"+corteCajaDTOjsonHistoryFile);
+		
+		File ff = new File(".");
+		
+		File[] fcc = ff.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return(name.matches(corteCajaDTOjsonHistoryFile));
+			}
+		});
+		logger.debug("list:{");
+		List<File> fxList = new ArrayList<File>();
+		for(File fx: fcc){
+			logger.debug("->"+fx.getName());
+			fxList.add(fx);
+		}
+		logger.debug("}");
+		Collections.reverse(fxList);
+		Gson gson=new Gson();		
+		CorteCajaDTO cc = null;
+		logger.debug("ReverseList:{");
+		boolean cierreCC   = false;
+		boolean aperturaCC = false;
+		boolean response   = false;
+		for(File ft: fxList){
+			try {
+				cc = gson.fromJson(new FileReader(ft), CorteCajaDTO.class);		
+				if(cc.getTipoEvento() == Constants.TIPO_EVENTO_CIERRE){
+					cierreCC = true;
+					logger.debug("\t->ft: [X] cc="+cc);
+				} else if(cc.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA){
+					aperturaCC = true;
+					logger.debug("\t->ft: [_] cc="+cc);
+				}
+				
+				if(cierreCC && !aperturaCC){
+					response   =  false;
+					break;
+				}
+				if(aperturaCC && !cierreCC){
+					response   = true;
+					break;
+				}		
+			}catch(IOException ioe){
+				logger.debug("readLastSavedCorteCajaDTOHasApertura: No existe el archivo:"+ioe.getMessage());
+			}		
+		}
+		logger.debug("}: response="+response);
+		
+		
+		return response;
+	}
+
+	public static CorteCajaDTO readLastSavedCorteCajaDTOApertura(){
+		logger.debug("readLastSavedCorteCajaDTOApertura: read from :"+corteCajaDTOjsonHistoryFile);
+		
+		File ff = new File(".");
+		
+		File[] fcc = ff.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return(name.matches(corteCajaDTOjsonHistoryFile));
+			}
+		});
+		logger.debug("list:{");
+		List<File> fxList = new ArrayList<File>();
+		for(File fx: fcc){
+			logger.debug("->"+fx.getName());
+			fxList.add(fx);
+		}
+		logger.debug("}");
+		Collections.reverse(fxList);
+		Gson gson=new Gson();		
+		CorteCajaDTO cc = null;
+		CorteCajaDTO cCC = null;
+		logger.debug("ReverseList:{");
+		for(File ft: fxList){
+			try {
+				cc = gson.fromJson(new FileReader(ft), CorteCajaDTO.class);		
+				boolean apeturaCC=cc.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA;
+				logger.debug("\t->ft: "+(apeturaCC?"[_]":"[ ]")+" cc="+cc);
+				if(apeturaCC){
+					cCC = cc;
+				}
+			}catch(IOException ioe){
+				logger.debug("readLastSavedCorteCajaDTOApertura: No existe el archivo:"+ioe.getMessage());
+			}		
+		}
+		if(cCC == null){
+			cCC = cc;
+		}
+		logger.debug("}");
+		
+		
+		return cCC;
 	}
 	/*
 	public static CorteCajaDTO readLastSavedAperturaCajaDTO(){

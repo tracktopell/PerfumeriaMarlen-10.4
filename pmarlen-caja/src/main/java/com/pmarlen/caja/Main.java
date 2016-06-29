@@ -42,7 +42,7 @@ public class Main {
 	 */
 	private static SplashFrame splashFrame;
 	public static void main(String[] args) {
-		CorteCajaDTO putaMadre = new CorteCajaDTO();
+		CorteCajaDTO putaMadre = new CorteCajaDTO();	
 		System.out.println("main:Main args[]={");
 		SplashFrame splashFrame = new SplashFrame();
 		splashFrame.setVisible(true);
@@ -195,7 +195,7 @@ public class Main {
 		
 		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();		
 		logger.debug("main:[*BUG*] CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
-
+		MemoryDAO.readLastSavedCorteCajaDTOApertura();
 		logger.debug("main:======================= S T A R T I N G =======================");
 
 		MemoryDAO.startPaqueteSyncService();

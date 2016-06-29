@@ -137,11 +137,11 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				logger.debug("\testadoInicial():START");
-				CorteCajaDTO lastSavedCC = ApplicationLogic.getInstance().getLastSavedCC();
-				if(lastSavedCC != null && lastSavedCC.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA){
-					abrirSesionNueva();
-					final long dt = System.currentTimeMillis() - lastSavedCC.getFecha();					
-					logger.debug("\testadoInicial(): APERTURA DE CAJA YA INICIADA: DIFF lastSavedCC:"+Constants.getDiff(dt)+" ( "+System.currentTimeMillis()+"-"+lastSavedCC.getFecha()+" = "+dt+ ")");
+				//CorteCajaDTO lastSavedCC = ApplicationLogic.getInstance().getLastSavedCC();
+				boolean      hasApertura = MemoryDAO.readLastSavedCorteCajaDTOHasApertura();
+				if( hasApertura ){
+					abrirSesionNueva();					
+					logger.debug("\testadoInicial(): APERTURA DE CAJA YA INICIADA: ");
 				} else {
 					((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
 					logger.debug("\testadoInicial(): NUEVA SESION");
@@ -336,7 +336,7 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		
 		framePrincipal.getCerrando().setVisible(true);
 		
-		int intentosEnviar=100;
+		int intentosEnviar=500;
 		int numInt=0;
 		for(numInt=0;MemoryDAO.isEnviandoCierreCaja()&& numInt<intentosEnviar;numInt++) {
 			try {
