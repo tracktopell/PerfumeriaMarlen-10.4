@@ -115,7 +115,7 @@ public class SyncService {
 		busqueda.setCaja(Integer.parseInt(caja));
 		CorteCaja ultimo=null;
 		try {
-			ultimo = CorteCajaDAO.getInstance().findLastBySucursalCaja(busqueda);
+			ultimo = CorteCajaDAO.getInstance().findLastAperturaBySucursalCaja(busqueda);
 			Double saldoVta = null;
 			Double saldoDev = null;
 			if(ultimo!= null){

@@ -21,9 +21,9 @@ import org.apache.log4j.Logger;
 public class Tools {
 	private static Logger logger = Logger.getLogger(Tools.class.getName());
 	public static void main(String[] args) {
-		String pathToEntradaSalidaJsonFile = null;
-		String pathToCorteCajaJsonFile = null;
-		String fechaFiltro = null;
+		String pathToEntradaSalidaJsonFile = "EntradaSalida.json";
+		String pathToCorteCajaJsonFile     = "CorteCajaDTO.json";
+		String fechaFiltro                 = Constants.sdfDate.format(new Date());
 		for(String arg: args){
 			String[] argVal = arg.split("=");
 			if(argVal[0].startsWith("-ES")){
@@ -36,7 +36,8 @@ public class Tools {
 		}
 		
 		if(pathToEntradaSalidaJsonFile == null){
-			System.err.println("Usage: java -cp xx.jar com.pmarlen.caja.Tools -ES=EntradaSalida.json -CC=CorteCaja.json -FF=AAAAMMDD");
+			System.err.println("Usage: java -cp pmarlen-caja.jar com.pmarlen.caja.Tools [-ES=EntradaSalida.json] [-CC=CorteCajaDTO.json] [-FF=AAAAMMDD]");
+            System.err.println("Usage: java -cp pmarlen-caja.jar com.pmarlen.caja.Tools ");
 			System.exit(1);
 		}
 		

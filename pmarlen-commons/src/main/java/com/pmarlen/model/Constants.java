@@ -102,6 +102,7 @@ public class Constants {
 	public static final SimpleDateFormat sdfLogDate    = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	public static final SimpleDateFormat sdfLogTS      = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 	public static final SimpleDateFormat sdfLogFile    = new SimpleDateFormat("yyyyMMdd_HHmmss");
+    public static final SimpleDateFormat sdfDate       = new SimpleDateFormat("yyyyMMdd");
 	public static final SimpleDateFormat sdfShortDateTime  = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 	public static final SimpleDateFormat sdfShortDate  = new SimpleDateFormat("yyyy/MM/dd");
 	public static final SimpleDateFormat sdfShortTime  = new SimpleDateFormat("HH:mm");

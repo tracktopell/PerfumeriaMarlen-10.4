@@ -137,9 +137,8 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				logger.debug("\testadoInicial():START");
-				//CorteCajaDTO lastSavedCC = ApplicationLogic.getInstance().getLastSavedCC();
-				boolean      hasApertura = MemoryDAO.readLastSavedCorteCajaDTOHasApertura();
-				if( hasApertura ){
+				CorteCajaDTO lastSavedCC = MemoryDAO.readLastSavedCorteCajaDTOApertura();
+				if( lastSavedCC.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA ){
 					abrirSesionNueva();					
 					logger.debug("\testadoInicial(): APERTURA DE CAJA YA INICIADA: ");
 				} else {

@@ -83,11 +83,7 @@ public class Main {
 			LogManager.getRootLogger().setLevel(Level.TRACE);
 		}
 		splashFrame.addMessage("...IS SINGLE INSTANCE RUNNING ?");
-		
-		
-		
 		isSingleInstanceRunning();
-
 		logger.debug("main:ok, Just 1 Thread");
 		
 		splashFrame.addMessage("...LOAD PROPERTIES");
@@ -191,11 +187,12 @@ public class Main {
 		MemoryDAO.preLoad();
 		logger.debug("main:Ready for ApplicationLogic.getInstance().iniciaAppCorteCajaDTO()");
 		
-		splashFrame.addMessage("...Corte Caja");
+		splashFrame.addMessage("...Loading Corte Caja");
 		
-		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();		
-		logger.debug("main:[*BUG*] CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
-		MemoryDAO.readLastSavedCorteCajaDTOApertura();
+		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
+        
+		logger.debug("main: CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
+		
 		logger.debug("main:======================= S T A R T I N G =======================");
 
 		MemoryDAO.startPaqueteSyncService();

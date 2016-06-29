@@ -149,7 +149,8 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	
 						for(ES_ESD esesd: esList){
                             logger.debug("buscarSaldoFinalEstimado: [LOCAL] \t"+esesd.getEs().toShrotString());
-							if(esesd.getEs().getFc()>=aperturaCajaDTO.getFecha() && esesd.getEs().getFc() >= beginingDay.getTime()){
+							if(     esesd.getEs().getFc() >= aperturaCajaDTO.getFecha() && 
+                                    esesd.getEs().getFc() >= beginingDay.getTime()){
 								final ES es = esesd.getEs(); 
 								final int tm=es.getTm();
 								int add = 0;

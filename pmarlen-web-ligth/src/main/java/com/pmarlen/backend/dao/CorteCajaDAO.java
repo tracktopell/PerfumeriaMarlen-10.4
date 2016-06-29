@@ -154,7 +154,53 @@ public class CorteCajaDAO {
 		}
 		return r;		
 	}
-	
+
+	public CorteCaja findLastAperturaBySucursalCaja(CorteCaja x) throws DAOException{
+		CorteCaja r = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT ID,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,TIPO_EVENTO,USUARIO_AUTORIZO FROM CORTE_CAJA "+
+					"WHERE SUCURSAL_ID=? AND CAJA=? AND TIPO_EVENTO=2 ORDER BY FECHA DESC LIMIT 1"
+			);
+			ps.setInt(1, x.getSucursalId());
+			ps.setInt(2, x.getCaja());
+			
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				r = new CorteCaja();
+				r.setId((Integer)rs.getObject("ID"));
+				r.setFecha((Timestamp)rs.getObject("FECHA"));
+				r.setSucursalId((Integer)rs.getObject("SUCURSAL_ID"));
+				r.setCaja((Integer)rs.getObject("CAJA"));
+				r.setUsuarioEmail((String)rs.getObject("USUARIO_EMAIL"));
+				r.setSaldoInicial((Double)rs.getObject("SALDO_INICIAL"));
+				r.setSaldoFinal((Double)rs.getObject("SALDO_FINAL"));
+				r.setComentarios((String)rs.getObject("COMENTARIOS"));
+				r.setTipoEvento((Integer)rs.getObject("TIPO_EVENTO"));
+				r.setUsuarioAutorizo((String)rs.getObject("USUARIO_AUTORIZO"));
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+	}
+    
+    
 //    public Integer ultimoEstadoPara(CorteCaja x) throws DAOException{
 //		PreparedStatement ps = null;
 //		ResultSet rs = null;
@@ -210,7 +256,7 @@ public class CorteCajaDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			StringBuilder sq = new StringBuilder("SELECT ID,TIPO_EVENTO,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO FROM CORTE_CAJA");
+			StringBuilder sq = new StringBuilder("SELECT ID,TIPO_EVENTO,FECHA,SUCURSAL_ID,CAJA,USUARIO_EMAIL,SALDO_INICIAL,SALDO_FINAL,COMENTARIOS,USUARIO_AUTORIZO FROM CORTE_CAJA ");
 			sq.append("\n");
 			sq.append("WHERE 1=1\n");
 			
@@ -226,7 +272,7 @@ public class CorteCajaDAO {
 			if(fechaFinal != null){
 				sq.append("AND   DATE(FECHA)<=DATE(?)\n");
 			}
-			sq.append("ORDER BY SUCURSAL_ID,CAJA,FECHA\n");
+			sq.append("ORDER BY FECHA DESC,SUCURSAL_ID,CAJA");
 			
 			ps = conn.prepareStatement(sq.toString());
 			int param=1;
