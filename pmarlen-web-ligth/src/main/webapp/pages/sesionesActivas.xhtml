@@ -10,7 +10,7 @@
     </ui:define>
 
     <ui:define name="body-title">
-        SESIONES ACTIVAS (JAIR)
+        SESIONES ACTIVAS
     </ui:define>
     
     <ui:define name="body">
@@ -114,13 +114,13 @@
 							</h:panelGrid>
 							
 							<p:dataTable value="#{sesionesActivasMB.corteCajaBySucursalAndCaja}" var="cc" scrollable="true" scrollHeight="150" style="width: 800px;">
-								<p:column headerText="FECHA" width="10%">
+								<p:column headerText="FECHA" width="20%">
 									<h:outputText value="#{cc.fecha}" />
 								</p:column>								
 								<p:column headerText="USAURIO" width="30%">
 									<h:outputText value="#{cc.usuarioEmail}" />
 								</p:column>
-								<p:column headerText="EVENTO" width="20%">
+								<p:column headerText="EVENTO" width="15%">
 									<h:outputText value="APP_INICIADA" rendered="#{cc.tipoEvento eq 0}"/>
 									<h:outputText value="AUTENTICADO"  rendered="#{cc.tipoEvento eq 1}"/>
 									<h:outputText value="APERTURA"     rendered="#{cc.tipoEvento eq 2}"/>
@@ -130,9 +130,20 @@
 									<h:outputText value="CIERRE"              rendered="#{cc.tipoEvento eq 9}"/>
 									<h:outputText value="? #{cc.tipoEvento}"  rendered="#{cc.tipoEvento gt 9}"/>									
 								</p:column>
-								<p:column headerText="COMENTARIO" width="30%">
+								<p:column headerText="COMENTARIO" width="15%">
 									<h:outputText value="#{cc.comentarios}" />
 								</p:column>
+                                <p:column headerText="SALDO INICIAL" width="10%">
+                                    <h:outputText value="#{cc.saldoInicial}" rendered="#{not empty cc.saldoInicial}">
+                                        <f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+                                    </h:outputText>
+								</p:column>
+                                <p:column headerText="SALDO FINAL" width="10%">
+                                    <h:outputText value="#{cc.saldoFinal}" rendered="#{not empty cc.saldoFinal}">
+                                        <f:convertNumber maxFractionDigits="2" pattern="$ ###,###,##0.00" locale="es_MX"/>
+                                    </h:outputText>
+								</p:column>
+
 							</p:dataTable>
 							
 						</p:panelGrid>

@@ -1,4 +1,4 @@
-/*
+    /*
 user: #{sessionUserMB.usuarioAuthenticated.nombreCompleto}
 */
 /* 
@@ -10,7 +10,7 @@ user: #{sessionUserMB.usuarioAuthenticated.nombreCompleto}
     font-size: 90%;
 }
 .ui-widget .ui-widget {
-    font-size: 80%;
+    font-size: 95%;
 }
 
 .no-rounded-panel{
