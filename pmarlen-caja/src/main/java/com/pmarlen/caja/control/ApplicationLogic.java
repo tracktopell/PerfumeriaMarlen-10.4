@@ -421,6 +421,7 @@ public class ApplicationLogic {
 	}
 	
 	public void iniciaAppCorteCajaDTO(){
+		logger.debug("iniciaAppCorteCajaDTO:");
 		lastSavedCC = MemoryDAO.readLastSavedCorteCajaDTO();
 		
 		getCorteCajaDTO().setCaja(MemoryDAO.getNumCaja());

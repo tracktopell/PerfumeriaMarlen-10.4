@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pmarlen.backend.model.CorteCaja;
 import com.pmarlen.model.Constants;
+import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ES_ESD;
 import java.io.File;
@@ -101,7 +102,7 @@ public class Tools {
 		if(pathToCorteCajaJsonFile != null){
 			is = null;
 			fileToLoad = null;
-			CorteCaja cc=  null;
+			CorteCajaDTO cc=  null;
 			fileToLoad = new File(pathToCorteCajaJsonFile);
 			if(fileToLoad.exists() ){
 				logger.debug("load:CorteCaja:File found:"+pathToEntradaSalidaJsonFile);
@@ -110,7 +111,7 @@ public class Tools {
 					FileReader fr = new FileReader(fileToLoad);
 					logger.debug("\tReading:");
 
-					cc = gson.fromJson(fr, new TypeToken<CorteCaja>(){}.getType());
+					cc = gson.fromJson(fr, new TypeToken<CorteCajaDTO>(){}.getType());
 					logger.debug("\t\tRead:CorteCaja="+cc);								
 				}catch(IOException ioe){
 					logger.error("load, fail:",ioe);

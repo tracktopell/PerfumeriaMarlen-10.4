@@ -349,17 +349,11 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		if(MemoryDAO.isEnviandoCierreCorrectmente()) {
 			logger.debug("Envio correcto, iniciaAppCorteCajaDTO, cerrando");
 			
-			ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
-			
-			//JOptionPane.showMessageDialog(framePrincipal, "La Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
-			
 			framePrincipal.dispose();
 			System.exit(0);
 			
 		} else {
 			logger.debug("Envio de Cierre no se envio, :(");
-			
-			ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
 			
 			JOptionPane.showMessageDialog(framePrincipal, "No se pudo enviar al Servidor, pero la Aplicación se cerrará", "CERRAR SESIÓN", JOptionPane.INFORMATION_MESSAGE);
 			

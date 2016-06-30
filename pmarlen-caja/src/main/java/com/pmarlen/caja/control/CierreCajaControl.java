@@ -65,7 +65,12 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 	
 	public void estadoInicial(){
         autorizadoPorToken=false;
-		saldoInicial  = ApplicationLogic.getInstance().getCorteCajaDTO().getSaldoInicial().doubleValue();
+		Double valueCCSaldoInicial = ApplicationLogic.getInstance().getCorteCajaDTO().getSaldoInicial();
+		if(valueCCSaldoInicial != null){
+			saldoInicial  = valueCCSaldoInicial.doubleValue();
+		} else {
+			saldoInicial  = 0.0;
+		}
 		//saldoEstimado = saldoInicial + ApplicationLogic.getInstance().getRemoteSaldoFinalEstimado();
 		saldoEstimado = saldoInicial;
 		buscarSaldoFinalEstimado();
