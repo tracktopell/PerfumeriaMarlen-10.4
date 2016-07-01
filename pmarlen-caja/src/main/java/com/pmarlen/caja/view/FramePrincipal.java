@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.awt.Image;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -128,6 +129,7 @@ public class FramePrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         tipoImpresion = new javax.swing.ButtonGroup();
+        nivelLog = new javax.swing.ButtonGroup();
         panels = new javax.swing.JPanel();
         panelSesion = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -178,6 +180,10 @@ public class FramePrincipal extends javax.swing.JFrame {
         impresionBluetothMenu = new javax.swing.JRadioButtonMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         impresionPruebaMenu = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        logINFO = new javax.swing.JRadioButtonMenuItem();
+        logDEBUG = new javax.swing.JRadioButtonMenuItem();
+        logTRACE = new javax.swing.JRadioButtonMenuItem();
         helpMenu = new javax.swing.JMenu();
         manualMenu = new javax.swing.JMenuItem();
         portalMenu = new javax.swing.JMenuItem();
@@ -374,6 +380,23 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         configMenu.add(impresionMenu);
 
+        jMenu1.setText("Nivel de Depuración");
+
+        nivelLog.add(logINFO);
+        logINFO.setSelected(true);
+        logINFO.setText("INFO");
+        jMenu1.add(logINFO);
+
+        nivelLog.add(logDEBUG);
+        logDEBUG.setText("DEBUG");
+        jMenu1.add(logDEBUG);
+
+        nivelLog.add(logTRACE);
+        logTRACE.setText("TRACE");
+        jMenu1.add(logTRACE);
+
+        configMenu.add(jMenu1);
+
         jMenuBar1.add(configMenu);
 
         helpMenu.setText("Ayuda");
@@ -415,6 +438,7 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu impresionMenu;
     private javax.swing.JMenuItem impresionPruebaMenu;
     private javax.swing.JRadioButtonMenuItem impresionSistemaMenu;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -427,8 +451,12 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JRadioButtonMenuItem logDEBUG;
+    private javax.swing.JRadioButtonMenuItem logINFO;
+    private javax.swing.JRadioButtonMenuItem logTRACE;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JMenuItem manualMenu;
+    private javax.swing.ButtonGroup nivelLog;
     private javax.swing.JButton notificaciones;
     private javax.swing.JMenuItem notificacionesMenu;
     private javax.swing.JMenuItem nuevaDevolMenu;
@@ -835,5 +863,20 @@ public class FramePrincipal extends javax.swing.JFrame {
     public JTable getCorteCajaTable() {
         return corteCajaTable;
     }
-    
+
+    public JRadioButtonMenuItem getLogDEBUG() {
+        return logDEBUG;
+    }
+
+    public JRadioButtonMenuItem getLogINFO() {
+        return logINFO;
+    }
+
+    public JRadioButtonMenuItem getLogTRACE() {
+        return logTRACE;
+    }    
+
+    public ButtonGroup getNivelLog() {
+        return nivelLog;
+    }    
 }

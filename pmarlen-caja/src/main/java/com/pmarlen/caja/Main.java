@@ -83,11 +83,10 @@ public class Main {
 		
 		if(dinamicDebug){
 			System.out.println("main:->Activating Log4J DEBUG Level.");
-			LogManager.getRootLogger().setLevel(Level.DEBUG);
-		}
-		if(dinamicTrace){
+			ApplicationLogic.setLogLevelToDEBUG();
+		} else if(dinamicTrace){
 			System.out.println("main:->Activating Log4J TRACE Level.");
-			LogManager.getRootLogger().setLevel(Level.TRACE);
+			ApplicationLogic.setLogLevelToTRACE();
 		}
 		splashFrame.addMessage("...IS SINGLE INSTANCE RUNNING ?");
 		isSingleInstanceRunning();
@@ -202,7 +201,7 @@ public class Main {
 		logger.debug("main:======================= S T A R T I N G =======================");
 
 		MemoryDAO.startPaqueteSyncService();
-		splashFrame.addMessage("...start Paquete Sync Service");
+		splashFrame.addMessage("...started Paquete Sync Service");
 		try {			
 			DialogLogin dialogLogin = DialogLogin.getInstance(FramePrincipalControl.getInstance().getFramePrincipal());
 			DialogLoginControl dlc = new DialogLoginControl(dialogLogin);

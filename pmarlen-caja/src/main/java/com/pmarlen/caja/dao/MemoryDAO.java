@@ -142,6 +142,12 @@ public class MemoryDAO {
 				append(properties.get("context"));
 		return sbURL.toString();
 	}
+    
+    public static String getServerContextManual(){
+		StringBuilder sbURL = new StringBuilder("http://");
+		sbURL.append(properties.get("host")).append("/PML30-Caja.pdf");
+		return sbURL.toString();
+	}
 	
 	public static void setPaqueteSinc(SyncDTOPackage paqueteSinc) {
 		MemoryDAO.paqueteSinc = paqueteSinc;
@@ -206,9 +212,9 @@ public class MemoryDAO {
 		
 		logger.debug("getPaqueteSyncPoll:");
 		ESFileSystemJsonDAO.laod();
-		logger.debug("getPaqueteSyncPoll:========================>>BEFORE while<<========================");
+		logger.debug("getPaqueteSyncPoll:========================>>BEFORE while<<========================("+runnigPool+")");
 		syncPollState = SYNC_STATE_BEFORE_RUNNING;
-		while(runnigPool){
+		for(xt=0;runnigPool;xt++){
 			logger.trace("getPaqueteSyncPoll:\t----------------->> while running, download");
 			if(xt % DOWNLOADPERIOD_SECS == 0){
 				try {
@@ -277,8 +283,8 @@ public class MemoryDAO {
                         syncPollState = SYNC_STATE_ERROR;
                     }
                 } else{
-                    //logger.debug("getPaqueteSyncPoll: NO ES ESTADO DE CIERRE:enviandoCierreCaja="+enviandoCierreCaja+", corteCajaDTOEnviar="+corteCajaDTOEnviar);
-                    continue;
+                    logger.trace("getPaqueteSyncPoll: NO ES ESTADO DE CIERRE:enviandoCierreCaja="+enviandoCierreCaja+", corteCajaDTOEnviar="+corteCajaDTOEnviar);
+                    //continue;
                 }
 			}
 			
@@ -288,8 +294,7 @@ public class MemoryDAO {
 			}catch(Exception e){
 				logger.error("getPaqueteSyncPoll:->sleep ? ",e);
 			}
-			
-			xt++;
+						
 		}
 	}
 
@@ -302,7 +307,9 @@ public class MemoryDAO {
 		new Thread(){
 			@Override
 			public void run() {
+                logger.debug("startPaqueteSyncService:before getPaqueteSyncPoll()-->>");
 				getPaqueteSyncPoll();
+                logger.debug("startPaqueteSyncService:after getPaqueteSyncPoll()<<--");
 			}
 		}.start();
 	}
@@ -890,7 +897,7 @@ public class MemoryDAO {
             try {
                 CorteCajaDTO cc = null;
 				cc = gson.fromJson(new FileReader(fx), CorteCajaDTO.class);
-                logger.debug("readLastSavedCorteCajaDTOApertura:\t\t->"+cc);			
+                logger.trace("readLastSavedCorteCajaDTOApertura:\t\t->"+cc);			
                 cortesTS.add(cc);
 			}catch(Exception ioe){
 				logger.debug("readLastSavedCorteCajaDTOApertura: Error al parsear el Archivo:"+ioe.getMessage());
@@ -943,7 +950,7 @@ public class MemoryDAO {
             try {
                 CorteCajaDTO cc = null;
 				cc = gson.fromJson(new FileReader(fx), CorteCajaDTO.class);
-                logger.debug("readLastSavedCorteCajaDTOCierre:\t\t->"+cc);			
+                logger.trace("readLastSavedCorteCajaDTOCierre:\t\t->"+cc);			
                 cortesTS.add(cc);
 			}catch(Exception ioe){
 				logger.debug("readLastSavedCorteCajaDTOCierre: Error al parsear el Archivo:"+ioe.getMessage());

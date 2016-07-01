@@ -20,12 +20,16 @@ import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.U;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,6 +40,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 /**
@@ -86,8 +92,17 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		framePrincipal.getNuevaDevolMenu().addActionListener(this);
 		framePrincipal.getTerminarDevolMenu().addActionListener(this);
 		framePrincipal.getCancelarDevolMenu().addActionListener(this);
+        //---------------------------------------------------
+        framePrincipal.getLogDEBUG().addActionListener(this);
+		framePrincipal.getLogINFO().addActionListener(this);
+        framePrincipal.getLogTRACE().addActionListener(this);
 		//---------------------------------------------------
 		framePrincipal.getNotificacionesMenu().addActionListener(this);
+        //---------------------------------------------------
+        framePrincipal.getPortalMenu().addActionListener(this);
+        framePrincipal.getManualMenu().addActionListener(this);
+        framePrincipal.getEmailSoporteMenu().addActionListener(this);
+        framePrincipal.getAcercaDeMenu().addActionListener(this);
 		//---------------------------------------------------
 		framePrincipal.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
@@ -184,6 +199,15 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 				updateStatusWest();
 				framePrincipal.setExtendedState( framePrincipal.getExtendedState()|JFrame.MAXIMIZED_BOTH );
 				panelVentaControl.estadoInicial();
+                framePrincipal.getNivelLog().clearSelection();
+                if(LogManager.getRootLogger().getLevel() == Level.INFO){
+                    framePrincipal.getLogINFO().setSelected(true);
+                } else if(LogManager.getRootLogger().getLevel() == Level.DEBUG){
+                    framePrincipal.getLogDEBUG().setSelected(true);
+                } else if(LogManager.getRootLogger().getLevel() == Level.TRACE){
+                    framePrincipal.getLogTRACE().setSelected(true);
+                }
+
 				logger.debug("\testadoInicial():END");
 			}
 		});
@@ -285,10 +309,23 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 			terminarDevolMenu_actionPerformed();
 		} else if(e.getSource() == framePrincipal.getCancelarDevolMenu()){
 			cancelarDevolMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getLogINFO()){
+			ApplicationLogic.setLogLevelToINFO();
+		} else if(e.getSource() == framePrincipal.getLogDEBUG()){
+			ApplicationLogic.setLogLevelToDEBUG();
+		} else if(e.getSource() == framePrincipal.getLogTRACE()){
+			ApplicationLogic.setLogLevelToTRACE();
+		} else if(e.getSource() == framePrincipal.getPortalMenu()){
+			portalMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getManualMenu()){
+			manualMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getAcercaDeMenu()){
+			acercaDeMenu_actionPerformed();
+		} else if(e.getSource() == framePrincipal.getEmailSoporteMenu()){
+			emailSoporteMenu_actionPerformed();
 		} else {
 			logger.error("actionPerformed: ActionEvent missing ? e="+e);
 		}
-		
 	}
 
 	AperturaCajaJFrame  acDlg = null;
@@ -566,4 +603,58 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		MemoryDAO.resetAll();
 		System.exit(16);
 	}
+
+    private void portalMenu_actionPerformed() {
+        if(Desktop.isDesktopSupported()){
+            try{
+                URI uriPortal = new URI(MemoryDAO.getServerContext());
+                Desktop.getDesktop().browse(uriPortal);
+            }catch(IOException ioE){
+                logger.error("no se pudo abrir URI", ioE);
+            }catch(URISyntaxException ioE){
+                logger.error("La URI esta mal", ioE);
+            }
+        } else{
+            logger.error("La caracteristica por Java AWT Desktop, no esta habilitada");
+            JOptionPane.showMessageDialog(framePrincipal, "La caracteristica por Java AWT Desktop, no esta habilitada","Ir a Portal",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void manualMenu_actionPerformed() {
+        if(Desktop.isDesktopSupported()){
+            try{
+                URI uriPortal = new URI(MemoryDAO.getServerContext());
+                Desktop.getDesktop().browse(uriPortal);
+            }catch(IOException ioE){
+                logger.error("no se pudo abrir URI", ioE);
+            }catch(URISyntaxException ioE){
+                logger.error("La URI esta mal", ioE);
+            }
+        } else{
+            logger.error("La caracteristica por Java AWT Desktop, no esta habilitada");
+            JOptionPane.showMessageDialog(framePrincipal, "La caracteristica por Java AWT Desktop, no esta habilitada","Ir a Manual",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void acercaDeMenu_actionPerformed() {
+        JOptionPane.showMessageDialog(framePrincipal, 
+                "PML30-CAJA ("+ApplicationLogic.getInstance().getVersion()+")", 
+                "...Acerca de",JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void emailSoporteMenu_actionPerformed() {
+        if(Desktop.isDesktopSupported()){
+            try{
+                URI uriPortal = new URI("mailto:aestrada@perfumeriamarlen.com.mx?subject=Ayuda_desde_PML30-caja&cc=dleon@perfumeriamarlen.com.mx");
+                Desktop.getDesktop().mail(uriPortal);
+            }catch(IOException ioE){
+                logger.error("no se pudo abrir URI", ioE);
+            }catch(URISyntaxException ioE){
+                logger.error("La URI esta mal", ioE);
+            }
+        } else{
+            logger.error("La caracteristica por Java AWT Desktop, no esta habilitada");
+            JOptionPane.showMessageDialog(framePrincipal, "La caracteristica por Java AWT Desktop, no esta habilitada","Email Soporte",JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }

@@ -5,6 +5,8 @@
 package com.pmarlen.caja.control;
 
 import com.pmarlen.backend.model.Almacen;
+import static com.pmarlen.caja.Main.dinamicDebug;
+import static com.pmarlen.caja.Main.dinamicTrace;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.Notificacion;
 import com.pmarlen.caja.model.VentaSesion;
@@ -39,6 +41,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import javax.swing.JOptionPane;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 /**
@@ -107,6 +111,20 @@ public class ApplicationLogic {
 		return versionRead;
 	}
 	
+    public static void setLogLevelToINFO(){
+        logger.info("setLogLevelToINFO:->Activating Log4J INFO Level.");
+        LogManager.getRootLogger().setLevel(Level.INFO);
+    }
+    
+    public static void setLogLevelToDEBUG(){
+        logger.info("setLogLevelToINFO:->Activating Log4J DEBUG Level.");
+        LogManager.getRootLogger().setLevel(Level.INFO);
+    }
+    
+    public static void setLogLevelToTRACE(){
+        logger.info("setLogLevelToINFO:->Activating Log4J TRECE Level.");
+        LogManager.getRootLogger().setLevel(Level.TRACE);
+    }
 	public boolean needsUpdateApplciation(){
 		boolean updateApp =  false;
 		

@@ -63,7 +63,7 @@ public class ESFileSystemJsonDAO {
 				cf = p.getaOc() + d.getC() * add;
 				p.setaOc(cf);
 			}
-			logger.debug("\tcommit:"+d.getC()+" x "+d.getCb()+"["+d.getTa()+"]:("+ci+")<-("+cf+")");
+			logger.trace("\tcommit:"+d.getC()+" x "+d.getCb()+"["+d.getTa()+"]:("+ci+")<-("+cf+")");
 		}
 		
 		esList.add(escd);
@@ -108,7 +108,7 @@ public class ESFileSystemJsonDAO {
         }
 		int ixc=0;
 		for(ES_ESD es_esd: esList) {
-            logger.debug("operactionSentFailed():\t-> esList["+ixc+"]: es="+es_esd.getEs());
+            logger.debug("operactionSentFailed():\t-> esList["+ixc+"]: es="+es_esd.getEs().toShrotString());
 			if(es_esd.getS()==ES_ESD.STATUS_SYNC_LOCAL){
 				es_esd.setS(ES_ESD.STATUS_SYNC_ERROR);
 			}
@@ -129,7 +129,7 @@ public class ESFileSystemJsonDAO {
 				esList.addAll(fromJson);
 				logger.debug("load: After read, added, esList.size="+esList.size());
                 for(ES_ESD esd_es:esList){
-                    logger.debug("load:\tes_esd="+esd_es);
+                    logger.trace("load:\tes_esd="+esd_es);
                 }
                 firstLoad=true;
 			}catch(IOException ioe){
