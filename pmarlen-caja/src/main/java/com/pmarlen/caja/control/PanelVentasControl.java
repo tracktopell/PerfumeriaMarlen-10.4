@@ -10,6 +10,7 @@ import com.pmarlen.caja.view.PanelVentas;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.JarpeReportsInfoDTO;
 import com.pmarlen.model.OSValidator;
+import com.pmarlen.rest.dto.ES;
 import com.pmarlen.rest.dto.ES_ESD;
 import com.pmarlen.ticket.systemprinter.SendFileToSystemPrinter;
 import com.pmarlen.ticket.systemprinter.UnixSendToLP;
@@ -20,6 +21,7 @@ import java.awt.event.MouseListener;
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -50,7 +52,7 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 		
 		panelVentas.getReimprimir().addActionListener(this);
 		panelVentas.getVentasJTable().addMouseListener(this);
-		panelVentas.getVentasJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		panelVentas.getVentasJTable().setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		panelVentas.getVentasJTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
@@ -69,14 +71,15 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		panelVentas.getVentasJTable().getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-		panelVentas.getVentasJTable().getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+        panelVentas.getVentasJTable().getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
 		panelVentas.getVentasJTable().getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
 		panelVentas.getVentasJTable().getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
-		//panelVentas.getVentasJTable().getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
+		panelVentas.getVentasJTable().getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
 		//panelVentas.getVentasJTable().getColumnModel().getColumn(5).setCellRenderer(rightRenderer);
-		panelVentas.getVentasJTable().getColumnModel().getColumn(6).setCellRenderer(rightRenderer);
+		//panelVentas.getVentasJTable().getColumnModel().getColumn(6).setCellRenderer(rightRenderer);
 		panelVentas.getVentasJTable().getColumnModel().getColumn(7).setCellRenderer(rightRenderer);
 		panelVentas.getVentasJTable().getColumnModel().getColumn(8).setCellRenderer(rightRenderer);
+		panelVentas.getVentasJTable().getColumnModel().getColumn(9).setCellRenderer(rightRenderer);
 		logger.debug("->>table columns="+panelVentas.getVentasJTable().getColumnCount());
 	}
 	
@@ -97,9 +100,11 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 	public void estadoInicial(){
 		refrescar();
 		panelVentas.getReimprimir().setEnabled(false);
-		ventasTM.setVentaList(ESFileSystemJsonDAO.getEsVentasList());
+		//ventasTM.setVentaList(ESFileSystemJsonDAO.getEsVentasList());
+        ventasTM.setVentaList(ESFileSystemJsonDAO.getEsList());
 		panelVentas.getVentasJTable().updateUI();		
 		panelVentas.getVentasJTable().getSelectionModel().clearSelection();
+        renderTotal(firstRow, lastRow);
 	}
 
 	@Override
@@ -222,14 +227,49 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 	public void mouseExited(MouseEvent e) {
 	}	
 	
+    private void renderTotal(final int firstRow,final int lastRow){
+        double sumTot=0.0;
+        final List<ES_ESD> ventaList = ventasTM.getVentaList();
+        sumTot=0.0;
+        for(int i=firstRow;i<=lastRow;i++){
+            if(i== -1){
+                break;
+            }
+            ES es = ventaList.get(i).getEs();
+            int fac =
+                es.getTm() == Constants.TIPO_MOV_ENTRADA_ALMACEN_DEVOLUCION?-1:
+                es.getTm() == Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA      ? 1:0;
+            sumTot += fac*es.getTot();
+        }
+        logger.debug("=>updateSelectedRow: sumTot="+sumTot);
+        panelVentas.getTotalES().setText(Constants.dfCurrency.format(sumTot));
+    }
+    int firstRow = -1;
+    int lastRow = -1;
+
 	private void updateSelectedRow() {
-		int idx = panelVentas.getVentasJTable().getSelectedRow();
-		logger.debug("=>updateSelectedRow:Selected:sr=" + idx);
-		if(idx != -1){
+        int idxs[] = panelVentas.getVentasJTable().getSelectedRows();
+        
+        firstRow = -1;
+        lastRow = -1;
+
+        if(idxs != null && idxs.length>=1){
+            firstRow = idxs[0];            
+            lastRow = idxs[idxs.length-1];
+            logger.debug("=>updateSelectedRow:Selected Rows("+idxs.length+"): " + firstRow+" TO "+lastRow);            
+        }
+		if(firstRow != -1 && firstRow == lastRow){
 			panelVentas.getReimprimir().setEnabled(true);
 		} else {
 			panelVentas.getReimprimir().setEnabled(false);
 		}
+        
+        new Thread(){
+            @Override
+            public void run() {
+                renderTotal(firstRow, lastRow);
+            }                
+        }.start();
 	}
 
 }

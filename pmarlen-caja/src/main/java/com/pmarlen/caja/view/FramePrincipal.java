@@ -67,7 +67,6 @@ public class FramePrincipal extends javax.swing.JFrame {
 		this.preferenciasMenu.setEnabled(false);
 		this.configMenu.setEnabled(false);
 		this.devolMenu.setEnabled(false);
-		this.devolsMenu.setEnabled(false);
 		this.impresionBluetothMenu.setEnabled(false);
 		this.impresionMenu.setEnabled(false);		
 		this.impresionPruebaMenu.setEnabled(false);
@@ -103,7 +102,6 @@ public class FramePrincipal extends javax.swing.JFrame {
 		this.cancelarDevolMenu.setEnabled(true);		
 		this.preferenciasMenu.setEnabled(false);
 		this.devolMenu.setEnabled(true);
-		this.devolsMenu.setEnabled(true);
 		this.impresionBluetothMenu.setEnabled(true);
 		this.impresionMenu.setEnabled(true);		
 		this.impresionPruebaMenu.setEnabled(true);
@@ -153,7 +151,6 @@ public class FramePrincipal extends javax.swing.JFrame {
         archivoMenu = new javax.swing.JMenu();
         sesionMenu = new javax.swing.JMenuItem();
         ventasMenu = new javax.swing.JMenuItem();
-        devolsMenu = new javax.swing.JMenuItem();
         notificacionesMenu = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         salirMenu = new javax.swing.JMenuItem();
@@ -232,7 +229,7 @@ public class FramePrincipal extends javax.swing.JFrame {
         panelVenta.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Venta Actual", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
         panels.add(panelVenta, "panelVenta");
 
-        panelVentas.setBorder(javax.swing.BorderFactory.createTitledBorder("Ventas"));
+        panelVentas.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ventas/Devoluciones", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
         panels.add(panelVentas, "panelVentas");
 
         panelDevolucion.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Devolución de Venta", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
@@ -278,11 +275,8 @@ public class FramePrincipal extends javax.swing.JFrame {
         sesionMenu.setText("Sesión");
         archivoMenu.add(sesionMenu);
 
-        ventasMenu.setText("H. Ventas");
+        ventasMenu.setText("Ventas/Devoluciones");
         archivoMenu.add(ventasMenu);
-
-        devolsMenu.setText("H. Devol");
-        archivoMenu.add(devolsMenu);
 
         notificacionesMenu.setText("Notificaciones");
         archivoMenu.add(notificacionesMenu);
@@ -401,7 +395,6 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JButton cerrarSesion;
     private javax.swing.JMenu configMenu;
     private javax.swing.JMenu devolMenu;
-    private javax.swing.JMenuItem devolsMenu;
     private javax.swing.JMenuItem emailSoporteMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JRadioButtonMenuItem impresionBluetothMenu;
@@ -470,13 +463,7 @@ public class FramePrincipal extends javax.swing.JFrame {
 	public javax.swing.JPanel getPanels() {
 		return panels;
 	}
-
-	/**
-	 * @return the productosMenu
-	 */
-	public javax.swing.JMenuItem getProductosMenu() {
-		return devolsMenu;
-	}
+	
 
 	/**
 	 * @return the salirMenu
@@ -690,13 +677,6 @@ public class FramePrincipal extends javax.swing.JFrame {
 	 */
 	public javax.swing.JMenu getDevolMenu() {
 		return devolMenu;
-	}
-
-	/**
-	 * @return the devolsMenu
-	 */
-	public javax.swing.JMenuItem getDevolsMenu() {
-		return devolsMenu;
 	}
 
 	/**

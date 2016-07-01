@@ -133,8 +133,8 @@ public class CierreCajaControl implements ActionListener , FocusListener, Valida
 		new Thread("RemoteSaldoEstimado:(serachLocal?"+serachLocal+")"){
 			public void run(){
 				try {
-					final CorteCajaDTO aperturaCajaDTO = MemoryDAO.readLastSavedCorteCajaDTOApertura();
-					logger.debug("buscarSaldoFinalEstimado: ("+serachLocal+")corteCajaDTO="+aperturaCajaDTO);
+					CorteCajaDTO aperturaCajaDTO = MemoryDAO.readLastSavedCorteCajaDTOApertura();
+					logger.debug("buscarSaldoFinalEstimado: serachLocal="+serachLocal+": corteCajaDTO="+aperturaCajaDTO);
 					SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
 					Date beginingDay = null;
 					try{

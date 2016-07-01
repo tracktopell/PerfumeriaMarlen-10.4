@@ -63,16 +63,23 @@ public class Main {
 		}
 		splashFrame.addMessage("...ARGUMENTOS");
 		if(dinamicDebug || dinamicTrace){
-			System.out.println("\tClassPath:{");
+			System.out.print("main:ClassPath class");
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
+            System.out.println(cl.getClass().toString()+", URLs{");
 			URL[] urls = ((URLClassLoader)cl).getURLs();
+            int cpi=0;
 			for(URL url: urls){
-				System.out.println("\t\t"+url.getFile());
+                if(cpi>0){
+                    System.out.print(",");
+                }
+				System.out.print(url.getFile());
+                cpi++;
 			}
 		}
+        System.out.println("}");
 		splashFrame.addMessage("...DEBUG");
-		System.out.println("main:}");
-		System.out.println("LogManager.getRootLogger().getLevel():"+LogManager.getRootLogger().getLevel());
+		
+		System.out.println("main:LogManager.getRootLogger().getLevel():"+LogManager.getRootLogger().getLevel());
 		
 		if(dinamicDebug){
 			System.out.println("main:->Activating Log4J DEBUG Level.");
@@ -87,29 +94,29 @@ public class Main {
 		logger.debug("main:ok, Just 1 Thread");
 		
 		splashFrame.addMessage("...LOAD PROPERTIES");
-		
 		MemoryDAO.loadProperties();
-		splashFrame.addMessage("...OK PROPERTIES");
+		splashFrame.addMessage("...OK PROPERTIES, AND VERSION ?");
 		
 		ApplicationLogic.getInstance().getVersion();
 		logger.debug("main: After Load Properties.");
 		logger.info("main: ====================================================================");
 		logger.info("main: ApplicationLogic.getInstance().getVersion():"+ApplicationLogic.getInstance().getVersion());
-		
+		splashFrame.addMessage("...STARTING VERSION:"+ApplicationLogic.getInstance().getVersion());
 		try {
-			logger.trace("main: L&Fs:" + Arrays.asList(UIManager.getInstalledLookAndFeels()));
-			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            final String lookAndFeelClass = "javax.swing.plaf.metal.MetalLookAndFeel";
+            splashFrame.addMessage("...setting Look & Feel:"+lookAndFeelClass);
+			logger.trace("main: L&Fs:" + Arrays.asList(UIManager.getInstalledLookAndFeels()));            
+			UIManager.setLookAndFeel(lookAndFeelClass);
 			//UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
 			JFrame.setDefaultLookAndFeelDecorated(true);
 			JDialog.setDefaultLookAndFeelDecorated(true);
-
 		} catch (Exception e) {
 			logger.error( "main:setLookAndFeel:", e);
 		}
 		splashFrame.addMessage("...OK, LOOKL & FEEL");
 		if (!MemoryDAO.isExsistFile()) {
-			splashFrame.addMessage("...1ST TIME");
+			splashFrame.addMessage("...1ST TIME, Config Dialog starting");
 			logger.debug("main: 1st Time");
 			ParamsConfigDialog dlg1stTime =  new ParamsConfigDialog();
 			logger.debug("main: dlg1stTime created");
@@ -191,8 +198,7 @@ public class Main {
 		
 		ApplicationLogic.getInstance().iniciaAppCorteCajaDTO();
         
-		logger.debug("main: CorteCajaDTO: sucursalId="+ApplicationLogic.getInstance().getCorteCajaDTO().getSucursalId()+", #Caja:"+ApplicationLogic.getInstance().getCorteCajaDTO().getCaja());
-		
+		logger.debug("main: CorteCajaDTO="+ApplicationLogic.getInstance().getCorteCajaDTO());		
 		logger.debug("main:======================= S T A R T I N G =======================");
 
 		MemoryDAO.startPaqueteSyncService();
@@ -214,7 +220,7 @@ public class Main {
 			
 			splashFrame.setVisible(false);
 			splashFrame.dispose();
-			splashFrame =  null;
+			splashFrame =  null;            
 			dlc.estadoInicial();
 			if (!dlc.isLoggedIn()) {
 				throw new IllegalAccessException();

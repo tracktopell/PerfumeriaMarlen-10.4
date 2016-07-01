@@ -87,28 +87,28 @@ public class ESFileSystemJsonDAO {
 		esList.clear();
 	}
 	
-	static void reset(){
-		logger.debug("reset: esList="+esList.size());
+	static void setSentAllES(){
+		logger.debug("setSentAllES: esList="+esList.size());
         if(!firstLoad){
             laod();
         }
 		int ixc=0;
 		for(ES_ESD es_esd: esList) {
-            logger.debug("reset:\t-> esList["+ixc+"]: es="+es_esd.getEs());
+            logger.trace("setSentAllES:\t->esList["+ixc+"]:set SENT TO: es="+es_esd.getEs().toShrotString());
 			if(es_esd.getS()==ES_ESD.STATUS_SYNC_LOCAL){
 				es_esd.setS(ES_ESD.STATUS_SYNC_SENT);
 			}
 		}
 	}
 	
-    static void resetFailedSent(){
-		logger.debug("resetFailedSent(): esList="+esList.size());
+    static void operactionSentFailed(){
+		logger.debug("operactionSentFailed(): esList="+esList.size());
         if(!firstLoad){
             laod();
         }
 		int ixc=0;
 		for(ES_ESD es_esd: esList) {
-            logger.debug("resetFailedSent():\t-> esList["+ixc+"]: es="+es_esd.getEs());
+            logger.debug("operactionSentFailed():\t-> esList["+ixc+"]: es="+es_esd.getEs());
 			if(es_esd.getS()==ES_ESD.STATUS_SYNC_LOCAL){
 				es_esd.setS(ES_ESD.STATUS_SYNC_ERROR);
 			}

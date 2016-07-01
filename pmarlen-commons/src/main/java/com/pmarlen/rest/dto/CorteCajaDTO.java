@@ -61,6 +61,20 @@ public class CorteCajaDTO implements Serializable{
 	public CorteCajaDTO() {
 	}
 
+    public CorteCajaDTO( CorteCajaDTO x) {
+        this.fecha = x.fecha;
+        this.sucursalId = x.sucursalId;
+        this.caja = x.caja;
+        this.usuarioEmail = x.usuarioEmail;
+        this.saldoInicial = x.saldoInicial;
+        this.saldoFinal = x.saldoFinal;
+        this.comentarios = x.comentarios;
+        this.tipoEvento = x.tipoEvento;
+        this.usuarioAutorizo = x.usuarioAutorizo;
+    }
+    
+    
+
 	/**
 	 * fecha
 	 * @return the fecha

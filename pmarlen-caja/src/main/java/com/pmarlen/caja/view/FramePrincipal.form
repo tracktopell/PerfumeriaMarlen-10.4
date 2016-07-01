@@ -18,12 +18,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="ventasMenu">
               <Properties>
-                <Property name="text" type="java.lang.String" value="H. Ventas"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="devolsMenu">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="H. Devol"/>
+                <Property name="text" type="java.lang.String" value="Ventas/Devoluciones"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="notificacionesMenu">
@@ -386,7 +381,9 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Ventas"/>
+                <TitledBorder title="Ventas/Devoluciones">
+                  <Font PropertyName="font" name="Tahoma" size="18" style="0"/>
+                </TitledBorder>
               </Border>
             </Property>
           </Properties>

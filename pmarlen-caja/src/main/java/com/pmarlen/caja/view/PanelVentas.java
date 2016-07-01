@@ -6,6 +6,7 @@ package com.pmarlen.caja.view;
 
 import com.pmarlen.caja.model.VentaTableModel;
 import javax.swing.JButton;
+import javax.swing.JTextField;
 
 /**
  *
@@ -32,7 +33,11 @@ public class PanelVentas extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         ventasJTable = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         reimprimir = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        totalES = new javax.swing.JTextField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -40,15 +45,33 @@ public class PanelVentas extends javax.swing.JPanel {
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
         reimprimir.setText("REIMPRIMIR TICKET");
-        jPanel3.add(reimprimir);
+        jPanel1.add(reimprimir);
+
+        jPanel3.add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        jLabel1.setText("Total :");
+        jPanel2.add(jLabel1);
+
+        totalES.setColumns(6);
+        totalES.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        totalES.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jPanel2.add(totalES);
+
+        jPanel3.add(jPanel2, java.awt.BorderLayout.EAST);
 
         add(jPanel3, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton reimprimir;
+    private javax.swing.JTextField totalES;
     private javax.swing.JTable ventasJTable;
     // End of variables declaration//GEN-END:variables
 
@@ -62,5 +85,9 @@ public class PanelVentas extends javax.swing.JPanel {
 	public JButton getReimprimir() {
 		return reimprimir;
 	}
-	
+
+    public JTextField getTotalES() {
+        return totalES;
+    }
+    
 }

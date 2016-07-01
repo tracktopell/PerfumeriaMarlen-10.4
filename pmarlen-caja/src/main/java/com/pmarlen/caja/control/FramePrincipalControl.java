@@ -60,55 +60,31 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 	private FramePrincipalControl() {
 		
 		framePrincipal = new FramePrincipal();
-		
 		framePrincipal.setTitle("PML30-CAJA ("+ApplicationLogic.getInstance().getVersion()+")");
-		
 		framePrincipal.getSesionMenu().addActionListener(this);
-		
 		framePrincipal.getAbrirSesion().addActionListener(this);
-		
 		framePrincipal.getCerrarSesion().addActionListener(this);
-		
 		panelVentaControl  = new PanelVentaControl ((PanelVenta)framePrincipal.getPanelVenta());
-		
 		panelVentasControl = new PanelVentasControl((PanelVentas)framePrincipal.getPanelVentas());
-		
-		panelDevolucionControl = new PanelDevolucionControl((PanelDevolucion)framePrincipal.getPanelDevolucion());
-		
-		framePrincipal.getProductosMenu().addActionListener(this);
-		
+		panelDevolucionControl = new PanelDevolucionControl((PanelDevolucion)framePrincipal.getPanelDevolucion());		
 		framePrincipal.getVentasMenu().addActionListener(this);
-		
 		framePrincipal.getVentaModoMenu().addActionListener(this);
-		
 		framePrincipal.getSalirMenu().addActionListener(this);
-		
 		//---------------------------------------------------		
 		framePrincipal.getPreferenciasMenu().addActionListener(this);
-		
 		framePrincipal.getVentaActualMenu().addActionListener(this);
-		
 		framePrincipal.getVentaLineaMenu().addActionListener(this);
-		
 		framePrincipal.getVentaOportunidadMenu().addActionListener(this);
-		
 		framePrincipal.getVentaRegaliasMenu().addActionListener(this);
-		
 		framePrincipal.getVentaTerminarMenu().addActionListener(this);
-		
 		framePrincipal.getVentaeliminarProdMenu().addActionListener(this);
-		
 		framePrincipal.getVentaCancelarMenu().addActionListener(this);
 		//---------------------------------------------------
 		framePrincipal.getNuevaDevolMenu().addActionListener(this);
-		
 		framePrincipal.getTerminarDevolMenu().addActionListener(this);
-		
 		framePrincipal.getCancelarDevolMenu().addActionListener(this);
 		//---------------------------------------------------
-		
 		framePrincipal.getNotificacionesMenu().addActionListener(this);
-		
 		//---------------------------------------------------
 		framePrincipal.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
@@ -121,15 +97,10 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		
 		//---------------------------------------------------
 		framePrincipal.setDefaultCloseOperation(framePrincipal.EXIT_ON_CLOSE);
-		
 		framePrincipal.getConfigMenu().setEnabled(false);
 		//---------------------------------------------------
-		
 		framePrincipal.getNotificaciones().addActionListener(this);
-		
 		framePrincipal.getCerrando().setVisible(false);
-		
-		
 	}
 	private static int nei=0;
 	public void estadoInicial() {
@@ -137,14 +108,54 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				logger.debug("\testadoInicial():START");
-				CorteCajaDTO lastSavedCC = MemoryDAO.readLastSavedCorteCajaDTOApertura();
-				if( lastSavedCC.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA ){
-					abrirSesionNueva();					
-					logger.debug("\testadoInicial(): APERTURA DE CAJA YA INICIADA: ");
-				} else {
-					((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
-					logger.debug("\testadoInicial(): NUEVA SESION");
-				}
+				CorteCajaDTO lastAperturaCC = MemoryDAO.readLastSavedCorteCajaDTOApertura();
+                CorteCajaDTO lastCC         = MemoryDAO.readLastSavedCorteCajaDTO();
+                CorteCajaDTO firstCC        = MemoryDAO.readFirstSavedCorteCajaDTOIniciada();
+                if(lastAperturaCC == null && lastCC != null){
+                    logger.debug("\testadoInicial(): ================ CAJA NUNCA SE CERRO ==============");
+                    logger.debug("\testadoInicial(): \tFIX: firstCC="+firstCC);
+                    CorteCajaDTO cierreCC   = new CorteCajaDTO(firstCC);
+                    cierreCC.setFecha(firstCC.getFecha()-500000);
+                    cierreCC.setTipoEvento(Constants.TIPO_EVENTO_CIERRE);
+                    MemoryDAO.updateCorteCajaDTO(cierreCC);
+                    logger.debug("\testadoInicial(): \tFIX: CIERRE GUARDADO: cierreCC="+cierreCC);
+                    
+                    CorteCajaDTO nuevoInicioCC   = new CorteCajaDTO(firstCC);
+                    nuevoInicioCC.setFecha(firstCC.getFecha()-400000);
+                    nuevoInicioCC.setTipoEvento(Constants.TIPO_EVENTO_AP_INICIADA);
+                    MemoryDAO.updateCorteCajaDTO(nuevoInicioCC);
+                    logger.debug("\testadoInicial(): \tFIX: NUEVO INICIO GUARDADO: nuevoInicioCC="+nuevoInicioCC);
+                    
+                    CorteCajaDTO aperturaCC = new CorteCajaDTO(firstCC);
+                    aperturaCC.setFecha(firstCC.getFecha()-300000);
+                    aperturaCC.setSaldoInicial(0.0);
+                    aperturaCC.setTipoEvento(Constants.TIPO_EVENTO_APERTURA);
+                    MemoryDAO.updateCorteCajaDTO(aperturaCC);
+                    logger.debug("\testadoInicial(): \tFIX: APERTURA GUARDADA: aperturaCC="+aperturaCC);
+                    
+                    lastAperturaCC = MemoryDAO.readLastSavedCorteCajaDTOApertura();
+                    logger.debug("\testadoInicial(): \tFIX: (first)lastAperturaCC="+lastAperturaCC);
+                    lastCC         = MemoryDAO.readLastSavedCorteCajaDTO();
+                    logger.debug("\testadoInicial(): \tFIX: NORMAL: lastCC="+lastCC);
+                    logger.debug("\testadoInicial(): \tFIX: ===========================================");
+                }
+                
+                logger.debug("\testadoInicial():lastAperturaCC="+lastAperturaCC);
+                logger.debug("\testadoInicial():lastCC        ="+lastCC);
+				if(lastAperturaCC!=null && (
+                        lastCC.getTipoEvento() == Constants.TIPO_EVENTO_AP_INICIADA || 
+                        lastCC.getTipoEvento() == Constants.TIPO_EVENTO_AUTENTICADO )){
+                    if( lastCC.getTipoEvento() == Constants.TIPO_EVENTO_CIERRE ){
+                        ((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
+                        logger.debug("\testadoInicial(): SE DEBE ABRIR UNA NUEVA SESION");
+                    } else {
+                        abrirSesionNueva();					
+                        logger.debug("\testadoInicial(): APERTURA DE CAJA YA INICIADA: LISTO PARA OPERAR");
+                    }
+                } else {
+                    logger.debug("\testadoInicial(): NO hay apertura Valida");
+                    System.exit(10);
+                }
 				logger.debug("\testadoInicial():setVisible(true) --------------------------------------[    V E N T A N A     V I S I B L E ]-----------------------------------");
 				framePrincipal.setVisible(true);
 				logger.debug("\testadoInicial():updateStatusWest()");
@@ -335,7 +346,7 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		
 		framePrincipal.getCerrando().setVisible(true);
 		
-		int intentosEnviar=500;
+		int intentosEnviar=240;
 		int numInt=0;
 		for(numInt=0;MemoryDAO.isEnviandoCierreCaja()&& numInt<intentosEnviar;numInt++) {
 			try {

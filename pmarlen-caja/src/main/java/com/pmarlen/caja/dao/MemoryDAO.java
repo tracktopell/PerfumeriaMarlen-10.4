@@ -39,8 +39,8 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
@@ -200,6 +200,7 @@ public class MemoryDAO {
 	private final static long TIMESLEEP_MS        = 1000L;
 	private final static int  DOWNLOADPERIOD_SECS = 120;
 	private final static int  IMALIVEPERIOD_SECS  = 30;
+    private final static int  CIERREPERIOD_SECS   = 2;
 	
 	public static void getPaqueteSyncPoll() {
 		
@@ -232,6 +233,32 @@ public class MemoryDAO {
 					syncPollState = SYNC_STATE_ERROR;
 				}
 			} else if(xt % IMALIVEPERIOD_SECS == 0){
+				try {					
+					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
+					logger.trace("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
+					iamalive();
+					logger.trace("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
+					syncPollState = SYNC_STATE_IMLIVE;
+				}catch(ConnectException ce){
+					logger.debug("getPaqueteSyncPoll: after call iamalive:"+ce);
+					syncPollState = SYNC_STATE_CONNECTION;					
+				}catch(FileNotFoundException fnfe){
+					logger.debug("getPaqueteSyncPoll: after call iamalive:"+fnfe);
+					syncPollState = SYNC_STATE_SERVER_4XX;					
+				}catch(IOException e){
+					logger.debug("getPaqueteSyncPoll: after call iamalive:"+e);
+					syncPollState = SYNC_STATE_IO_ERROR;					
+				}catch(Exception e){
+					logger.error("getPaqueteSyncPoll: after call iamalive:",e);
+					syncPollState = SYNC_STATE_ERROR;
+				}
+			} else if(xt % CIERREPERIOD_SECS == 0){
+                CorteCajaDTO corteCajaDTOEnviar = ApplicationLogic.getInstance().getCorteCajaDTO();
+                if(corteCajaDTOEnviar != null && corteCajaDTOEnviar.getTipoEvento()!=Constants.TIPO_EVENTO_CIERRE) {
+                    continue;
+                } else {
+                    logger.debug("getPaqueteSyncPoll: ==>> CIERRE MAS RAPIDO !!");
+                }
 				try {					
 					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
 					logger.trace("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
@@ -376,49 +403,7 @@ public class MemoryDAO {
 		IAmAliveDTORequest iAmAliveDTOPackage;
 		
 		iAmAliveDTOPackage = new IAmAliveDTORequest();
-/*
-{
-			java.runtime.name=Java(TM) SE Runtime Environment, 
-			sun.boot.library.path=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib, java.vm.version=24.51-b03, 
-			user.country.format=MX, 
-			gopherProxySet=false, 
-			java.vm.vendor=Oracle Corporation, 
-			java.vendor.url=http://java.oracle.com/, path.separator=:, 
-			java.vm.name=Java HotSpot(TM) 64-Bit Server VM, file.encoding.pkg=sun.io, user.country=ES, 
-			sun.java.launcher=SUN_STANDARD, sun.os.patch.level=unknown, java.vm.specification.name=Java Virtual Machine Specification, 
-			user.dir=/Users/alfredo/tmp/pmarlen-caja, java.runtime.version=1.7.0_51-b13, 
-			java.awt.graphicsenv=sun.awt.CGraphicsEnvironment, java.endorsed.dirs=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/endorsed, 
-			os.arch=x86_64, java.io.tmpdir=/var/folders/r0/x48m0drs5jjb972jf25km_pw0000gp/T/, 
-			line.separator=, 
-			java.vm.specification.vendor=Oracle Corporation, os.name=Mac OS X, 
-			sun.jnu.encoding=UTF-8, 
-			java.library.path=/Users/alfredo/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:., 
-			sun.awt.enableExtraMouseButtons=true, java.specification.name=Java Platform API Specification, 
-			java.class.version=51.0, sun.management.compiler=HotSpot 64-Bit Tiered Compilers, 
-			os.version=10.9.5, http.nonProxyHosts=local|*.local|169.254/16|*.169.254/16, 
-			user.home=/Users/alfredo, user.timezone=America/Mexico_City, 
-			java.awt.printerjob=sun.lwawt.macosx.CPrinterJob, file.encoding=UTF-8, java.specification.version=1.7, 
-			java.class.path=pmarlen-caja.jar, user.name=alfredo, java.vm.specification.version=1.7, 
-			sun.java.command=pmarlen-caja.jar, java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre, 
-			sun.arch.data.model=64, user.language=es, 
-			java.specification.vendor=Oracle Corporation, 
-			awt.toolkit=sun.lwawt.macosx.LWCToolkit, 
-			java.vm.info=mixed mode, java.version=1.7.0_51, 
-			java.ext.dirs=/Users/alfredo/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java, 
-			sun.boot.class.path=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home/jre/classes, 
-			java.vendor=Oracle Corporation, 
-			file.separator=/, 
-			java.vendor.url.bug=http://bugreport.sun.com/bugreport/, 
-			sun.font.fontmanager=sun.font.CFontManager, 
-			sun.io.unicode.encoding=UnicodeBig, 
-			sun.cpu.endian=little, 
-			socksNonProxyHosts=local|*.local|169.254/16|*.169.254/16, 
-			ftp.nonProxyHosts=local|*.local|169.254/16|*.169.254/16, 
-			sun.cpu.isalist=}			
-			
-			
-			*/
-		
+
 		String operatingSystem = System.getProperty("os.name")+"_"+System.getProperty("os.version")+"("+System.getProperty("os.arch")+")";
 		
 		U ul = ApplicationLogic.getInstance().getLogged();
@@ -441,15 +426,15 @@ public class MemoryDAO {
 						System.getProperty("user.name"),
 						System.getProperty("user.dir")));
 		
-		CorteCajaDTO lastSavedCC = ApplicationLogic.getInstance().getLastSavedCC();
+		CorteCajaDTO lastSavedCC        = ApplicationLogic.getInstance().getLastSavedCC();
 		CorteCajaDTO corteCajaDTOEnviar = ApplicationLogic.getInstance().getCorteCajaDTO();
-		if(lastSavedCC != null && lastSavedCC.getTipoEvento()==Constants.TIPO_EVENTO_CIERRE && iAmALiveOKEnviadas==0) {
-			logger.debug("buildIAmALivePackageDTO:Forzando Evnio de CIERRE DE CAJA");
-			iAmAliveDTOPackage.setCorteCajaDTO(lastSavedCC);
-		} else {
+		if(corteCajaDTOEnviar != null) {
+			logger.debug("buildIAmALivePackageDTO: A) corteCajaDTOEnviar="+corteCajaDTOEnviar);
 			iAmAliveDTOPackage.setCorteCajaDTO(corteCajaDTOEnviar);
+		} else {
+            logger.debug("buildIAmALivePackageDTO: B) lastSavedCC="+lastSavedCC);
+			iAmAliveDTOPackage.setCorteCajaDTO(lastSavedCC);
 		}
-		
 		
 		iAmALiveBuild++;
 		return iAmAliveDTOPackage;
@@ -479,7 +464,7 @@ public class MemoryDAO {
 			ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,jsonInput);
 			logger.trace("iamalive:...get response");
 			long t2=System.currentTimeMillis();
-			if(iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
+			if(enviandoCierreCaja && iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
 				enviandoCierreCaja = false;
 			}
 			if (response.getStatus() != 200) {
@@ -488,7 +473,7 @@ public class MemoryDAO {
 				}
 				throw new IOException("Failed HTTP error code :"
 						+ response.getStatus());
-			}
+			} 
 			if(iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
 				enviandoCierreCorrectmente = true;
 			}
@@ -637,11 +622,11 @@ public class MemoryDAO {
 					} else if( (paqueteSinc.getSyncDBStatus() & SyncDTOPackage.SYNC_FAIL_JDBC) == SyncDTOPackage.SYNC_FAIL_JDBC) {
 						logger.debug("readLocally:paqueteSinc=->SYNC_FAIL_JDBC:");
 					}
-                    ESFileSystemJsonDAO.resetFailedSent();
+                    ESFileSystemJsonDAO.operactionSentFailed();
                     ESFileSystemJsonDAO.persist();
 				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_OK) {
 					logger.debug("readLocally:paqueteSinc:->SYNC_OK, all List<es> -> SENT");
-					ESFileSystemJsonDAO.reset();
+					ESFileSystemJsonDAO.setSentAllES();
                     ESFileSystemJsonDAO.persist();
 				} else if(paqueteSinc.getSyncDBStatus() == SyncDTOPackage.SYNC_EMPTY_TRANSACTION) {
 					logger.debug("readLocally:paqueteSinc:->SYNC_EMPTY_TRANSACTION");
@@ -800,7 +785,28 @@ public class MemoryDAO {
 			logger.error("saveCorteCajaDTO:Error to write",ioe);
 		}	
 	}
-	
+    
+	public static void updateCorteCajaDTO(CorteCajaDTO cc){
+		logger.debug("updateCorteCajaDTO: CorteCajaDTO="+cc);
+		Gson gson=new Gson();
+		String jsonAllES = gson.toJson(cc);
+		FileWriter fw = null;
+		final String backupFaileName = "CorteCajaDTO"+Constants.sdfLogFile.format(new Date(cc.getFecha()))+".json";
+		try {
+			
+			fw = new FileWriter(backupFaileName);
+			fw.write(jsonAllES);
+			fw.flush();
+			fw.close();
+			
+			File x=new File(backupFaileName);
+			
+			logger.debug("updateCorteCajaDTO: created file="+x.getAbsolutePath()+" ? "+x.exists()+", size="+x.length());
+		}catch(IOException ioe){
+			logger.error("updateCorteCajaDTO:Error to write",ioe);
+		}
+	}    
+    	
 	public static void backupCorteCajaDTO(CorteCajaDTO cc){
 		logger.debug("backupCorteCajaDTO: CorteCajaDTO="+cc);
 		Gson gson=new Gson();
@@ -848,6 +854,17 @@ public class MemoryDAO {
     
     }
     
+    public static class CorteCajaDTOComparatorAscOrder implements Comparator<CorteCajaDTO>{
+
+        @Override
+        public int compare(CorteCajaDTO o1, CorteCajaDTO o2) {
+            // Orden Ascendente
+            return (int)(o1.getFecha() - o2.getFecha()); 
+        }
+    
+    }
+    
+    
 	public static CorteCajaDTO readLastSavedCorteCajaDTOApertura(){
 		logger.debug("readLastSavedCorteCajaDTOApertura: read from :"+corteCajaDTOjsonHistoryFile);
 		
@@ -866,7 +883,7 @@ public class MemoryDAO {
         Gson gson=new Gson();		
 		
 		for(File fx: fcc){
-			logger.debug("readLastSavedCorteCajaDTOApertura:\t->"+fx.getName());			
+			//logger.debug("readLastSavedCorteCajaDTOApertura:\t->"+fx.getName());			
             try {
                 CorteCajaDTO cc = null;
 				cc = gson.fromJson(new FileReader(fx), CorteCajaDTO.class);
@@ -880,39 +897,79 @@ public class MemoryDAO {
 		
 		CorteCajaDTO cCC = null;
 		logger.debug("readLastSavedCorteCajaDTOApertura:TreeSet<CorteCajaDTO>:{");
-        
+        boolean apeturaCC=false;
+        boolean cierreCC =false;
         for(CorteCajaDTO ccX: cortesTS){
-            boolean apeturaCC=ccX.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA;
-            logger.debug("readLastSavedCorteCajaDTOApertura:\t->ccX: "+(apeturaCC?"[_]":"[ ]")+" ccX="+ccX);
+            apeturaCC = ccX.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA;
+            cierreCC  = ccX.getTipoEvento() == Constants.TIPO_EVENTO_CIERRE;
             if(apeturaCC){
+                logger.debug("readLastSavedCorteCajaDTOApertura:\t->ccX: [_] ccX="+ccX);
+            } else if(cierreCC){
+                logger.debug("readLastSavedCorteCajaDTOApertura:\t->ccX: [X] ccX="+ccX);
+            }           
+            
+            if(apeturaCC && ! cierreCC){
                 cCC = ccX;
+                break;
             }
         }
         logger.debug("readLastSavedCorteCajaDTOApertura:}");
-		if(cCC == null){
-            logger.debug("readLastSavedCorteCajaDTOApertura: last>>");
-			cCC = cortesTS.last();
-		}
-		logger.debug("readLastSavedCorteCajaDTOApertura:cCC="+cCC);
+        logger.debug("readLastSavedCorteCajaDTOApertura:cCC="+cCC);
 		return cCC;
 	}
-	/*
-	public static CorteCajaDTO readLastSavedAperturaCajaDTO(){
-		logger.debug("readLastSavedCorteCajaDTO: ");
+
+   	public static CorteCajaDTO readFirstSavedCorteCajaDTOIniciada(){
+		logger.debug("readFirstSavedCorteCajaDTOIniciada: read from :"+corteCajaDTOjsonHistoryFile);
 		
-		Gson gson=new Gson();
-		CorteCajaDTO cc = null;
+		File ff = new File(".");
 		
-		try {			
-			cc = gson.fromJson(new FileReader(aperturaCajaDTOjsonFile), CorteCajaDTO.class);		
-			logger.debug("readLastSavedCorteCajaDTO: cc="+cc);
-		}catch(IOException ioe){
-			logger.debug("readLastSavedCorteCajaDTO: No existe el archivo:"+ioe.getMessage());
+		File[] fcc = ff.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return(name.matches(corteCajaDTOjsonHistoryFile));
+			}
+		});
+		//logger.debug("readFirstSavedCorteCajaDTOIniciada:list:{");
+		List<File> fxList = new ArrayList<File>();
+        TreeSet<CorteCajaDTO> cortesTS=new TreeSet<CorteCajaDTO>(new CorteCajaDTOComparatorAscOrder());
+        
+        Gson gson=new Gson();		
+		
+		for(File fx: fcc){
+			//logger.debug("readFirstSavedCorteCajaDTOIniciada:\t->"+fx.getName());			
+            try {
+                CorteCajaDTO cc = null;
+				cc = gson.fromJson(new FileReader(fx), CorteCajaDTO.class);
+                //logger.debug("readFirstSavedCorteCajaDTOIniciada:\t\t->"+cc);			
+                cortesTS.add(cc);
+			}catch(Exception ioe){
+				logger.debug("readLastSavedCorteCajaDTOApertura: Error al parsear el Archivo:"+ioe.getMessage());
+			}
 		}
-		return cc;
+		//logger.debug("}");
+		
+		CorteCajaDTO cCC = null;
+		logger.debug("readFirstSavedCorteCajaDTOIniciada:TreeSet<CorteCajaDTO>:{");
+        Date    hoyInicioDeDia = null;
+        
+        try{
+            hoyInicioDeDia = Constants.sdfDate.parse(Constants.sdfDate.format(new Date()));            
+        }catch(ParseException pe){
+            hoyInicioDeDia = new Date();
+        }
+        
+        for(CorteCajaDTO ccX: cortesTS){
+            if(ccX.getFecha()>=hoyInicioDeDia.getTime() && ccX.getTipoEvento() == Constants.TIPO_EVENTO_AP_INICIADA){            
+                logger.debug("readFirstSavedCorteCajaDTOIniciada:\t->ccX: [ ] ccX="+ccX);
+                cCC = ccX;
+                break;
+            }
+        }
+        logger.debug("readFirstSavedCorteCajaDTOIniciada:}");
+        logger.debug("readFirstSavedCorteCajaDTOIniciada:cCC="+cCC);
+		return cCC;
 	}
-	*/
-	
+
 	public static double getRemoteSaldoEstimado() throws IOException{
 		double saldoEstimado = 0.0;
 		
