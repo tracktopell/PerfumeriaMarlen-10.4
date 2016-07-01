@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import org.apache.log4j.Logger;
 
@@ -130,7 +131,10 @@ public class FramePrincipal extends javax.swing.JFrame {
         panels = new javax.swing.JPanel();
         panelSesion = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
         logoLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        corteCajaTable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         abrirSesion = new javax.swing.JButton();
@@ -192,11 +196,20 @@ public class FramePrincipal extends javax.swing.JFrame {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 150));
+
         logoLabel.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
         logoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         logoLabel.setIcon(getPml30ImageIcon());
         logoLabel.setText("PML30-CAJA");
-        jPanel1.add(logoLabel, java.awt.BorderLayout.CENTER);
+        jPanel7.add(logoLabel);
+
+        jPanel1.add(jPanel7, java.awt.BorderLayout.WEST);
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Historico de Sesiones"));
+        jScrollPane1.setViewportView(corteCajaTable);
+
+        jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         panelSesion.add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -394,6 +407,7 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel cerrando;
     private javax.swing.JButton cerrarSesion;
     private javax.swing.JMenu configMenu;
+    private javax.swing.JTable corteCajaTable;
     private javax.swing.JMenu devolMenu;
     private javax.swing.JMenuItem emailSoporteMenu;
     private javax.swing.JMenu helpMenu;
@@ -408,6 +422,8 @@ public class FramePrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
@@ -815,4 +831,9 @@ public class FramePrincipal extends javax.swing.JFrame {
 	public JPanel getPanelDevolucion() {
 		return panelDevolucion;
 	}
+
+    public JTable getCorteCajaTable() {
+        return corteCajaTable;
+    }
+    
 }

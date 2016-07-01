@@ -46,7 +46,7 @@ public class SyncDTORequest implements Serializable{
 
     @Override
     public String toString() {
-        return "SyncDTORequest{escdList.size()="+escdList+"}";
+        return "SyncDTORequest{iAmAliveDTORequest.CorteCajaDTO="+iAmAliveDTORequest.getCorteCajaDTO()+", escdList.size()="+escdList.size()+"}";
     }
     
     

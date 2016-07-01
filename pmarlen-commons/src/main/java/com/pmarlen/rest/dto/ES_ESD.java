@@ -12,6 +12,7 @@ public class ES_ESD implements Serializable{
 	public static final byte STATUS_SYNC_LOCAL=0;
 	public static final byte STATUS_SYNC_SENT =1;
 	public static final byte STATUS_SYNC_ERROR=2;
+    public static final byte STATUS_SYNC_RESENT=3;
 	private int s;
 	private ES es;
 	private List<ESD> esdList;

@@ -196,7 +196,7 @@ public class ESFileSystemJsonDAO {
 		ArrayList<ES_ESD> nsList=new ArrayList<ES_ESD>();
 		
 		for(ES_ESD e: esList){
-			if(e.getS()==ES_ESD.STATUS_SYNC_LOCAL ||e.getS()==ES_ESD.STATUS_SYNC_ERROR){
+			if(e.getS()==ES_ESD.STATUS_SYNC_LOCAL ||e.getS()==ES_ESD.STATUS_SYNC_RESENT){
 				nsList.add(e);
 			}
 		}

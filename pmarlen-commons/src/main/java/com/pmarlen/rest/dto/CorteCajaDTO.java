@@ -247,34 +247,75 @@ public class CorteCajaDTO implements Serializable{
 		sb.append(", saldoFinal=").append(this.saldoFinal);
 		sb.append(", comentarios=").append(this.comentarios);
 		
-		if(this.tipoEvento==Constants.TIPO_EVENTO_AP_INICIADA){
-			sb.append(", tipoEvento=TIPO_EVENTO_AP_INICIADA");
-		} else
-		if(this.tipoEvento==Constants.TIPO_EVENTO_AUTENTICADO){
-			sb.append(", tipoEvento=TIPO_EVENTO_AUTENTICADO");
-		} else
-		if(this.tipoEvento==Constants.TIPO_EVENTO_APERTURA){
-			sb.append(", tipoEvento=TIPO_EVENTO_APERTURA");
-		} else
-		if(this.tipoEvento==Constants.TIPO_EVENTO_SUSPENDER){
-			sb.append(", tipoEvento=TIPO_EVENTO_SUSPENDER");
-		} else
-		if(this.tipoEvento==Constants.TIPO_EVENTO_REANUDAR){
-			sb.append(", tipoEvento=TIPO_EVENTO_REANUDAR");
-		} else
-		if(this.tipoEvento==Constants.TIPO_EVENTO_ERRORGRAVE){
-			sb.append(", tipoEvento=TIPO_EVENTO_ERRORGRAVE");
-		} else
-		if(this.tipoEvento==Constants.TIPO_EVENTO_CIERRE){
-			sb.append(", tipoEvento=TIPO_EVENTO_CIERRE");
+		        String tipoEventoValue="";
+        if(this.tipoEvento==Constants.TIPO_EVENTO_AP_INICIADA){
+			tipoEventoValue="TIPO_EVENTO_AP_INICIADA";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_AUTENTICADO){
+			tipoEventoValue="TIPO_EVENTO_AUTENTICADO";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_APERTURA){
+			tipoEventoValue="TIPO_EVENTO_APERTURA";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_SUSPENDER){
+			tipoEventoValue="TIPO_EVENTO_SUSPENDER";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_REANUDAR){
+			tipoEventoValue="TIPO_EVENTO_REANUDAR";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_ERRORGRAVE){
+			tipoEventoValue="TIPO_EVENTO_ERRORGRAVE";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_CIERRE){
+			tipoEventoValue="TIPO_EVENTO_CIERRE";
 		} else{
-			sb.append(", tipoEvento=").append(this.tipoEvento);
+			tipoEventoValue="["+this.tipoEvento+"]";
 		}
-	
+        sb.append(", tipoEvento=").append(tipoEventoValue);
+		
 		sb.append(", tipoEvento=").append(this.tipoEvento);			
 		sb.append(", usuarioAutorizo=").append(this.usuarioAutorizo);			
 		sb.append("}");
 		return sb.toString();
 	}
+    
+    public String[] toStringArray(){
+        String values[]=new String[6];
+        String tipoEventoValue="";
+        if(this.tipoEvento==Constants.TIPO_EVENTO_AP_INICIADA){
+			tipoEventoValue="AP_INICIADA";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_AUTENTICADO){
+			tipoEventoValue="AUTENTICADO";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_APERTURA){
+			tipoEventoValue="APERTURA SESIÓN";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_SUSPENDER){
+			tipoEventoValue="SUSPENDER";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_REANUDAR){
+			tipoEventoValue="REANUDAR";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_ERRORGRAVE){
+			tipoEventoValue="ERRORGRAVE";
+		} else if(this.tipoEvento==Constants.TIPO_EVENTO_CIERRE){
+			tipoEventoValue="CIERRE SESIÓN";
+		} else{
+			tipoEventoValue="["+this.tipoEvento+"]";
+		}
+	
+        int valIdx=0;
+        
+        values[valIdx++]=Constants.sdfLogDate.format(new Date(this.fecha));
+        values[valIdx++]=tipoEventoValue;        
+        values[valIdx++]=this.usuarioEmail;
+        if(this.saldoInicial!=null){
+            values[valIdx++]=Constants.dfCurrency.format(this.saldoInicial);
+        }else{
+            values[valIdx++]="N/A";
+        }
+        if(this.saldoFinal!=null){
+            values[valIdx++]=Constants.dfCurrency.format(this.saldoFinal);
+        }else{
+            values[valIdx++]="N/A";
+        }
+        if(this.comentarios == null){
+            values[valIdx++]="S/C";
+        } else {
+            values[valIdx++]=this.comentarios;
+        }        
+        
+        return values;
+    }
 	
 }

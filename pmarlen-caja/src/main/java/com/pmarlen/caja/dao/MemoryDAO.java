@@ -254,30 +254,32 @@ public class MemoryDAO {
 				}
 			} else if(xt % CIERREPERIOD_SECS == 0){
                 CorteCajaDTO corteCajaDTOEnviar = ApplicationLogic.getInstance().getCorteCajaDTO();
-                if(corteCajaDTOEnviar != null && corteCajaDTOEnviar.getTipoEvento()!=Constants.TIPO_EVENTO_CIERRE) {
+                if(enviandoCierreCaja && corteCajaDTOEnviar != null && corteCajaDTOEnviar.getTipoEvento()==Constants.TIPO_EVENTO_CIERRE) {
+                    logger.debug("getPaqueteSyncPoll: CIERRE ==>> CIERRE MAS RAPIDO !!");
+                    try {					
+                        syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
+                        logger.trace("getPaqueteSyncPoll: CIERRE --> [  DOWNLOAD ]syncPollState="+syncPollState);
+                        download();
+                        logger.trace("getPaqueteSyncPoll: CIERRE --> after download : syncPollState="+syncPollState);
+                        readLocally();
+                        syncPollState = SYNC_STATE_READ;
+                    }catch(ConnectException ce){
+                        logger.debug("getPaqueteSyncPoll: CIERRE after call download:"+ce);
+                        syncPollState = SYNC_STATE_CONNECTION;					
+                    }catch(FileNotFoundException fnfe){
+                        logger.debug("getPaqueteSyncPoll: CIERRE after call download:"+fnfe);
+                        syncPollState = SYNC_STATE_SERVER_4XX;					
+                    }catch(IOException e){
+                        logger.debug("getPaqueteSyncPoll: CIERRE after call download:"+e);
+                        syncPollState = SYNC_STATE_IO_ERROR;					
+                    }catch(Exception e){
+                        logger.error("getPaqueteSyncPoll: CIERRE after call iamalive:",e);
+                        syncPollState = SYNC_STATE_ERROR;
+                    }
+                } else{
+                    //logger.debug("getPaqueteSyncPoll: NO ES ESTADO DE CIERRE:enviandoCierreCaja="+enviandoCierreCaja+", corteCajaDTOEnviar="+corteCajaDTOEnviar);
                     continue;
-                } else {
-                    logger.debug("getPaqueteSyncPoll: ==>> CIERRE MAS RAPIDO !!");
                 }
-				try {					
-					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
-					logger.trace("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
-					iamalive();
-					logger.trace("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
-					syncPollState = SYNC_STATE_IMLIVE;
-				}catch(ConnectException ce){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:"+ce);
-					syncPollState = SYNC_STATE_CONNECTION;					
-				}catch(FileNotFoundException fnfe){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:"+fnfe);
-					syncPollState = SYNC_STATE_SERVER_4XX;					
-				}catch(IOException e){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:"+e);
-					syncPollState = SYNC_STATE_IO_ERROR;					
-				}catch(Exception e){
-					logger.error("getPaqueteSyncPoll: after call iamalive:",e);
-					syncPollState = SYNC_STATE_ERROR;
-				}
 			}
 			
 			try {
@@ -335,15 +337,17 @@ public class MemoryDAO {
 			Client client = Client.create();
 			logger.debug("download:...creating WebResource for ZIP");
 			WebResource webResource = client.resource(getServerContext()+uriServiceZipSync);
-			
-			
 			String jsonInput = null;
 			SyncDTORequest syncDTORequest = new SyncDTORequest();
 			
 			IAmAliveDTORequest iAmAliveDTORequest = buildIAmALivePackageDTO();
 			
 			syncDTORequest.setiAmAliveDTORequest(iAmAliveDTORequest);			
-			syncDTORequest.setEscdList(ESFileSystemJsonDAO.getEsListNotSent());
+            final ArrayList<ES_ESD> esListNotSent = ESFileSystemJsonDAO.getEsListNotSent();
+            for(ES_ESD es_esd:esListNotSent){
+                logger.debug("download:-->> building:\tesListNotSent:es_esd:"+es_esd.getEs().toShrotString());
+            }
+			syncDTORequest.setEscdList(esListNotSent);
 			
 			logger.debug("download:-->> building: SyncDTORequest="+syncDTORequest+", before send.");
 			
@@ -864,7 +868,6 @@ public class MemoryDAO {
     
     }
     
-    
 	public static CorteCajaDTO readLastSavedCorteCajaDTOApertura(){
 		logger.debug("readLastSavedCorteCajaDTOApertura: read from :"+corteCajaDTOjsonHistoryFile);
 		
@@ -915,6 +918,52 @@ public class MemoryDAO {
         }
         logger.debug("readLastSavedCorteCajaDTOApertura:}");
         logger.debug("readLastSavedCorteCajaDTOApertura:cCC="+cCC);
+		return cCC;
+	}
+
+   	public static CorteCajaDTO readLastSavedCorteCajaDTOCierre(){
+		logger.debug("readLastSavedCorteCajaDTOCierre: read from :"+corteCajaDTOjsonHistoryFile);
+		
+		File ff = new File(".");
+		
+		File[] fcc = ff.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return(name.matches(corteCajaDTOjsonHistoryFile));
+			}
+		});
+		logger.debug("readLastSavedCorteCajaDTOCierre:list:{");
+		List<File> fxList = new ArrayList<File>();
+        TreeSet<CorteCajaDTO> cortesTS=new TreeSet<CorteCajaDTO>(new CorteCajaDTOComparatorDescOrder());
+        
+        Gson gson=new Gson();		
+		
+		for(File fx: fcc){
+			//logger.debug("readLastSavedCorteCajaDTOApertura:\t->"+fx.getName());			
+            try {
+                CorteCajaDTO cc = null;
+				cc = gson.fromJson(new FileReader(fx), CorteCajaDTO.class);
+                logger.debug("readLastSavedCorteCajaDTOCierre:\t\t->"+cc);			
+                cortesTS.add(cc);
+			}catch(Exception ioe){
+				logger.debug("readLastSavedCorteCajaDTOCierre: Error al parsear el Archivo:"+ioe.getMessage());
+			}
+		}
+		logger.debug("}");
+		
+		CorteCajaDTO cCC = null;
+		logger.debug("readLastSavedCorteCajaDTOCierre:TreeSet<CorteCajaDTO>:{");
+        boolean cierreCC =false;
+        for(CorteCajaDTO ccX: cortesTS){
+            cierreCC  = ccX.getTipoEvento() == Constants.TIPO_EVENTO_CIERRE;
+            if(cierreCC){
+                logger.debug("readLastSavedCorteCajaDTOCierre:\t->ccX: [X] ccX="+ccX);
+                cCC = ccX;
+                break;
+            }
+        }
+        logger.debug("readLastSavedCorteCajaDTOCierre:}");
+        logger.debug("readLastSavedCorteCajaDTOCierre:cCC="+cCC);
 		return cCC;
 	}
 
@@ -969,6 +1018,38 @@ public class MemoryDAO {
         logger.debug("readFirstSavedCorteCajaDTOIniciada:cCC="+cCC);
 		return cCC;
 	}
+    
+   	public static TreeSet<CorteCajaDTO> readHistoricoCorteCaja(){
+		logger.debug("readHistoricoCorteCaja");
+		
+		File ff = new File(".");
+		
+		File[] fcc = ff.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return(name.matches(corteCajaDTOjsonHistoryFile));
+			}
+		});
+		//logger.debug("readFirstSavedCorteCajaDTOIniciada:list:{");
+		List<File> fxList = new ArrayList<File>();
+        TreeSet<CorteCajaDTO> cortesTS=new TreeSet<CorteCajaDTO>(new CorteCajaDTOComparatorDescOrder());
+        
+        Gson gson=new Gson();		
+		
+		for(File fx: fcc){
+			//logger.debug("readFirstSavedCorteCajaDTOIniciada:\t->"+fx.getName());			
+            try {
+                CorteCajaDTO cc = null;
+				cc = gson.fromJson(new FileReader(fx), CorteCajaDTO.class);
+                //logger.debug("readFirstSavedCorteCajaDTOIniciada:\t\t->"+cc);			
+                cortesTS.add(cc);
+			}catch(Exception ioe){
+				logger.debug("readHistoricoCorteCaja: Error al parsear el Archivo:"+ioe.getMessage());
+			}
+		}
+		return cortesTS;
+	}
+
 
 	public static double getRemoteSaldoEstimado() throws IOException{
 		double saldoEstimado = 0.0;

@@ -55,7 +55,7 @@ public class PanelVentas extends javax.swing.JPanel {
         jLabel1.setText("Total :");
         jPanel2.add(jLabel1);
 
-        totalES.setColumns(6);
+        totalES.setColumns(8);
         totalES.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         totalES.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jPanel2.add(totalES);

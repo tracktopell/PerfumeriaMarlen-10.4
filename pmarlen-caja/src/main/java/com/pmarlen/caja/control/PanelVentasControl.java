@@ -85,7 +85,7 @@ public class PanelVentasControl implements ActionListener,TableModelListener,Mou
 	
 	public void refrescar() {		
 		final int tw = panelVentas.getVentasJTable().getWidth();
-		int[] cws = new int[]{5,15,5,5,10,30,10,10,10};
+		int[] cws = new int[]{5,5,15,5,5,10,25,10,10,10};
 		int cw;
 		logger.debug("->panelVentas.getVentasJTable().getSize()="+tw);
 		int i=0;

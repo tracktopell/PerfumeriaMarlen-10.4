@@ -31,8 +31,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.Logger;
 
 /**
@@ -102,13 +105,26 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		framePrincipal.getNotificaciones().addActionListener(this);
 		framePrincipal.getCerrando().setVisible(false);
 	}
+    
+    private void renderHistoricoSesiones(){
+        TreeSet<CorteCajaDTO> hs= MemoryDAO.readHistoricoCorteCaja();
+        Object[] columnNames=new String[]{"FECHA","EVENTO","USUARIO","SALDO INICIAL","SALDO FINAL","COMENTARIOS"};
+        Object[][] data = new Object[hs.size()][];
+        int rhs=0;
+        for(CorteCajaDTO cc: hs){
+            data[rhs++] = cc.toStringArray();
+        }        
+        framePrincipal.getCorteCajaTable().setModel(new DefaultTableModel(data, columnNames));
+        framePrincipal.getCorteCajaTable().setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+    }
+    
 	private static int nei=0;
 	public void estadoInicial() {
 		logger.debug("estadoInicial("+(nei++)+")");
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				logger.debug("\testadoInicial():START");
-				CorteCajaDTO lastAperturaCC = MemoryDAO.readLastSavedCorteCajaDTOApertura();
+				CorteCajaDTO lastAperturaCC = MemoryDAO.readLastSavedCorteCajaDTOApertura();                
                 CorteCajaDTO lastCC         = MemoryDAO.readLastSavedCorteCajaDTO();
                 CorteCajaDTO firstCC        = MemoryDAO.readFirstSavedCorteCajaDTOIniciada();
                 if(lastAperturaCC == null && lastCC != null){
@@ -139,14 +155,20 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
                     logger.debug("\testadoInicial(): \tFIX: NORMAL: lastCC="+lastCC);
                     logger.debug("\testadoInicial(): \tFIX: ===========================================");
                 }
-                
+                CorteCajaDTO lastCierreCC   = MemoryDAO.readLastSavedCorteCajaDTOCierre();
                 logger.debug("\testadoInicial():lastAperturaCC="+lastAperturaCC);
+                logger.debug("\testadoInicial():lastCierreCC  ="+lastCierreCC);
                 logger.debug("\testadoInicial():lastCC        ="+lastCC);
-				if(lastAperturaCC!=null && (
-                        lastCC.getTipoEvento() == Constants.TIPO_EVENTO_AP_INICIADA || 
-                        lastCC.getTipoEvento() == Constants.TIPO_EVENTO_AUTENTICADO )){
-                    if( lastCC.getTipoEvento() == Constants.TIPO_EVENTO_CIERRE ){
-                        ((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
+                
+                boolean sesionSigueAbierta = false;
+                if(lastCierreCC!=null && lastCierreCC.getFecha()<lastAperturaCC.getFecha()){
+                    sesionSigueAbierta = true;
+                }
+                logger.debug("\testadoInicial():sesionSigueAbierta ="+sesionSigueAbierta);
+                
+				if(lastAperturaCC!=null){
+                    if( ! sesionSigueAbierta ){
+                        sesionMenu_actionPerformed();
                         logger.debug("\testadoInicial(): SE DEBE ABRIR UNA NUEVA SESION");
                     } else {
                         abrirSesionNueva();					
@@ -273,6 +295,12 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 	AperturaCajaControl acc   = null;
 	
 	private void sesionMenu_actionPerformed(){
+        new Thread(){
+            @Override
+            public void run() {
+                renderHistoricoSesiones();
+            }            
+        }.start();
 		((CardLayout)framePrincipal.getPanels().getLayout()).show(framePrincipal.getPanels(), "panelSesion");
 	}
 	
