@@ -2015,6 +2015,15 @@ public class EntradaSalidaDAO {
 			throw new DAOException("InUpdate:" + ex.getMessage());
 		} finally {
 			logger.info("->invocarInicioWSCFDI:END");
+			try {
+				if(conn != null && !conn.isClosed()){
+					logger.info("->invocarInicioWSCFDI:Clossing JDBC connection");
+					conn.close();
+				}
+			}catch(Exception e){
+				logger.error("->invocarInicioWSCFDI:SQLException: clossing connection:", e);
+			}
+			
 		}
 	}
 
