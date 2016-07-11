@@ -19,10 +19,14 @@ public class DigifactClient {
 	private static Logger logger = Logger.getLogger(DigifactClient.class.getSimpleName());
 
 	public static Cfd invokeWSFactura(Cfd cfdVenta, EntradaSalidaQuickView pedidoVenta, ArrayList<EntradaSalidaDetalleQuickView> esdList, Cliente cliente, String serie, String usuario, String contrasena) {
-		logger.info("Adding trust to certificates");
 		
-		System.setProperty("javax.net.ssl.trustStore","clientTrustStore.key");
-		System.setProperty("javax.net.ssl.trustStorePassword","qwerty");
+		try{
+			logger.debug("Adding trust to certificates");
+			System.setProperty ( "javax.net.ssl.trustStore ","com.pmarlen.digifactws20160707.NaiveTrustManager");
+			DisableSSLCertificateCheckUtil.disableChecks();
+		}catch(Exception e){
+			logger.error("invokeWSFactura:", e);
+		}
 		
 		DatosCFD datosCFD;
 		Receptor receptor;
