@@ -114,10 +114,10 @@ public class DigifactClient {
 		//======================================================================
 
 		try {
-			logger.info("-->> Invocacion a SICOFI: pedidoVentaId=" + pedidoVenta.getId());
+			logger.debug("-->> Invocacion a SICOFI: pedidoVentaId=" + pedidoVenta.getId());
 
 			String xml = port.generaCFD(usuario, contrasena, datosCFD, receptor, conceptos, impuestos, xmlAddenda);
-			logger.info("-->>OK recibido el XML desde digifact: mide " + xml.length() + " bytes");
+			logger.debug("-->>OK recibido el XML desde digifact: mide " + xml.length() + " bytes");
 
 			String folioXML = Constants.extractXMLAtribute("folio", xml);
 			String serieXML = Constants.extractXMLAtribute("serie", xml);
@@ -130,7 +130,7 @@ public class DigifactClient {
 
 			cfdVenta.setContenidoOriginalXml(xml.getBytes());
 			cfdVenta.setUltimaActualizacion(new Timestamp(System.currentTimeMillis()));
-			logger.info("-->>OK invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId());
+			logger.debug("-->>OK invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId());
 			cfdVenta.setCallingErrorResult(null);
 		} catch (Exception ex) {
 			logger.error("-->>Error en invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId(), ex);

@@ -175,7 +175,7 @@ public class EntradaSalidaFooter implements Serializable{
 			importeRegNG       = (importeReg / Constants.MAS_IVA);
 			subTotalNoGrabado += importeRegNG;
 			subTotalBruto     += importeReg;
-			logger.info("->\t"+dvp.getCantidad()+" * "+(dvp.getPrecioVenta()/Constants.MAS_IVA)+" = "+importeRegNG);
+			logger.debug("->\t"+dvp.getCantidad()+" * "+(dvp.getPrecioVenta()/Constants.MAS_IVA)+" = "+importeRegNG);
 		}
 		descuentoCalculado = 0;
 		descuentoExtra = 0;
@@ -215,13 +215,13 @@ public class EntradaSalidaFooter implements Serializable{
 			
 			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;			
 		}
-		logger.info("->calculaParaFacturaTotalesDesde: FACTURA subTotalBruto="+subTotalBruto);
-		logger.info("->calculaParaFacturaTotalesDesde: FACTURA subTotalNoGrabado="+subTotalNoGrabado);		
-		logger.info("->calculaParaFacturaTotalesDesde: FACTURA importeDescuentoAplicado="+importeDescuentoAplicado);
+		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA subTotalBruto="+subTotalBruto);
+		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA subTotalNoGrabado="+subTotalNoGrabado);		
+		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA importeDescuentoAplicado="+importeDescuentoAplicado);
 		importeIVA = (subTotalNoGrabado - importeDescuentoAplicado) * Constants.IVA;
-		logger.info("->calculaParaFacturaTotalesDesde: FACTURA iva="+importeIVA);
+		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA iva="+importeIVA);
 		total = subTotalNoGrabado - importeDescuentoAplicado + importeIVA;		
-		logger.info("->calculaParaFacturaTotalesDesde: FACTURA total="+total);
+		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA total="+total);
 	}
 
 	/**
