@@ -1,25 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.pmarlen.digifactws.production.client;
+package com.pmarlen.digifactws20160707.production.client;
 
 import com.pmarlen.backend.model.Cfd;
 import com.pmarlen.backend.model.Cliente;
-import com.pmarlen.backend.model.EntradaSalida;
-import com.pmarlen.backend.model.EntradaSalidaDetalle;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
-import com.pmarlen.businesslogic.LogicaFinaciera;
-import com.pmarlen.digifactws.production.*;
+import com.pmarlen.digifactws20160707.production.*;
 import com.pmarlen.model.Constants;
-import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 import org.apache.log4j.Logger;
 /**
  *
@@ -152,5 +141,5 @@ public class DigifactClient {
 			cfdVenta.setUltimaActualizacion(new Timestamp(System.currentTimeMillis()));
 		}
 		return cfdVenta;
-	}
+	}	
 }

@@ -21,7 +21,7 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaEstadoQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.backend.model.quickviews.PagerInfo;
-import com.pmarlen.digifactws.production.client.DigifactClient;
+import com.pmarlen.digifactws20160707.production.client.DigifactClient;
 import com.pmarlen.jsf.model.EntradaSalidaDTOPageHelper;
 import com.pmarlen.model.Constants;
 import com.tracktopell.jdbc.DataSourceFacade;
