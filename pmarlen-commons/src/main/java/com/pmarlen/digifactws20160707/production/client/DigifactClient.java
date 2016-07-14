@@ -136,13 +136,18 @@ public class DigifactClient {
 			logger.error("-->>Error en invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId(), ex);
 			cfdVenta.setNumCfd(null);
 			cfdVenta.setTipo(null);
-			final String localizedMessage = ex.getLocalizedMessage().trim();
-			if (localizedMessage.length() > 254) {
-				cfdVenta.setCallingErrorResult(localizedMessage.substring(0, 254));
-			} else {
-				cfdVenta.setCallingErrorResult(localizedMessage);
+			try{
+				String localizedMessage = ex.getMessage().trim();
+				if (localizedMessage.length() > 254) {
+					cfdVenta.setCallingErrorResult(localizedMessage.substring(0, 254));
+				} else {
+					cfdVenta.setCallingErrorResult(localizedMessage);
+				}
+				
+				cfdVenta.setUltimaActualizacion(new Timestamp(System.currentTimeMillis()));
+			}catch(Throwable t){
+				cfdVenta.setCallingErrorResult("ERROR GRAVE AL FACTURAR, VER LOGS");
 			}
-			cfdVenta.setUltimaActualizacion(new Timestamp(System.currentTimeMillis()));
 		}
 		return cfdVenta;
 	}	
