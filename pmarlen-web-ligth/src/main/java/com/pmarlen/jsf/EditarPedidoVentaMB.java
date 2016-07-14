@@ -516,13 +516,7 @@ public class EditarPedidoVentaMB implements Serializable{
 		logger.trace("actualizarTotales:entradaSalida == null?"+(entradaSalida==null));
 		hayCambios=true;
 		entradaSalidaFooter.calculaParaFacturaTotalesDesde(entradaSalida, entityList);
-		logger.info("actualizarTotales:entradaSalidaFooter="+entradaSalidaFooter);
-//		if(entradaSalida!=null){
-//			logger.info("actualizarTotales:-->>LogicaFinaciera.calculaTotales: entradaSalida.getAutorizaDescuento()="+entradaSalida.getAutorizaDescuento()+", descExtra="+entradaSalida.getPorcentajeDescuentoExtra());
-//			TotalesCalculados ct = LogicaFinaciera.calculaTotales(entradaSalida, entityList, false, 0.0, entradaSalida.getSucursalId()==1?0:1);
-//			
-//			logger.info("actualizarTotales:-->>LogicaFinaciera.calculaTotales: TotalesCalculados:\n"+ct);
-//		}		
+		logger.trace("actualizarTotales:entradaSalidaFooter="+entradaSalidaFooter);
 	}
 	
 	public void actualizarTabla(){
