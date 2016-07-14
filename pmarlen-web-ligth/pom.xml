@@ -35,7 +35,7 @@
 		<environment.jdbc.password>PMDB104_DEVE_PWD</environment.jdbc.password>
 		<environment.jdbc.root_user>root</environment.jdbc.root_user>
 		<environment.jdbc.root_password>root</environment.jdbc.root_password>
-		
+		<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>		
 	</properties>
 
 	<dependencies>
@@ -65,7 +65,7 @@
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
-		</dependency>
+			</dependency>
 	
 		<!-- PrimeFaces -->
 		<dependency>
@@ -124,7 +124,7 @@
 		</dependency>
 		-->
 		<!-- REST -->
-        <dependency>
+       		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
 			<version>1.8</version>
@@ -135,7 +135,28 @@
 			<artifactId>jersey-json</artifactId>
 			<version>1.8</version>
 		</dependency>
-
+<!--
+<dependency>
+    <groupId>org.glassfish.jersey.core</groupId>
+    <artifactId>jersey-server</artifactId>
+    <version>2.23.1</version>
+</dependency>
+<dependency>
+    <groupId>org.glassfish.jersey.core</groupId>
+    <artifactId>jersey-common</artifactId>
+    <version>2.23.1</version>
+</dependency>
+<dependency>
+    <groupId>org.glassfish.jersey.media</groupId>
+    <artifactId>jersey-media-json-jackson</artifactId>
+    <version>2.23.1</version>
+</dependency>
+<dependency>
+    <groupId>org.codehaus.jackson</groupId>
+    <artifactId>jackson-mapper-asl</artifactId>
+    <version>1.9.13</version>
+</dependency>
+-->
 		<!-- Java Mail API -->
 		
 		<dependency>
@@ -175,7 +196,7 @@
 			<artifactId>ooxml-schemas</artifactId>
 			<version>1.3</version>
 		</dependency>
-
+<!--
 		<dependency>
 			<groupId>javax.xml.ws</groupId>
 			<artifactId>jaxws-api</artifactId>
@@ -183,19 +204,18 @@
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.ws</groupId>
-			<artifactId>jaxws-rt</artifactId>
+			<artifactId>jaxws-tools</artifactId>
 			<version>2.2.10</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.ws</groupId>
-			<artifactId>jaxws-tools</artifactId>
+			<artifactId>jaxws-rt</artifactId>
 			<version>2.2.10</version>
 			<type>pom</type>
 		</dependency>
-		
-		
-		
+-->
+
 	</dependencies>
 	<build>
 		<finalName>l30</finalName>
@@ -330,6 +350,7 @@
 				<environment.jdbc.password>PMDB104_DEVE_PWD</environment.jdbc.password>
 				<environment.jdbc.root_user>root</environment.jdbc.root_user>
 				<environment.jdbc.root_password>root</environment.jdbc.root_password>
+				<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>
 			</properties>
 		</profile>
 
@@ -365,6 +386,7 @@
 				<environment.jdbc.password>PMDB104_PROD_PWD</environment.jdbc.password>
 				<environment.jdbc.root_user>root</environment.jdbc.root_user>
 				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
+				<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>
 			</properties>
 		</profile>
 				
@@ -400,6 +422,7 @@
 				<environment.jdbc.password>PMDB104_PROD_PWD</environment.jdbc.password>
 				<environment.jdbc.root_user>root</environment.jdbc.root_user>
 				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
+				<environment.pmcajadist>/usr/local/pmarlen-caja-PROD_dist</environment.pmcajadist>
 			</properties>
 		</profile>
 		
@@ -435,6 +458,7 @@
 				<environment.jdbc.password>PMDB104_DEVE_PWD</environment.jdbc.password>
 				<environment.jdbc.root_user>root</environment.jdbc.root_user>
 				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
+				<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>
 			</properties>
 		</profile>
 

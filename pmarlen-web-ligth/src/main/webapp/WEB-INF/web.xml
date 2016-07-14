@@ -102,7 +102,7 @@
         <servlet-class>com.pmarlen.web.servlet.PMCajaUpdateServlet</servlet-class>
         <init-param>
             <param-name>pmcajadist</param-name>
-            <param-value>/usr/local/pmcajadist</param-value>
+            <param-value>${environment.pmcajadist}</param-value> 
         </init-param>
     </servlet>
 
@@ -154,12 +154,11 @@
         <servlet-name>ImageServlet</servlet-name>
         <url-pattern>/multimedio/productos/*</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>jersey-serlvet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-	<servlet-mapping>
+    <servlet-mapping>
         <servlet-name>PMCajaUpdateServlet</servlet-name>
         <url-pattern>/pmcajaupdate/*</url-pattern>
     </servlet-mapping>
