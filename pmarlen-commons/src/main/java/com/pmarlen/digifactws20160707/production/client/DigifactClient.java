@@ -24,6 +24,8 @@ public class DigifactClient {
 			logger.debug("Adding trust to certificates");
 			System.setProperty ( "javax.net.ssl.trustStore ","com.pmarlen.digifactws20160707.NaiveTrustManager");
 			DisableSSLCertificateCheckUtil.disableChecks();
+			logger.debug("Setting javax.xml.bind.JAXBContext <- com.sun.xml.internal.bind.v2.ContextFactory");
+			System.setProperty("javax.xml.bind.JAXBContext","com.sun.xml.internal.bind.v2.ContextFactory"); 
 		}catch(Exception e){
 			logger.error("invokeWSFactura:", e);
 		}
