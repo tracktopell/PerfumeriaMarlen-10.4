@@ -584,7 +584,9 @@ public class EditarPedidoVentaMB implements Serializable{
 		if(metodoDePagos != null){
 			metodoDePagoList.add(new SelectItem(0,"--SELECCIONE--"));			
 			for(MetodoDePago fp:metodoDePagos){
-				metodoDePagoList.add(new SelectItem(fp.getId(),fp.getDescripcion()));			
+				if(fp.getId().intValue()>=10){
+					metodoDePagoList.add(new SelectItem(fp.getId(),fp.getDescripcion()));
+				}
 			}
 		}
 		return metodoDePagoList;
