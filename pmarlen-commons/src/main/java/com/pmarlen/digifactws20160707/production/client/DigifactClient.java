@@ -46,7 +46,16 @@ public class DigifactClient {
 		datosCFD.setSerie(serie);
 		datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
 		datosCFD.setTipodeComprobante("F");
-		datosCFD.setMetododePago(pedidoVenta.getMetodoDePagoDescripcion().toUpperCase());
+		//datosCFD.setMetododePago(pedidoVenta.getMetodoDePagoDescripcion().toUpperCase());
+		String mpOrig = pedidoVenta.getMetodoDePagoDescripcion().toUpperCase();
+		if(mpOrig.contains("|")){
+			String mpOrigCveVal[]=mpOrig.split("\\|");
+			String mpSHCP = mpOrigCveVal[0];
+			logger.debug("->METODO DE PAGO SHCP:mpOrig="+mpOrig+", mpSHCP="+mpSHCP);
+			datosCFD.setMetododePago(mpSHCP);
+		} else {
+			datosCFD.setMetododePago(mpOrig);
+		}
 		datosCFD.setEmailMensaje("FACTURA PEDIDO:" + pedidoVenta.getId());
 
 		EntradaSalidaFooter esf = new EntradaSalidaFooter();
