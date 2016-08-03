@@ -1891,7 +1891,13 @@ public class EntradaSalidaDAO {
 					ArrayList<EntradaSalidaDetalleQuickView> pvdListError = new ArrayList<EntradaSalidaDetalleQuickView>();
 					int pvdI=0;
 					for(EntradaSalidaDetalleQuickView pvdE: pvdList){
-						if(pvdI<=10){
+						if(pvdI<=100){
+							double precioPVD_CFD = pvdE.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
+							double importePVD_CFD = precioPVD_CFD * pvdE.getCantidad();
+			
+							logger.info("->invocarInicioWSCFDI: ELEMENT:"+pvdE.getCantidad()+"|"+pvdE.getProductoUnidadEmpaque()+"|"+
+									(pvdE.getProductoNombre() + "/" + pvdE.getProductoPresentacion() + "(" + pvdE.getProductoContenido() + " " + pvdE.getProductoUnidadMedida() + ")")+"|"+
+									precioPVD_CFD+"|"+importePVD_CFD);
 							pvdListError.add(pvdE);
 						}
 						pvdI++;
@@ -2012,7 +2018,7 @@ public class EntradaSalidaDAO {
 
 					psESE.setTimestamp(ciESE++, eseX.getFecha());
 					psESE.setString(ciESE++, eseX.getUsuarioEmail());
-					psESE.setString(ciESE++, eseX.getComentarios());
+					psESE.setString(ciESE++, "REFACTURADO");
 
 					psESE.setInt(ciESE++, pedidoVenta.getId());
 					psESE.setInt(ciESE++, eseX.getEstadoId());
@@ -2129,7 +2135,7 @@ public class EntradaSalidaDAO {
 					psESE.setInt(ciESE++, eseX.getEstadoId());
 					psESE.setTimestamp(ciESE++, eseX.getFecha());
 					psESE.setString(ciESE++, eseX.getUsuarioEmail());
-					psESE.setString(ciESE++, eseX.getComentarios());
+					psESE.setString(ciESE++, "ERROR 1RA VEZ FACTURAR");
 
 					psESE.executeUpdate();
 					logger.debug("->invocarInicioWSCFDI:insert psESE executed");
@@ -2139,7 +2145,7 @@ public class EntradaSalidaDAO {
 
 					psESE.setTimestamp(ciESE++, eseX.getFecha());
 					psESE.setString(ciESE++, eseX.getUsuarioEmail());
-					psESE.setString(ciESE++, eseX.getComentarios());
+					psESE.setString(ciESE++, "ERROR AL RE-FACTURAR");
 
 					psESE.setInt(ciESE++, pedidoVenta.getId());
 					psESE.setInt(ciESE++, eseX.getEstadoId());
