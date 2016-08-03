@@ -187,6 +187,7 @@ public class EntradaSalidaDAO {
 					+ "FP.DESCRIPCION AS FP_DESCRIPCION,\n"
 					+ "MP.DESCRIPCION AS MP_DESCRIPCION,\n"
 					+ "CFD.NUM_CFD AS CFD_NUM_CFD,\n"
+					+ "CFD.CALLING_ERROR_RESULT AS CFD_CALLING_ERROR_RESULT,\n"
 					+ "COUNT(1) NUM_ELEMENTOS, \n"
 					+ "S1.NOMBRE AS S1_NOMBRE,\n"
 					+ "S2.NOMBRE AS S2_NOMBRE,\n"
@@ -261,6 +262,7 @@ public class EntradaSalidaDAO {
 				x.setMetodoDePagoDescripcion((String) rs.getObject("MP_DESCRIPCION"));
 				x.setFormaDePagoDescripcion((String) rs.getObject("FP_DESCRIPCION"));
 				x.setCdfNumCFD((String) rs.getObject("CFD_NUM_CFD"));
+				x.setCfdCallingErrorResult((String)rs.getObject("CFD_CALLING_ERROR_RESULT"));
 
 				x.setNumElementos(rs.getInt("NUM_ELEMENTOS"));
 				x.setImporteBruto(rs.getDouble("IMPORTE_BRUTO"));
