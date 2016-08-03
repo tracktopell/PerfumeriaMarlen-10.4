@@ -1892,12 +1892,21 @@ public class EntradaSalidaDAO {
 					logger.info("->invocarInicioWSCFDI:The fucking BUG:");
 					ArrayList<EntradaSalidaDetalleQuickView> pvdListError = new ArrayList<EntradaSalidaDetalleQuickView>();
 					int pvdI=0;
+					int numMax=300;
+					if(pedidoVenta.getComentarios()!=null ){
+						try{
+							numMax=Integer.parseInt(pedidoVenta.getComentarios());
+						}catch(NumberFormatException nfe){
+							logger.error("chale, no que el numero ?");
+							numMax=250;
+						}
+					}
 					for(EntradaSalidaDetalleQuickView pvdE: pvdList){
-						if(pvdI<=300){
+						if(pvdI<=numMax){
 							double precioPVD_CFD = pvdE.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
 							double importePVD_CFD = precioPVD_CFD * pvdE.getCantidad();
 			
-							logger.info("->invocarInicioWSCFDI: ELEMENT:"+pvdE.getCantidad()+"|"+pvdE.getProductoUnidadEmpaque()+"|"+
+							logger.info("->invocarInicioWSCFDI: ["+pvdI+"] ELEMENT:"+pvdE.getCantidad()+"|"+pvdE.getProductoUnidadEmpaque()+"|"+
 									(pvdE.getProductoNombre() + "/" + pvdE.getProductoPresentacion() + "(" + pvdE.getProductoContenido() + " " + pvdE.getProductoUnidadMedida() + ")")+"|"+
 									precioPVD_CFD+"|"+importePVD_CFD);
 							pvdListError.add(pvdE);
