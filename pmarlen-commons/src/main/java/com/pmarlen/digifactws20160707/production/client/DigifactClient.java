@@ -5,10 +5,12 @@ import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
+import com.pmarlen.businesslogic.exception.CFDInvokingWSException;
 import com.pmarlen.digifactws20160707.production.*;
 import com.pmarlen.model.Constants;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import javax.xml.ws.soap.SOAPFaultException;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
@@ -20,7 +22,7 @@ public class DigifactClient {
 
 	private static Logger logger = Logger.getLogger(DigifactClient.class.getSimpleName());
 
-	public static Cfd invokeWSFactura(Cfd cfdVenta, EntradaSalidaQuickView pedidoVenta, ArrayList<EntradaSalidaDetalleQuickView> esdList, Cliente cliente, String serie, String usuario, String contrasena) {
+	public static Cfd invokeWSFactura(Cfd cfdVenta, EntradaSalidaQuickView pedidoVenta, ArrayList<EntradaSalidaDetalleQuickView> esdList, Cliente cliente, String serie, String usuario, String contrasena) throws CFDInvokingWSException{
 		
 		try{
 			logger.debug("Adding trust to certificates");
@@ -30,6 +32,7 @@ public class DigifactClient {
 			System.setProperty("javax.xml.bind.JAXBContext","com.sun.xml.internal.bind.v2.ContextFactory"); 
 		}catch(Exception e){
 			logger.error("invokeWSFactura:", e);
+			throw new CFDInvokingWSException("SSL Error:"+e.getMessage());
 		}
 		
 		DatosCFD datosCFD;
@@ -145,6 +148,31 @@ public class DigifactClient {
 			cfdVenta.setUltimaActualizacion(new Timestamp(System.currentTimeMillis()));
 			logger.debug("-->>OK invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId());
 			cfdVenta.setCallingErrorResult(null);
+		} catch (SOAPFaultException sex) {			
+			logger.error("-->>SOAP Error en invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId(), sex);
+			logger.error("-->>WS param:    usuario:"+usuario);
+			logger.error("-->>WS param: contrasena:"+contrasena);
+			logger.error("-->>WS param:   datosCFD:"+ReflectionToStringBuilder.toString(datosCFD, ToStringStyle.MULTI_LINE_STYLE));
+			logger.error("-->>WS param:   receptor:"+ReflectionToStringBuilder.toString(receptor, ToStringStyle.MULTI_LINE_STYLE));
+			logger.error("-->>WS param:  conceptos:"+ReflectionToStringBuilder.toString(conceptos, ToStringStyle.MULTI_LINE_STYLE));
+			logger.error("-->>WS param:  impuestos:"+ReflectionToStringBuilder.toString(impuestos, ToStringStyle.MULTI_LINE_STYLE));
+			logger.error("-->>WS param: xmlAddenda:"+ReflectionToStringBuilder.toString(xmlAddenda, ToStringStyle.MULTI_LINE_STYLE));
+			
+			cfdVenta.setNumCfd(null);
+			cfdVenta.setTipo(null);
+			try{
+				String localizedMessage = sex.getMessage().trim();
+				if (localizedMessage.length() > 254) {
+					cfdVenta.setCallingErrorResult(localizedMessage.substring(0, 254));
+				} else {
+					cfdVenta.setCallingErrorResult(localizedMessage);
+				}
+				
+				cfdVenta.setUltimaActualizacion(new Timestamp(System.currentTimeMillis()));
+			}catch(Throwable t){
+				cfdVenta.setCallingErrorResult("ERROR GRAVE AL FACTURAR, VER LOGS");
+			}
+			throw new CFDInvokingWSException("SSL Error:"+sex.getMessage());
 		} catch (Exception ex) {
 			logger.error("-->>Error en invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId(), ex);
 			logger.error("-->>WS param:    usuario:"+usuario);
@@ -169,6 +197,7 @@ public class DigifactClient {
 			}catch(Throwable t){
 				cfdVenta.setCallingErrorResult("ERROR GRAVE AL FACTURAR, VER LOGS");
 			}
+			throw new CFDInvokingWSException("SSL Error:"+ex.getMessage());
 		}
 		return cfdVenta;
 	}	

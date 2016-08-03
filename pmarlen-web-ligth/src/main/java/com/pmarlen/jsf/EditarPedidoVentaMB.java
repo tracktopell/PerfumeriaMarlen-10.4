@@ -895,7 +895,9 @@ public class EditarPedidoVentaMB implements Serializable{
 	}
 
 	public boolean isFacturable(){
-		return entradaSalida!=null && (entradaSalida.getEstadoId() == Constants.ESTADO_SURTIDO || (entradaSalida.getEstadoId() == Constants.ESTADO_FACTURADO && entradaSalida.getCfdId()==null));
+		return entradaSalida!=null && 
+				(entradaSalida.getEstadoId() == Constants.ESTADO_SURTIDO || 
+				(entradaSalida.getEstadoId() == Constants.ESTADO_FACTURADO && entradaSalida.getCfdId()==null));
 	}
 	
 	public boolean isCancelable(){

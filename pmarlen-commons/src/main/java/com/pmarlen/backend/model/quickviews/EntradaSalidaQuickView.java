@@ -26,6 +26,8 @@ public class EntradaSalidaQuickView extends EntradaSalida {
 	
 	private String cdfNumCFD;
 	
+	private String cfdCallingErrorResult;
+	
 	private String clienteRFC;
 	
 	private String clienteRazonSocial;
@@ -118,6 +120,23 @@ public class EntradaSalidaQuickView extends EntradaSalida {
 		this.cdfNumCFD = cdfNumCFD;
 	}
 
+	/**
+	 * 
+	 * @return 
+	 */
+	public String getCfdCallingErrorResult() {
+		return cfdCallingErrorResult;
+	}
+
+	/**
+	 * @param cfdCallingErrorResult 
+	 */
+	public void setCfdCallingErrorResult(String cfdCallingErrorResult) {
+		this.cfdCallingErrorResult = cfdCallingErrorResult;
+	}
+	
+	
+	
 	/**
 	 * @return the clienteRFC
 	 */
