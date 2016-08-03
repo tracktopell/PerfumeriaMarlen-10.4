@@ -476,7 +476,7 @@
 								<p:confirm header="GENERAR C.F.D." message="¿ SEGURO QUE TODO ESTA LISTO PARA FACTURAR ?" icon="ui-icon-alert" />
 							</p:commandButton>
 							
-							<p:commandButton id="generarCFDbtn" value="RE-GENERAR C.F.D. FACTURA" icon="ui-icon-contact" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin  and (editarPedidoVentaMB.facturable and not empty editarPedidoVentaMB.pedidoVenta.cfdCallingErrorResult)}"
+							<p:commandButton id="reGenerarCFDbtn" value="RE-GENERAR C.F.D. FACTURA" icon="ui-icon-contact" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin  and (editarPedidoVentaMB.facturable and not empty editarPedidoVentaMB.pedidoVenta.cfdCallingErrorResult)}"
 											 actionListener="#{editarPedidoVentaMB.generaCFDReal}" process="@all" update="@all" >
 								<p:confirm header="RE-GENERAR C.F.D." message="¿ SEGURO QUE TODO ESTA LISTO PARA RE-FACTURAR ?" icon="ui-icon-alert" />
 							</p:commandButton>
