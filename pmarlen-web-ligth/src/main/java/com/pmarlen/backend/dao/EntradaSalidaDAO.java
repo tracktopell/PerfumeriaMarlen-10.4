@@ -1905,9 +1905,11 @@ public class EntradaSalidaDAO {
 						if(pvdI<=numMax){
 							double precioPVD_CFD = pvdE.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
 							double importePVD_CFD = precioPVD_CFD * pvdE.getCantidad();
-							String sxx=(pvdE.getProductoNombre() + "/" + pvdE.getProductoPresentacion() + "(" + pvdE.getProductoContenido() + " " + pvdE.getProductoUnidadMedida() + ")");
+							
+							String desc = pvdE.getProductoCodigoBarras()+" (" + pvdE.getProductoContenido() + " " + pvdE.getProductoUnidadMedida() + ")";
+							
 							logger.info("->invocarInicioWSCFDI: ["+pvdI+"] ELEMENT:"+pvdE.getCantidad()+"|"+pvdE.getProductoUnidadEmpaque()+"|"+
-									sxx+"["+sxx.length()+"]|"+
+									desc+"["+desc.length()+"]|"+
 									precioPVD_CFD+"|"+importePVD_CFD);
 							pvdListError.add(pvdE);
 						}
