@@ -1886,7 +1886,22 @@ public class EntradaSalidaDAO {
 			}
 			logger.debug("->invocarInicioWSCFDI:before WS invoke.");
 			try {
-				DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdList, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
+				if(pedidoVenta.getId()==115082){
+					logger.info("->invocarInicioWSCFDI:The fucking BUG:");
+					ArrayList<EntradaSalidaDetalleQuickView> pvdListError = new ArrayList<EntradaSalidaDetalleQuickView>();
+					int pvdI=0;
+					for(EntradaSalidaDetalleQuickView pvdE: pvdList){
+						if(pvdI==0){
+							pvdListError.add(pvdE);
+						}
+						pvdI++;
+					}
+					DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdListError, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
+				}else{
+					DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdList, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
+				}
+				
+				
 				logger.debug("->invocarInicioWSCFDI:WS invoked.");
 				try {
 					logger.debug("->invocarInicioWSCFDI:cfd =" + BeanUtils.describe(cfd));
@@ -2049,7 +2064,7 @@ public class EntradaSalidaDAO {
 							+ " WHERE ID=?");
 
 					int ci = 1;
-					psCFD.setObject(ci++, cfd.getId());
+					
 					psCFD.setObject(ci++, now);
 					if (cfd.getContenidoOriginalXml() != null) {
 						psCFD.setObject(ci++, new ByteArrayInputStream(cfd.getContenidoOriginalXml()));
@@ -2059,8 +2074,9 @@ public class EntradaSalidaDAO {
 					psCFD.setObject(ci++, cfd.getCallingErrorResult());
 					psCFD.setObject(ci++, cfd.getNumCfd());
 					psCFD.setObject(ci++, cfd.getTipo());
+					
 					psCFD.setObject(ci++, cfd.getId());
-
+					
 					psCFD.executeUpdate();
 					logger.debug("updated");
 				}
