@@ -1891,7 +1891,7 @@ public class EntradaSalidaDAO {
 					ArrayList<EntradaSalidaDetalleQuickView> pvdListError = new ArrayList<EntradaSalidaDetalleQuickView>();
 					int pvdI=0;
 					for(EntradaSalidaDetalleQuickView pvdE: pvdList){
-						if(pvdI==0){
+						if(pvdI<=10){
 							pvdListError.add(pvdE);
 						}
 						pvdI++;
@@ -1902,7 +1902,7 @@ public class EntradaSalidaDAO {
 				}
 				
 				
-				logger.debug("->invocarInicioWSCFDI:WS invoked.");
+				logger.info("->invocarInicioWSCFDI:WS will invoked normally.");
 				try {
 					logger.debug("->invocarInicioWSCFDI:cfd =" + BeanUtils.describe(cfd));
 				} catch (Exception ex) {
@@ -1938,7 +1938,7 @@ public class EntradaSalidaDAO {
 							+ " WHERE ID=?");
 
 					int ci = 1;
-					psCFD.setObject(ci++, cfd.getId());
+					
 					psCFD.setObject(ci++, now);
 					if (cfd.getContenidoOriginalXml() != null) {
 						psCFD.setObject(ci++, new ByteArrayInputStream(cfd.getContenidoOriginalXml()));
@@ -2027,7 +2027,7 @@ public class EntradaSalidaDAO {
 				logger.debug("->invocarInicioWSCFDI:COMMIT");
 
 			} catch (CFDInvokingWSException cfdEx) {
-				logger.debug("->invocarInicioWSCFDI:WS invoked with ERROR.");
+				logger.info("->invocarInicioWSCFDI:WS invoked with ERROR.");
 				mensajeRefacturado = "WSERROR:"+cfdEx.getMessage();
 				try {
 					logger.debug("->invocarInicioWSCFDI:cfd =" + BeanUtils.describe(cfd));
@@ -2152,7 +2152,7 @@ public class EntradaSalidaDAO {
 
 				conn.commit();
 				logger.debug("->invocarInicioWSCFDI:COMMIT");
-
+				throw new DAOException("WS ERROR");
 			}
 		} catch (SQLException ex) {
 			logger.error("->invocarInicioWSCFDI:SQLException:", ex);
