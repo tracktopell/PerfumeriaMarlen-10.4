@@ -9,6 +9,8 @@ import com.pmarlen.digifactws20160707.production.*;
 import com.pmarlen.model.Constants;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 /**
  *
@@ -145,6 +147,14 @@ public class DigifactClient {
 			cfdVenta.setCallingErrorResult(null);
 		} catch (Exception ex) {
 			logger.error("-->>Error en invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId(), ex);
+			logger.error("-->>WS param:    usuario:"+usuario);
+			logger.error("-->>WS param: contrasena:"+contrasena);
+			logger.error("-->>WS param:   datosCFD:"+ReflectionToStringBuilder.toString(datosCFD, ToStringStyle.MULTI_LINE_STYLE));
+			logger.error("-->>WS param:   receptor:"+ReflectionToStringBuilder.toString(receptor, ToStringStyle.MULTI_LINE_STYLE));
+			logger.error("-->>WS param:  conceptos:"+ReflectionToStringBuilder.toString(conceptos, ToStringStyle.MULTI_LINE_STYLE));
+			logger.error("-->>WS param:  impuestos:"+ReflectionToStringBuilder.toString(impuestos, ToStringStyle.MULTI_LINE_STYLE));
+			logger.error("-->>WS param: xmlAddenda:"+ReflectionToStringBuilder.toString(xmlAddenda, ToStringStyle.MULTI_LINE_STYLE));
+			
 			cfdVenta.setNumCfd(null);
 			cfdVenta.setTipo(null);
 			try{

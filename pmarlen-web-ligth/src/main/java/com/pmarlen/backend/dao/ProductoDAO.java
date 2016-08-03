@@ -117,7 +117,7 @@ public class ProductoDAO {
 	}
 
 	public EntradaSalidaDetalleQuickView findByCodigo(int almacenId, String codigo) throws DAOException {
-		logger.info("->findAllExclusiveByCodigo");
+		logger.debug("->findAllExclusiveByCodigo");
 		EntradaSalidaDetalleQuickView x = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -133,7 +133,7 @@ public class ProductoDAO {
 					+ "AND    P.CODIGO_BARRAS=?\n"
 					+ "AND    (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)\n"
 					+ "ORDER BY P.NOMBRE,P.PRESENTACION,P.LINEA,P.MARCA";
-			logger.info("->query:"+query);
+			logger.debug("->query:"+query);
 			
 			ps = conn.prepareStatement(query);
 			/*
@@ -177,7 +177,7 @@ public class ProductoDAO {
 				x.setPrecioVenta(x.getApPrecio());
 
 			}
-			logger.info("->findAllExclusiveByCodigo: x="+x);
+			logger.debug("->findAllExclusiveByCodigo: x="+x);
 		} catch (SQLException ex) {
 			logger.error("SQLException:", ex);
 			throw new DAOException("InQuery:" + ex.getMessage());
