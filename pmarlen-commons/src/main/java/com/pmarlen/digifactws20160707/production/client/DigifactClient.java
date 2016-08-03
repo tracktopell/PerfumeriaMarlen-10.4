@@ -104,8 +104,8 @@ public class DigifactClient {
 			conceptoWS.setCantidad(esd.getCantidad());
 			conceptoWS.setUnidad(esd.getProductoUnidadEmpaque());
 			String desc = null;
-			//desc = esd.getProductoNombre() + "/" + esd.getProductoPresentacion() ;
-			desc = esd.getProductoCodigoBarras()+ "(" + esd.getProductoContenido() + " " + esd.getProductoUnidadMedida() + ")";
+			desc  = esd.getProductoNombre() + "/" + esd.getProductoPresentacion() ;
+			desc += "(" + esd.getProductoContenido() + " " + esd.getProductoUnidadMedida() + ")";
 			conceptoWS.setDescripcion(desc );
 			double precioPVD_CFD = esd.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
 			double importePVD_CFD = precioPVD_CFD * esd.getCantidad();

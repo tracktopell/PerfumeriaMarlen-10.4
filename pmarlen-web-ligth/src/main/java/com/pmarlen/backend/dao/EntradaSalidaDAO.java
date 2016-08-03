@@ -1890,32 +1890,26 @@ public class EntradaSalidaDAO {
 			try {
 				if(pedidoVenta.getId()==115082){
 					logger.info("->invocarInicioWSCFDI:The fucking BUG:");
-					ArrayList<EntradaSalidaDetalleQuickView> pvdListError = new ArrayList<EntradaSalidaDetalleQuickView>();
-					int pvdI=0;
-					int numMax=300;
-					if(pedidoVenta.getComentarios()!=null ){
-						try{
-							numMax=Integer.parseInt(pedidoVenta.getComentarios());
-						}catch(NumberFormatException nfe){
-							logger.error("chale, no que el numero ?");
-							numMax=250;
+					
+					int elemI=0;
+					int difReg=100;
+					
+					
+					for(elemI=0;elemI<pvdList.size();elemI+=difReg){
+						int elemeTope=elemI;
+						if(elemI+difReg >= pvdList.size()){
+							elemeTope=pvdList.size();
+						} else{
+							elemeTope=elemI+difReg;
 						}
-					}
-					for(EntradaSalidaDetalleQuickView pvdE: pvdList){
-						if(pvdI<=numMax){
-							double precioPVD_CFD = pvdE.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
-							double importePVD_CFD = precioPVD_CFD * pvdE.getCantidad();
-							
-							String desc = pvdE.getProductoCodigoBarras()+" (" + pvdE.getProductoContenido() + " " + pvdE.getProductoUnidadMedida() + ")";
-							
-							logger.info("->invocarInicioWSCFDI: ["+pvdI+"] ELEMENT:"+pvdE.getCantidad()+"|"+pvdE.getProductoUnidadEmpaque()+"|"+
-									desc+"["+desc.length()+"]|"+
-									precioPVD_CFD+"|"+importePVD_CFD);
-							pvdListError.add(pvdE);
+						ArrayList<EntradaSalidaDetalleQuickView> pvdListError = new ArrayList<EntradaSalidaDetalleQuickView>();
+						for(int i=elemI;i<elemeTope;i++){
+							pvdListError.add(pvdList.get(i));
 						}
-						pvdI++;
+						logger.info("->invocarInicioWSCFDI: invoking each 100.");
+						DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdListError, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
 					}
-					DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdListError, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
+					
 				}else{
 					DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdList, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
 				}
