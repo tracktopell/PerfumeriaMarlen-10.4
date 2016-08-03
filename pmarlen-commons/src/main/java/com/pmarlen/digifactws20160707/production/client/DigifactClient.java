@@ -10,6 +10,7 @@ import com.pmarlen.digifactws20160707.production.*;
 import com.pmarlen.model.Constants;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.xml.ws.soap.SOAPFaultException;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -158,10 +159,24 @@ public class DigifactClient {
 			logger.error("-->>WS param:  impuestos:"+ReflectionToStringBuilder.toString(impuestos, ToStringStyle.MULTI_LINE_STYLE));
 			logger.error("-->>WS param: xmlAddenda:"+ReflectionToStringBuilder.toString(xmlAddenda, ToStringStyle.MULTI_LINE_STYLE));
 			
+			javax.xml.soap.SOAPFault fault = sex.getFault(); //<Fault> node
+			logger.error("-->>WS ERROR  fault:"+ReflectionToStringBuilder.toString(fault, ToStringStyle.MULTI_LINE_STYLE));
+			javax.xml.soap.Detail detail = fault.getDetail(); // <detail> node
+			logger.error("-->>WS ERROR  detail:"+ReflectionToStringBuilder.toString(detail, ToStringStyle.MULTI_LINE_STYLE));
+			
+			logger.error("-->>WS ERROR  detailEntries:");
+			
+			Iterator detailEntries = detail.getDetailEntries(); //nodes under <detail>
+			//application / service-provider-specific XML nodes (type javax.xml.soap.DetailEntry) from here
+			while(detailEntries.hasNext()){
+				Object detailObject= detailEntries.next();
+				logger.error("-->>WS ERROR  \tdetail:"+ReflectionToStringBuilder.toString(detailObject, ToStringStyle.MULTI_LINE_STYLE));
+			}
+			
 			cfdVenta.setNumCfd(null);
 			cfdVenta.setTipo(null);
 			try{
-				String localizedMessage = sex.getMessage().trim();
+				String localizedMessage = sex.getMessage().trim()+"|"+sex.getFault().toString().trim();
 				if (localizedMessage.length() > 254) {
 					cfdVenta.setCallingErrorResult(localizedMessage.substring(0, 254));
 				} else {
