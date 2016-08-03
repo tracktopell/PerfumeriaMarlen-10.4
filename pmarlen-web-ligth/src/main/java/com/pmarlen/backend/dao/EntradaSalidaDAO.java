@@ -1893,7 +1893,7 @@ public class EntradaSalidaDAO {
 					ArrayList<EntradaSalidaDetalleQuickView> pvdListError = new ArrayList<EntradaSalidaDetalleQuickView>();
 					int pvdI=0;
 					for(EntradaSalidaDetalleQuickView pvdE: pvdList){
-						if(pvdI<=100){
+						if(pvdI<=300){
 							double precioPVD_CFD = pvdE.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
 							double importePVD_CFD = precioPVD_CFD * pvdE.getCantidad();
 			
