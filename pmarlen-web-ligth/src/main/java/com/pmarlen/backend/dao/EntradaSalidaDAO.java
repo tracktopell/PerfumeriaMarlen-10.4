@@ -1872,8 +1872,10 @@ public class EntradaSalidaDAO {
 					cfd.setId((Integer) rsCFD.getObject("ID"));
 					cfd.setUltimaActualizacion((Timestamp) rsCFD.getObject("ULTIMA_ACTUALIZACION"));
 					Blob bc = rsCFD.getBlob("CONTENIDO_ORIGINAL_XML");
-					if (bc != null) {
+					if (bc != null && bc.length()>0) {
 						cfd.setContenidoOriginalXml(bc.getBytes(0, (int) bc.length()));
+					} else{
+						cfd.setContenidoOriginalXml(null);
 					}
 					cfd.setCallingErrorResult((String) rsCFD.getObject("CALLING_ERROR_RESULT"));
 					cfd.setNumCfd((String) rsCFD.getObject("NUM_CFD"));
