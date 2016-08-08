@@ -28,6 +28,10 @@ public class DigifactClient {
 		try{
 			logger.debug("Adding trust to certificates");
 			System.setProperty ( "javax.net.ssl.trustStore ","com.pmarlen.digifactws20160707.NaiveTrustManager");
+            System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+            System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+            System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+            System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
 			DisableSSLCertificateCheckUtil.disableChecks();
 			logger.debug("Setting javax.xml.bind.JAXBContext <- com.sun.xml.internal.bind.v2.ContextFactory");
 			System.setProperty("javax.xml.bind.JAXBContext","com.sun.xml.internal.bind.v2.ContextFactory"); 
