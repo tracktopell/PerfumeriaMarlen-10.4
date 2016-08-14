@@ -11,12 +11,25 @@ public class PedidoVentaDetalleTableItem {
 	private Producto producto;
 	private ESD pvd;
 	private int tipoAlmacen;
+	private boolean oferta2x1;
+	private boolean regalo;
 
 	public PedidoVentaDetalleTableItem(Producto producto, ESD esd, int tipoAlmacen) {
 		this.producto = producto;
 		this.pvd = esd;
 		//this.pvd.setC(esd.getC());
 		this.tipoAlmacen = tipoAlmacen;
+		this.oferta2x1 = false;
+		this.regalo    = false;
+	}
+	
+	public PedidoVentaDetalleTableItem(Producto producto, ESD esd, int tipoAlmacen,boolean o,boolean r) {
+		this.producto = producto;
+		this.pvd = esd;
+		//this.pvd.setC(esd.getC());
+		this.tipoAlmacen = tipoAlmacen;
+		this.oferta2x1 = o;
+		this.regalo    = r;
 	}
 
 	public PedidoVentaDetalleTableItem(PedidoVentaDetalleTableItem c) {
@@ -53,8 +66,16 @@ public class PedidoVentaDetalleTableItem {
 		return tipoAlmacen;
 	}
 
+	public boolean isOferta2x1() {
+		return oferta2x1;
+	}
+
+	public boolean isRegalo() {
+		return regalo;
+	}
+	
 	@Override
 	public String toString() {
-		return producto.getCodigoBarras()+"\n"+producto.getNombre()+"/"+producto.getPresentacion()+"\n("+producto.getContenido()+producto.getUnidadMedida()+")";
+		return producto.getCodigoBarras()+"\n"+producto.getNombre()+"/"+producto.getPresentacion()+"\n("+producto.getContenido()+producto.getUnidadMedida()+")"+(oferta2x1?" 2X1 ":"")+(regalo?" REGALO":"");
 	}
 }

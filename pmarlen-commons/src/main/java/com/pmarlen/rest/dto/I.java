@@ -28,6 +28,10 @@ public class I implements Serializable{
 	private String ue;
 	private double cs;
 	
+	private Integer a1o2x1;	
+	private Integer aOo2x1;	
+	private Integer aRo2x1;
+	
 	public I(InventarioSucursalQuickView s){
 		a1c = s.getA1c();
 		a1p = s.getA1p();
@@ -47,7 +51,10 @@ public class I implements Serializable{
 		ct  = s.getContenido();
 		um  = s.getUnidadMedida();
 		ue  = s.getUnidadEmpaque();
-		cs  = s.getCosto();		
+		cs  = s.getCosto();
+		a1o2x1=s.getA1o2x1();
+		aOo2x1=s.getaOo2x1();
+		aRo2x1=s.getaRo2x1();
 	}
 	
 	public InventarioSucursalQuickView reverse(){
@@ -71,7 +78,10 @@ public class I implements Serializable{
 		s.setContenido(ct);
 		s.setUnidadMedida(um);
 		s.setUnidadEmpaque(ue);
-		s.setCosto(cs);		
+		s.setCosto(cs);
+		s.setA1o2x1(a1o2x1);
+		s.setaOo2x1(aOo2x1);
+		s.setaRo2x1(aRo2x1);
 		
 		return s;
 	}
@@ -341,6 +351,48 @@ public class I implements Serializable{
 	public void setCs(double cs) {
 		this.cs = cs;
 	}
-	
+
+	/**
+	 * @return the a1o2x1
+	 */
+	public Integer getA1o2x1() {
+		return a1o2x1;
+	}
+
+	/**
+	 * @param a1o2x1 the a1o2x1 to set
+	 */
+	public void setA1o2x1(Integer a1o2x1) {
+		this.a1o2x1 = a1o2x1;
+	}
+
+	/**
+	 * @return the aOo2x1
+	 */
+	public Integer getaOo2x1() {
+		return aOo2x1;
+	}
+
+	/**
+	 * @param aOo2x1 the aOo2x1 to set
+	 */
+	public void setaOo2x1(Integer aOo2x1) {
+		this.aOo2x1 = aOo2x1;
+	}
+
+	/**
+	 * @return the aRo2x1
+	 */
+	public Integer getaRo2x1() {
+		return aRo2x1;
+	}
+
+	/**
+	 * @param aRo2x1 the aRo2x1 to set
+	 */
+	public void setaRo2x1(Integer aRo2x1) {
+		this.aRo2x1 = aRo2x1;
+	}
+
 	
 }

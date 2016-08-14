@@ -17,7 +17,7 @@ public class AlmacenProducto implements java.io.Serializable {
 	private Integer poco;
     private double precio;
     private String ubicacion;
-
+	private Integer oferta2X1;
     /** 
      * Default Constructor
      */
@@ -83,7 +83,14 @@ public class AlmacenProducto implements java.io.Serializable {
 	public Integer getPoco() {
 		return poco;
 	}
-	
+
+	public Integer getOferta2X1() {
+		return oferta2X1;
+	}
+
+	public void setOferta2X1(Integer oferta2X1) {
+		this.oferta2X1 = oferta2X1;
+	}	
 
     @Override
     public int hashCode() {

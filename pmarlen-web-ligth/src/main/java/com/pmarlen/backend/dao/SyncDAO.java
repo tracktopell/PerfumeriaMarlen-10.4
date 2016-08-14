@@ -6,9 +6,11 @@
 
 package com.pmarlen.backend.dao;
 
+import com.pmarlen.backend.model.Almacen;
 import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.EntradaSalida;
 import com.pmarlen.backend.model.EntradaSalidaDetalle;
+import com.pmarlen.backend.model.OfertaProducto;
 import com.pmarlen.backend.model.Sucursal;
 import com.pmarlen.backend.model.quickviews.ClienteQuickView;
 import com.pmarlen.backend.model.quickviews.InventarioSucursalQuickView;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
@@ -179,9 +182,40 @@ public class SyncDAO {
 		
 		logger.debug("syncTransaction:----------------REGULAR DataGet ("+getAllData+")-----------------");
 		if(getAllData){
+			HashMap<String,ProdO2x1>  ofertasProdSuc= new HashMap<String,ProdO2x1>();
+			
+			ArrayList<Almacen> almacenesList = AlmacenDAO.getInstance().findBySucursal(sucId);			
+			for(Almacen a: almacenesList){
+				ArrayList<OfertaProducto> ofertasDeAlmacen = OfertaProductoDAO.getInstance().findAllAlmacen(a.getId());
+				
+				for(OfertaProducto op: ofertasDeAlmacen){
+					ProdO2x1 xx = ofertasProdSuc.get(op.getProductoCodigoBarras());
+					if(xx == null){
+						xx = new ProdO2x1();
+						ofertasProdSuc.put(op.getProductoCodigoBarras(), xx);
+						logger.debug("syncTransaction:+OFERTA:"+op.getProductoCodigoBarras()+", ALMACEN:"+op.getAlmacenId());
+					}
+					
+					if(a.getTipoAlmacen() == Constants.ALMACEN_PRINCIPAL){
+						xx.a1o2x1 = 1;
+					} else if(a.getTipoAlmacen() == Constants.ALMACEN_OPORTUNIDAD){
+						xx.aOo2x1 = 1;
+					} else if(a.getTipoAlmacen() == Constants.ALMACEN_REGALIAS){
+						xx.aRo2x1 = 1;
+					}
+				}
+			}
+			
 			ArrayList<InventarioSucursalQuickView> inventarioBigList = AlmacenProductoDAO.getInstance().findAllBySucursal(sucId);
+			
 			List<I> inventarioSucursalList = new ArrayList<I>();
 			for(InventarioSucursalQuickView bigI: inventarioBigList){
+				ProdO2x1 xx = ofertasProdSuc.get(bigI.getCodigoBarras());
+				if(xx != null){
+					bigI.setA1o2x1(xx.a1o2x1);
+					bigI.setaOo2x1(xx.aOo2x1);
+					bigI.setaRo2x1(xx.aRo2x1);
+				}
 				inventarioSucursalList.add(new I(bigI));
 			}
 			s.setInventarioSucursalList(inventarioSucursalList);
@@ -200,7 +234,16 @@ public class SyncDAO {
 			s.setSucursal(SucursalDAO.getInstance().findBy(new Sucursal(sucId)));
 			s.setAlmacenList(AlmacenDAO.getInstance().findBySucursal(sucId));
 		}
-		return s;
-				
+		return s;				
+	}
+	
+	class ProdO2x1{
+		private String cb;
+		
+		private Integer a1o2x1;
+	
+		private Integer aOo2x1;
+
+		private Integer aRo2x1;
 	}
 }

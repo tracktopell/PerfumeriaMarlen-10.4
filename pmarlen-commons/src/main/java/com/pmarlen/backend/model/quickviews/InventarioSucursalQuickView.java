@@ -43,6 +43,12 @@ public class InventarioSucursalQuickView extends Producto {
 	 */
     private double aRp;
 	
+	private Integer a1o2x1;
+	
+	private Integer aOo2x1;
+	
+	private Integer aRo2x1;
+	
 	//==========================================================================
 
 	/**
@@ -127,5 +133,47 @@ public class InventarioSucursalQuickView extends Producto {
 	 */
 	public void setaRp(double aRp) {
 		this.aRp = aRp;
+	}
+
+	/**
+	 * @return the a1o2x1
+	 */
+	public Integer getA1o2x1() {
+		return a1o2x1;
+	}
+
+	/**
+	 * @param a1o2x1 the a1o2x1 to set
+	 */
+	public void setA1o2x1(Integer a1o2x1) {
+		this.a1o2x1 = a1o2x1;
+	}
+
+	/**
+	 * @return the aOo2x1
+	 */
+	public Integer getaOo2x1() {
+		return aOo2x1;
+	}
+
+	/**
+	 * @param aOo2x1 the aOo2x1 to set
+	 */
+	public void setaOo2x1(Integer aOo2x1) {
+		this.aOo2x1 = aOo2x1;
+	}
+
+	/**
+	 * @return the aRo2x1
+	 */
+	public Integer getaRo2x1() {
+		return aRo2x1;
+	}
+
+	/**
+	 * @param aRo2x1 the aRo2x1 to set
+	 */
+	public void setaRo2x1(Integer aRo2x1) {
+		this.aRo2x1 = aRo2x1;
 	}
 }

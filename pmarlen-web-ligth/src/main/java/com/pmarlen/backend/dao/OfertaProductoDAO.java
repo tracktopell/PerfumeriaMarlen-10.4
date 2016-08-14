@@ -259,4 +259,46 @@ public class OfertaProductoDAO {
 		return r;
 	}
 
+	public ArrayList<OfertaProducto> findAllAlmacen(int almacenId) throws DAOException{
+		ArrayList<OfertaProducto> r = new ArrayList<OfertaProducto>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT ID,TIPO,USUARIO_EMAIL,PRODUCTO_CODIGO_BARRAS,ALMACEN_ID,ACTIVA,MARCA,LINEA,LEMA FROM OFERTA_PRODUCTO WHERE ALMACEN_ID=?");
+			ps.setInt(1, almacenId);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				OfertaProducto x = new OfertaProducto();
+				x.setId((Integer)rs.getObject("ID"));
+				x.setTipo((Integer)rs.getObject("TIPO"));
+				x.setUsuarioEmail((String)rs.getObject("USUARIO_EMAIL"));
+				x.setProductoCodigoBarras((String)rs.getObject("PRODUCTO_CODIGO_BARRAS"));
+				x.setAlmacenId((Integer)rs.getObject("ALMACEN_ID"));
+				x.setActiva((Integer)rs.getObject("ACTIVA"));
+				x.setMarca((String)rs.getObject("MARCA"));
+				x.setLinea((String)rs.getObject("LINEA"));
+				x.setLema((String)rs.getObject("LEMA"));
+				r.add(x);
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+		
+	}
+
 }

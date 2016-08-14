@@ -97,8 +97,12 @@ public class Main {
 		splashFrame.addMessage("...OK PROPERTIES, AND VERSION ?");
 		
 		ApplicationLogic.getInstance().getVersion();
+		
+		logger.info ("main: ====================================================================I");
+		logger.debug("main: ====================================================================D");
+		logger.trace("main: ====================================================================T");
+		
 		logger.debug("main: After Load Properties.");
-		logger.info("main: ====================================================================");
 		logger.info("main: ApplicationLogic.getInstance().getVersion():"+ApplicationLogic.getInstance().getVersion());
 		splashFrame.addMessage("...STARTING VERSION:"+ApplicationLogic.getInstance().getVersion());
 		try {

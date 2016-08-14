@@ -118,7 +118,7 @@ public class ApplicationLogic {
     
     public static void setLogLevelToDEBUG(){
         logger.info("setLogLevelToINFO:->Activating Log4J DEBUG Level.");
-        LogManager.getRootLogger().setLevel(Level.INFO);
+        LogManager.getRootLogger().setLevel(Level.DEBUG);
     }
     
     public static void setLogLevelToTRACE(){

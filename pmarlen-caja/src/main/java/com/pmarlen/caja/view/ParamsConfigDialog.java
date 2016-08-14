@@ -41,7 +41,8 @@ public class ParamsConfigDialog extends javax.swing.JDialog{
 			new Sucursal(2, "SUC#1 SAN MARTÍN"),
 			new Sucursal(3, "SUC#2 TECAMAC"),
 			new Sucursal(4, "SUC#3 OJO DE AGUA"),
-			new Sucursal(5, "SUC#4 LOS REYES")
+			new Sucursal(5, "SUC#4 LOS REYES"),
+			new Sucursal(7, "SUC#5 5 DE MAYO"),
 		};
 		Object[] cajas=new Caja[]{
 			new Caja(1, "CAJA #1"),

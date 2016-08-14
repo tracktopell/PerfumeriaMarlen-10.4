@@ -181,8 +181,11 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					logger.trace("\t\t\tcodigoBuscar_ActionPerformed:producto no encontrado:"+cdLineCB);
 					sbNoEncontrados.append(cdLineCB).append(" ");					
 				} else {
-					logger.trace("\t\t\tcodigoBuscar_ActionPerformed:producto encontrado:"+productoEncontrado);
-					encontrados.add(productoEncontrado);					
+					logger.info("\t\t\tcodigoBuscar_ActionPerformed:producto encontrado:"+productoEncontrado);
+					if(productoEncontrado.getA1o2x1()!=null||productoEncontrado.getaOo2x1()!=null||productoEncontrado.getaRo2x1()!=null){
+						logger.info("\t\t\tcodigoBuscar_ActionPerformed:\t=>producto EN OFERTA:{"+productoEncontrado.getA1o2x1()+","+productoEncontrado.getaOo2x1()+","+productoEncontrado.getaRo2x1()+"}");
+					}
+					encontrados.add(productoEncontrado);
 				}
 			}
 		}
@@ -210,7 +213,12 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 					esd.setC(1);
 					
 					boolean huboExistencia=false;
-								
+					int cantChek = cantA;
+					boolean oferta2X1=false;
+					if(productoEncontrado.getA1o2x1()!=null||productoEncontrado.getaOo2x1()!=null||productoEncontrado.getaRo2x1()!=null){
+						cantChek = cantA * 2;
+						oferta2X1=true;
+					}
 					if(tipoAlmacenSeleccionado == Constants.ALMACEN_PRINCIPAL) {
 						if((productoEncontrado.getA1c() - cantA ) >= 1){
 							esd.setP(productoEncontrado.getA1p());
@@ -231,10 +239,27 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 
 					if(huboExistencia) {
 						esd.setCb(productoEncontrado.getCb());
-						PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, tipoAlmacenSeleccionado);
-						logger.debug("\t\t=> + "+esd.getC()+" x "+esd.getCb()+"("+tipoAlmacenSeleccionado+") ["+esd.getA()+"]");
-						ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().add(detalleVentaTableItemNuevo);
-						contAgregados++;
+						if(oferta2X1){
+							
+							PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, tipoAlmacenSeleccionado, true, false);
+							logger.debug("\t\t=> + "+esd.getC()+" x "+esd.getCb()+"("+tipoAlmacenSeleccionado+") ["+esd.getA()+"]");
+							ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().add(detalleVentaTableItemNuevo);
+							contAgregados++;
+							
+							ESD esdR = new ESD(esd);
+							esdR.setP(0.0);
+							
+							PedidoVentaDetalleTableItem detalleVentaTableItemOferta = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esdR, tipoAlmacenSeleccionado, true, true);
+							ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().add(detalleVentaTableItemOferta);
+							contAgregados++;
+						
+						}else{
+							PedidoVentaDetalleTableItem detalleVentaTableItemNuevo = new PedidoVentaDetalleTableItem(productoEncontrado.reverse(), esd, tipoAlmacenSeleccionado);
+							logger.debug("\t\t=> + "+esd.getC()+" x "+esd.getCb()+"("+tipoAlmacenSeleccionado+") ["+esd.getA()+"]");
+							ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().add(detalleVentaTableItemNuevo);
+							contAgregados++;
+						}
+						
 					} else {
 						logger.debug("\t\t=>   "+esd.getC()+" x "+esd.getCb()+"("+tipoAlmacenSeleccionado+") ["+esd.getA()+"] NO HAY EXISTENCIA: {"+productoEncontrado.getA1c()+" | "+productoEncontrado.getaRc()+" | "+productoEncontrado.getaOc()+" } + "+cantA);
 						sbNoHayExistencia.append(productoEncontrado.getCb()).append(" ");
@@ -494,6 +519,11 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 	private void editarCantidad(int selectedRow) {
 		logger.info("[USER]->editarCantidad:selectedRow="+selectedRow);
 		final PedidoVentaDetalleTableItem dvti = ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().get(selectedRow);
+		if(dvti.isOferta2x1() && dvti.isRegalo()){
+			JOptionPane.showMessageDialog(panelVenta, "NO SE PUEDE CAMBIAR ESTA CANTIDAD", "Cambiar la Cantidad ...", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
 		int cantidad = dvti.getPvd().getC();		
 		ESD pvd = dvti.getPvd();		
 		InventarioSucursalQuickView p = (InventarioSucursalQuickView)dvti.getProducto();
