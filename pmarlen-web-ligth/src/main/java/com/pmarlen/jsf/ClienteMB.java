@@ -64,6 +64,7 @@ public class ClienteMB implements Serializable {
 		logger.trace("ClienteMB prepareForNew");
 		//dialogTitle ="AGREGAR NUEVO CLIETE";
 		this.selectedEntity = new ClienteQuickView();
+        this.selectedEntity.setId(null);
 	}
 	
 	public void setSelectedEntity(ClienteQuickView selectedCliente) {

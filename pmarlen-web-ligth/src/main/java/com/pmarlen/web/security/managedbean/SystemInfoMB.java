@@ -1,28 +1,19 @@
 package com.pmarlen.web.security.managedbean;
 
-import com.pmarlen.backend.dao.UsuarioDAO;
-import com.pmarlen.backend.dao.UsuarioPerfilDAO;
-import com.pmarlen.backend.model.Usuario;
-import com.pmarlen.backend.model.UsuarioPerfil;
 import com.pmarlen.model.Constants;
-import com.pmarlen.web.servlet.ContextAndSessionListener;
-import com.pmarlen.web.servlet.SessionInfo;
-import com.tracktopell.jdbc.DataSourceFacade;
 import com.tracktopell.jdbc.WEBDataSourceFacade;
 import java.io.IOException;
 import java.io.Serializable;
 
 import java.text.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.faces.event.ActionEvent;
+import org.primefaces.context.RequestContext;
 
 @ManagedBean(name="systemInfoMB")
 @SessionScoped
@@ -33,7 +24,10 @@ public class SystemInfoMB  implements Serializable{
 	private static String db        = null;
 	private static String user      = null;
 	private static String password  = null;
-	
+	private String broadcastMessage  = null;
+    private String broadcastMessage2Push  = null;
+    private String broadcastLastMessage   = null;
+    private static Queue<String> broadcastMessageQueue = null;
 
 	private static Properties prop = new Properties();
 	static{
@@ -64,8 +58,6 @@ public class SystemInfoMB  implements Serializable{
 		}
 		return password;
 	}
-
-
 	
 	public String getSystemVersion() {
 		return Constants.getServerVersion();
@@ -88,6 +80,20 @@ public class SystemInfoMB  implements Serializable{
 	
 	public void updateTime(){
 		sessionDate= sdf.format(new Date());
+        logger.info("->updateTime():sessionDate="+sessionDate);
+        
+        broadcastMessage = null;
+        
+        if(broadcastMessageQueue != null){
+            if(! broadcastMessageQueue.isEmpty() ){
+                broadcastMessage = broadcastMessageQueue.poll();
+                if(broadcastMessage != null){
+                    broadcastLastMessage = broadcastMessage;
+                    RequestContext requestContext = RequestContext.getCurrentInstance();  
+                    requestContext.execute("PF('notificationBar').show();");
+                }
+            }
+        }        
 	}
 	
 	public String getEnvironment(){
@@ -101,5 +107,39 @@ public class SystemInfoMB  implements Serializable{
 		return environment;
 	}
 
+    public void setBroadcastMessage(String broadcastMessage) {
+        this.broadcastMessage = broadcastMessage;
+    }
 
+    public String getBroadcastMessage() {
+        return this.broadcastMessage;
+    }
+    
+    public void broadcastMessageClosed(ActionEvent actionEvent) {
+        logger.info("->broadcastMessageClosed(ActionEvent):broadcastMessage="+broadcastMessage);
+        broadcastMessage = null;
+    }
+    
+    public void broadcastMessageClosed() {
+        logger.info("->broadcastMessageClosed():broadcastMessage="+broadcastMessage);
+        broadcastMessage = null;
+    }
+
+    public void setBroadcastMessage2Push(String broadcastMessage2Push) {
+        this.broadcastMessage2Push = broadcastMessage2Push;
+        if(broadcastMessageQueue == null){
+            broadcastMessageQueue = new ConcurrentLinkedQueue<String>();
+        }
+        broadcastMessageQueue.add(this.broadcastMessage2Push);
+        this.broadcastMessage2Push = null;
+    }
+
+    public String getBroadcastMessage2Push() {
+        return broadcastMessage2Push;
+    }
+
+    public String getBroadcastLastMessage() {
+        return broadcastLastMessage;
+    }
+    
 }

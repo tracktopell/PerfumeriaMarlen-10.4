@@ -10,39 +10,21 @@
     </ui:define>
 
     <ui:define name="body-title">
-        <h:outputText value="INICIO, BIENVENIDO #{sessionUserMB.bienvenido}"/>
+        <h:outputText value="Mensaje a todos los usuarios."/>
     </ui:define>
 
     <ui:define name="body">
 		<h:form id="formHome">
 			<h:panelGrid columns="2" columnClasses="">
 				<h:panelGroup>
-					<h:graphicImage value="/images/icono_sistema.png"/>
+					<h:graphicImage value="/images/msg_message.png"/>
 				</h:panelGroup>
 
 				<h:panelGroup>
-					<p>
-						<br/>
-						<br/>
-						<br/>
-						<br/>
-						<br/>
-						<br/>
-					</p>
-					<h1>
-						<p>Este sistema tiene por objetivo el flujo de ciclo de vida de un Pedido, en Perfumeria Marlen.</p>
-						<p>La administración de Materiales y Procedimientos de Venta.</p>
-						<p>Los Reportes estadisticos de Pedidos. </p>
-					</h1>
-					<p>
-						<br/>
-						<br/>
-						<br/>
-						<br/>
-						<br/>
-                        <br/>
-						<br/>                        
-					</p>
+                    <h:panelGrid columns="4" cellpadding="2">
+                        <h:outputLabel for="xvalue" value="systemInfoMB.broadcastMessage2Push(v55):" />
+                        <p:inputText id="xvalue" value="#{systemInfoMB.broadcastMessage2Push}"/>
+                    </h:panelGrid>
 				</h:panelGroup>
 
 			</h:panelGrid>

@@ -3,7 +3,6 @@ package com.pmarlen.web.security.managedbean;
 import com.pmarlen.backend.dao.DAOException;
 import com.pmarlen.backend.dao.UsuarioDAO;
 import com.pmarlen.backend.model.quickviews.UsuarioQuickView;
-import com.pmarlen.jsf.model.InformationMessage;
 import com.pmarlen.web.servlet.ContextAndSessionListener;
 import com.pmarlen.web.servlet.SessionInfo;
 import java.io.Serializable;
@@ -24,9 +23,9 @@ import org.primefaces.context.RequestContext;
 
 @ManagedBean(name="sessionUserMB")
 @SessionScoped
-public class SessionUserMB implements Serializable{
+public class InformationMesageMB implements Serializable{
 
-	private static final transient Logger logger = Logger.getLogger(SessionUserMB.class.getSimpleName());
+	private static final transient Logger logger = Logger.getLogger(InformationMesageMB.class.getSimpleName());
 	private static final transient SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS");
 	private long timeOutSession;
 	private int  realTimeOutSessionInSeconds;
@@ -35,7 +34,6 @@ public class SessionUserMB implements Serializable{
 	private String os        = "-";
 	private String browser   = "-";
     private Integer xvalue;
-    private InformationMessage lastMessage;
     
 	@PostConstruct
     public void init() {

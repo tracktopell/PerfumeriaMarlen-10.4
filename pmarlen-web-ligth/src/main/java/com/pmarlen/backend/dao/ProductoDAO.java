@@ -290,7 +290,9 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT DISTINCT(P.INDUSTRIA) FROM PRODUCTO P WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) ORDER BY P.INDUSTRIA");
+			ps = conn.prepareStatement("SELECT DISTINCT(P.INDUSTRIA) FROM PRODUCTO P"+
+                    " WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) "+
+                    " ORDER BY P.INDUSTRIA");
 			
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -322,7 +324,10 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT DISTINCT(P.LINEA) FROM PRODUCTO P WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) ORDER BY P.LINEA");
+			ps = conn.prepareStatement(
+                    "SELECT DISTINCT(P.LINEA) FROM PRODUCTO P "+
+                    " WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)"+
+                    " ORDER BY P.LINEA");
 			
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -354,7 +359,11 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT DISTINCT(P.MARCA) FROM PRODUCTO P WHERE WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) AND P.INDUSTRIA = ? ORDER BY P.MARCA");
+			ps = conn.prepareStatement(
+                    "SELECT DISTINCT(P.MARCA) FROM PRODUCTO P "+
+                    " WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)"+
+                    " AND P.INDUSTRIA = ?"+
+                    " ORDER BY P.MARCA");
 			ps.setString(1, industria);
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -386,7 +395,10 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT DISTINCT(P.MARCA) FROM PRODUCTO P WHERE WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) AND P.LINEA = ? ORDER BY P.MARCA");
+			ps = conn.prepareStatement("SELECT DISTINCT(P.MARCA) FROM PRODUCTO P "+
+                    " WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1) "+
+                    " AND P.LINEA = ? "+
+                    " ORDER BY P.MARCA");
 			ps.setString(1, linea);
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -473,8 +485,7 @@ public class ProductoDAO {
 					+ "FROM PRODUCTO P WHERE (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)";
 			
 			if(marca != null && marca.trim().length()>1){
-				q = q + " WHERE MARCA=? ";
-				
+				q = q + " AND MARCA=? ";				
 			}
 			
 			ps = conn.prepareStatement(q);

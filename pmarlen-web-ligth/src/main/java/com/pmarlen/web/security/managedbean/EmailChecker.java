@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import org.apache.log4j.Level;
 
 /**
  *
@@ -19,14 +20,14 @@ import javax.mail.Transport;
  */
 public class EmailChecker {
 	private static String host   = "mail.perfumeriamarlen.com.mx";
-	private static String port_1 = "25";
-	private static String port_2 = "26";
+	private static String port_1 = "26";
+	private static String port_2 = "25";
 	private static String port  = null;
 	private static Logger logger = Logger.getLogger(EmailChecker.class.getSimpleName());
 	
 	public static boolean isSameEmailPassword(String username, String password){
 		
-		logger.trace("----->>username="+username+", password="+password+", port:"+port);
+		logger.info("----->>username="+username+", password="+password+", port:"+port);
 		// Get system properties
 		Properties properties = System.getProperties();
 
@@ -74,8 +75,8 @@ public class EmailChecker {
 					}
 					return false;
 				}
-			} else if(me1 instanceof javax.mail.AuthenticationFailedException && port ==null){
-				port = port_1;				
+			} else if(me1 instanceof javax.mail.AuthenticationFailedException){
+                logger.trace("Autentication :"+me1);				
 			}
 			return false;
 						
@@ -83,10 +84,11 @@ public class EmailChecker {
 	}
 	
 	public static void main(String[] args) {
+        Logger.getRootLogger().setLevel(Level.TRACE);
 		if(args.length==2){
-			logger.trace(isSameEmailPassword(args[0],args[1]));
+			logger.info(isSameEmailPassword(args[0],args[1]));
 		} else {
-			logger.trace(isSameEmailPassword("aestrada@perfumeriamarlen.com.mx","dh3rku61c"));
+			logger.info(isSameEmailPassword("l30@perfumeriamarlen.com.mx","PML30#3m41l"));
 		}
 	}
 

@@ -166,8 +166,7 @@
 							</p:menuButton>
 						</f:facet>
 					</p:menubar>
-				</h:panelGrid>
-				
+				</h:panelGrid>				
 			</h:form>
 			
 			<h:form>
@@ -195,7 +194,20 @@
 			<br/>
 			
 			<h:panelGroup class="footer-bar-#{systemInfoMB.environment}">
-				<h:form>
+                <h:form id="notification_form">
+                    <p:notificationBar position="top" effect="slide" styleClass="top" widgetVar="notificationBar" id="notificationBar" transient="true">
+                        <h:panelGrid columns="2" columnClasses="columnWidth20 rightAlign,columnWidth80 centerAlign" width="100%">
+                            <p:graphicImage value="/images/atencion-animado.gif" alt="[IMPORTANTE]" title="!"/>
+                            <h:panelGrid columns="1" columnClasses="columnWidth100 centerAlign" width="100%">
+                                <h:outputText value="#{systemInfoMB.broadcastLastMessage}" style="font-size:36px; color: tomato;" id="notificationBar_msg"/>
+                                <p:commandButton value="OK, ENTERADO" onclick="PF('notificationBar').hide();" type="button" icon=" ui-icon-check" 
+                                                 actionListener="#{systemInfoMB.broadcastMessageClosed}" />
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:notificationBar>                                        
+                </h:form>
+                
+                <h:form id="footer_form">
 					<h:panelGrid columns="4" columnClasses="columnWidth5 leftAlign,columnWidth90 centerAlign, columnWidth5 rightAlign" width="100%">
 						<span id="txtTimeoutClock" class="txtTimeoutClock" style="color: greenyellow;" title="TIEMPO RESTANTE PARA EXPIRE LA SESI&Oacute;N"></span>
 						<h:panelGroup>
@@ -209,14 +221,22 @@
 							<h:outputText	value="| UA"
 										    title="#{sessionUserMB.uaInfo}"/>
 						</h:panelGroup>
-						<h:outputText id="txtFoter" class="txtFoter" value="#{systemInfoMB.sessionDate}" style="color: greenyellow;" title="HORA DEL SISTEMA, VERDE: ESTA EN LINEA, ROJO: DESCONECTADO" />
+                        <h:panelGroup>
+                            <h:outputText id="txtFoter" class="txtFoter" value="#{systemInfoMB.sessionDate}" style="color: greenyellow;" title="HORA DEL SISTEMA, VERDE: ESTA EN LINEA, ROJO: DESCONECTADO[#{systemInfoMB.broadcastMessage}]" />
+                        </h:panelGroup>
 					</h:panelGrid>
-					
-					<p:poll interval="120" listener="#{systemInfoMB.updateTime}" update="txtFoter" onerror="errorGetTime();" onsuccess="successGetTime()" rendered="false" />
+                    
+					<p:poll interval="5" 
+                            listener="#{systemInfoMB.updateTime}" 
+                            onerror="errorGetTime();"                            
+                            onsuccess="successGetTime();"
+                            update="txtFoter,:notification_form:notificationBar_msg"
+                            rendered="true"/>
+
 					<script>
 						
 						var informeDescinetado = false;
-						function errorGetTime(){							
+						function errorGetTime(){
 							$(".txtFoter").css({ "color": 'red'});
 							if(!informeDescinetado) {
 								informeDescinetado = true;
@@ -225,11 +245,11 @@
 							}
 						}
 						
-						function successGetTime(){							
+						function successGetTime(){
 							informeDescinetado = false;
 							$(".txtFoter").css({ "color": 'greenyellow'});
 						}
-						
+                        
 						var endTime, hours, mins, msLeft, time;
 						var elementObject;
 						

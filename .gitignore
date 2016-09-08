@@ -15,3 +15,5 @@ pmarlen-web-ligth/src/main/webapp/META-INF/context.xml
 /pmarlen-caja/system.properties
 /pmarlen-caja/nbactions-installer.xml
 /pmarlen-caja/PMarlen.log4j.log
+/pmarlen-web-ligth/nbactions.xml
+/pmarlen-web-ligth/nbactions-local_dev.xml
