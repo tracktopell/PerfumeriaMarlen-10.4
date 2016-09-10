@@ -28,6 +28,7 @@ public class SystemInfoMB  implements Serializable{
     private String broadcastMessage2Push  = null;
     private String broadcastLastMessage   = null;
     private static Queue<String> broadcastMessageQueue = null;
+    private static String        systemWallMessage;
 
 	private static Properties prop = new Properties();
 	static{
@@ -80,7 +81,7 @@ public class SystemInfoMB  implements Serializable{
 	
 	public void updateTime(){
 		sessionDate= sdf.format(new Date());
-        logger.info("->updateTime():sessionDate="+sessionDate);
+        logger.trace("->updateTime():sessionDate="+sessionDate);
         
         broadcastMessage = null;
         
@@ -141,5 +142,16 @@ public class SystemInfoMB  implements Serializable{
     public String getBroadcastLastMessage() {
         return broadcastLastMessage;
     }
+
+    public void setSystemWallMessage(String systemWallMessage) {
+        SystemInfoMB.systemWallMessage = systemWallMessage;
+    }
+
+    public String getSystemWallMessage() {
+        return systemWallMessage;
+    }
     
+    public static String getSystemWallMessageGlobal() {
+        return systemWallMessage;
+    }
 }

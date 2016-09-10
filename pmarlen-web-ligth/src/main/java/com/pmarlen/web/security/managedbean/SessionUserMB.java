@@ -37,6 +37,9 @@ public class SessionUserMB implements Serializable{
     private Integer xvalue;
     private InformationMessage lastMessage;
     
+    private boolean messageRead;
+    private String  messageForSession;
+    private String  previousMessageForSession;    
 	@PostConstruct
     public void init() {
         xvalue = 0;
@@ -220,4 +223,27 @@ public class SessionUserMB implements Serializable{
         return xvalue;
     }
     
+    public void messageRead() {
+        logger.info("->messageRead()");
+        messageRead = true;
+    }
+    
+    public String getMessageForSession() {
+        if(SystemInfoMB.getSystemWallMessageGlobal() != null ){
+            if(previousMessageForSession!=null && 
+                    SystemInfoMB.getSystemWallMessageGlobal().equals(previousMessageForSession)){
+                messageRead = false;
+            }
+            
+            if(!messageRead){
+                messageForSession = SystemInfoMB.getSystemWallMessageGlobal();                                
+            }else{
+                messageForSession = null;
+                previousMessageForSession = messageForSession;
+            }
+        } 
+        return messageForSession;
+        
+    }
+
 }
