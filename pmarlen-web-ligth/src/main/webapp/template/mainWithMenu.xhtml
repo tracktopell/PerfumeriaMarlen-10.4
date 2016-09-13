@@ -196,7 +196,8 @@
 			<h:panelGroup class="footer-bar-#{systemInfoMB.environment}">
                 
                 <h:form id="footer_form">
-					<h:panelGrid columns="4" columnClasses="columnWidth5 leftAlign,columnWidth60 rightAlign, columnWidth30 centerAlign, columnWidth5 rightAlign" width="100%">
+					<h:panelGrid columns="4" id="footer_bar" rendered="#{empty sessionUserMB.messageForSession}"
+                                 columnClasses="columnWidth5 leftAlign,columnWidth90 centerAlign, columnWidth5 rightAlign" width="100%">
 						<span id="txtTimeoutClock" class="txtTimeoutClock" style="color: greenyellow;" title="TIEMPO RESTANTE PARA EXPIRE LA SESI&Oacute;N"></span>
 						<h:panelGroup>
 							<h:outputText	value="Perfumeria Marlen - L30 | "/>
@@ -209,24 +210,41 @@
 							<h:outputText	value="| UA"
 										    title="#{sessionUserMB.uaInfo}"/>
 						</h:panelGroup>
-                        <h:panelGroup rendered="#{empty sessionUserMB.messageForSession}">
-                            <h:outputText value="&#160;" />
-                        </h:panelGroup>
-                        <h:panelGroup rendered="#{not empty sessionUserMB.messageForSession}">
-                            <h:panelGrid columns="2" columnClasses="columnWidth10 rightAlign,columnWidth90 centerAlign" width="100%">
-                                <p:graphicImage value="/images/warning.gif" alt="[!]" title="!"/>
-                                <h:panelGrid columns="2" width="100%" >
-                                    <h:outputText value="#{sessionUserMB.messageForSession}" style="font-size:10px; color: tomato;" id="notificationBar_msg"/>
-                                    <p:commandLink value="[ OK, ENTERADO ]" actionListener="#{sessionUserMB.messageRead}" />
-                                </h:panelGrid>
-                            </h:panelGrid>
-                        </h:panelGroup>
                         <h:panelGroup>
                             <h:outputText id="txtFoter" class="txtFoter" value="#{systemInfoMB.sessionDate}" style="color: greenyellow;" title="HORA DEL SISTEMA, VERDE: ESTA EN LINEA, ROJO: DESCONECTADO[#{systemInfoMB.broadcastMessage}]" />
                         </h:panelGroup>                        
 					</h:panelGrid>
                     
-					<p:poll interval="5" 
+                    <h:panelGrid columns="4" id="footer_bar_msg" rendered="#{not empty sessionUserMB.messageForSession}"
+                                 columnClasses="columnWidth5 leftAlign,columnWidth35 centerAlign, columnWidth55 centerAlign, columnWidth5 rightAlign" width="100%">
+						<span id="txtTimeoutClock_msg" class="txtTimeoutClock" style="color: greenyellow;" title="TIEMPO RESTANTE PARA EXPIRE LA SESI&Oacute;N"></span>
+						<h:panelGroup>
+							<h:outputText	value="Perfumeria Marlen - L30 | "/>
+							<h:outputText	value="Construido: #{systemInfoMB.buildTimestamp} | " 
+											title="Ver. #{systemInfoMB.systemVersion} ( #{systemInfoMB.environment} ) Git RevID: #{systemInfoMB.gitSHA1}" />
+							<h:outputLink id="link1_msg" value="#{request.contextPath}/pmcajaupdate/version.properties">
+								<h:outputText	value="PMCaja Ver." title="PM Caja Ver."/>
+							</h:outputLink>
+						
+							<h:outputText	value="| UA"
+										    title="#{sessionUserMB.uaInfo}"/>
+						</h:panelGroup>
+                        <h:panelGroup>
+                            <h:panelGrid columns="3" columnClasses="columnWidth5 rightAlign table_debug_borders,columnWidth80 centerAlign table_debug_borders,columnWidth15 leftAlign table_debug_borders" 
+                                         class="table_debug_borders" width="100%">
+                                <p:graphicImage value="/images/warning.gif" alt="[!]" title="!"/>
+                                
+                                <h:outputText value="#{sessionUserMB.messageForSession}" style="font-size:12px; color: tomato;" id="notificationBar_msg"/>                                    
+                                
+                                <p:commandLink value="[ OK, ENTERADO ]" actionListener="#{sessionUserMB.messageRead}" onsuccess="successGetTime();" update=":footer_form"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <h:panelGroup>
+                            <h:outputText id="txtFoter_msg" class="txtFoter" value="#{systemInfoMB.sessionDate}" style="color: greenyellow;" title="HORA DEL SISTEMA, VERDE: ESTA EN LINEA, ROJO: DESCONECTADO[#{systemInfoMB.broadcastMessage}]" />
+                        </h:panelGroup>                        
+					</h:panelGrid>
+                    
+					<p:poll interval="10" 
                             listener="#{systemInfoMB.updateTime}" 
                             onerror="errorGetTime();"                            
                             onsuccess="successGetTime();"

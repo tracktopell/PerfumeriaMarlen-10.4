@@ -52,7 +52,7 @@ html {
 	left: 0px;
     height: 30px;
     margin: 0;
-    padding: 5px 0 0;
+    padding: 0px 0 0;
     text-align: center;
 	bottom: 0px;
 	position: fixed;
@@ -68,7 +68,7 @@ html {
 	left: 0px;
     height: 30px;
     margin: 0;
-    padding: 5px 0 0;
+    padding: 0px 0 0;
     text-align: center;
 	bottom: 0px;
 	position: fixed;
@@ -84,7 +84,7 @@ html {
 	left: 0px;
     height: 30px;
     margin: 0;
-    padding: 5px 0 0;
+    padding: 0px 0 0;
     text-align: center;
 	bottom: 0px;
 	position: fixed;
@@ -100,13 +100,12 @@ html {
 	left: 0px;
     height: 30px;
     margin: 0;
-    padding: 5px 0 0;
+    padding: 0px 0 0;
     text-align: center;
 	bottom: 0px;
 	position: fixed;
 	display: block;
 }
-
 
 .ui-datatable .ui-datatable-header, .ui-datatable .ui-datatable-footer {
     padding: 10px 5px;
@@ -269,4 +268,11 @@ html {
 
 .ubucacion-C {
 	color: yellowgreen;	
+}
+
+.table_debug_borders {
+    padding: 0px 0 0;
+    background: yellow; 
+    border: 1px solid red;
+    border-collapse: collapse;    
 }

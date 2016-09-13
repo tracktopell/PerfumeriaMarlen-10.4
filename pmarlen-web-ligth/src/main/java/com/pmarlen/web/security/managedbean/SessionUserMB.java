@@ -224,24 +224,29 @@ public class SessionUserMB implements Serializable{
     }
     
     public void messageRead() {
-        logger.info("->messageRead()");
+        logger.info("->messageRead():messageRead="+messageRead);
         messageRead = true;
     }
     
     public String getMessageForSession() {
         if(SystemInfoMB.getSystemWallMessageGlobal() != null ){
+            logger.info("->getMessageForSession():SystemInfoMB.getSystemWallMessageGlobal()="+SystemInfoMB.getSystemWallMessageGlobal());
+            logger.info("->getMessageForSession():previousMessageForSession="+previousMessageForSession);
+            logger.info("->getMessageForSession():messageRead="+messageRead);
             if(previousMessageForSession!=null && 
                     SystemInfoMB.getSystemWallMessageGlobal().equals(previousMessageForSession)){
                 messageRead = false;
             }
             
             if(!messageRead){
+                previousMessageForSession = messageForSession;
                 messageForSession = SystemInfoMB.getSystemWallMessageGlobal();                                
             }else{
                 messageForSession = null;
                 previousMessageForSession = messageForSession;
             }
         } 
+        logger.info("->getMessageForSession(): return messageForSession="+messageForSession);
         return messageForSession;
         
     }
