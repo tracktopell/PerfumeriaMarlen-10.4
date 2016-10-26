@@ -275,11 +275,10 @@
 								</goals>
 								<configuration>
 									<target>
-										<echo message="=======================ANT Task in install phase, preparing INSTALLER files : ${project.artifactId} ==============>>>"/>
-										<copy file="${project.build.directory}/${finalJar.filename}.jar" tofile="${project.build.directory}/${project.artifactId}.jar"/>
-										<copy file="${project.build.directory}/${finalJar.filename}-standard.jar" tofile="${project.build.directory}/${project.artifactId}-installer.jar"/>
 										<echo message="=======================ANT Task in install phase, preparing INSTALLER files : ${environment.pmcajadist} ==============>>>"/>
-										<copy file="${project.build.directory}/${finalJar.filename}.jar" tofile="${environment.pmcajadist}/${project.artifactId}.jar"/>
+										<copy file="${project.build.directory}/update.zip"                        tofile="${environment.pmcajadist}/update.zip"/>
+										<copy file="${project.build.directory}/classes/version.properties"        tofile="${environment.pmcajadist}/classes/version.properties"/>
+										<copy file="${project.build.directory}/${finalJar.filename}.jar"          tofile="${environment.pmcajadist}/${project.artifactId}.jar"/>
 										<copy file="${project.build.directory}/${finalJar.filename}-standard.jar" tofile="${environment.pmcajadist}/${project.artifactId}-installer.jar"/>
 									</target>
 								</configuration>
@@ -340,11 +339,10 @@
 								</goals>
 								<configuration>
 									<target>
-										<echo message="=======================ANT Task in install phase, preparing INSTALLER files : ${project.artifactId} ==============>>>"/>
-										<copy file="${project.build.directory}/${finalJar.filename}.jar" tofile="${project.build.directory}/${project.artifactId}.jar"/>
-										<copy file="${project.build.directory}/${finalJar.filename}-standard.jar" tofile="${project.build.directory}/${project.artifactId}-installer.jar"/>
 										<echo message="=======================ANT Task in install phase, preparing INSTALLER files : ${environment.pmcajadist} ==============>>>"/>
-										<copy file="${project.build.directory}/${finalJar.filename}.jar" tofile="${environment.pmcajadist}/${project.artifactId}.jar"/>
+										<copy file="${project.build.directory}/update.zip"                        tofile="${environment.pmcajadist}/update.zip"/>
+										<copy file="${project.build.directory}/classes/version.properties"        tofile="${environment.pmcajadist}/classes/version.properties"/>
+										<copy file="${project.build.directory}/${finalJar.filename}.jar"          tofile="${environment.pmcajadist}/${project.artifactId}.jar"/>
 										<copy file="${project.build.directory}/${finalJar.filename}-standard.jar" tofile="${environment.pmcajadist}/${project.artifactId}-installer.jar"/>
 									</target>
 								</configuration>
@@ -405,11 +403,10 @@
 								</goals>
 								<configuration>
 									<target>
-										<echo message="=======================ANT Task in install phase, preparing INSTALLER files : ${project.artifactId} ==============>>>"/>
-										<copy file="${project.build.directory}/${finalJar.filename}.jar" tofile="${project.build.directory}/${project.artifactId}.jar"/>
-										<copy file="${project.build.directory}/${finalJar.filename}-standard.jar" tofile="${project.build.directory}/${project.artifactId}-installer.jar"/>
 										<echo message="=======================ANT Task in install phase, preparing INSTALLER files : ${environment.pmcajadist} ==============>>>"/>
-										<copy file="${project.build.directory}/${finalJar.filename}.jar" tofile="${environment.pmcajadist}/${project.artifactId}.jar"/>
+										<copy file="${project.build.directory}/update.zip"                        tofile="${environment.pmcajadist}/update.zip"/>
+										<copy file="${project.build.directory}/classes/version.properties"        tofile="${environment.pmcajadist}/classes/version.properties"/>
+										<copy file="${project.build.directory}/${finalJar.filename}.jar"          tofile="${environment.pmcajadist}/${project.artifactId}.jar"/>
 										<copy file="${project.build.directory}/${finalJar.filename}-standard.jar" tofile="${environment.pmcajadist}/${project.artifactId}-installer.jar"/>
 									</target>
 								</configuration>

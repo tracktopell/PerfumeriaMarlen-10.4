@@ -51,7 +51,7 @@ public class PMCajaUpdateServlet extends HttpServlet {
 			File fileForDownload=null;
 			if(uri.endsWith(URI_VERSION)  || uri.endsWith(URI_FILE)||uri.endsWith(URI_INSTALLER)){
 				if(uri.endsWith(URI_VERSION) ){
-					fileForDownload =  new File(pmcajadist+"/classes/version.properties");
+					fileForDownload =  new File(pmcajadist+"c/lasses/version.properties");
 					response.setContentType("text/plain");
 				} else if(uri.endsWith(URI_FILE)){
 					fileForDownload =  new File(pmcajadist+"/update.zip");
