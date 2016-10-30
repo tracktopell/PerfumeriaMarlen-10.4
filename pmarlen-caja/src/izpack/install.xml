@@ -74,7 +74,7 @@
 			<file src="../classes/run.sh"  targetdir="$INSTALL_PATH"/>
 			<file src="../classes/run.cmd" targetdir="$INSTALL_PATH"/>
 			<file src="../classes/es.cmd"  targetdir="$INSTALL_PATH"/>
-			<file src="../classes/es.cmd"  targetdir="$INSTALL_PATH"/>			            
+			<file src="../classes/es.sh"  targetdir="$INSTALL_PATH"/>			            
 			<file src="L30_16x16_Ver2.png"   targetdir="$INSTALL_PATH"/>
 			<file src="L30_32x32_Ver2.png"   targetdir="$INSTALL_PATH"/>
 			<file src="L30_64x64_Ver2.png"   targetdir="$INSTALL_PATH"/>
