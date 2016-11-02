@@ -24,7 +24,6 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.web.context>l30</project.web.context>
 		
-		<environment.stage>Development</environment.stage>
 		<environment.log4j.rootLogger>DEBUG</environment.log4j.rootLogger>
 		<environment.webdescriptor.session-timeout>20</environment.webdescriptor.session-timeout>
 		<environment.jdbc.url>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>

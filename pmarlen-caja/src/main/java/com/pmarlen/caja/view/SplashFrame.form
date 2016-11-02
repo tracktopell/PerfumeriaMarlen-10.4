@@ -27,8 +27,8 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="imgLabel">
       <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/images/Fractal_Lion_Stars_BG.jpg"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="getImageIconSplash()" type="code"/>
         </Property>
         <Property name="text" type="java.lang.String" value="."/>
       </Properties>

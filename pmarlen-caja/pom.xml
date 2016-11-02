@@ -22,7 +22,10 @@
 		<staging.dir>${project.build.directory}/staging</staging.dir>		
 		<izpack-standalone.version>4.3.1</izpack-standalone.version>
 		<finalJar.filename>${project.artifactId}-${project.version}</finalJar.filename>		
-                <environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>
+        <environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>
+		<cajaapp.url.host>pmarlencloudsrv1.com</cajaapp.url.host>
+		<cajaapp.url.port>8080</cajaapp.url.port>
+		<cajaapp.url.context>/l30</cajaapp.url.context>
 	</properties>
 		
 	<dependencies>
@@ -89,6 +92,18 @@
 		
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/izpack</directory>
+				<filtering>true</filtering>
+			</resource>
+
+		</resources>
+			
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -178,14 +193,13 @@
 								<copy todir="${staging.dir}">
 									<fileset dir="${basedir}/src/izpack" />
 								</copy>
+								
 								<copy todir="${staging.dir}">
 									<fileset file="${project.build.directory}/classes/Readme.txt" />
 								</copy>
-								<!--
-								<copy todir="${staging.dir}/Productos">
-									<fileset dir="${basedir}/Productos" />
-								</copy>
-								-->
+								
+								<copy file="${project.build.directory}/classes/system.properties" toFile="${staging.dir}/system.properties"/>
+								
 							</target>
 						</configuration>
 					</execution>
@@ -198,22 +212,36 @@
 						<configuration>
 							<target>
 								<echo message="======================= preprare-bins-installer , in package phase, basedir=${basedir}, create ZIP for UPDATE ==============>>>"/>
+								
 								<copy file="${project.build.directory}/${finalJar.filename}.jar" toFile="${project.build.directory}/${project.artifactId}.jar"/>
                                 <copy file="${project.build.directory}/${finalJar.filename}.jar" toFile="${staging.dir}/${project.artifactId}.jar"/>
+								
 								<zip destfile="${project.build.directory}/update.zip">
-									<!-- -->
-									<zipfileset dir="${staging.dir}/dependency-jars"		prefix="dependency-jars/"	 includes="*.jar"/>                                    
-									<!-- -->
+																		
 									<zipfileset dir="${project.build.directory}/classes/"	includes="run*.*"/>
 									<zipfileset dir="${staging.dir}/../"					includes="${project.artifactId}.jar"/>
 									
-									<zipfileset dir="${basedir}/src/izpack"				includes="*.png"/>
-									<zipfileset dir="${basedir}/src/izpack"				includes="*.desktop"/>
-                                    <zipfileset dir="${basedir}/src/izpack"				includes="*.sh"/>
-                                    <zipfileset dir="${basedir}/src/izpack"				includes="*.cmd"/>
-									<zipfileset dir="${basedir}/src/izpack/resources"	prefix="resources/" includes="*.txt"/>									
+									<zipfileset dir="${basedir}/src/izpack"				    includes="*.png"/>
+									<zipfileset dir="${basedir}/src/izpack"				    includes="*.ico"/>
+									<zipfileset dir="${basedir}/src/izpack"					includes="*.desktop"/>
+                                    <zipfileset dir="${basedir}/src/izpack"					includes="*.sh"/>
+                                    <zipfileset dir="${basedir}/src/izpack"					includes="*.cmd"/>
+									<zipfileset dir="${basedir}/src/izpack/resources"		prefix="resources/" includes="*.txt"/>									
 								</zip>
-										
+								<echo message="======================= preprare-bins-installer , in package phase, basedir=${basedir}, create ZIP for FULL UPDATE ==============>>>"/>	
+								<zip destfile="${project.build.directory}/update-full.zip">
+									<zipfileset dir="${staging.dir}/dependency-jars"		prefix="dependency-jars/"	 includes="*.jar"/>                                    
+
+									<zipfileset dir="${project.build.directory}/classes/"	includes="run*.*"/>
+									<zipfileset dir="${staging.dir}/../"					includes="${project.artifactId}.jar"/>
+									
+									<zipfileset dir="${basedir}/src/izpack"					includes="*.png"/>
+									<zipfileset dir="${basedir}/src/izpack"					includes="*.ico"/>
+									<zipfileset dir="${basedir}/src/izpack"					includes="*.desktop"/>
+                                    <zipfileset dir="${basedir}/src/izpack"					includes="*.sh"/>
+                                    <zipfileset dir="${basedir}/src/izpack"					includes="*.cmd"/>
+									<zipfileset dir="${basedir}/src/izpack/resources"		prefix="resources/" includes="*.txt"/>									
+								</zip>	
 							</target>
 						</configuration>
 					</execution>
@@ -233,30 +261,19 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-					
 		</plugins>
-	
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/izpack</directory>
-				<filtering>true</filtering>
-			</resource>
-
-		</resources>
 	
 	</build>
 	
 	<profiles>		
-		
 		<profile>
 			<id>local_dev</id>
 			<properties>
 				<environment.log4j.rootLogger>INFO</environment.log4j.rootLogger>
 				<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>
+				<cajaapp.url.host>localhost</cajaapp.url.host>
+				<cajaapp.url.port>8070</cajaapp.url.port>
+				<cajaapp.url.context>/l30</cajaapp.url.context>
 			</properties>
 			<build>    
 				<finalName>${finalJar.filename}</finalName>

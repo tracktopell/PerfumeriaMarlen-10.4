@@ -1,37 +1,64 @@
-CONTRATO DE LICENCIA DE USUARIO FINAL
-(CLUF)
-Aviso al usuario: Este es un contrato. Lea detenidamente este documento antes de instalar y usar el
-Software. Al usar este Software, acepta los t√©rminos de esta licencia de software y se obliga a cumplir
-los t√©rminos de este contrato. Si no acepta, no instale ni use este Software.
-1. Definiciones ‚ÄúPM-Caja‚Äù se refieren al paquete de software adjunto y de aqu√≠ en adelante se les denominar√° el ‚ÄúSoftware‚Äù.
+123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
+==========================================================================
+            CONTRATO DE LICENCIA DE USUARIO FINAL (CLUF)
+Aviso al usuario: Este es un contrato. Lea detenidamente este documento 
+antes de instalar y usar el Software. Al usar este Software, acepta los 
+tÈrminos de esta licencia de software y se obliga a cumplir los tÈrminos 
+de este contrato. Si no acepta, no instale ni use este Software.
+
+1. Definiciones "PM-Caja" se refieren al paquete de software adjunto y de 
+   aquÌ en adelante se les denominar· el "Software".
+
 2. Licencia
-Al instalar y usar el Software, acepta que Perfumeria Marlen. (de aqu√≠ en adelante PERFUMERIA MARLEN) le otorgue los siguientes derechos:
-- El derecho de instalar el Software en cualquiera de las computadoras que use, ya sea para uso personal o comercial. 
-PERFUMERIA MARLEN conserva los derechos de t√≠tulo del Software y del Software y cualquier otro derecho que no se le otorgue a usted 
-expresamente en este Contrato. Audio-Technica posee todos los derechos de autor, tanto
-federales como internacionales. PERFUMERIA MARLEN otorga el Software bajo licencia, no lo vende,
-conforme a los t√©rminos y condiciones de este Contrato.
-- El derecho de crear una copia de seguridad del Software, siempre que reproduzca en dicha
-copia todos los avisos de derechos de autor y cualquier otra leyenda de propiedad que contenga
-el Software original.
+
+Al instalar y usar el Software, acepta que Perfumeria Marlen. (de aquÌ en 
+adelante PERFUMERIA MARLEN) le otorgue los siguientes derechos:
+- El derecho de instalar el Software en cualquiera de las computadoras que
+use, ya sea para uso personal o comercial. 
+PERFUMERIA MARLEN conserva los derechos de tÌtulo del Software y del 
+Software y cualquier otro derecho que no se le otorgue a usted expresamente
+en este Contrato. Audio-Technica posee todos los derechos de autor, tanto
+federales como internacionales. PERFUMERIA MARLEN otorga el Software bajo 
+licencia, no lo vende, conforme a los tÈrminos y condiciones de este Contrato.
+
+- El derecho de crear una copia de seguridad del Software, siempre que 
+reproduzca en dicha copia todos los avisos de derechos de autor y cualquier 
+otra leyenda de propiedad que contenga el Software original.
+
 3. Restricciones
-Se le proh√≠be:
-- descompilar, modificar, adaptar, realizar ingenier√≠a inversa, descomponero traducir el Software
-o crear trabajos derivados en base al Software o los materiales educativos;
-- arrendar, revender o transferir el Software a cualquier lugar, o exportarlo (o reexportarlo) a
-cualquier pa√≠s.
+
+Se le prohÌbe:
+- descompilar, modificar, adaptar, realizar ingenierÌa inversa, descomponero 
+traducir el Software o crear trabajos derivados en base al Software o los 
+materiales educativos;
+- arrendar, revender o transferir el Software a cualquier lugar, o exportarlo 
+(o reexportarlo) acualquier paÌs.
 - redistribuir el Software, en su totalidad o en parte.
+
 4. Derechos de autor
-El Software es propiedad de PERFUMERIA MARLEN
-y est√° protegido por las leyes de propiedad intelectual de los Estados Unidos y por las disposiciones de los trata
-dos internacionales. Por consiguiente, debe manejar el Software como cualquier otro material protegido por el derecho de
-autor (por ejemplo, un libro, un disco compacto o una cinta). Cualquier reproducci√≥n o redistribuci√≥n del Software o parte de 
-√©ste, con excepci√≥n de lo que se autoriza expresamente eneste Contrato de licencia, es una violaci√≥n de nuestros derechos legales.
-5. Garant√≠as limitadas
-PERFUMERIA MARLEN garantiza que el Software por un per√≠odo de 6 meses a contar de la fecha de compra (seg√∫n el recibo original) funcionar√°,
-en conformidad con la documentaci√≥n que seproporciona, bajo las siguientes circunstancias:
-a. si se usa con los sistemas operativos compatibles y con la configuraci√≥n de hardware recomendada;
-b. si los medios mediante los cuales se proporciona el Software (CD-ROM) no tienen defectos de materiales ni de mano de obra bajo 
-condiciones de uso normales.
-8. Generalidades
-Este Contrato se rige por las leyes Mexico. 
+
+El Software es propiedad de PERFUMERIA MARLEN y est· protegido por las leyes de 
+propiedad intelectual de los Estados Unidos y por las disposiciones de los trata
+dos internacionales. Por consiguiente, debe manejar el Software como cualquier 
+otro material protegido por el derecho de autor (por ejemplo, un libro, un disco
+compacto o una cinta). Cualquier reproducciÛn o redistribuciÛn del Software o 
+parte de Èste, con excepciÛn de lo que se autoriza expresamente eneste Contrato
+de licencia, es una violaciÛn de nuestros derechos legales.
+
+5. GarantÌas limitadas
+
+PERFUMERIA MARLEN garantiza que el Software por un perÌodo de 6 meses a contar 
+de la fecha de compra (seg˙n el recibo original) funcionar·, en conformidad con
+la documentaciÛn que seproporciona, bajo las siguientes circunstancias:
+
+a. si se usa con los sistemas operativos compatibles y con la configuraciÛn de 
+   hardware recomendada;
+
+b. si los medios mediante los cuales se proporciona el Software (CD-ROM,DESCARGA) 
+   no tienen defectos de materiales ni de mano de obra bajo condiciones de uso 
+   normales.
+
+6. Generalidades
+
+   Este Contrato se rige por las leyes Mexico. 
+==========================================================================

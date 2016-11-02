@@ -1,7 +1,7 @@
-              PERFUMERIA MARLEN CAJA ${project.artifactId}-${project.version}
+              PERFUMERIA MARLEN CAJA 
+       ${project.artifactId}-${project.version}
 
-Este es el Paquete de isntalaciÃ³n de Perfumeria Marlen CAJA
-
+Este es el Paquete de isntalación de Perfumeria Marlen L30/ Caja 
 
 Atentamente: 
 

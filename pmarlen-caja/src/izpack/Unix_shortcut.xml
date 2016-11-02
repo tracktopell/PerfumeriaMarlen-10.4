@@ -11,16 +11,16 @@
 		applications="yes"
 		startMenu="yes"
 		startup="yes"
-		target="$INSTALL_PATH/run.cmd"
+		target="$INSTALL_PATH/run.sh"
 		commandLine=""
 		workingDirectory="$INSTALL_PATH"
-		description="pmarlen-caja"
-		iconFile="$INSTALL_PATH/L30_252x252_Ver2.ico"
+		description="PMalren"
+		iconFile="$INSTALL_PATH/L30_252x252_Ver2.png"
 		iconIndex="0"
 		type="Application"
 		encoding="UTF-8"
 		terminal="false"
-
+		KdeSubstUID="false"
 		initialState="normal">
 		<createForPack name="Application"/>
 	</shortcut>

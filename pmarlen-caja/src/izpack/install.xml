@@ -2,74 +2,85 @@
 
 <installation version="1.0">
 
-    <!-- 
-        The info section.
-        The meaning of the tags should be natural ...
-    -->
-    <info>
-		<appname>${project.artifactId}</appname>
-        <appversion>${project.version}</appversion>
-        <authors>
-            <author name="Alfredo Estrada Gonzalez" email="aestrada@perfumeriamarlen.com.mx"/>            
-        </authors>
-        <url>https://github.com/tracktopell/PerfumeriaMarlen-10.3</url>
-    </info>
-
-    <!-- 
-        The gui preferences indication.
-        Sets the installer window to 640x480. It will not be able to change the size.
-    -->
-    <guiprefs width="640" height="480" resizable="no"/>
-
-    <!-- 
-        The locale section.
-        Asks here to include the English and French langpacks.
-    -->
-    <locale>
-        <langpack iso3="spa"/>
-<!--
-		<langpack iso3="eng"/>
-		<langpack iso3="deu"/>
-		<langpack iso3="fra"/>
-		<langpack iso3="ita"/>
--->
-    </locale>
-
-    <!-- 
-        The resources section.
-        The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
-    -->
-    <resources>
-        <res id="LicencePanel.licence" src="Licence.txt"/>
-        <res id="InfoPanel.info" src="Readme.txt"/>
-		<res id="Unix_shortcutSpec.xml" src="shortcut.xml"/>
-    </resources>
-
-    <!-- 
-        The panels section.
-        We indicate here which panels we want to use. The order will be respected.
-    -->
-    <panels>
-	<!--
-        <panel classname="com.company.izpack.panels.MyHelloPanel"/>
+	<!-- 
+		The info section.
+		The meaning of the tags should be natural ...
 	-->
-        <panel classname="HelloPanel"/>
-        <panel classname="InfoPanel"/>
-        <panel classname="LicencePanel"/>
-        <panel classname="TargetPanel"/>
-        <panel classname="PacksPanel"/>
-        <panel classname="InstallPanel"/>
-        <panel classname="FinishPanel"/>
-    </panels>
-    <!-- 
-        The packs section. We specify here our packs.
-    -->
-    <packs>
+	<info>
+		<appname>${project.artifactId}</appname>
+		<appversion>${project.version}</appversion>
+		<authors>
+			<author name="Alfredo Estrada Gonzalez" email="aestrada@perfumeriamarlen.com.mx"/>            
+		</authors>
+		<url>https://github.com/tracktopell/PerfumeriaMarlen-10.3</url>
+	</info>
+
+	<!-- 
+		The gui preferences indication.
+		Sets the installer window to 640x480. It will not be able to change the size.
+	-->
+	<guiprefs width="640" height="480" resizable="no"/>
+
+	<!-- 
+		The locale section.
+		Asks here to include the English and French langpacks.
+	-->
+	<locale>
+		<langpack iso3="spa"/>
+		<langpack iso3="eng"/>
+		<!--
+				
+				<langpack iso3="deu"/>
+				<langpack iso3="fra"/>
+				<langpack iso3="ita"/>
+		-->
+	</locale>
+
+	<!-- 
+		The resources section.
+		The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+	-->
+	<resources>
+		<res id="LicencePanel.licence"	src="Licence.txt"/>
+		<res id="InfoPanel.info"		src="Readme.txt"/>
+		<res id="shortcutSpec.xml"		src="shortcut.xml"/>
+		<res id="Unix_shortcutSpec.xml" src="Unix_shortcut.xml"/>
+	</resources>
+
+	<!-- 
+		The panels section.
+		We indicate here which panels we want to use. The order will be respected.
+	-->
+	<panels>
+		<!--
+			<panel classname="com.company.izpack.panels.MyHelloPanel"/>
+		-->
+		<panel classname="HelloPanel"/>
+		<panel classname="InfoPanel"/>
+		<panel classname="LicencePanel"/>
+		<panel classname="TargetPanel"/>
+		<panel classname="PacksPanel"/>
+		<panel classname="InstallPanel"/>
+		<panel classname="ShortcutPanel"/>
+		<panel classname="FinishPanel"/>
+	</panels>
+	
+	<native type="izpack" name="ShellLink.dll">
+		<os family="windows" />
+	</native>
+	<native type="izpack" name="ShellLink_x64.dll">
+		<os family="windows" />
+	</native>
+
+	<!-- 
+		The packs section. We specify here our packs.
+	-->
+	<packs>
         
-        <pack name="Base" required="yes">
-            <description>The base files</description>
-            <file src="Readme.txt" targetdir="$INSTALL_PATH"/>
-            <file src="Licence.txt" targetdir="$INSTALL_PATH"/>
+		<pack name="Base" required="yes">
+			<description>The base files</description>
+			<file src="Readme.txt" targetdir="$INSTALL_PATH"/>
+			<file src="Licence.txt" targetdir="$INSTALL_PATH"/>
 			
 			<file src="../classes/run.sh"  targetdir="$INSTALL_PATH"/>
 			<file src="../classes/run.cmd" targetdir="$INSTALL_PATH"/>
@@ -79,38 +90,45 @@
 			<file src="L30_32x32_Ver2.png"   targetdir="$INSTALL_PATH"/>
 			<file src="L30_64x64_Ver2.png"   targetdir="$INSTALL_PATH"/>
 			<file src="L30_252x252_Ver2.png" targetdir="$INSTALL_PATH"/>			
+			
+			<file src="L30_16x16_Ver2.ico"   targetdir="$INSTALL_PATH"/>
+			<file src="L30_32x32_Ver2.ico"   targetdir="$INSTALL_PATH"/>
+			<file src="L30_64x64_Ver2.ico"   targetdir="$INSTALL_PATH"/>
+			<file src="L30_252x252_Ver2.ico" targetdir="$INSTALL_PATH"/>			
+			
 			<file src="pmarlen-caja.desktop" targetdir="$INSTALL_PATH"/>			
 			<file src="PM_NewLogo.jpg"     targetdir="$INSTALL_PATH"/>
-			<file src="PM_NewLogo.jpg"     targetdir="$INSTALL_PATH"/>			
+			<file src="PM_NewLogo.jpg"     targetdir="$INSTALL_PATH"/>
+			<!--
 			<file src="system.properties"  targetdir="$INSTALL_PATH"/>
-			
-            <parsable   targetfile="$INSTALL_PATH/run.sh"/>
+			-->
+			<parsable   targetfile="$INSTALL_PATH/run.sh"/>
 			<executable targetfile="$INSTALL_PATH/run.sh" os="unix" type="bin"/>
 			<parsable   targetfile="$INSTALL_PATH/es.sh"/>
 			<executable targetfile="$INSTALL_PATH/es.sh" os="unix" type="bin"/>
 			<executable targetfile="$INSTALL_PATH/pmarlen-caja.desktop" os="unix" type="bin"/>
-            <parsable   targetfile="$INSTALL_PATH/run.cmd"/>
+			<parsable   targetfile="$INSTALL_PATH/run.cmd"/>
 			<executable targetfile="$INSTALL_PATH/run.cmd" os="windows" type="bin"/>
 			<parsable   targetfile="$INSTALL_PATH/es.cmd"/>
 			<executable targetfile="$INSTALL_PATH/es.cmd" os="windows" type="bin"/>
 			
 
-            <!-- The file will be parsed -->
-        </pack>
-        <pack name="Docs" required="no">
-            <description>The documentation</description>
-            <file src="doc" targetdir="$INSTALL_PATH"/>
-            <!-- Reccursive adding -->
-        </pack>
-        <pack name="Resources" required="no">
-            <description>The resources</description>
-            <file src="resources" targetdir="$INSTALL_PATH"/>
-        </pack>
+			<!-- The file will be parsed -->
+		</pack>
+		<pack name="Docs" required="no">
+			<description>The documentation</description>
+			<file src="doc" targetdir="$INSTALL_PATH"/>
+			<!-- Reccursive adding -->
+		</pack>
+		<pack name="Resources" required="no">
+			<description>The resources</description>
+			<file src="resources" targetdir="$INSTALL_PATH"/>
+		</pack>
         
-        <pack name="Application" required="yes">
-            <description>The Application</description>
+		<pack name="Application" required="yes">
+			<description>The Application</description>
 			<!--
-            <file src="../${finalJar.filename}.jar"    targetdir="$INSTALL_PATH"/>
+			<file src="../${finalJar.filename}.jar"    targetdir="$INSTALL_PATH"/>
 			-->
 			<file src="../${project.artifactId}.jar"   targetdir="$INSTALL_PATH"/>
 			<!--
@@ -119,8 +137,8 @@
 			<executable targetfile="$INSTALL_PATH/${project.artifactId}.jar" os="unix" type="bin"/>
 			
 			<file src="dependency-jars" targetdir="$INSTALL_PATH"/>
-        </pack>
+		</pack>
         
-    </packs>
+	</packs>
 
 </installation>

@@ -5,8 +5,8 @@
  */
 package com.pmarlen.caja.view;
 
-import javax.swing.JTextArea;
-import javax.swing.text.DefaultCaret;
+import java.util.Random;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -36,7 +36,7 @@ public class SplashFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
 
-        imgLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Fractal_Lion_Stars_BG.jpg"))); // NOI18N
+        imgLabel.setIcon(getImageIconSplash());
         imgLabel.setText(".");
         getContentPane().add(imgLabel, java.awt.BorderLayout.CENTER);
 
@@ -51,6 +51,16 @@ public class SplashFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+	private ImageIcon getImageIconSplash(){
+		ImageIcon img = null;
+		String imgName = "splash_BG_numSplash.jpg";
+		
+		Random rand = new Random(System.currentTimeMillis());
+		int numSplash = rand.nextInt(8);
+		imgName = imgName.replaceFirst("numSplash", String.valueOf(numSplash));
+		img = new ImageIcon(getClass().getResource("/images/"+imgName));
+		return img;
+	}
 	/**
 	 * @param args the command line arguments
 	 */

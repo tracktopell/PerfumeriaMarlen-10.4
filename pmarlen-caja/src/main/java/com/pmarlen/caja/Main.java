@@ -11,6 +11,7 @@ import com.pmarlen.caja.view.DialogLogin;
 import com.pmarlen.caja.view.ParamsConfigDialog;
 import com.pmarlen.caja.view.SplashFrame;
 import com.pmarlen.caja.view.UpadateApplicationJFrame;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,7 +22,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -77,6 +77,9 @@ public class Main {
 			}
 		}
         System.out.println("}");
+		
+		updateAppLauncher();		
+		
 		splashFrame.addMessage("...DEBUG");
 		
 		System.out.println("main:LogManager.getRootLogger().getLevel():"+LogManager.getRootLogger().getLevel());
@@ -244,6 +247,34 @@ public class Main {
 			logger.error("Main:", e);
 			System.exit(2);
 		}
+	}
+
+	private static void updateAppLauncher() {
+		File desktopDir     = new File(System.getProperty("user.home") + "/Desktop");
+		File escritorioDir  = new File(System.getProperty("user.home") + "/Escritorio");
+		File desktopUserDir = null;
+		
+		System.out.println("Main:updateAppLauncher: Desktop:exists?"+   desktopDir.exists()+", isDir?"+desktopDir.isDirectory()   +", canWrite?"+desktopDir.canWrite());
+		System.out.println("Main:updateAppLauncher: Escritorio:exists?"+escritorioDir.exists()+", isDir?"+escritorioDir.isDirectory()+", canWrite?"+escritorioDir.canWrite());
+		
+		if(desktopDir.exists() && desktopDir.isDirectory() && desktopDir.canWrite()){
+			desktopUserDir = desktopDir;
+		} else if(escritorioDir.exists() && escritorioDir.isDirectory() && escritorioDir.canWrite()){
+			desktopUserDir = desktopDir;
+		}
+		
+		if(desktopUserDir == null){
+			System.out.println("Main:updateAppLauncher: Desktop Direcotory is not accesisble, Can't update Launcher");
+			return;
+		}
+				
+		String os = System.getProperty("os.name").toLowerCase();
+		System.out.println("Main:updateAppLauncher: OS="+os); 
+		if(os.contains("linux")){
+			
+		}
+		
+		
 	}
 
 	private static void isSingleInstanceRunning() {
