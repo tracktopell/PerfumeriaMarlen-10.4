@@ -17,3 +17,6 @@ pmarlen-web-ligth/src/main/webapp/META-INF/context.xml
 /pmarlen-caja/PMarlen.log4j.log
 /pmarlen-web-ligth/nbactions.xml
 /pmarlen-web-ligth/nbactions-local_dev.xml
+/nbactions.xml
+/pmarlen-commons/nbactions-local_dev.xml
+/pmarlen-commons/nbactions.xml
