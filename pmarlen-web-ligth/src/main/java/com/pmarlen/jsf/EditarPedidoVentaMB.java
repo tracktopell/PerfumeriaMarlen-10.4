@@ -127,6 +127,7 @@ public class EditarPedidoVentaMB implements Serializable{
 		cantidadAgregarCodigo   = 1;
 		digifactWSState=0;
 		
+		autorizaDescuento = entradaSalida.getAutorizaDescuento()!=null && entradaSalida.getAutorizaDescuento()==1;
 		//getClientesList();
 		onClienteListChange();
 		

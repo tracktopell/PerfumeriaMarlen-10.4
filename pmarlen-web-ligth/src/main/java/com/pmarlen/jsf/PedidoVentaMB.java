@@ -86,6 +86,7 @@ public class PedidoVentaMB  implements Serializable{
 		conservarBusqueda = true;
 		esFinalizado = false;
 		autorizaDescuento = true;
+		entradaSalida.setAutorizaDescuento(this.autorizaDescuento?1:0);
 		tablaExpandida = false;
 		tableDraggableEnabled = false;
 		logger.trace("OK");
@@ -521,7 +522,10 @@ public class PedidoVentaMB  implements Serializable{
 	}
 
 	public void onDescuentoEspecialListChange() {
-		logger.trace("onDescuentoEspecialListChange:PorcentajeDescuentoExtra="+entradaSalida.getPorcentajeDescuentoExtra());
+		
+		logger.debug("onDescuentoEspecialListChange:entradaSalida.getAutorizaDescuento()="+entradaSalida.getAutorizaDescuento()+
+				", this.autorizaDescuento="+this.autorizaDescuento+
+				", PorcentajeDescuentoExtra="+entradaSalida.getPorcentajeDescuentoExtra());
 		actualizarTotales();
 	}
 

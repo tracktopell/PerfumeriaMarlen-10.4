@@ -110,7 +110,7 @@ public class EntradaSalidaFooter implements Serializable{
 
 	
 	public void calculaTotalesDesde(EntradaSalida pv,List<? extends EntradaSalidaDetalle> dvpList){
-		logger.debug("calculaTotalesDesde: Suc:"+pv.getSucursalId());
+		logger.debug("calculaTotalesDesde: Suc:"+pv.getSucursalId()+", dvpList.size="+dvpList.size());
 		reset();
 		double importeReg = 0.0;
 		double importeRegNG = 0.0;

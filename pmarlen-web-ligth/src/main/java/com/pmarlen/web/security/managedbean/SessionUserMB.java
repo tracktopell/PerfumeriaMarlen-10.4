@@ -245,8 +245,10 @@ public class SessionUserMB implements Serializable{
                 messageForSession = null;
                 previousMessageForSession = messageForSession;
             }
-        } 
-        logger.debug("->getMessageForSession(): return messageForSession="+messageForSession);
+        }
+		if(messageForSession != null){
+			logger.debug("->getMessageForSession(): return messageForSession="+messageForSession);
+		}
         return messageForSession;
         
     }
