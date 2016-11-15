@@ -85,7 +85,7 @@ public class ProcessImageForPM {
 		if(fileMD5Proc.exists() && fileMD5Proc.canRead() && fileMD5Proc.isFile()){
 			filesProcWithMD5 = getFileProcsHash(fileMD5Proc);
 		} else {
-			System.err.println("==>>"+filesProcWithMD5+", Not exist!");
+			System.err.println("==>>FILE: "+fileNameMD5+", Not exist!");
 			filesProcWithMD5 = new LinkedHashMap<String,String>();
 		}
 				
@@ -163,16 +163,16 @@ public class ProcessImageForPM {
 							mD5Checksum = getMD5Checksum(fx.getAbsolutePath());
 							if(!md5Proc.equalsIgnoreCase(mD5Checksum)){
 								// AGREGAR LISTA FINAL
-								System.out.println("\t [CAMBIO]--> "+fx.getName()+"\t"+md5Proc+" != "+mD5Checksum);
+								// System.out.println("\t [CAMBIO]--> "+fx.getName()+"\t"+md5Proc+" != "+mD5Checksum);
 								filesProcWithMD5.put(fx.getName(), mD5Checksum);
 								listaFinal.add(fx);
 							} else {
-								System.out.println("\t [MISMO ]--> "+fx.getName()+"\t"+md5Proc+" == "+mD5Checksum);
+								// System.out.println("\t [MISMO ]--> "+fx.getName()+"\t"+md5Proc+" == "+mD5Checksum);
 							}
 						} else {
 							// AGREGAR LISTA FINAL
 							mD5Checksum = getMD5Checksum(fx.getAbsolutePath());
-							System.out.println("\t [NUEVO ]--> "+ fx.getName()+"\t"+mD5Checksum);
+							// System.out.println("\t [NUEVO ]--> "+ fx.getName()+"\t"+mD5Checksum);
 							filesProcWithMD5.put(fx.getName(), mD5Checksum);
 							listaFinal.add(fx);
 						}
