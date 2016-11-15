@@ -80,8 +80,8 @@ public class ProcessImageForPM {
 			waterMarkImgFile  =          "/usr/local/pmarlen_multimedio/imgs_productos/imagenes_marcaagua/PM_marcaagua_700x200.png";
 		}
 		List<File> listaFinal= new ArrayList<File>();
-		String fileNameMD5     = "/usr/local/pmarlen_multimedio/imgs_productos/PM_IMG_PROCESADOS_INDEX_MD5.txt"; 
-		String fileNmaeMD5Hist = "/usr/local/pmarlen_multimedio/imgs_productos/PM_IMG_PROCESADOS_INDEX_MD5_"+sdfTimeStamp.format(today)+".txt";
+		String fileNameMD5     = "./PM_IMG_PROCESADOS_INDEX_MD5.txt"; 
+		String fileNmaeMD5Hist = "./PM_IMG_PROCESADOS_INDEX_MD5_"+sdfTimeStamp.format(today)+".txt";
 		
 		File fileMD5Proc=new File(fileNameMD5);
 		File fileMD5ProcHist=new File(fileNmaeMD5Hist);
