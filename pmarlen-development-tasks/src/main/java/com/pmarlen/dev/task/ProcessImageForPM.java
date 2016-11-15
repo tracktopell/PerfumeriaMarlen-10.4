@@ -1,14 +1,11 @@
 package com.pmarlen.dev.task;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,10 +17,10 @@ import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -34,7 +31,6 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
-import org.apache.log4j.Logger;
 
 /**
  * com.pmarlen.dev.task.ProcessImageForPM
@@ -85,8 +81,13 @@ public class ProcessImageForPM {
 		
 		File fileMD5Proc=new File(fileNameMD5);
 		File fileMD5ProcHist=new File(fileNmaeMD5Hist);
-		
-		HashMap<String,String> filesProcWithMD5 = getFileProcsHash(fileMD5Proc);
+		HashMap<String,String> filesProcWithMD5 = null;
+		if(fileMD5Proc.exists() && fileMD5Proc.canRead() && fileMD5Proc.isFile()){
+			filesProcWithMD5 = getFileProcsHash(fileMD5Proc);
+		} else {
+			System.err.println("==>>"+filesProcWithMD5+", Not exist!");
+			filesProcWithMD5 = new LinkedHashMap<String,String>();
+		}
 				
 		File files[]=dirOriginalImages.listFiles();
 		
@@ -233,11 +234,14 @@ public class ProcessImageForPM {
 			}
 			Thread.sleep(2000);
 			System.out.println("");
-			System.out.println("========================= FINAL PROCESOS =======================");
-			//fileMD5Proc
-			Files.copy(fileMD5Proc.toPath(), fileMD5ProcHist.toPath());
-			updateFileProcHash(filesProcWithMD5,fileMD5Proc);
 			
+			//fileMD5Proc
+			if(fileMD5Proc.exists()){
+				Files.copy(fileMD5Proc.toPath(), fileMD5ProcHist.toPath());
+			}
+			updateFileProcHash(filesProcWithMD5,fileMD5Proc);
+			System.out.println("==>Saving PROCs File");
+			System.out.println("========================= END PROCCESS =======================");
 		}catch(Exception ie){
 			ie.printStackTrace(System.err);
 		}
@@ -535,7 +539,7 @@ public class ProcessImageForPM {
 	}
 	
 	private static HashMap<String,String> getFileProcsHash(File f){
-		HashMap<String,String> hm = new HashMap<String,String>();
+		HashMap<String,String> hm = new LinkedHashMap<String,String>();
 		BufferedReader br = null;
 		FileInputStream is = null;
 		String line=null;
