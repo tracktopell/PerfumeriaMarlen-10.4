@@ -453,7 +453,7 @@
 				<environment.jdbc.password>PMDB104_DEVE_PWD</environment.jdbc.password>
 				<environment.jdbc.root_user>root</environment.jdbc.root_user>
 				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
-				<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>
+				<environment.pmcajadist>/usr/local/pmarlen-caja-TEST_dist</environment.pmcajadist>
 			</properties>
 		</profile>
 

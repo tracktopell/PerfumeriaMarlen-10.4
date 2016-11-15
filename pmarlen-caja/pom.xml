@@ -292,7 +292,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<echo message="=======================ANT Task in install phase, preparing INSTALLER files : ${environment.pmcajadist} ==============>>>"/>
+										<echo message="=======================ANT Task in install phase, preparing ${finalJar.filename} files : ${environment.pmcajadist} ==============>>>"/>
 										<copy file="${project.build.directory}/update.zip"                        tofile="${environment.pmcajadist}/update.zip"/>
 										<copy file="${project.build.directory}/classes/version.properties"        tofile="${environment.pmcajadist}/classes/version.properties"/>
 										<copy file="${project.build.directory}/${finalJar.filename}.jar"          tofile="${environment.pmcajadist}/${project.artifactId}.jar"/>
@@ -356,7 +356,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<echo message="=======================ANT Task in install phase, preparing INSTALLER files : ${environment.pmcajadist} ==============>>>"/>
+										<echo message="=======================ANT Task in install phase, preparing ${finalJar.filename} files : ${environment.pmcajadist} ==============>>>"/>
 										<copy file="${project.build.directory}/update.zip"                        tofile="${environment.pmcajadist}/update.zip"/>
 										<copy file="${project.build.directory}/classes/version.properties"        tofile="${environment.pmcajadist}/classes/version.properties"/>
 										<copy file="${project.build.directory}/${finalJar.filename}.jar"          tofile="${environment.pmcajadist}/${project.artifactId}.jar"/>
@@ -420,7 +420,7 @@
 								</goals>
 								<configuration>
 									<target>
-										<echo message="=======================ANT Task in install phase, preparing INSTALLER files : ${environment.pmcajadist} ==============>>>"/>
+										<echo message="=======================ANT Task in install phase, preparing ${finalJar.filename} files : ${environment.pmcajadist} ==============>>>"/>
 										<copy file="${project.build.directory}/update.zip"                        tofile="${environment.pmcajadist}/update.zip"/>
 										<copy file="${project.build.directory}/classes/version.properties"        tofile="${environment.pmcajadist}/classes/version.properties"/>
 										<copy file="${project.build.directory}/${finalJar.filename}.jar"          tofile="${environment.pmcajadist}/${project.artifactId}.jar"/>

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.pmarlen.web.servlet;
 
 import java.io.File;
@@ -11,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +40,7 @@ public class PMCajaUpdateServlet extends HttpServlet {
 		OutputStream os = null;
 		InputStream is = null;
 		try {			
-			logger.trace("PMCajaUpdateServlet: request.getRequestURI():"+request.getRequestURI());
+			logger.debug("PMCajaUpdateServlet: request.getRequestURI():"+request.getRequestURI());
 			File fileForDownload=null;
 			if(uri.endsWith(URI_VERSION)  || uri.endsWith(URI_FILE)||uri.endsWith(URI_INSTALLER)){
 				if(uri.endsWith(URI_VERSION) ){
@@ -67,7 +60,7 @@ public class PMCajaUpdateServlet extends HttpServlet {
 						throw new IllegalStateException("NO SE HA CREADO LA SYM LINK:"+pmcajadist+" EN ESTE SERVIDOR QUE APUNTE A EL DIR DE */pmarlen-caja/target");
 					}
 					if(!fileForDownload.exists() || !fileForDownload.canRead()) {
-						throw new IllegalStateException("NO SE PUEDE LEER ARCHIVO PARA:"+uri+", TAL VEZ FALTE EJECUTAR: mvn clean install -Pinstaller.");
+						throw new IllegalStateException("NO SE PUEDE LEER ARCHIVO("+fileForDownload+") PARA:"+uri+", TAL VEZ FALTE EJECUTAR: mvn clean install");
 					}
 					throw new IllegalStateException("NO SE PUEDE LEER ARCHIVO PARA:"+uri);
 				}
