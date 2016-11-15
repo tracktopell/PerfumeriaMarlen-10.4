@@ -39,7 +39,7 @@ public class PMCajaUpdateServlet extends HttpServlet {
 		String uri=request.getRequestURI();
 		OutputStream os = null;
 		InputStream is = null;
-		try {			
+		try {
 			logger.debug("PMCajaUpdateServlet: request.getRequestURI():"+request.getRequestURI());
 			File fileForDownload=null;
 			if(uri.endsWith(URI_VERSION)  || uri.endsWith(URI_FILE)||uri.endsWith(URI_INSTALLER)){
@@ -54,6 +54,8 @@ public class PMCajaUpdateServlet extends HttpServlet {
 					response.setContentType("application/zip");
 				}
 				
+				logger.debug("PMCajaUpdateServlet: fileForDownload="+fileForDownload);
+				
 				if(!fileForDownload.exists() || !fileForDownload.canRead()) {
 					File symLinkForDist =  new File(pmcajadist);
 					if(!symLinkForDist.exists()){
@@ -65,7 +67,7 @@ public class PMCajaUpdateServlet extends HttpServlet {
 					throw new IllegalStateException("NO SE PUEDE LEER ARCHIVO PARA:"+uri);
 				}
 				
-				logger.trace("OK, found, wrinting: "+fileForDownload.length()+" bytes.");
+				logger.debug("OK, found, wrinting: ["+fileForDownload.length()+"] bytes.");
 				response.setContentLength((int)fileForDownload.length());
 				
 				os = response.getOutputStream();
