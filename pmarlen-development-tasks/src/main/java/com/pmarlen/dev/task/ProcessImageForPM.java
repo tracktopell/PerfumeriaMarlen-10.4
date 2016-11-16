@@ -76,8 +76,8 @@ public class ProcessImageForPM {
 			waterMarkImgFile  =          "/usr/local/pmarlen_multimedio/imgs_productos/imagenes_marcaagua/PM_marcaagua_700x200.png";
 		}
 		List<File> listaFinal= new ArrayList<File>();
-		String fileNameMD5     = "./PM_IMG_PROCESADOS_INDEX_MD5.txt"; 
-		String fileNmaeMD5Hist = "./PM_IMG_PROCESADOS_INDEX_MD5_"+sdfTimeStamp.format(today)+".txt";
+		String fileNameMD5     = "./PM_IMG_PROCESADOS_INDEX.txt"; 
+		String fileNmaeMD5Hist = "./PM_IMG_PROCESADOS_INDEX_"+sdfTimeStamp.format(today)+".txt";
 		
 		File fileMD5Proc=new File(fileNameMD5);
 		File fileMD5ProcHist=new File(fileNmaeMD5Hist);
@@ -160,7 +160,7 @@ public class ProcessImageForPM {
 						//System.out.println("-->BUSCANDO:"+fx.getName()+" ?\t" + filesProcWithMD5.containsKey(fx.getName()));
 						String md5Proc = filesProcWithMD5.get(fx.getName().toLowerCase());
 						if(md5Proc != null){
-							mD5Checksum = getMD5Checksum(fx.getAbsolutePath());
+							mD5Checksum = getMD5Checksum(fx);
 							if(!md5Proc.equalsIgnoreCase(mD5Checksum)){
 								// AGREGAR LISTA FINAL
 								// System.out.println("\t [CAMBIO]--> "+fx.getName()+"\t"+md5Proc+" != "+mD5Checksum);
@@ -171,7 +171,7 @@ public class ProcessImageForPM {
 							}
 						} else {
 							// AGREGAR LISTA FINAL
-							mD5Checksum = getMD5Checksum(fx.getAbsolutePath());
+							mD5Checksum = getMD5Checksum(fx);
 							// System.out.println("\t [NUEVO ]--> "+ fx.getName()+"\t"+mD5Checksum);
 							filesProcWithMD5.put(fx.getName(), mD5Checksum);
 							listaFinal.add(fx);
@@ -583,16 +583,24 @@ public class ProcessImageForPM {
        fis.close();
        return complete.digest();
    }
-
+   
    // see this How-to for a faster way to convert
    // a byte array to a HEX string
-   public static String getMD5Checksum(String filename) throws Exception {
+   public static String _getMD5Checksum(String filename) throws Exception {
        byte[] b = createChecksum(filename);
        StringBuilder result = new StringBuilder();
 
        for (int i=0; i < b.length; i++) {
            result.append(Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 ));
        }
+       return result.toString();
+   }
+   
+   public static String getMD5Checksum(File f) throws Exception {
+       StringBuilder result = new StringBuilder();
+	   if(f.exists() && f.isFile()){
+		   result.append(f.lastModified());
+	   }
        return result.toString();
    }
 }
