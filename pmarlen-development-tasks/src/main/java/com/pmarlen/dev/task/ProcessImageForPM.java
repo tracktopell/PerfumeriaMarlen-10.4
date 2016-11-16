@@ -158,7 +158,7 @@ public class ProcessImageForPM {
 				} else {
 					try {
 						//System.out.println("-->BUSCANDO:"+fx.getName()+" ?\t" + filesProcWithMD5.containsKey(fx.getName()));
-						String md5Proc = filesProcWithMD5.get(fx.getName().toLowerCase());
+						String md5Proc = filesProcWithMD5.get(fx.getName());
 						if(md5Proc != null){
 							mD5Checksum = getMD5Checksum(fx);
 							if(!md5Proc.equalsIgnoreCase(mD5Checksum)){
