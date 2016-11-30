@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Enumeration;
 import java.util.TimeZone;
 import org.apache.log4j.Logger;
 import javax.naming.Context;
@@ -42,11 +43,19 @@ public class ContextAndSessionListener implements ServletContextListener, HttpSe
 		logger.info("contextInitialized: WEBDataSourceFacade.registerStrategy:");
         WEBDataSourceFacade.registerStrategy();		
 		logger.info("contextInitialized: ConnectionPoolKeepAliveService.getInstance().start:");
-		workingDir = sce.getServletContext().getInitParameter("pmarlen_working_dir");
+
+		Enumeration ep=sce.getServletContext().getInitParameterNames();
+		while( ep.hasMoreElements() ){
+			String initParamX= ep.nextElement().toString();
+			String initValueX = sce.getServletContext().getInitParameter(initParamX);
+			logger.info("\tcontextInitialized: initParam: "+ initParamX + " = " + initValueX);
+		}
+	
+		workingDir = sce.getServletContext().getInitParameter("pmarlen_work_dir");// pmarlen_work_dir
 		logger.info("contextInitialized: workingDir    ="+workingDir +"? allparams="+ sce.getServletContext().getInitParameterNames());
 		if(workingDir == null){
-			logger.error(": workig dir param not working ! ");
-			workingDir = "/usr/local/pmarlen_PROD_work";
+			logger.error("contextInitialized: pmarlen_work_dir is null ! ");
+			workingDir = "/usr/local/pmarlen_PROD_work/";
 		}
 		com.pmarlen.businesslogic.reports.GeneradorImpresionPedidoVenta.setWorkingDir(workingDir);
 

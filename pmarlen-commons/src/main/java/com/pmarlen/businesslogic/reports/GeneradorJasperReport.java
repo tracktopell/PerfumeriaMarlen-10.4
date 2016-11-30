@@ -33,6 +33,9 @@ public class GeneradorJasperReport {
 
 	public static void setWorkingDir(String wd){
 		workingDir =  wd;
+		if(!workingDir.endsWith("/")){
+			workingDir = workingDir + "/";
+		}
 	}
 	
 	public static byte[] generaPdfTicketPedidoVenta(Collection<Map<String,?>> col,Map<String,Object> parameters) {
@@ -49,7 +52,7 @@ public class GeneradorJasperReport {
 			
 			reportPath = reportDesignDir + reportFileName + ".jrxml";
 			compiledReportClassPath = reportDesignDir + reportFileName + ".jasper";
-			compiledReportPath = workingDir + reportFileName + ".jasper";
+			compiledReportPath = workingDir + "/" + reportFileName + ".jasper";
 			
             logger.info("Ok, jrxml loaded");
 			

@@ -39,6 +39,9 @@ public class GeneradorImpresionPedidoVenta {
 
 	public static void setWorkingDir(String wd){
 		workingDir =  wd;
+		if(!workingDir.endsWith("/")){
+			workingDir = workingDir + "/";
+		}
 	}
 	
 	public static byte[] generaPdfPedidoVenta(EntradaSalidaQuickView pedidoVenta,ArrayList<EntradaSalidaDetalleQuickView> esdListOriginal,Cliente clienteVenta,boolean fullPrint,boolean interna,String usuarioImr) {
