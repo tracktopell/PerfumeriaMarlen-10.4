@@ -35,6 +35,7 @@
 		<environment.jdbc.root_user>root</environment.jdbc.root_user>
 		<environment.jdbc.root_password>root</environment.jdbc.root_password>
 		<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>		
+		<environment.work.dir>/usr/local/pmarlen_DEVE_work</environment.work.dir>
 	</properties>
 
 	<dependencies>
@@ -346,6 +347,7 @@
 				<environment.jdbc.root_user>root</environment.jdbc.root_user>
 				<environment.jdbc.root_password>root</environment.jdbc.root_password>
 				<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>
+				<environment.work.dir>/usr/local/pmarlen_DEVE_work</environment.work.dir>
 			</properties>
 		</profile>
 
@@ -382,6 +384,7 @@
 				<environment.jdbc.root_user>root</environment.jdbc.root_user>
 				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
 				<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>
+				<environment.work.dir>/usr/local/pmarlen_DEVE_work</environment.work.dir>
 			</properties>
 		</profile>
 				
@@ -418,6 +421,7 @@
 				<environment.jdbc.root_user>root</environment.jdbc.root_user>
 				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
 				<environment.pmcajadist>/usr/local/pmarlen-caja-PROD_dist</environment.pmcajadist>
+				<environment.work.dir>/usr/local/pmarlen_PROD_work</environment.work.dir>
 			</properties>
 		</profile>
 		
@@ -454,6 +458,7 @@
 				<environment.jdbc.root_user>root</environment.jdbc.root_user>
 				<environment.jdbc.root_password>pmarlen01admin</environment.jdbc.root_password>
 				<environment.pmcajadist>/usr/local/pmarlen-caja-TEST_dist</environment.pmcajadist>
+				<environment.work.dir>/usr/local/pmarlen_TEST_work</environment.work.dir>
 			</properties>
 		</profile>
 

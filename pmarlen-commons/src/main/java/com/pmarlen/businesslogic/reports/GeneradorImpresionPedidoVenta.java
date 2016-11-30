@@ -32,14 +32,14 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 
-/**
- * Hello world!
- *
- */
-
 public class GeneradorImpresionPedidoVenta {
 	private static Logger logger = Logger.getLogger("GeneradorImpresionPedidoVenta");
 	private static String reportDesignDir="/reports/";
+	private static String workingDir = "./";
+
+	public static void setWorkingDir(String wd){
+		workingDir =  wd;
+	}
 	
 	public static byte[] generaPdfPedidoVenta(EntradaSalidaQuickView pedidoVenta,ArrayList<EntradaSalidaDetalleQuickView> esdListOriginal,Cliente clienteVenta,boolean fullPrint,boolean interna,String usuarioImr) {
 		return generaPdfPedidoVenta(null,pedidoVenta, esdListOriginal, clienteVenta, fullPrint, interna, usuarioImr);
@@ -62,7 +62,7 @@ public class GeneradorImpresionPedidoVenta {
 			
 			reportPath = reportDesignDir + reportFileName + ".jrxml";
 			compiledReportClassPath = reportDesignDir + reportFileName + ".jasper";
-			compiledReportPath = "./"+ reportFileName + ".jasper";
+			compiledReportPath = workingDir + reportFileName + ".jasper";
 			
             Collection<Map<String,?>> col = new ArrayList<Map<String,?>>();
             DecimalFormat    df    = new  DecimalFormat("$###,###,###,##0.00");
@@ -209,7 +209,7 @@ public class GeneradorImpresionPedidoVenta {
 			}
 			reportPath = reportDesignDir + reportFileName + ".jrxml";
 			compiledReportClassPath = reportDesignDir + reportFileName + ".jasper";
-			compiledReportPath = "./"+ reportFileName + ".jasper";
+			compiledReportPath = workingDir + reportFileName + ".jasper";
 			
             Collection<Map<String,?>> col = new ArrayList<Map<String,?>>();
             DecimalFormat    df    = new  DecimalFormat("$###,###,###,##0.00");
@@ -386,7 +386,7 @@ public class GeneradorImpresionPedidoVenta {
 			
 			reportPath = reportDesignDir + reportFileName + ".jrxml";
 			compiledReportClassPath = reportDesignDir + reportFileName + ".jasper";
-			compiledReportPath = "./"+ reportFileName + ".jasper";
+			compiledReportPath = workingDir + reportFileName + ".jasper";
 			
             
             
@@ -548,7 +548,7 @@ public class GeneradorImpresionPedidoVenta {
 			
 			reportPath = reportDesignDir + reportFileName + ".jrxml";
 			compiledReportClassPath = reportDesignDir + reportFileName + ".jasper";
-			compiledReportPath = "./"+ reportFileName + ".jasper";
+			compiledReportPath = workingDir + reportFileName + ".jasper";
 
             Collection<Map<String,?>> col = new ArrayList<Map<String,?>>();
             DecimalFormat    df    = new  DecimalFormat("$###,###,###,##0.00");

@@ -1,6 +1,0 @@
-2016-08-15 00:51:18 INFO  Constants:139 - ->/com/tracktopell/util/version/file/Version.properties={jdbc.url=${environment.jdbc.url}, jdbc.user=${environment.jdbc.user}, git-sha-1=52b29aa101a102a0a08e454c2ba4153d10952706, version.parent=10.4.1, jdbc.password=${environment.jdbc.password}, version.build.timestamp=2016/08/15 00:50}
-2016-08-15 00:51:18 DEBUG EstadoDAO:48 - created EstadoDAO.
-2016-08-15 00:57:17 INFO  Constants:139 - ->/com/tracktopell/util/version/file/Version.properties={jdbc.url=${environment.jdbc.url}, jdbc.user=${environment.jdbc.user}, git-sha-1=52b29aa101a102a0a08e454c2ba4153d10952706, version.parent=10.4.1, jdbc.password=${environment.jdbc.password}, version.build.timestamp=2016/08/15 00:56}
-2016-08-15 00:57:17 DEBUG EstadoDAO:48 - created EstadoDAO.
-2016-08-15 00:57:43 INFO  Constants:139 - ->/com/tracktopell/util/version/file/Version.properties={jdbc.url=${environment.jdbc.url}, jdbc.user=${environment.jdbc.user}, git-sha-1=52b29aa101a102a0a08e454c2ba4153d10952706, version.parent=10.4.1, jdbc.password=${environment.jdbc.password}, version.build.timestamp=2016/08/15 00:56}
-2016-08-15 00:57:43 DEBUG EstadoDAO:48 - created EstadoDAO.

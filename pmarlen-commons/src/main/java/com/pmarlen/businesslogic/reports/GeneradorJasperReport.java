@@ -29,6 +29,11 @@ import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 public class GeneradorJasperReport {
 	private static Logger logger = Logger.getLogger(GeneradorJasperReport.class.getName());
 	private static String reportDesignDir="/reports/";
+	private static String workingDir = "./";
+
+	public static void setWorkingDir(String wd){
+		workingDir =  wd;
+	}
 	
 	public static byte[] generaPdfTicketPedidoVenta(Collection<Map<String,?>> col,Map<String,Object> parameters) {
 		byte[] pdfBytes = null;
@@ -44,7 +49,7 @@ public class GeneradorJasperReport {
 			
 			reportPath = reportDesignDir + reportFileName + ".jrxml";
 			compiledReportClassPath = reportDesignDir + reportFileName + ".jasper";
-			compiledReportPath = "./"+ reportFileName + ".jasper";
+			compiledReportPath = workingDir + reportFileName + ".jasper";
 			
             logger.info("Ok, jrxml loaded");
 			

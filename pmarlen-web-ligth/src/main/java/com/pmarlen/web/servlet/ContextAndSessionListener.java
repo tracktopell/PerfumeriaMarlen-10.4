@@ -1,13 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pmarlen.web.servlet;
 
 import com.pmarlen.model.Constants;
 import com.tracktopell.jdbc.WEBDataSourceFacade;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.TimeZone;
@@ -32,25 +29,39 @@ public class ContextAndSessionListener implements ServletContextListener, HttpSe
     private static SimpleDateFormat sdfExtended = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS zzzzzz (Z)");
 	public static final Hashtable<String , SessionInfo> sessionInfoHT = new Hashtable<String , SessionInfo>();
 	public static final Hashtable<String , CajaSessionInfo> cajaSessionInfoHT = new Hashtable<String , CajaSessionInfo>();
+	private static String workingDir = ".";
 	
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         Date dateSystem = new Date();
-		logger.trace("================++++++++++++++++++++++++++++++++++++++=============>>contextInitialized");
-		logger.trace("contextInitialized: serverVersion="+Constants.getServerVersion());
+		logger.info("================++++++++++++++++++++++++++++++++++++++=============>>contextInitialized");
+		logger.info("contextInitialized: serverVersion="+Constants.getServerVersion());
 		TimeZone defaultTZ = TimeZone.getDefault();		
-        logger.trace("contextInitialized: TimeZone.getDefault()="+defaultTZ.getDisplayName()+", Time=defaultformat:"+sdfDefault.format(dateSystem)+", ExtendedFormat:"+sdfExtended.format(dateSystem));  
-		logger.trace("contextInitialized: WEBDataSourceFacade.registerStrategy:");
+        logger.info("contextInitialized: TimeZone.getDefault()="+defaultTZ.getDisplayName()+", Time=defaultformat:"+sdfDefault.format(dateSystem)+", ExtendedFormat:"+sdfExtended.format(dateSystem));  
+        logger.info("contextInitialized: Locale:"+Locale.getDefault());
+		logger.info("contextInitialized: WEBDataSourceFacade.registerStrategy:");
         WEBDataSourceFacade.registerStrategy();		
-		logger.trace("contextInitialized: ConnectionPoolKeepAliveService.getInstance().start:");
+		logger.info("contextInitialized: ConnectionPoolKeepAliveService.getInstance().start:");
+		workingDir = sce.getServletContext().getInitParameter("pmarlen_working_dir");
+		logger.info("contextInitialized: workingDir    ="+workingDir +"? allparams="+ sce.getServletContext().getInitParameterNames());
+		if(workingDir == null){
+			logger.error(": workig dir param not working ! ");
+			workingDir = "/usr/local/pmarlen_PROD_work";
+		}
+		com.pmarlen.businesslogic.reports.GeneradorImpresionPedidoVenta.setWorkingDir(workingDir);
+
 		ConnectionPoolKeepAliveService.getInstance().start();
     }
 
+	public static String getWorkingDir(){
+		return workingDir;
+	}
+
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-		logger.trace("contextDestroyed: ConnectionPoolKeepAliveService.getInstance().stopRunning:");
+		logger.info("contextDestroyed: ConnectionPoolKeepAliveService.getInstance().stopRunning:");
 		ConnectionPoolKeepAliveService.getInstance().stopRunning();
-        logger.trace("contextDestroyed<<================++++++++++++++++++++++++++++++++++++++=============");		
+        logger.info("contextDestroyed<<================++++++++++++++++++++++++++++++++++++++=============");		
     }
 
     @Override
@@ -69,7 +80,7 @@ public class ContextAndSessionListener implements ServletContextListener, HttpSe
     @Override
     public void sessionDestroyed(HttpSessionEvent hse) {
 		final HttpSession session = hse.getSession();
-        logger.trace ("<<--["+session.getId()+"] sessionDestroyed");
+        logger.trace("<<--["+session.getId()+"] sessionDestroyed");
 		logger.trace("<<--["+session.getId()+"] was new ? "+session.isNew());
 		logger.trace("<<--------------------------------------------------------------------------------");
 		sessionInfoHT.remove(session.getId());

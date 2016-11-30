@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app id="WebApp_ID" version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee   http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-    <display-name>L30</display-name>
+    <display-name>L30_${environment.stage}</display-name>
     <session-config>
 		<session-timeout>${environment.webdescriptor.session-timeout}</session-timeout>
     </session-config>
@@ -14,6 +14,12 @@
 		UnitTest
 		-->		
     </context-param>
+
+    <context-param>
+        <param-name>pmarlen_work_dir</param-name>
+        <param-value>${environment.work.dir}</param-value>		
+    </context-param>
+
     <context-param>
         <param-name>primefaces.THEME</param-name>
         <!--
