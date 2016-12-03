@@ -370,6 +370,12 @@ public class MemoryDAO {
 				enviandoCierreCaja = false;
 			}
 			if (response.getStatus() != 200) {
+				if(response.getStatus() >= 500 && response.getStatus()< 600){
+					logger.debug("download:ERROR =======================================>> ENVIAR_POR_EMAIL: ERROR DE DATOS");
+				} else if(response.getStatus() >= 400 && response.getStatus()<500){
+					logger.debug("download:ERROR =======================================>> ENVIAR_POR_EMAIL: NO HAY SERVIDOR");
+				} 
+				
 				if(iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
 					enviandoCierreCorrectmente = false;
 				}

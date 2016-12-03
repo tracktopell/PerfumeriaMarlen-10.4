@@ -108,14 +108,18 @@ public class EstadoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT ID,DESCRIPCION FROM ESTADO");
-			
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				Estado x = new Estado();
-				x.setId((Integer)rs.getObject("ID"));
-				x.setDescripcion((String)rs.getObject("DESCRIPCION"));
-				r.add(x);
+			if(conn != null) {
+				ps = conn.prepareStatement("SELECT ID,DESCRIPCION FROM ESTADO");
+
+				rs = ps.executeQuery();
+				while(rs.next()) {
+					Estado x = new Estado();
+					x.setId((Integer)rs.getObject("ID"));
+					x.setDescripcion((String)rs.getObject("DESCRIPCION"));
+					r.add(x);
+				}
+			} else {
+				logger.warn("Connection is null, but why ?");
 			}
 		}catch(SQLException ex) {
 			logger.error("SQLException:", ex);

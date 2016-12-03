@@ -43,16 +43,4 @@
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
-        <action>
-            <actionName>build</actionName>
-            <packagings>
-                <packaging>*</packaging>
-            </packagings>
-            <goals>
-                <goal>install</goal>
-            </goals>
-            <activatedProfiles>
-                <activatedProfile>installer</activatedProfile>
-            </activatedProfiles>
-        </action>
     </actions>

@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/template/mainWithMenu.xhtml">
+
+    <ui:define name="title">
+        Catalogo de Productos
+    </ui:define>
+
+    <ui:define name="body-title">
+        Catalogo de Productos
+    </ui:define>
+
+    <ui:define name="body">
+		<h:form id="form1">
+			<p:layout style="height: 550px;">
+
+				<p:layoutUnit position="center">
+					<p:tabView style="height: 200">
+						<p:ajax event="tabChange" listener="#{catalogoProdCtesMB.onIndustriaLineaChange}" update=":form1"/>
+						<p:tab title="VER POR INDUSTRIA">
+							<h:panelGrid columns="2" cellpadding="10" columnClasses="columnWidth40 rightAlign, columnWidth60 leftAlign" width="100%" >
+								<h:outputText value="INDUSTRIA:" />
+								<h:selectOneMenu value="#{catalogoProdCtesMB.industria}">
+									<f:selectItems  value="#{catalogoProdCtesMB.industriasList}" />
+									<p:ajax listener="#{catalogoProdCtesMB.onIndustriaChange}" process="@all" update=":form1"/>
+								</h:selectOneMenu>
+
+								<h:outputText value="MARCA:" />
+								<h:selectOneMenu value="#{catalogoProdCtesMB.marcaInd}">
+									<f:selectItems  value="#{catalogoProdCtesMB.marcasPorIndustriaList}"/>
+									<p:ajax listener="#{catalogoProdCtesMB.onMarcaIndChange}" process="@all" update=":form1"/>
+								</h:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="1" cellpadding="5" id="panel" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}">
+
+								<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
+
+								<p:dataGrid   var="producto" value="#{catalogoProdCtesMB.entityList}" rendered="true"
+											  columns="5" paginator="false" 
+											  id="productoTable"
+											  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{productoCatSimple.sizeList}]"
+											  rowsPerPageTemplate="12,24,40" style="background: none repeat scroll 0 0 #ffffff;">
+
+
+									<h:panelGrid columns="1" style="width:100%">
+
+										<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+													cache="true"
+													alt  = "Producto #{producto.codigoBarras}"
+													title= "#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}"
+													style = "cursor:pointer"/>
+
+										<!--			
+										<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
+										<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
+										<h:outputText value="PRESENTACION:#{producto.presentacion}" />
+										-->
+									</h:panelGrid>
+
+									<f:facet name="header">
+										...PRODUCTOS ENCOTRADOS
+									</f:facet>
+								</p:dataGrid>
+
+							</h:panelGrid>	
+						</p:tab>
+
+						<p:tab title="VER POR LINEA">
+							<h:panelGrid columns="2" cellpadding="10" columnClasses="columnWidth40 rightAlign, columnWidth60 leftAlign" width="100%" >
+								<h:outputText value="LINEA:" />
+								<h:selectOneMenu value="#{catalogoProdCtesMB.linea}">
+									<f:selectItems  value="#{catalogoProdCtesMB.lineasList}"/>
+									<p:ajax listener="#{catalogoProdCtesMB.onLineaChange}" process="@all" update=":form1"/>
+								</h:selectOneMenu>
+
+								<h:outputText value="MARCA:" />
+								<h:selectOneMenu value="#{catalogoProdCtesMB.marcaLin}">
+									<f:selectItems  value="#{catalogoProdCtesMB.marcasPorLineaList}"/>									
+									<p:ajax listener="#{catalogoProdCtesMB.onMarcaLinChange}" process="@all" update=":form1"/>
+								</h:selectOneMenu>
+							</h:panelGrid>
+							
+							<h:panelGrid columns="1" cellpadding="5" id="panel2" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}">
+
+								<p:messages id="msgs2" showDetail="true" autoUpdate="true" closable="true" />
+
+								<p:dataGrid   var="producto" value="#{catalogoProdCtesMB.entityList}" rendered="true"
+											  columns="5" paginator="false" 
+											  id="productoTable2"
+											  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{productoCatSimple.sizeList}]"
+											  rowsPerPageTemplate="12,24,40" style="background: none repeat scroll 0 0 #ffffff;">
+
+
+									<h:panelGrid columns="1" style="width:100%">
+
+										<p:graphicImage id="img2" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+													cache="true"
+													alt  = "Producto #{producto.codigoBarras}"
+													title= "#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}"
+													style = "cursor:pointer"/>
+
+										<!--			
+										<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
+										<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
+										<h:outputText value="PRESENTACION:#{producto.presentacion}" />
+										-->
+									</h:panelGrid>
+
+									<f:facet name="header">
+										...PRODUCTOS ENCOTRADOS
+									</f:facet>
+								</p:dataGrid>
+
+							</h:panelGrid>	
+						</p:tab>
+					</p:tabView>
+					
+				</p:layoutUnit>
+			</p:layout>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
