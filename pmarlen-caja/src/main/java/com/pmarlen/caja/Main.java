@@ -42,7 +42,9 @@ public class Main {
 	 */
 	private static SplashFrame splashFrame;
 	public static void main(String[] args) {
-		CorteCajaDTO putaMadre = new CorteCajaDTO();	
+		
+		MemoryDAO.existRequestResetAll();
+		
 		System.out.println("main:Main args[]={");
 		SplashFrame splashFrame = new SplashFrame();
 		splashFrame.setVisible(true);

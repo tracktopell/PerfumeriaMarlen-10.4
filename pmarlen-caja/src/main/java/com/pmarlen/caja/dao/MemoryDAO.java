@@ -851,14 +851,48 @@ public class MemoryDAO {
 		
 		Gson gson=new Gson();
 		CorteCajaDTO cc = null;
-		
+		FileReader fileReader = null;
 		try {			
-			cc = gson.fromJson(new FileReader(corteCajaDTOjsonFile), CorteCajaDTO.class);		
+			fileReader =new FileReader(corteCajaDTOjsonFile);		
+			cc = gson.fromJson(fileReader, CorteCajaDTO.class);		
 			logger.debug("readLastSavedCorteCajaDTO: cc="+cc);
+			fileReader.close();
 		}catch(IOException ioe){
 			logger.debug("readLastSavedCorteCajaDTO: No existe el archivo:"+ioe.getMessage());
 		}
 		return cc;
+	}
+
+	public static void existRequestResetAll() {
+		File fileRequestReset = new File("RESET.do");
+		if(fileRequestReset.exists()) {
+			if(fileRequestReset.delete()) {
+				resuqestResetAll();
+			}
+		}
+	}
+	
+	public static void resuqestResetAll() {
+		logger.info("==========================>> RESET <<======================");
+		File currDir = new File(".");
+		File[] allFiles = currDir.listFiles();
+		boolean deleteFile=false;
+		for(File f: allFiles){
+			deleteFile=false;
+			if(f.getName().startsWith("CorteCaja")){
+				deleteFile=true;
+			} else if(f.getName().startsWith("EntradaSalida")){
+				deleteFile=true;
+			} else if(f.getName().startsWith("fileModel.zip")){
+				deleteFile=true;
+			}
+
+			if(deleteFile){					
+				f.setWritable(true);
+				boolean deleted = f.delete();
+				logger.info("resetAction: delete:"+f+" ? "+deleted);
+			}
+		}
 	}
     
     public static class CorteCajaDTOComparatorDescOrder implements Comparator<CorteCajaDTO>{
@@ -900,11 +934,14 @@ public class MemoryDAO {
 		
 		for(File fx: fcc){
 			//logger.debug("readLastSavedCorteCajaDTOApertura:\t->"+fx.getName());			
-            try {
+            FileReader fileReader = null;
+			try {
                 CorteCajaDTO cc = null;
-				cc = gson.fromJson(new FileReader(fx), CorteCajaDTO.class);
+				fileReader = new FileReader(fx);
+				cc = gson.fromJson(fileReader, CorteCajaDTO.class);
                 logger.trace("readLastSavedCorteCajaDTOApertura:\t\t->"+cc);			
                 cortesTS.add(cc);
+				fileReader.close();
 			}catch(Exception ioe){
 				logger.debug("readLastSavedCorteCajaDTOApertura: Error al parsear el Archivo:"+ioe.getMessage());
 			}
@@ -934,6 +971,57 @@ public class MemoryDAO {
 		return cCC;
 	}
 
+	public static boolean isInAperturaCorteCajaDTO(){
+		logger.debug("isInAperturaCorteCajaDTO: read from :"+corteCajaDTOjsonHistoryFile);
+		
+		File ff = new File(".");
+		
+		File[] fcc = ff.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return(name.matches(corteCajaDTOjsonHistoryFile));
+			}
+		});
+		logger.debug("isInAperturaCorteCajaDTO:list:{");
+		List<File> fxList = new ArrayList<File>();
+        TreeSet<CorteCajaDTO> cortesTS=new TreeSet<CorteCajaDTO>(new CorteCajaDTOComparatorDescOrder());
+        
+        Gson gson=new Gson();		
+		
+		for(File fx: fcc){
+			//logger.debug("readLastSavedCorteCajaDTOApertura:\t->"+fx.getName());			
+            FileReader fileReader = null;
+			try {
+                CorteCajaDTO cc = null;
+				fileReader = new FileReader(fx);
+				cc = gson.fromJson(fileReader, CorteCajaDTO.class);
+                logger.trace("isInAperturaCorteCajaDTO:\t\t->"+cc);			
+                cortesTS.add(cc);
+				fileReader.close();
+			}catch(Exception ioe){
+				logger.debug("isInAperturaCorteCajaDTO: Error al parsear el Archivo:"+ioe.getMessage());
+			}
+		}
+		logger.debug("}");
+		
+		CorteCajaDTO cCC = null;
+		
+        boolean apeturaCC=false;
+        for(CorteCajaDTO ccX: cortesTS){
+            apeturaCC = ccX.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA;
+            if(ccX.getTipoEvento() < Constants.TIPO_EVENTO_APERTURA){
+                
+            }else if(ccX.getTipoEvento() == Constants.TIPO_EVENTO_APERTURA){
+				apeturaCC = true;
+                break;
+            }else if(ccX.getTipoEvento() > Constants.TIPO_EVENTO_APERTURA){
+                break;
+            }
+            
+        }
+ 		return apeturaCC;
+	}
+	
    	public static CorteCajaDTO readLastSavedCorteCajaDTOCierre(){
 		logger.debug("readLastSavedCorteCajaDTOCierre: read from :"+corteCajaDTOjsonHistoryFile);
 		
@@ -953,11 +1041,14 @@ public class MemoryDAO {
 		
 		for(File fx: fcc){
 			//logger.debug("readLastSavedCorteCajaDTOApertura:\t->"+fx.getName());			
+			FileReader fileReader = null;
             try {
                 CorteCajaDTO cc = null;
-				cc = gson.fromJson(new FileReader(fx), CorteCajaDTO.class);
-                logger.trace("readLastSavedCorteCajaDTOCierre:\t\t->"+cc);			
+				fileReader = new FileReader(fx);
+				cc = gson.fromJson(fileReader, CorteCajaDTO.class);
+                logger.trace("readLastSavedCorteCajaDTOCierre:\t\t->"+cc);
                 cortesTS.add(cc);
+				fileReader.close();
 			}catch(Exception ioe){
 				logger.debug("readLastSavedCorteCajaDTOCierre: Error al parsear el Archivo:"+ioe.getMessage());
 			}
@@ -999,11 +1090,14 @@ public class MemoryDAO {
 		
 		for(File fx: fcc){
 			//logger.debug("readFirstSavedCorteCajaDTOIniciada:\t->"+fx.getName());			
+			FileReader fileReader = null;
             try {
                 CorteCajaDTO cc = null;
-				cc = gson.fromJson(new FileReader(fx), CorteCajaDTO.class);
+				fileReader = new FileReader(fx);
+				cc = gson.fromJson(fileReader, CorteCajaDTO.class);
                 //logger.debug("readFirstSavedCorteCajaDTOIniciada:\t\t->"+cc);			
                 cortesTS.add(cc);
+				fileReader.close();
 			}catch(Exception ioe){
 				logger.debug("readLastSavedCorteCajaDTOApertura: Error al parsear el Archivo:"+ioe.getMessage());
 			}
@@ -1182,5 +1276,9 @@ public class MemoryDAO {
 			}
 		}
 		return null;
+	}
+	
+	public static void stopPooling(){
+		runnigPool = false;
 	}
 }

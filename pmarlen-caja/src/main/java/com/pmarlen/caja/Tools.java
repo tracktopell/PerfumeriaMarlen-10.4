@@ -25,10 +25,12 @@ import org.apache.log4j.Logger;
 public class Tools {
 	//private static Logger logger = Logger.getLogger(Tools.class.getName());
 	public static void main(String[] args) {
+		LogManager.getRootLogger().setLevel(Level.INFO);
 		String pathToEntradaSalidaJsonFile = "EntradaSalida.json";
 		String pathToCorteCajaJsonFile     = "CorteCajaDTO.json";
 		String fechaFiltro                 = Constants.sdfDate.format(new Date());
-        boolean inventario = false;
+        boolean inventario        = false;
+		boolean corteCajaResumen  = false;
 		for(String arg: args){
 			String[] argVal = arg.split("=");
 			if(argVal[0].equals("-I")){
@@ -39,11 +41,14 @@ public class Tools {
 				pathToCorteCajaJsonFile     = argVal[1];
 			} else if(argVal[0].startsWith("-FF")){
 				fechaFiltro = argVal[1];
+			} else if(argVal[0].startsWith("-RC")){
+				corteCajaResumen  = true;
 			}
 		}
 		
         System.err.println("Usage: java -cp pmarlen-caja.jar com.pmarlen.caja.Tools [-ES=EntradaSalida.json] [-CC=CorteCajaDTO.json] [-FF=AAAAMMDD]");
-        System.err.println("Usage: java -cp pmarlen-caja.jar com.pmarlen.caja.Tools -I");
+        //System.err.println("Usage: java -cp pmarlen-caja.jar com.pmarlen.caja.Tools -I");
+		System.err.println("Usage: java -cp pmarlen-caja.jar com.pmarlen.caja.Tools -CC");
 		
 		InputStream is = null;
 		File fileToLoad = null;
@@ -64,9 +69,9 @@ public class Tools {
                 ioe.printStackTrace(System.err);
 				System.exit(2);
 			}
-		} else {
+		} else if(!corteCajaResumen){
             System.err.println("Archivo:"+pathToEntradaSalidaJsonFile+", Error al abrir.");
-			System.exit(3);
+			//System.exit(3);
         }
 		System.out.print("------------>>>EntrasaSalida:");
 		System.out.print("fechaFiltro="+fechaFiltro);
@@ -101,34 +106,41 @@ public class Tools {
 			System.out.print(Constants.df2Decimal.format(es.getTot() * fac));
 			System.out.println();
 		}
-		System.out.println("\tTot="+Constants.df2Decimal.format(tot));
-        System.out.println();
-        System.out.println("------------>>>CorteCaja: pathToCorteCajaJsonFile="+pathToCorteCajaJsonFile);        
-        LogManager.getRootLogger().setLevel(Level.DEBUG);
-		if(pathToCorteCajaJsonFile != null){
-			is = null;
-			fileToLoad = null;
-			CorteCajaDTO cc=  null;
-			fileToLoad = new File(pathToCorteCajaJsonFile);
-			if(fileToLoad.exists() ){
-				System.out.println("load:CorteCaja:File found:"+pathToEntradaSalidaJsonFile);
-				Gson gson=new Gson();
-				try {
-					FileReader fr = new FileReader(fileToLoad);
-					System.out.println("\tReading:");
+		if(! esList.isEmpty()) {
+			System.out.println("\tTot="+Constants.df2Decimal.format(tot));
+			System.out.println();
+		}
+		System.out.print("------------>>>corteCajaResumen:"+corteCajaResumen);
+		if(corteCajaResumen){
+			System.out.println("------------>>>CorteCaja: pathToCorteCajaJsonFile="+pathToCorteCajaJsonFile);        
+			
+			if(pathToCorteCajaJsonFile != null){
+				is = null;
+				fileToLoad = null;
+				CorteCajaDTO cc=  null;
+				fileToLoad = new File(pathToCorteCajaJsonFile);
+				if(fileToLoad.exists() ){
+					System.out.println("load:CorteCaja:File found:"+pathToEntradaSalidaJsonFile);
+					Gson gson=new Gson();
+					try {
+						FileReader fr = new FileReader(fileToLoad);
+						System.out.println("\tReading:");
 
-					cc = gson.fromJson(fr, new TypeToken<CorteCajaDTO>(){}.getType());
-					System.out.println("\t\tRead:CorteCaja="+cc);
-                    
-                    CorteCajaDTO ccA = MemoryDAO.readLastSavedCorteCajaDTOApertura();
-                    System.out.println("\t\tRead:CorteCajaDTOApertura="+ccA);
-				}catch(IOException ioe){
-					ioe.printStackTrace(System.err);
-					System.exit(4);
+						cc = gson.fromJson(fr, new TypeToken<CorteCajaDTO>(){}.getType());
+						System.out.println("\t\tRead:CorteCaja="+cc);
+
+						CorteCajaDTO ccA = MemoryDAO.readLastSavedCorteCajaDTOApertura();
+						System.out.println("\t\tRead:CorteCajaDTOApertura="+ccA);
+						
+						System.out.println("\t\tRead:isInAperturaCorteCajaDTO="+MemoryDAO.isInAperturaCorteCajaDTO());
+					}catch(IOException ioe){
+						ioe.printStackTrace(System.err);
+						System.exit(4);
+					}
+				} else {
+					System.err.println("Archivo:"+pathToCorteCajaJsonFile+", Error al abrir.");
+					//System.exit(5);
 				}
-			} else {
-				System.err.println("Archivo:"+pathToCorteCajaJsonFile+", Error al abrir.");
-				System.exit(5);
 			}
 		}
 	}	

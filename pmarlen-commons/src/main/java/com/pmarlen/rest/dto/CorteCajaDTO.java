@@ -247,7 +247,7 @@ public class CorteCajaDTO implements Serializable{
 		sb.append(", saldoFinal=").append(this.saldoFinal);
 		sb.append(", comentarios=").append(this.comentarios);
 		
-		        String tipoEventoValue="";
+		String tipoEventoValue="";
         if(this.tipoEvento==Constants.TIPO_EVENTO_AP_INICIADA){
 			tipoEventoValue="TIPO_EVENTO_AP_INICIADA";
 		} else if(this.tipoEvento==Constants.TIPO_EVENTO_AUTENTICADO){
