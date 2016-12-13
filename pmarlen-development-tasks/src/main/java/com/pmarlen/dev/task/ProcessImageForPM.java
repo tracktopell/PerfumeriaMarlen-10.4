@@ -56,7 +56,7 @@ public class ProcessImageForPM {
 	private static final String regExactFileExp = "\\p{Digit}{2,18}_\\p{Digit}+\\.png";
 	private static String outputPMImagesDir = null;		
 	private static String waterMarkImgFile = null;
-	private static final String version ="10.4.1-B156";	
+	private static final String version ="10.4.1-B157";	
 	public static void main(String[] args) {
 		System.out.print("======================[com.pmarlen.dev.task.ProcessImageForPM]====================[V "+version+"]");
 		
