@@ -56,7 +56,7 @@ public class ProcessImageForPM {
 	private static final String regExactFileExp = "\\p{Digit}{2,18}_\\p{Digit}+\\.png";
 	private static String outputPMImagesDir = null;		
 	private static String waterMarkImgFile = null;
-	private static final String version ="10.4.1-B154";	
+	private static final String version ="10.4.1-B156";	
 	public static void main(String[] args) {
 		System.out.print("======================[com.pmarlen.dev.task.ProcessImageForPM]====================[V "+version+"]");
 		
@@ -302,8 +302,9 @@ public class ProcessImageForPM {
 				try {
 					processPMImage(f.getAbsolutePath(), outputPMImagesDir, waterMarkImgFile);
 					//Thread.sleep(100);
-					System.out.print(xs+"\r");
-				}catch(Exception e){
+					//System.out.print(xs+"\r");
+					System.out.println(xs);
+				}catch(Throwable e){
 					System.err.println("");
 					System.err.println("\t\tException in ->"+getName()+" processing ("+f.getAbsolutePath()+"):"+e);
 				}
