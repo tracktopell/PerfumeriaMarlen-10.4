@@ -286,12 +286,24 @@ public class ProcessImageForPM {
 				
 				xs = "\t->"+getName()+"["+x+"/"+t+"]="+a+" %";
 				
+				if(f.length() <= 10 ){
+					System.err.println("");
+					System.err.print("\t->"+getName()+" ERROR IN SIZE="+f.length()+" FOR FILE: ("+f.getAbsolutePath()+")");
+					continue;
+				}
+				if(!f.isFile()){
+					System.err.println("");
+					System.err.print("\t->"+getName()+" ERROR IS NOT FILE FOR PATH: ("+f.getAbsolutePath()+")");
+					continue;
+				}
+				
 				try {
 					processPMImage(f.getAbsolutePath(), outputPMImagesDir, waterMarkImgFile);
-					Thread.sleep(100);
+					//Thread.sleep(100);
 					System.out.print(xs+"\r");
 				}catch(Exception e){
-					System.err.println("\t\t->"+getName()+":"+e);
+					System.err.println("");
+					System.err.println("\t\tException in ->"+getName()+" processing ("+f.getAbsolutePath()+"):"+e);
 				}
 			}
 			System.out.println("");
