@@ -14,9 +14,6 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.ProductoQuickView;
 import com.tracktopell.jdbc.DataSourceFacade;
 
-import java.io.ByteArrayInputStream;
-
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,6 +22,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;	
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
@@ -282,6 +280,82 @@ public class ProductoDAO {
 		}
 		return r;
 	}
+	
+	public LinkedHashMap<String,ArrayList<String>> findAllLineasMarcas() throws DAOException {
+		LinkedHashMap<String,ArrayList<String>> r = new LinkedHashMap<String,ArrayList<String>>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT LINEA,MARCA FROM PRODUCTO GROUP BY LINEA,MARCA ORDER BY LINEA,MARCA");
+			
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				final String linea = rs.getString("LINEA");
+				final String marca = rs.getString("MARCA");
+				ArrayList<String> marcas = r.get(linea);
+				if(marcas == null){
+					marcas = new ArrayList<String>();
+					r.put(linea,marcas);
+				}
+				marcas.add(marca);
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+	};
+	
+	public LinkedHashMap<String,ArrayList<String>> findAllIndustriasMarcas() throws DAOException {
+		LinkedHashMap<String,ArrayList<String>> r = new LinkedHashMap<String,ArrayList<String>>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT INDUSTRIA,MARCA FROM PRODUCTO GROUP BY INDUSTRIA,MARCA ORDER BY INDUSTRIA,MARCA");
+			
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				final String industria = rs.getString("INDUSTRIA");
+				final String marca = rs.getString("MARCA");
+				ArrayList<String> marcas = r.get(industria);
+				if(marcas == null){
+					marcas = new ArrayList<String>();
+					r.put(industria,marcas);
+				}
+				marcas.add(marca);
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+	};
 	
 	public ArrayList<String> findAllIndustrias() throws DAOException {
 		ArrayList<String> r = new ArrayList<String>();

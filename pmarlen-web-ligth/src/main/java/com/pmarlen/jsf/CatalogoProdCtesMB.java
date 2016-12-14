@@ -8,6 +8,7 @@ import com.pmarlen.model.Constants;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import org.apache.log4j.Logger;
 import javax.annotation.PostConstruct;
@@ -20,6 +21,11 @@ import javax.faces.model.SelectItem;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.MenuModel;
+
 @ManagedBean(name="catalogoProdCtesMB")
 @SessionScoped
 public class CatalogoProdCtesMB   implements Serializable{
@@ -27,11 +33,14 @@ public class CatalogoProdCtesMB   implements Serializable{
 	List<ProductoQuickView> entityList;
 	Integer viewRows;
 	ProductoQuickView selectedEntity;
+	
 	protected static List<SelectItem> tipoAlmacenList;
 	protected static List<SelectItem> industriasList;
 	protected static List<SelectItem> lineasList;
 	protected static List<SelectItem> marcasIndList;
 	protected static List<SelectItem> marcasLinList;	
+	
+	private String selection;
 	private String industria;
 	private String linea;
 	private String marca;
@@ -174,7 +183,7 @@ public class CatalogoProdCtesMB   implements Serializable{
 				ArrayList<String> allIndustrias = ProductoDAO.getInstance().findAllIndustrias();
 				industriasList.add(new SelectItem(null, "--SELECCIONAR--"));
 				for(String i: allIndustrias){
-					industriasList.add(new SelectItem(i, i));
+					industriasList.add(new SelectItem(i, getShortDesc(i, MAX_LABEL_MENU_LENGTH)));
 				}
 			}catch(DAOException de){
 			}
@@ -190,7 +199,7 @@ public class CatalogoProdCtesMB   implements Serializable{
 				ArrayList<String> allLineas = ProductoDAO.getInstance().findAllLineas();
 				lineasList.add(new SelectItem(null, "--SELECCIONAR--"));
 				for(String l: allLineas){
-					lineasList.add(new SelectItem(l, l));
+					lineasList.add(new SelectItem(l, getShortDesc(l, MAX_LABEL_MENU_LENGTH)));
 				}
 			}catch(DAOException de){
 			}
@@ -237,7 +246,47 @@ public class CatalogoProdCtesMB   implements Serializable{
 		return marcasLinList;
 	}
 
+	private boolean lineasListR		= false;
+	private boolean industriasListR	= false;	
+	private boolean marcaLinListR	= false;	
+	private boolean marcaIndListR	= false;	
+	public void onSelectionChange() {
+		logger.info("onSelectionChange:selection="+selection);
+		
+		lineasListR		= false;
+		industriasListR	= false;	
+		marcaLinListR	= false;	
+		marcaIndListR	= false;	
+		marcaInd		= null;
+		linea			= null;
+		marca			= null;
+		marcasLinList = null;
+		marcasIndList = null;
+		entityList    = null;
+		
+		if(selection.equals("LINEA")){
+			lineasListR		= true;
+		} else if(selection.equals("INDUSTRIA")){
+			industriasListR = true;
+		} 
+	}
 
+	public boolean isLineasListR() {
+		return lineasListR;
+	}
+
+	public boolean isIndustriasListR() {
+		return industriasListR;
+	}
+
+	public boolean isMarcaIndListR() {
+		return marcaIndListR;
+	}
+
+	public boolean isMarcaLinListR() {
+		return marcaLinListR;
+	}
+	
 	public void onTipoAlmacenChange() {
 		logger.info("onTipoAlmacenChange:tipoAlmacen="+tipoAlmacen);		
 	}
@@ -250,6 +299,11 @@ public class CatalogoProdCtesMB   implements Serializable{
 		marcasLinList = null;
 		marcasIndList = null;
 		entityList    = null;
+		if(industria != null){
+			marcaIndListR = true;
+		} else {
+			marcaIndListR = false;
+		}
 	}
 	
 	public void onLineaChange() {
@@ -260,6 +314,11 @@ public class CatalogoProdCtesMB   implements Serializable{
 		marcasLinList = null;
 		marcasIndList = null;
 		entityList    = null;
+		if(linea!=null){
+			marcaLinListR = true;
+		} else {
+			marcaLinListR = false;
+		}
 	}
 
 	public void onMarcaLinChange() {
@@ -272,7 +331,6 @@ public class CatalogoProdCtesMB   implements Serializable{
 		logger.info("onMarcaIndChange:marca="+marcaInd);		
 		marca =  marcaInd;
 		entityList    = null;
-		
 	}
 
 	
@@ -297,6 +355,14 @@ public class CatalogoProdCtesMB   implements Serializable{
 		return industria;
 	}
 
+	public void setSelection(String selection) {
+		this.selection = selection;
+	}
+
+	public String getSelection() {
+		return selection;
+	}
+	
 	/**
 	 * @param industria the industria to set
 	 */
@@ -359,5 +425,78 @@ public class CatalogoProdCtesMB   implements Serializable{
 	public void setMarcaLin(String marcaLin) {
 		this.marcaLin = marcaLin;
 	}
+	
+	private MenuModel menuBarModel;
 
+	public MenuModel getMenuBarModel() {
+		if(menuBarModel == null){
+			menuBarModel = new DefaultMenuModel();
+			
+			menuBarModel.addElement(getSubmenuCatalogoXLineaMarca());
+			menuBarModel.addElement(getSubmenuCatalogoXIndustriaMarca());
+		}
+		return menuBarModel;
+	}
+
+	private DefaultSubMenu getSubmenuCatalogoXLineaMarca(){		
+        DefaultSubMenu subMenuLinea = new DefaultSubMenu("Linea");
+        LinkedHashMap<String, ArrayList<String>> findAllLineasMarcas = null; 
+		try{
+			findAllLineasMarcas = ProductoDAO.getInstance().findAllLineasMarcas();
+			
+			for(String linea: findAllLineasMarcas.keySet()){
+				
+				DefaultSubMenu itemLinea = new DefaultSubMenu(getShortDesc(linea, MAX_LABEL_MENU_LENGTH));
+				itemLinea.setIcon("ui-icon-star");
+				subMenuLinea.addElement(itemLinea);
+				
+				ArrayList<String> marcas = findAllLineasMarcas.get(linea);
+				
+				for(String marca: marcas){
+					DefaultMenuItem subItemMarca = new DefaultMenuItem(getShortDesc(marca, MAX_LABEL_MENU_LENGTH));
+					subItemMarca.setIcon("ui-icon-contact");
+					itemLinea.addElement(subItemMarca);
+				}				
+			}
+		}catch(DAOException de){
+			logger.error("getSubmenuCatalogoXLineaMarca:", de);
+		}
+        return subMenuLinea;
+	}
+	
+	private DefaultSubMenu getSubmenuCatalogoXIndustriaMarca(){		
+		DefaultSubMenu subMenuIndustria = new DefaultSubMenu("Industria");
+        LinkedHashMap<String, ArrayList<String>> findAllIndustriasMarcas = null; 
+		try{
+			findAllIndustriasMarcas = ProductoDAO.getInstance().findAllIndustriasMarcas();
+			
+			for(String industria: findAllIndustriasMarcas.keySet()){
+				
+				DefaultSubMenu itemIndustria = new DefaultSubMenu(getShortDesc(industria,MAX_LABEL_MENU_LENGTH));				
+				itemIndustria.setIcon("ui-icon-star");
+				subMenuIndustria.addElement(itemIndustria);
+				
+				ArrayList<String> marcas = findAllIndustriasMarcas.get(industria);
+				
+				for(String marca: marcas){
+					DefaultMenuItem subItemMarca = new DefaultMenuItem(getShortDesc(marca, MAX_LABEL_MENU_LENGTH));
+					subItemMarca.setIcon("ui-icon-contact");
+					itemIndustria.addElement(subItemMarca);
+				}				
+			}
+		}catch(DAOException de){
+			logger.error("getSubmenuCatalogoXIndustriaMarca:", de);
+		}
+        return subMenuIndustria;
+	}
+	
+	private static final int MAX_LABEL_MENU_LENGTH = 30;
+	
+	private String getShortDesc(String label, int maxLength){
+		if(label.length() >= maxLength){
+			return label.substring(0, maxLength -3) + "...";
+		} else {
+			return label;
+		}
+	}
 }

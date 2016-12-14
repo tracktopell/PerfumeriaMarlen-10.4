@@ -15,112 +15,70 @@
 
     <ui:define name="body">
 		<h:form id="form1">
-			<p:layout style="height: 550px;">
 
-				<p:layoutUnit position="center">
-					<p:tabView style="height: 200">
-						<p:ajax event="tabChange" listener="#{catalogoProdCtesMB.onIndustriaLineaChange}" update=":form1"/>
-						<p:tab title="VER POR INDUSTRIA">
-							<h:panelGrid columns="2" cellpadding="10" columnClasses="columnWidth40 rightAlign, columnWidth60 leftAlign" width="100%" >
-								<h:outputText value="INDUSTRIA:" />
-								<h:selectOneMenu value="#{catalogoProdCtesMB.industria}">
-									<f:selectItems  value="#{catalogoProdCtesMB.industriasList}" />
-									<p:ajax listener="#{catalogoProdCtesMB.onIndustriaChange}" process="@all" update=":form1"/>
-								</h:selectOneMenu>
+			<h:panelGrid columns="4" style="margin-bottom:10px" cellpadding="5">				
+				<p:selectOneMenu value="#{catalogoProdCtesMB.selection}" style="width: 280px;">
+					<f:selectItem itemLabel="--SELECIONE--"  itemValue="SELECCIONE" />
+					<f:selectItem itemLabel="LINEA"			 itemValue="LINEA" />
+					<f:selectItem itemLabel="INDUSTRIA"      itemValue="INDUSTRIA" />			
+					<p:ajax listener="#{catalogoProdCtesMB.onSelectionChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
 
-								<h:outputText value="MARCA:" />
-								<h:selectOneMenu value="#{catalogoProdCtesMB.marcaInd}">
-									<f:selectItems  value="#{catalogoProdCtesMB.marcasPorIndustriaList}"/>
-									<p:ajax listener="#{catalogoProdCtesMB.onMarcaIndChange}" process="@all" update=":form1"/>
-								</h:selectOneMenu>
-							</h:panelGrid>
+				<p:selectOneMenu value="#{catalogoProdCtesMB.linea}" style="width: 280px;" rendered="#{catalogoProdCtesMB.lineasListR}">
+					<f:selectItems  value="#{catalogoProdCtesMB.lineasList}"/>
+					<p:ajax listener="#{catalogoProdCtesMB.onLineaChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
 
-							<h:panelGrid columns="1" cellpadding="5" id="panel" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}">
+				<p:selectOneMenu value="#{catalogoProdCtesMB.industria}" style="width: 280px;" rendered="#{catalogoProdCtesMB.industriasListR}">
+					<f:selectItems  value="#{catalogoProdCtesMB.industriasList}" />
+					<p:ajax listener="#{catalogoProdCtesMB.onIndustriaChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
 
-								<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
+				<p:selectOneMenu value="#{catalogoProdCtesMB.marcaLin}" style="width: 280px;" rendered="#{catalogoProdCtesMB.marcaLinListR}">
+					<f:selectItems  value="#{catalogoProdCtesMB.marcasPorLineaList}"/>
+					<p:ajax listener="#{catalogoProdCtesMB.onMarcaLinChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
 
-								<p:dataGrid   var="producto" value="#{catalogoProdCtesMB.entityList}" rendered="true"
-											  columns="5" paginator="false" 
-											  id="productoTable"
-											  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{productoCatSimple.sizeList}]"
-											  rowsPerPageTemplate="12,24,40" style="background: none repeat scroll 0 0 #ffffff;">
+				<p:selectOneMenu value="#{catalogoProdCtesMB.marcaInd}" style="width: 280px;" rendered="#{catalogoProdCtesMB.marcaIndListR}">
+					<f:selectItems  value="#{catalogoProdCtesMB.marcasPorIndustriaList}"/>
+					<p:ajax listener="#{catalogoProdCtesMB.onMarcaIndChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
 
+			</h:panelGrid>
 
-									<h:panelGrid columns="1" style="width:100%">
+			<h:panelGrid columns="1" cellpadding="5" id="panel" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}">
 
-										<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
-													cache="true"
-													alt  = "Producto #{producto.codigoBarras}"
-													title= "#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}"
-													style = "cursor:pointer"/>
+				<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
 
-										<!--			
-										<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
-										<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
-										<h:outputText value="PRESENTACION:#{producto.presentacion}" />
-										-->
-									</h:panelGrid>
-
-									<f:facet name="header">
-										...PRODUCTOS ENCOTRADOS
-									</f:facet>
-								</p:dataGrid>
-
-							</h:panelGrid>	
-						</p:tab>
-
-						<p:tab title="VER POR LINEA">
-							<h:panelGrid columns="2" cellpadding="10" columnClasses="columnWidth40 rightAlign, columnWidth60 leftAlign" width="100%" >
-								<h:outputText value="LINEA:" />
-								<h:selectOneMenu value="#{catalogoProdCtesMB.linea}">
-									<f:selectItems  value="#{catalogoProdCtesMB.lineasList}"/>
-									<p:ajax listener="#{catalogoProdCtesMB.onLineaChange}" process="@all" update=":form1"/>
-								</h:selectOneMenu>
-
-								<h:outputText value="MARCA:" />
-								<h:selectOneMenu value="#{catalogoProdCtesMB.marcaLin}">
-									<f:selectItems  value="#{catalogoProdCtesMB.marcasPorLineaList}"/>									
-									<p:ajax listener="#{catalogoProdCtesMB.onMarcaLinChange}" process="@all" update=":form1"/>
-								</h:selectOneMenu>
-							</h:panelGrid>
-							
-							<h:panelGrid columns="1" cellpadding="5" id="panel2" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}">
-
-								<p:messages id="msgs2" showDetail="true" autoUpdate="true" closable="true" />
-
-								<p:dataGrid   var="producto" value="#{catalogoProdCtesMB.entityList}" rendered="true"
-											  columns="5" paginator="false" 
-											  id="productoTable2"
-											  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{productoCatSimple.sizeList}]"
-											  rowsPerPageTemplate="12,24,40" style="background: none repeat scroll 0 0 #ffffff;">
+				<p:dataGrid   var="producto" value="#{catalogoProdCtesMB.entityList}"
+							  columns="3" rows="24" paginator="true" 
+							  id="productoTable"
+							  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{productoCatSimple.sizeList}]"
+							  rowsPerPageTemplate="12,24,40" style="background: none repeat scroll 0 0 #ffffff;">
 
 
-									<h:panelGrid columns="1" style="width:100%">
+					<h:panelGrid columns="1" style="width:100%">
 
-										<p:graphicImage id="img2" value="/multimedio/productos/min/#{producto.codigoBarras}" 
-													cache="true"
-													alt  = "Producto #{producto.codigoBarras}"
-													title= "#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}"
-													style = "cursor:pointer"/>
+						<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+										cache="true"
+										alt="Producto #{producto.codigoBarras}" 
+										title="Producto #{producto.codigoBarras}"
+										style="cursor:pointer"/>
 
-										<!--			
-										<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
-										<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
-										<h:outputText value="PRESENTACION:#{producto.presentacion}" />
-										-->
-									</h:panelGrid>
 
-									<f:facet name="header">
-										...PRODUCTOS ENCOTRADOS
-									</f:facet>
-								</p:dataGrid>
+						<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
 
-							</h:panelGrid>	
-						</p:tab>
-					</p:tabView>
-					
-				</p:layoutUnit>
-			</p:layout>
+						<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
+
+						<h:outputText value="PRESENTACION:#{producto.presentacion}" />
+
+					</h:panelGrid>
+
+					<f:facet name="footer">
+						xx-xx
+					</f:facet>
+				</p:dataGrid>
+			</h:panelGrid>
 		</h:form>
 
 	</ui:define>
