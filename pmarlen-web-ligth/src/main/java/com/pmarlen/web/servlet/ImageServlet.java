@@ -40,20 +40,10 @@ public class ImageServlet extends HttpServlet {
 			throws ServletException, IOException {
 		Logger logger=Logger.getLogger(ImageServlet.class.getName());
 		String uri = request.getRequestURI();
-		//   http://host:port/pmarlen-web-ligth/multimedio/productos/med/8410190297579
-		//   http://host:port/pmarlen-web-ligth/multimedio/productos/min/8410190297579
-		//   http://host:port/pmarlen-web-ligth/multimedio/productos/def/8410190297579
 		//   http://host:port/l30/multimedio/productos/ico/8410190297579		
 		
-		//   /usr/local/pmarlen_multimedio/PM_MULTIMEDIO_MED_JPG/MED_PRODUCTO_MULTIMEDIO_8714789135243_1.png
-		//	 /usr/local/pmarlen_multimedio/PM_MULTIMEDIO_MIN_JPG/MIN_PRODUCTO_MULTIMEDIO_8714789135243_1.png
-		//	 /usr/local/pmarlen_multimedio/PM_MULTIMEDIO_DEF_JPG/DEF_PRODUCTO_MULTIMEDIO_8714789135243_1.png
-		//	 /usr/local/pmarlen_multimedio/PM_MULTIMEDIO_ICO_JPG/ICO_PRODUCTO_MULTIMEDIO_8714789135243_1.png
-		
-		//logger.trace("request URI="+uri);
 		String urix[]=uri.split("/");
 		
-		//logger.trace("urix="+Arrays.asList(urix));
 		
 		String size = uri.substring(uri.lastIndexOf("/")-3,uri.lastIndexOf("/")).toUpperCase();
 		String cb   = uri.substring(uri.lastIndexOf("/")+1);

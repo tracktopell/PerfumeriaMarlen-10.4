@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -252,7 +253,7 @@ public class CatalogoProdCtesMB   implements Serializable{
 	private boolean marcaIndListR	= false;	
 	public void onSelectionChange() {
 		logger.info("onSelectionChange:selection="+selection);
-		
+		selectedEntity  = null;
 		lineasListR		= false;
 		industriasListR	= false;	
 		marcaLinListR	= false;	
@@ -497,6 +498,28 @@ public class CatalogoProdCtesMB   implements Serializable{
 			return label.substring(0, maxLength -3) + "...";
 		} else {
 			return label;
+		}
+	}
+	private String productoCBSeleccionado;
+
+	public void setProductoCBSeleccionado(String productoCBSeleccionado) {
+		this.productoCBSeleccionado = productoCBSeleccionado;
+	}
+
+	public String getProductoCBSeleccionado() {
+		return productoCBSeleccionado;
+	}
+	
+	
+	public void selectProduct(String productoCB){
+		logger.info("selectProduct:productoCB="+productoCB);
+		productoCBSeleccionado = productoCB;
+		selectedEntity = null;
+		for(ProductoQuickView e: entityList){
+			if(e.getCodigoBarras().equals(productoCB)){
+				selectedEntity = e;
+				break;
+			}
 		}
 	}
 }

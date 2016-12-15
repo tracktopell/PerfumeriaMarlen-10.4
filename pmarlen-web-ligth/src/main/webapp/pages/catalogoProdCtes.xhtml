@@ -45,11 +45,13 @@
 				</p:selectOneMenu>
 
 			</h:panelGrid>
+			<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
+			
+			<h:panelGrid columns="2" cellpadding="5" id="panel" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}" 
+						 columnClasses="columnWidth50 centerAlign topAlign topTAlign,columnWidth50 centerAlign topAlign topTAlign"
+						 style="background: white;">
 
-			<h:panelGrid columns="1" cellpadding="5" id="panel" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}">
-
-				<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
-
+				
 				<p:dataGrid   var="producto" value="#{catalogoProdCtesMB.entityList}"
 							  columns="3" rows="24" paginator="true" 
 							  id="productoTable"
@@ -58,26 +60,43 @@
 
 
 					<h:panelGrid columns="1" style="width:100%">
+						<p:commandLink actionListener="#{catalogoProdCtesMB.selectProduct(producto.codigoBarras)}" update=":form1:out1">
+							<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+											cache="true"
+											alt="Producto #{producto.codigoBarras}" 
+											title="#{producto.nombre}/#{producto.presentacion}"
+											style="cursor:pointer"/>
 
-						<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
-										cache="true"
-										alt="Producto #{producto.codigoBarras}" 
-										title="Producto #{producto.codigoBarras}"
-										style="cursor:pointer"/>
-
-
-						<h:outputText value="CÓDIGO:#{producto.codigoBarras}" />
-
-						<h:outputText value="NOMBRE:#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}" />
-
-						<h:outputText value="PRESENTACION:#{producto.presentacion}" />
-
+						</p:commandLink>
+						
 					</h:panelGrid>
 
 					<f:facet name="footer">
 						xx-xx
 					</f:facet>
 				</p:dataGrid>
+				
+				
+				<p:outputPanel  id="out1">
+					<h:panelGrid columns="1" style="width:100%" rendered="#{not empty catalogoProdCtesMB.selectedEntity}">
+						
+						<h:outputLabel value="CÓDIGO:" />						
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.codigoBarras}" />
+
+						<h:outputLabel value="NOMBRE:" />
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.nombre}/#{catalogoProdCtesMB.selectedEntity.presentacion} #{catalogoProdCtesMB.selectedEntity.contenido} #{catalogoProdCtesMB.selectedEntity.unidadMedida}" />
+						
+						<h:outputLabel value="PRESENTACION:" />
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.presentacion}" />
+						
+						
+						<p:graphicImage id="img" value="/multimedio/productos/med/#{catalogoProdCtesMB.selectedEntity.codigoBarras}" 
+										cache="false"
+										alt="Producto #{catalogoProdCtesMB.selectedEntity.codigoBarras}"										
+										style="cursor:pointer"/>
+					</h:panelGrid>
+				</p:outputPanel>
+				
 			</h:panelGrid>
 		</h:form>
 
