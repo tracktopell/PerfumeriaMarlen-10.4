@@ -1,0 +1,106 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/template/public.xhtml">
+
+    <ui:define name="title">
+        Catalogo de Productos
+    </ui:define>
+
+    <ui:define name="body-title">
+        Catalogo de Productos
+    </ui:define>
+
+    <ui:define name="body">
+		<h:form id="form1">
+
+			<h:panelGrid columns="4" style="margin-bottom:10px" cellpadding="5">				
+				<p:selectOneMenu value="#{catalogoProdCtesMB.selection}" style="width: 280px;">
+					<f:selectItem itemLabel="--SELECIONE--"  itemValue="SELECCIONE" />
+					<f:selectItem itemLabel="LINEA"			 itemValue="LINEA" />
+					<f:selectItem itemLabel="INDUSTRIA"      itemValue="INDUSTRIA" />			
+					<p:ajax listener="#{catalogoProdCtesMB.onSelectionChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
+
+				<p:selectOneMenu value="#{catalogoProdCtesMB.linea}" style="width: 280px;" rendered="#{catalogoProdCtesMB.lineasListR}">
+					<f:selectItems  value="#{catalogoProdCtesMB.lineasList}"/>
+					<p:ajax listener="#{catalogoProdCtesMB.onLineaChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
+
+				<p:selectOneMenu value="#{catalogoProdCtesMB.industria}" style="width: 280px;" rendered="#{catalogoProdCtesMB.industriasListR}">
+					<f:selectItems  value="#{catalogoProdCtesMB.industriasList}" />
+					<p:ajax listener="#{catalogoProdCtesMB.onIndustriaChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
+
+				<p:selectOneMenu value="#{catalogoProdCtesMB.marcaLin}" style="width: 280px;" rendered="#{catalogoProdCtesMB.marcaLinListR}">
+					<f:selectItems  value="#{catalogoProdCtesMB.marcasPorLineaList}"/>
+					<p:ajax listener="#{catalogoProdCtesMB.onMarcaLinChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
+
+				<p:selectOneMenu value="#{catalogoProdCtesMB.marcaInd}" style="width: 280px;" rendered="#{catalogoProdCtesMB.marcaIndListR}">
+					<f:selectItems  value="#{catalogoProdCtesMB.marcasPorIndustriaList}"/>
+					<p:ajax listener="#{catalogoProdCtesMB.onMarcaIndChange}" process="@all" update=":form1"/>
+				</p:selectOneMenu>
+
+			</h:panelGrid>
+			<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
+			
+			<h:panelGrid columns="2" cellpadding="5" id="panel" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}" 
+						 columnClasses="columnWidth50 centerAlign topAlign topTAlign,columnWidth50 centerAlign topAlign topTAlign"
+						 style="background: transparent;margin-bottom:20px;"
+						 >
+				
+				<p:dataGrid   var="producto" value="#{catalogoProdCtesMB.entityList}"
+							  columns="3" rows="24" paginator="true" 
+							  id="productoTable"
+							  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{productoCatSimple.sizeList}]"
+							  rowsPerPageTemplate="12,24,40" style="background: none; background-color: none;"
+							  >
+
+					<f:facet class="" name="body"/>
+					<h:panelGrid columns="1" style="width:100%">
+						<p:commandLink actionListener="#{catalogoProdCtesMB.selectProduct(producto.codigoBarras)}" update=":form1:out1">
+							<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+											cache="true"
+											alt="Producto #{producto.codigoBarras}" 
+											title="#{producto.nombre}/#{producto.presentacion}"
+											style="cursor:pointer"/>
+
+						</p:commandLink>
+						
+					</h:panelGrid>
+
+					<f:facet name="footer">
+						xx-xx
+					</f:facet>
+				</p:dataGrid>
+				
+				
+				<p:outputPanel  id="out1">
+					<h:panelGrid columns="1" style="width:100%" rendered="#{not empty catalogoProdCtesMB.selectedEntity}">
+						
+						<h:outputLabel value="CÓDIGO:" />						
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.codigoBarras}" />
+
+						<h:outputLabel value="NOMBRE:" />
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.nombre}/#{catalogoProdCtesMB.selectedEntity.presentacion} #{catalogoProdCtesMB.selectedEntity.contenido} #{catalogoProdCtesMB.selectedEntity.unidadMedida}" />
+						
+						<h:outputLabel value="PRESENTACION:" />
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.presentacion}" />
+						
+						
+						<p:graphicImage id="img" value="/multimedio/productos/med/#{catalogoProdCtesMB.selectedEntity.codigoBarras}" 
+										cache="false"
+										alt="Producto #{catalogoProdCtesMB.selectedEntity.codigoBarras}"										
+										style="cursor:pointer"/>
+					</h:panelGrid>
+				</p:outputPanel>
+				
+			</h:panelGrid>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

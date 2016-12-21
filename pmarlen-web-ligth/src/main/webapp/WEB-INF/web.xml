@@ -206,12 +206,14 @@
             <url-pattern>/docs/*</url-pattern>
             <http-method>GET</http-method>
         </web-resource-collection>
+		<!--
         <web-resource-collection>
             <web-resource-name>Multimedio</web-resource-name>
             <description>Multimedio</description>
             <url-pattern>/multimedio/*</url-pattern>
             <http-method>GET</http-method>
         </web-resource-collection>
+		-->
         <auth-constraint>
             <description>Usuario de Sistema a todas las paginas entra</description>
             <role-name>pmarlenuser</role-name>
