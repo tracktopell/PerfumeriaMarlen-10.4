@@ -300,6 +300,7 @@ public class CatalogoProdCtesMB   implements Serializable{
 		marcasLinList = null;
 		marcasIndList = null;
 		entityList    = null;
+		selectedEntity = null;
 		if(industria != null){
 			marcaIndListR = true;
 		} else {
@@ -315,6 +316,7 @@ public class CatalogoProdCtesMB   implements Serializable{
 		marcasLinList = null;
 		marcasIndList = null;
 		entityList    = null;
+		selectedEntity = null;
 		if(linea!=null){
 			marcaLinListR = true;
 		} else {
@@ -326,12 +328,14 @@ public class CatalogoProdCtesMB   implements Serializable{
 		logger.info("onMarcaLinChange:marca="+marcaLin);		
 		marca =  marcaLin;
 		entityList    = null;
+		selectedEntity = null;
 	}
 	
 	public void onMarcaIndChange() {
 		logger.info("onMarcaIndChange:marca="+marcaInd);		
 		marca =  marcaInd;
 		entityList    = null;
+		selectedEntity = null;
 	}
 
 	
