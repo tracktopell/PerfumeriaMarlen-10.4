@@ -10,7 +10,8 @@
     </ui:define>
 
     <ui:define name="body-title">
-        Catalogo de Productos
+        <p:graphicImage value="/images/PM_NewLogo_40x40.png"/>		
+		<h:outputText   value="CATALOGO DE PRODUCTOS"  style="font-family: sans-serif; font-size: 35px;"/>
     </ui:define>
 
     <ui:define name="body">
@@ -48,48 +49,60 @@
 			<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
 			
 			<h:panelGrid columns="2" cellpadding="5" id="panel" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}" 
-						 columnClasses="columnWidth50 centerAlign topAlign topTAlign,columnWidth50 centerAlign topAlign topTAlign"
+						 columnClasses="columnWidth60 centerAlign topAlign topTAlign, columnWidth40 centerAlign topAlign topTAlign"
 						 style="background: transparent;margin-bottom:20px;"
 						 >
+				<p:scrollPanel mode="native" style="width: 100%; height: 70vh; background-color: transparent;">
+					<p:dataGrid   var="producto" value="#{catalogoProdCtesMB.entityList}"
+								  columns="3" rows="24" paginator="true" 
+								  id="productoTable"
+								  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{catalogoProdCtesMB.sizeList}]"
+								  rowsPerPageTemplate="12,24,40" style="background: none; background-color: none;"
+								  >
+
+						<f:facet class="" name="body"/>
+						<h:panelGrid columns="1" style="width:100%">
+							<p:commandLink actionListener="#{catalogoProdCtesMB.selectProduct(producto.codigoBarras)}" update=":form1:out1">
+								<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
+												cache="true"
+												alt="Producto #{producto.codigoBarras}" 
+												title="#{producto.nombre}/#{producto.presentacion}"
+												style="cursor:pointer"/>
+
+							</p:commandLink>
+							<h:outputText value="#{producto.nombre}/#{producto.presentacion} #{producto.contenido} #{producto.unidadMedida}"
+										  style="font-size: smaller; color: blue;"/>
+						</h:panelGrid>
+
+						<f:facet name="footer">
+							...FINAL DE PAGINA
+						</f:facet>
+					</p:dataGrid>
+				</p:scrollPanel>
 				
-				<p:dataGrid   var="producto" value="#{catalogoProdCtesMB.entityList}"
-							  columns="3" rows="24" paginator="true" 
-							  id="productoTable"
-							  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{productoCatSimple.sizeList}]"
-							  rowsPerPageTemplate="12,24,40" style="background: none; background-color: none;"
-							  >
+				<p:outputPanel  id="out1" style="text-align: rigth;">
+					<h:panelGrid columns="1" style="width:100%" rendered="#{not empty catalogoProdCtesMB.selectedEntity}"
+								 columnClasses="leftAlign topAlign topTAlign">
+						
+						<h:outputLabel value="CÓDIGO:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputText  value="#{catalogoProdCtesMB.selectedEntity.codigoBarras}"
+									   style="color: blue; font-family: fantasy; font-size: large; "/>
 
-					<f:facet class="" name="body"/>
-					<h:panelGrid columns="1" style="width:100%">
-						<p:commandLink actionListener="#{catalogoProdCtesMB.selectProduct(producto.codigoBarras)}" update=":form1:out1">
-							<p:graphicImage id="img" value="/multimedio/productos/min/#{producto.codigoBarras}" 
-											cache="true"
-											alt="Producto #{producto.codigoBarras}" 
-											title="#{producto.nombre}/#{producto.presentacion}"
-											style="cursor:pointer"/>
-
-						</p:commandLink>
+						<h:outputLabel value="NOMBRE:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.nombre}"
+									  style="color: blue; font-family: fantasy;"/>
+						
+						<h:outputLabel value="PRESENTACION:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.presentacion}"
+									  style="color: blue; font-family: fantasy;"/>						
+						
+						<h:outputLabel value="CONTENIDO:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.contenido} #{catalogoProdCtesMB.selectedEntity.unidadMedida}"
+									  style="color: blue; font-family: fantasy;"/>
 						
 					</h:panelGrid>
-
-					<f:facet name="footer">
-						xx-xx
-					</f:facet>
-				</p:dataGrid>
-				
-				
-				<p:outputPanel  id="out1">
-					<h:panelGrid columns="1" style="width:100%" rendered="#{not empty catalogoProdCtesMB.selectedEntity}">
-						
-						<h:outputLabel value="CÓDIGO:" />						
-						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.codigoBarras}" />
-
-						<h:outputLabel value="NOMBRE:" />
-						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.nombre}/#{catalogoProdCtesMB.selectedEntity.presentacion} #{catalogoProdCtesMB.selectedEntity.contenido} #{catalogoProdCtesMB.selectedEntity.unidadMedida}" />
-						
-						<h:outputLabel value="PRESENTACION:" />
-						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.presentacion}" />
-						
+					<h:panelGrid columns="1" style="width:100%" rendered="#{not empty catalogoProdCtesMB.selectedEntity}"
+								 columnClasses="centerAlign topAlign topTAlign">
 						
 						<p:graphicImage id="img" value="/multimedio/productos/med/#{catalogoProdCtesMB.selectedEntity.codigoBarras}" 
 										cache="false"
