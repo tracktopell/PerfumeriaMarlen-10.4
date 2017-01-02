@@ -176,8 +176,10 @@
 						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.contenido} #{catalogoProdCtesMB.selectedEntity.unidadMedida}"
 									  style="color: blue; font-family: fantasy;"/>
 						
-						<h:outputLabel value="PRECIO:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputLabel value="PRECIO:" style="color: lightslategray; font-family: fantasy;"
+									   rendered="#{not empty catalogoProdCtesMB.cliente}"/>
 						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.precio}"
+									  rendered="#{not empty catalogoProdCtesMB.cliente}"
 									  style="color: blue; font-family: fantasy;"/>
 
 					</h:panelGrid>
