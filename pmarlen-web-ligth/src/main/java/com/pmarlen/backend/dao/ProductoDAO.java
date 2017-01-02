@@ -604,6 +604,72 @@ public class ProductoDAO {
 		return r;		
 	};
 	
+    public ArrayList<ProductoQuickView> findAllByMarcaExt(String marca) throws DAOException {
+		ArrayList<ProductoQuickView> r = new ArrayList<ProductoQuickView>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			String q = 
+					"SELECT P.CODIGO_BARRAS,P.INDUSTRIA,P.LINEA,P.MARCA,P.NOMBRE,P.PRESENTACION,P.ABREBIATURA,\n" +
+					"       P.UNIDADES_X_CAJA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDAD_EMPAQUE,P.COSTO,P.COSTO_VENTA,P.POCO,\n" +
+					"       AP.CANTIDAD,AP.PRECIO\n" +
+					"FROM   PRODUCTO P,ALMACEN_PRODUCTO AP\n" +
+					"WHERE  1=1\n" +
+					"AND    P.CODIGO_BARRAS = AP.PRODUCTO_CODIGO_BARRAS\n" +
+					"AND    AP.ALMACEN_ID = 1\n" +
+					"AND   (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)\n";
+			
+			if(marca != null && marca.trim().length()>1){
+				q = q + "AND MARCA=? ";				
+			}
+			
+			ps = conn.prepareStatement(q);
+			if(marca != null && marca.trim().length()>1){
+				ps.setString(1, marca);				
+			}
+			
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				ProductoQuickView x = new ProductoQuickView();
+				x.setCodigoBarras((String)rs.getObject("CODIGO_BARRAS"));				
+				x.setIndustria((String)rs.getObject("INDUSTRIA"));
+				x.setLinea((String)rs.getObject("LINEA"));
+				x.setMarca((String)rs.getObject("MARCA"));
+				x.setNombre((String)rs.getObject("NOMBRE"));
+				x.setPresentacion((String)rs.getObject("PRESENTACION"));
+				x.setUnidadesXCaja((Integer)rs.getObject("UNIDADES_X_CAJA"));
+				x.setPoco((Integer)rs.getObject("POCO"));
+				x.setContenido((String)rs.getObject("CONTENIDO"));
+				x.setUnidadMedida((String)rs.getObject("UNIDAD_MEDIDA"));
+				x.setUnidadEmpaque((String)rs.getObject("UNIDAD_EMPAQUE"));
+				x.setCosto((Double)rs.getObject("COSTO"));
+				x.setCostoVenta((Double)rs.getObject("COSTO_VENTA"));
+				
+				x.setPrecio((Double)rs.getObject("PRECIO"));
+				x.setCantidad((Integer)rs.getObject("CANTIDAD"));
+						
+				r.add(x);
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+	};
+	
 	public int findAllLazyCount() throws DAOException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;

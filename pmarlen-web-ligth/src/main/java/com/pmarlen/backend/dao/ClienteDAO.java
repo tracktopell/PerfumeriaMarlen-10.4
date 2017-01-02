@@ -122,6 +122,65 @@ public class ClienteDAO {
 		}
 		return r;		
 	}
+	
+    public Cliente findByRFC(String rfc) throws DAOException, EntityNotFoundException{
+		Cliente r = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT ID,RFC,RAZON_SOCIAL,NOMBRE_ESTABLECIMIENTO,CALLE,NUM_EXTERIOR,NUM_INTERIOR,COLONIA,MUNICIPIO,REFERENCIA,CIUDAD,CP,ESTADO,EMAIL,TELEFONOS,CONTACTO,OBSERVACIONES,UBICACION_LAT,UBICACION_LON,NUM_CUENTA,BANCO,DIRECCION_FACTURACION FROM CLIENTE "+
+					"WHERE RFC=?"
+			);
+			ps.setString(1, rfc);
+			
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				r = new Cliente();				
+				r.setId((Integer)rs.getObject("ID"));
+				r.setRfc((String)rs.getObject("RFC"));
+				r.setRazonSocial((String)rs.getObject("RAZON_SOCIAL"));
+				r.setNombreEstablecimiento((String)rs.getObject("NOMBRE_ESTABLECIMIENTO"));
+				r.setCalle((String)rs.getObject("CALLE"));
+				r.setNumExterior((String)rs.getObject("NUM_EXTERIOR"));
+				r.setNumInterior((String)rs.getObject("NUM_INTERIOR"));
+				r.setColonia((String)rs.getObject("COLONIA"));
+				r.setMunicipio((String)rs.getObject("MUNICIPIO"));
+				r.setReferencia((String)rs.getObject("REFERENCIA"));
+				r.setCiudad((String)rs.getObject("CIUDAD"));
+				r.setCp((String)rs.getObject("CP"));
+				r.setEstado((String)rs.getObject("ESTADO"));
+				r.setEmail((String)rs.getObject("EMAIL"));
+				r.setTelefonos((String)rs.getObject("TELEFONOS"));
+				r.setContacto((String)rs.getObject("CONTACTO"));
+				r.setObservaciones((String)rs.getObject("OBSERVACIONES"));
+				r.setUbicacionLat((Double)rs.getObject("UBICACION_LAT"));
+				r.setUbicacionLon((Double)rs.getObject("UBICACION_LON"));
+				r.setNumCuenta((String)rs.getObject("NUM_CUENTA"));
+				r.setBanco((String)rs.getObject("BANCO"));
+				r.setDireccionFacturacion((String)rs.getObject("DIRECCION_FACTURACION"));
+				r.setId((Integer)rs.getObject("ID"));
+			} else {
+				throw new EntityNotFoundException("CLIENTE NOT FOUND FOR RFC="+rfc);
+			}
+		}catch(SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if(rs != null) {
+				try{
+					rs.close();
+					ps.close();
+					conn.close();
+				}catch(SQLException ex) {
+					logger.error("clossing, SQLException:" + ex.getMessage());
+					throw new DAOException("Closing:"+ex.getMessage());
+				}
+			}
+		}
+		return r;		
+	}
 
     public ArrayList<ClienteQuickView> findAll() throws DAOException {
 		ArrayList<ClienteQuickView> r = new ArrayList<ClienteQuickView>();

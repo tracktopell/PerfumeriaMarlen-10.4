@@ -1,7 +1,10 @@
 package com.pmarlen.jsf;
 
+import com.pmarlen.backend.dao.ClienteDAO;
 import com.pmarlen.backend.dao.ProductoDAO;
 import com.pmarlen.backend.dao.DAOException;
+import com.pmarlen.backend.dao.EntityNotFoundException;
+import com.pmarlen.backend.model.Cliente;
 import com.pmarlen.backend.model.Producto;
 import com.pmarlen.backend.model.quickviews.ProductoQuickView;
 import com.pmarlen.model.Constants;
@@ -39,7 +42,10 @@ public class CatalogoProdCtesMB   implements Serializable{
 	protected static List<SelectItem> industriasList;
 	protected static List<SelectItem> lineasList;
 	protected static List<SelectItem> marcasIndList;
-	protected static List<SelectItem> marcasLinList;	
+	protected static List<SelectItem> marcasLinList;
+	
+	private Cliente cliente;
+	private String clienteRFC;
 	
 	private String selection;
 	private String industria;
@@ -48,6 +54,8 @@ public class CatalogoProdCtesMB   implements Serializable{
 	private String marcaInd;
 	private String marcaLin;
 	private int tipoAlmacen;
+	private int precioMin;
+	private int precioMax;
 	
 	String dialogTitle;
 	int almacenId=1;
@@ -60,7 +68,27 @@ public class CatalogoProdCtesMB   implements Serializable{
 		viewRows = 10;
 		dialogTitle ="CatalogoProdCtesMB";
 		tipoAlmacen = Constants.ALMACEN_PRINCIPAL;
+		precioMin = 10;
+		precioMax = 200;
+		cliente = null;
+		clienteRFC = "";
     }
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setClienteRFC(String clienteRFC) {
+		this.clienteRFC = clienteRFC;
+	}
+
+	public String getClienteRFC() {
+		return clienteRFC;
+	}
+	
+	public void searchCliente(){
+	
+	}
 	
 	public String reset() {
 		logger.trace("ProductoMB: rest.");
@@ -131,7 +159,7 @@ public class CatalogoProdCtesMB   implements Serializable{
 		if(entityList == null){
 			logger.info("getEntityList:marca="+marca);
 			try{
-				entityList = ProductoDAO.getInstance().findAllByMarca(marca);
+				entityList = ProductoDAO.getInstance().findAllByMarcaExt(marca);
 				logger.info("getEntityList: OK, entityList.size()="+entityList.size());
 			}catch(DAOException de){
 				entityList = null;
@@ -525,5 +553,55 @@ public class CatalogoProdCtesMB   implements Serializable{
 				break;
 			}
 		}
+	}
+
+	/**
+	 * @return the precioMin
+	 */
+	public int getPrecioMin() {
+		return precioMin;
+	}
+
+	/**
+	 * @param precioMin the precioMin to set
+	 */
+	public void setPrecioMin(int precioMin) {
+		this.precioMin = precioMin;
+	}
+
+	/**
+	 * @return the precioMax
+	 */
+	public int getPrecioMax() {
+		return precioMax;
+	}
+
+	/**
+	 * @param precioMax the precioMax to set
+	 */
+	public void setPrecioMax(int precioMax) {
+		this.precioMax = precioMax;
+	}
+	
+	public void buscarRFC(){
+		logger.info("->buscarRFC: clienteRFC="+clienteRFC);
+		try {
+			cliente = ClienteDAO.getInstance().findByRFC(clienteRFC);
+			clienteRFC = null;
+		}catch(EntityNotFoundException nfe){
+			logger.error("AL BUSCAR CLIENTE:",nfe);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, dialogTitle, "NO EXISTE CLIENTE CON R.F.C."));
+			FacesContext.getCurrentInstance().validationFailed();
+			clienteRFC = null;
+		}catch(DAOException de){
+			logger.error("AL BUSCAR CLIENTE:",de);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, dialogTitle, "ERROR AL BUSCAR CLIENTE"));
+			FacesContext.getCurrentInstance().validationFailed();
+			clienteRFC = null;
+		}
+	}
+	
+	public void cancelarRFC(){
+		logger.info("->cancelarRFC");
 	}
 }

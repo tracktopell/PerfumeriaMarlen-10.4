@@ -11,43 +11,119 @@
 
     <ui:define name="body-title">
         <p:graphicImage value="/images/PM_NewLogo_40x40.png"/>		
-		<h:outputText   value="CATALOGO DE PRODUCTOS"  style="font-family: fantasy; font-size: 40px;"/>
+		<h:outputText   value="CATÁLOGO DE PRODUCTOS"  style="font-family: fantasy; font-size: 25px;"/>		
     </ui:define>
 
     <ui:define name="body">
-		<h:form id="form1">
+		<h:form id="form2">
+			<p:dialog header="IDENTIFICACIÓN" widgetVar="dlg2" modal="true" height="300" width="350" closable="false"  closeOnEscape="false" >
+				<h:panelGrid id="grid" columns="1" style="margin-bottom:10px; background-color: transparent;" cellpadding="5"
+							 columnClasses="centerAlign topAlign topTAlign,">
+					<h:panelGroup>
+						<h:outputText value="R.F.C: DE CLIENTE :" />
+						<h:inputText value="#{catalogoProdCtesMB.clienteRFC}"/>
+					</h:panelGroup>
+					<h:panelGroup>
+						<p:commandButton	 value="ACEPTAR" icon="ui-icon-check" 
+											 validateClient="true" style="margin-right:10px"
+											 ajax="true"
+											 actionListener="#{catalogoProdCtesMB.buscarRFC}"
+											 oncomplete="executeAfterUpdate()"
+											 update=":form2,updatedBeforeOnComplete"/>
+						
+						<p:spacer width="30px"/>
+						<p:commandButton	value="CANCELAR" update="grid" icon="ui-icon-check" 
+										ajax="true" process="@this"
+										oncomplete="PF('dlg2').hide();">
+						   <p:resetInput target="grid" />
+						</p:commandButton>
+					</h:panelGroup>
+					
+					<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" globalOnly="true"/>
+					
+					<h:panelGroup id="updatedBeforeOnComplete">
+						<script language="JavaScript" type="text/javascript">
+							//
+							function executeAfterUpdate() {
+								//alert('facesContext.maximumSeverity=#{facesContext.maximumSeverity}, facesContext.messageList=#{facesContext.messageList}, facesContext.validationFailed=#{facesContext.validationFailed}');
+								if (#{facesContext.maximumSeverity==null or facesContext.maximumSeverity.ordinal=='1' or not facesContext.validationFailed}) {
+									//alert('ok, close dialog !');
+									PF('dlg2').hide();
+								}
+							}
+							//
+						</script>
+					</h:panelGroup>					
+				</h:panelGrid>
+			</p:dialog> 
+		</h:form>
+		
+		<h:form id="form1">	
+			<p:accordionPanel >
+				<p:tab title="BUSCAR PRODUCTOS" >
+					<h:panelGrid columns="1" style="margin-bottom:10px; background-color: transparent;" cellpadding="5">						
+					
+						<h:panelGrid columns="4" style="margin-bottom:10px" cellpadding="5">
+							<p:selectOneMenu value="#{catalogoProdCtesMB.selection}" style="width: 280px;">
+								<f:selectItem itemLabel="--SELECIONE--"  itemValue="SELECCIONE" />
+								<f:selectItem itemLabel="LINEA"			 itemValue="LINEA" />
+								<f:selectItem itemLabel="INDUSTRIA"      itemValue="INDUSTRIA" />			
+								<p:ajax listener="#{catalogoProdCtesMB.onSelectionChange}" process="@all" update=":form1"/>
+							</p:selectOneMenu>
 
-			<h:panelGrid columns="4" style="margin-bottom:10px" cellpadding="5">				
-				<p:selectOneMenu value="#{catalogoProdCtesMB.selection}" style="width: 280px;">
-					<f:selectItem itemLabel="--SELECIONE--"  itemValue="SELECCIONE" />
-					<f:selectItem itemLabel="LINEA"			 itemValue="LINEA" />
-					<f:selectItem itemLabel="INDUSTRIA"      itemValue="INDUSTRIA" />			
-					<p:ajax listener="#{catalogoProdCtesMB.onSelectionChange}" process="@all" update=":form1"/>
-				</p:selectOneMenu>
+							<p:selectOneMenu value="#{catalogoProdCtesMB.linea}" style="width: 280px;" rendered="#{catalogoProdCtesMB.lineasListR}">
+								<f:selectItems  value="#{catalogoProdCtesMB.lineasList}"/>
+								<p:ajax listener="#{catalogoProdCtesMB.onLineaChange}" process="@all" update=":form1"/>
+							</p:selectOneMenu>
 
-				<p:selectOneMenu value="#{catalogoProdCtesMB.linea}" style="width: 280px;" rendered="#{catalogoProdCtesMB.lineasListR}">
-					<f:selectItems  value="#{catalogoProdCtesMB.lineasList}"/>
-					<p:ajax listener="#{catalogoProdCtesMB.onLineaChange}" process="@all" update=":form1"/>
-				</p:selectOneMenu>
+							<p:selectOneMenu value="#{catalogoProdCtesMB.industria}" style="width: 280px;" rendered="#{catalogoProdCtesMB.industriasListR}">
+								<f:selectItems  value="#{catalogoProdCtesMB.industriasList}" />
+								<p:ajax listener="#{catalogoProdCtesMB.onIndustriaChange}" process="@all" update=":form1"/>
+							</p:selectOneMenu>
 
-				<p:selectOneMenu value="#{catalogoProdCtesMB.industria}" style="width: 280px;" rendered="#{catalogoProdCtesMB.industriasListR}">
-					<f:selectItems  value="#{catalogoProdCtesMB.industriasList}" />
-					<p:ajax listener="#{catalogoProdCtesMB.onIndustriaChange}" process="@all" update=":form1"/>
-				</p:selectOneMenu>
+							<p:selectOneMenu value="#{catalogoProdCtesMB.marcaLin}" style="width: 280px;" rendered="#{catalogoProdCtesMB.marcaLinListR}">
+								<f:selectItems  value="#{catalogoProdCtesMB.marcasPorLineaList}"/>
+								<p:ajax listener="#{catalogoProdCtesMB.onMarcaLinChange}" process="@all" update=":form1"/>
+							</p:selectOneMenu>
 
-				<p:selectOneMenu value="#{catalogoProdCtesMB.marcaLin}" style="width: 280px;" rendered="#{catalogoProdCtesMB.marcaLinListR}">
-					<f:selectItems  value="#{catalogoProdCtesMB.marcasPorLineaList}"/>
-					<p:ajax listener="#{catalogoProdCtesMB.onMarcaLinChange}" process="@all" update=":form1"/>
-				</p:selectOneMenu>
-
-				<p:selectOneMenu value="#{catalogoProdCtesMB.marcaInd}" style="width: 280px;" rendered="#{catalogoProdCtesMB.marcaIndListR}">
-					<f:selectItems  value="#{catalogoProdCtesMB.marcasPorIndustriaList}"/>
-					<p:ajax listener="#{catalogoProdCtesMB.onMarcaIndChange}" process="@all" update=":form1"/>
-				</p:selectOneMenu>
-
-			</h:panelGrid>
-			<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
+							<p:selectOneMenu value="#{catalogoProdCtesMB.marcaInd}" style="width: 280px;" rendered="#{catalogoProdCtesMB.marcaIndListR}">
+								<f:selectItems  value="#{catalogoProdCtesMB.marcasPorIndustriaList}"/>
+								<p:ajax listener="#{catalogoProdCtesMB.onMarcaIndChange}" process="@all" update=":form1"/>
+							</p:selectOneMenu>
+							
+							<p:commandButton value="+ INFORMACIÓN" rendered="#{empty catalogoProdCtesMB.cliente and not empty catalogoProdCtesMB.marca}"
+											 onclick="PF('dlg2').show();"/>
+							
+						</h:panelGrid>
+						<!--
+						<h:panelGroup>
+							<p:outputLabel for="buscarProductos" value="BUSCAR:"/>
+							<p:inputText   id="buscarProductos" size="45" />
+							<p:commandButton id="buscar" value="BUSCAR"/>
+						</h:panelGroup>
+						
+						<h:panelGrid columns="7" style="margin-bottom:10px" cellpadding="5">
+							<p:outputLabel for="buscarProductos" value="PRECIOS:"/>
+							<p:outputLabel for="txt6" value="DESDE : "/>
+							<h:inputText   id="txt6" value="#{catalogoProdCtesMB.precioMin}" size="3" />
+							<p:slider  for="txt6,txt7" style="width: 200px" range="true" 
+									   displayTemplate="ENTRE {min} Y {max}" 
+									   minValue="10" maxValue="10000" />
+							
+							<p:outputLabel for="txt7" value="HASTA : "/>
+							<h:inputText id="txt7" value="#{catalogoProdCtesMB.precioMax}"   size="3" />
+							
+						</h:panelGrid>
+						-->
+					</h:panelGrid>
+				</p:tab>
+			</p:accordionPanel>	
 			
+			<h:outputText   value="¡ VIENVENIDO #{catalogoProdCtesMB.cliente.razonSocial} (#{catalogoProdCtesMB.cliente.nombreEstablecimiento})!"  style="font-family: fantasy; font-size: 25px;"
+							rendered="#{not empty catalogoProdCtesMB.cliente}"/>
+			
+			<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
+
 			<h:panelGrid columns="2" cellpadding="5" id="panel" width="100%" rendered="#{not empty catalogoProdCtesMB.marca}" 
 						 columnClasses="columnWidth60 centerAlign topAlign topTAlign, columnWidth40 centerAlign topAlign topTAlign"
 						 style="background: transparent;margin-bottom:20px;"
@@ -79,11 +155,11 @@
 						</f:facet>
 					</p:dataGrid>
 				</p:scrollPanel>
-				
+
 				<p:outputPanel  id="out1" style="text-align: rigth;">
 					<h:panelGrid columns="1" style="width:100%" rendered="#{not empty catalogoProdCtesMB.selectedEntity}"
 								 columnClasses="leftAlign topAlign topTAlign">
-						
+
 						<h:outputLabel value="CÓDIGO:" style="color: lightslategray; font-family: fantasy;"/>
 						<h:outputText  value="#{catalogoProdCtesMB.selectedEntity.codigoBarras}"
 									   style="color: blue; font-family: fantasy; font-size: large; "/>
@@ -91,26 +167,30 @@
 						<h:outputLabel value="NOMBRE:" style="color: lightslategray; font-family: fantasy;"/>
 						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.nombre}"
 									  style="color: blue; font-family: fantasy;"/>
-						
+
 						<h:outputLabel value="PRESENTACION:" style="color: lightslategray; font-family: fantasy;"/>
 						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.presentacion}"
 									  style="color: blue; font-family: fantasy;"/>						
-						
+
 						<h:outputLabel value="CONTENIDO:" style="color: lightslategray; font-family: fantasy;"/>
 						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.contenido} #{catalogoProdCtesMB.selectedEntity.unidadMedida}"
 									  style="color: blue; font-family: fantasy;"/>
 						
+						<h:outputLabel value="PRECIO:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.precio}"
+									  style="color: blue; font-family: fantasy;"/>
+
 					</h:panelGrid>
 					<h:panelGrid columns="1" style="width:100%" rendered="#{not empty catalogoProdCtesMB.selectedEntity}"
 								 columnClasses="centerAlign topAlign topTAlign">
-						
+
 						<p:graphicImage id="img" value="/multimedio/productos/med/#{catalogoProdCtesMB.selectedEntity.codigoBarras}" 
 										cache="false"
 										alt="Producto #{catalogoProdCtesMB.selectedEntity.codigoBarras}"										
 										style="cursor:pointer"/>
 					</h:panelGrid>
 				</p:outputPanel>
-				
+
 			</h:panelGrid>
 		</h:form>
 

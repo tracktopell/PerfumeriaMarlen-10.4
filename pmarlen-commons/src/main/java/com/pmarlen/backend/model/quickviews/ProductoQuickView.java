@@ -14,6 +14,7 @@ public class ProductoQuickView extends Producto {
 	private int almacenId;
 	private double precio;
 	private Multimedio firstMultimedio;
+	private Integer cantidad;
 	
 	public ProductoQuickView() {
 		multimedios = new ArrayList<Multimedio>();
@@ -76,5 +77,13 @@ public class ProductoQuickView extends Producto {
 		} else {
 			setDescontinuado(null);
 		}
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public Integer getCantidad() {
+		return cantidad;
 	}
 }
