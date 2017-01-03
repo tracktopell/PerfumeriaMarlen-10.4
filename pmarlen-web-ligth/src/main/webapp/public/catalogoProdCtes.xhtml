@@ -6,12 +6,12 @@
                 template="/template/public.xhtml">
 
     <ui:define name="title">
-        CAT&Aacute;LOGO DE PRODUCTOS
+        CATALOGO DE PRODUCTOS		
     </ui:define>
 
     <ui:define name="body-title">
         <p:graphicImage value="/images/PM_NewLogo_40x40.png"/>		
-		<h:outputText   value="CATÁLOGO DE PRODUCTOS"  style="font-family: fantasy; font-size: 25px;"/>		
+		<h:outputText   value="CATÁLOGO DE PRODUCTOS"  style="font-family: sans-serif,fantasy; font-size: 25px;"/>		
     </ui:define>
 
     <ui:define name="body">
@@ -61,7 +61,8 @@
 		<h:form id="form1">	
 			<p:accordionPanel >
 				<p:tab title="BUSCAR PRODUCTOS" >
-					<h:panelGrid columns="1" style="margin-bottom:10px; background-color: transparent;" cellpadding="5">						
+					<h:panelGrid columns="1" style="margin-bottom:10px; background-color: transparent;" cellpadding="5"
+								 columnClasses="centerAlign topAlign topTAlign">
 					
 						<h:panelGrid columns="4" style="margin-bottom:10px" cellpadding="5">
 							<p:selectOneMenu value="#{catalogoProdCtesMB.selection}" style="width: 280px;">
@@ -120,7 +121,7 @@
 			</p:accordionPanel>	
 			
 			<h:outputText   value="¡ BIENVENIDO #{catalogoProdCtesMB.cliente.razonSocial} (#{catalogoProdCtesMB.cliente.nombreEstablecimiento})!"  
-							style="font-family: fantasy; font-size: 25px; text-align: center; "
+							style="font-family: sans-serif,fantasy ; font-size: 25px; text-align: center; "
 							rendered="#{not empty catalogoProdCtesMB.cliente}"/>
 			
 			<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
@@ -161,27 +162,27 @@
 					<h:panelGrid columns="1" style="width:100%" rendered="#{not empty catalogoProdCtesMB.selectedEntity}"
 								 columnClasses="leftAlign topAlign topTAlign">
 
-						<h:outputLabel value="CÓDIGO:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputLabel value="CÓDIGO:" style="color: lightslategray; font-family: sans-serif,fantasy;"/>
 						<h:outputText  value="#{catalogoProdCtesMB.selectedEntity.codigoBarras}"
-									   style="color: blue; font-family: fantasy; font-size: large; "/>
+									   style="color: blue; font-family: sans-serif,fantasy; font-size: large; "/>
 
-						<h:outputLabel value="NOMBRE:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputLabel value="NOMBRE:" style="color: lightslategray; font-family: sans-serif,fantasy;"/>
 						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.nombre}"
-									  style="color: blue; font-family: fantasy;"/>
+									  style="color: blue; font-family: sans-serif,fantasy;"/>
 
-						<h:outputLabel value="PRESENTACION:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputLabel value="PRESENTACION:" style="color: lightslategray; font-family: sans-serif,fantasy;"/>
 						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.presentacion}"
-									  style="color: blue; font-family: fantasy;"/>						
+									  style="color: blue; font-family: sans-serif,fantasy;"/>						
 
-						<h:outputLabel value="CONTENIDO:" style="color: lightslategray; font-family: fantasy;"/>
+						<h:outputLabel value="CONTENIDO:" style="color: lightslategray; font-family: sans-serif,fantasy;"/>
 						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.contenido} #{catalogoProdCtesMB.selectedEntity.unidadMedida}"
-									  style="color: blue; font-family: fantasy;"/>
+									  style="color: blue; font-family: sans-serif,fantasy;"/>
 						
-						<h:outputLabel value="PRECIO:" style="color: lightslategray; font-family: fantasy;"
+						<h:outputLabel value="PRECIO:" style="color: lightslategray; font-family: sans-serif,fantasy;"
 									   rendered="#{not empty catalogoProdCtesMB.cliente}"/>
 						<h:outputText value="#{catalogoProdCtesMB.selectedEntity.precio}"
 									  rendered="#{not empty catalogoProdCtesMB.cliente}"
-									  style="color: blue; font-family: fantasy;"/>
+									  style="color: blue; font-family: sans-serif,fantasy;"/>
 
 					</h:panelGrid>
 					<h:panelGrid columns="1" style="width:100%" rendered="#{not empty catalogoProdCtesMB.selectedEntity}"
