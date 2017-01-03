@@ -6,7 +6,7 @@
                 template="/template/public.xhtml">
 
     <ui:define name="title">
-        Catalogo de Productos
+        CAT&Aacute;LOGO DE PRODUCTOS
     </ui:define>
 
     <ui:define name="body-title">
@@ -18,7 +18,7 @@
 		<h:form id="form2">
 			<p:dialog header="IDENTIFICACIÓN" widgetVar="dlg2" modal="true" height="300" width="350" closable="false"  closeOnEscape="false" >
 				<h:panelGrid id="grid" columns="1" style="margin-bottom:10px; background-color: transparent;" cellpadding="5"
-							 columnClasses="centerAlign topAlign topTAlign,">
+							 columnClasses="centerAlign topAlign topTAlign">
 					<h:panelGroup>
 						<h:outputText value="R.F.C: DE CLIENTE :" />
 						<h:inputText value="#{catalogoProdCtesMB.clienteRFC}"/>
@@ -119,7 +119,8 @@
 				</p:tab>
 			</p:accordionPanel>	
 			
-			<h:outputText   value="¡ VIENVENIDO #{catalogoProdCtesMB.cliente.razonSocial} (#{catalogoProdCtesMB.cliente.nombreEstablecimiento})!"  style="font-family: fantasy; font-size: 25px;"
+			<h:outputText   value="¡ BIENVENIDO #{catalogoProdCtesMB.cliente.razonSocial} (#{catalogoProdCtesMB.cliente.nombreEstablecimiento})!"  
+							style="font-family: fantasy; font-size: 25px; text-align: center; "
 							rendered="#{not empty catalogoProdCtesMB.cliente}"/>
 			
 			<p:messages id="msgs" showDetail="true" autoUpdate="true" closable="true" />
