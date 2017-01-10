@@ -619,6 +619,7 @@ public class ProductoDAO {
 					"WHERE  1=1\n" +
 					"AND    P.CODIGO_BARRAS = AP.PRODUCTO_CODIGO_BARRAS\n" +
 					"AND    AP.ALMACEN_ID = 1\n" +
+					"AND    AP.CANTIDAD  >= 1\n" +
 					"AND   (P.DESCONTINUADO IS NULL OR P.DESCONTINUADO != 1)\n";
 			
 			if(marca != null && marca.trim().length()>1){

@@ -45,7 +45,7 @@ public class CatalogoProdCtesMB   implements Serializable{
 	protected static List<SelectItem> marcasLinList;
 	
 	private Cliente cliente;
-	private String clienteRFC;
+	private String  clienteRFC;
 	
 	private String selection;
 	private String industria;
@@ -53,6 +53,7 @@ public class CatalogoProdCtesMB   implements Serializable{
 	private String marca;
 	private String marcaInd;
 	private String marcaLin;
+	private String buscarCteMsg;
 	private int tipoAlmacen;
 	private int precioMin;
 	private int precioMax;
@@ -78,6 +79,10 @@ public class CatalogoProdCtesMB   implements Serializable{
 		return cliente;
 	}
 
+	public String getBuscarCteMsg() {
+		return buscarCteMsg;
+	}
+	
 	public void setClienteRFC(String clienteRFC) {
 		this.clienteRFC = clienteRFC;
 	}
@@ -254,6 +259,13 @@ public class CatalogoProdCtesMB   implements Serializable{
 		}
 
 		return marcasIndList;
+	}
+	
+	public void onMasInfo(){
+		logger.info("onMasInfo:");
+		buscarCteMsg = null;
+		cliente      = null;
+		clienteRFC   = null;
 	}
 	
 	public List<SelectItem> getMarcasPorLineaList() {
@@ -585,18 +597,21 @@ public class CatalogoProdCtesMB   implements Serializable{
 	
 	public void buscarRFC(){
 		logger.info("->buscarRFC: clienteRFC="+clienteRFC);
+		buscarCteMsg = null;
 		try {
 			cliente = ClienteDAO.getInstance().findByRFC(clienteRFC);
 			clienteRFC = null;
 		}catch(EntityNotFoundException nfe){
 			logger.error("AL BUSCAR CLIENTE:",nfe);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, dialogTitle, "NO EXISTE CLIENTE CON R.F.C."));
-			FacesContext.getCurrentInstance().validationFailed();
+			//FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, dialogTitle, "NO EXISTE CLIENTE CON R.F.C."));
+			//FacesContext.getCurrentInstance().validationFailed();
+			buscarCteMsg = "NO EXISTE CLIENTE CON R.F.C.";
 			clienteRFC = null;
 		}catch(DAOException de){
 			logger.error("AL BUSCAR CLIENTE:",de);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, dialogTitle, "ERROR AL BUSCAR CLIENTE"));
-			FacesContext.getCurrentInstance().validationFailed();
+			//FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, dialogTitle, "ERROR AL BUSCAR CLIENTE"));
+			//FacesContext.getCurrentInstance().validationFailed();
+			buscarCteMsg = "ERROR AL BUSCAR CLIENTE";
 			clienteRFC = null;
 		}
 	}

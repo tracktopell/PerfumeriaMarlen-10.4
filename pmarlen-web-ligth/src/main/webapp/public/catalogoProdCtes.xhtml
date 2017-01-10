@@ -15,52 +15,9 @@
     </ui:define>
 
     <ui:define name="body">
-		<h:form id="form2">
-			<p:dialog header="IDENTIFICACIÓN" widgetVar="dlg2" modal="true" height="300" width="350" closable="false"  closeOnEscape="false" >
-				<h:panelGrid id="grid" columns="1" style="margin-bottom:10px; background-color: transparent;" cellpadding="5"
-							 columnClasses="centerAlign topAlign topTAlign">
-					<h:panelGroup>
-						<h:outputText value="R.F.C: DE CLIENTE :" />
-						<h:inputText value="#{catalogoProdCtesMB.clienteRFC}"/>
-					</h:panelGroup>
-					<h:panelGroup>
-						<p:commandButton	 value="ACEPTAR" icon="ui-icon-check" 
-											 validateClient="true" style="margin-right:10px"
-											 ajax="true"
-											 actionListener="#{catalogoProdCtesMB.buscarRFC}"
-											 oncomplete="executeAfterUpdate()"
-											 update=":form2,updatedBeforeOnComplete"/>
-						
-						<p:spacer width="30px"/>
-						<p:commandButton	value="CANCELAR" update="grid" icon="ui-icon-check" 
-										ajax="true" process="@this"
-										oncomplete="PF('dlg2').hide();">
-						   <p:resetInput target="grid" />
-						</p:commandButton>
-					</h:panelGroup>
-					
-					<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" globalOnly="true"/>
-					
-					<h:panelGroup id="updatedBeforeOnComplete">
-						<script language="JavaScript" type="text/javascript">
-							//
-							function executeAfterUpdate() {
-								//alert('facesContext.maximumSeverity=#{facesContext.maximumSeverity}, facesContext.messageList=#{facesContext.messageList}, facesContext.validationFailed=#{facesContext.validationFailed}');
-								if (#{facesContext.maximumSeverity==null or facesContext.maximumSeverity.ordinal=='1' or not facesContext.validationFailed}) {
-									//alert('ok, close dialog !');
-									PF('dlg2').hide();
-								}
-							}
-							//
-						</script>
-					</h:panelGroup>					
-				</h:panelGrid>
-			</p:dialog> 
-		</h:form>
-		
 		<h:form id="form1">	
 			<h:panelGrid columns="1" style="margin-bottom:10px; background-color: transparent;" cellpadding="5"
-						 columnClasses="centerAlign topAlign topTAlign">
+						 >
 
 				<h:panelGrid columns="4" style="margin-bottom:10px" cellpadding="5">
 					<p:selectOneMenu value="#{catalogoProdCtesMB.selection}" style="width: 280px;">
@@ -91,29 +48,11 @@
 					</p:selectOneMenu>
 
 					<p:commandButton value="+ INFORMACIÓN" rendered="#{empty catalogoProdCtesMB.cliente and not empty catalogoProdCtesMB.marca}"
+									 actionListener="#{catalogoProdCtesMB.onMasInfo}"
+									 update=":form2:grid"
 									 onclick="PF('dlg2').show();"/>
 
 				</h:panelGrid>
-				<!--
-				<h:panelGroup>
-					<p:outputLabel for="buscarProductos" value="BUSCAR:"/>
-					<p:inputText   id="buscarProductos" size="45" />
-					<p:commandButton id="buscar" value="BUSCAR"/>
-				</h:panelGroup>
-
-				<h:panelGrid columns="7" style="margin-bottom:10px" cellpadding="5">
-					<p:outputLabel for="buscarProductos" value="PRECIOS:"/>
-					<p:outputLabel for="txt6" value="DESDE : "/>
-					<h:inputText   id="txt6" value="#{catalogoProdCtesMB.precioMin}" size="3" />
-					<p:slider  for="txt6,txt7" style="width: 200px" range="true" 
-							   displayTemplate="ENTRE {min} Y {max}" 
-							   minValue="10" maxValue="10000" />
-
-					<p:outputLabel for="txt7" value="HASTA : "/>
-					<h:inputText id="txt7" value="#{catalogoProdCtesMB.precioMax}"   size="3" />
-
-				</h:panelGrid>
-				-->
 			</h:panelGrid>
 			
 			<h:outputText   value="¡ BIENVENIDO #{catalogoProdCtesMB.cliente.razonSocial} (#{catalogoProdCtesMB.cliente.nombreEstablecimiento})!"  
@@ -193,7 +132,58 @@
 
 			</h:panelGrid>
 		</h:form>
+		<h:form id="form2">
+			<p:dialog header="IDENTIFICACIÓN" widgetVar="dlg2" modal="true" height="300" width="350" closable="false"  closeOnEscape="false" >
+				<h:panelGrid id="grid" columns="1" style="margin-bottom:10px; background-color: transparent;" cellpadding="5"
+							 columnClasses="centerAlign topAlign">
+					<h:panelGroup rendered="#{empty catalogoProdCtesMB.cliente}">
+						<h:outputText value="R.F.C: DE CLIENTE :" />
+						<h:inputText value="#{catalogoProdCtesMB.clienteRFC}"/>
+					</h:panelGroup>
+					<h:panelGroup class="centerAlign">
+						
+						<p:commandButton	 value="ACEPTAR" icon="ui-icon-check" 
+											 validateClient="true" style="margin-right:10px"
+											 ajax="true"
+											 rendered="#{empty catalogoProdCtesMB.cliente}"
+											 actionListener="#{catalogoProdCtesMB.buscarRFC}"											 
+											 update=":form1,:form2:grid"/>
+						
+						<p:spacer width="30px"/>
+						<p:commandButton	value="CANCELAR" update="grid" icon="ui-icon-check" 
+										 rendered="#{empty catalogoProdCtesMB.cliente}"
+										ajax="true" process="@this"
+										oncomplete="PF('dlg2').hide();">
+						   <p:resetInput target="grid" />
+						</p:commandButton>
+						
+					</h:panelGroup>
+					
+					<h:panelGroup id="updatedBeforeOnComplete">
+						
+						<h:outputText value="#{catalogoProdCtesMB.buscarCteMsg}" rendered="#{not empty catalogoProdCtesMB.buscarCteMsg}"/>
+						
+						<h:panelGrid id="grid2" columns="1" style="margin-bottom:10px; background-color: transparent;" cellpadding="5"
+									 columnClasses="centerAlign topAlign" 
+									 rendered="#{not empty catalogoProdCtesMB.cliente}">
+							
+							<h:outputText value="#{catalogoProdCtesMB.cliente.razonSocial}" />
+							<h:outputText value="#{catalogoProdCtesMB.cliente.nombreEstablecimiento}" />
+							<h:outputText value="#{catalogoProdCtesMB.cliente.direccionFacturacion}" />
+						</h:panelGrid>
+						
+					</h:panelGroup>
+					
+					<p:commandButton	value="CERRAR" update="grid" icon="ui-icon-check" 
+									ajax="true" process="@this" rendered="#{not empty catalogoProdCtesMB.cliente}"
+									oncomplete="PF('dlg2').hide();">
+					   <p:resetInput target="grid" />
+					</p:commandButton>
 
+				</h:panelGrid>
+			</p:dialog> 			
+		</h:form>
+		
 	</ui:define>
 
 </ui:composition>
