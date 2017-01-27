@@ -65,7 +65,7 @@
 								<p:menuitem value="NUEVO"       url="/pages/pedidoVenta.jsf" icon="ui-icon-cart"/>
 								<p:menuitem value="EN PROCESO"  url="/pages/pedidosVenta.jsf" icon="ui-icon-calculator"/>								
 								<p:menuitem value="HISTORICO"   url="/pages/historicoPedidosVenta.jsf" icon="ui-icon-clock"/>
-								<p:menuitem value="SUCURSALES"  url="/pages/ventasSucursales.jsf" icon="ui-icon-home"/>
+								<p:menuitem value="SUCURSALES"  url="/pages/ventasSucursales.jsf" icon="ui-icon-home"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsStock}"/>
 							</p:submenu>
 							
 							<p:submenu label="COMPRAS" icon="ui-icon-arrowstop-1-s">
@@ -86,7 +86,7 @@
 								<p:menuitem value="EN PROCESO" url="/pages/pendiente.jsf" icon="ui-icon-calculator"/>
 							</p:submenu>
 							
-							<p:submenu label="TRASPASOS SUCS." icon="ui-icon-arrowstop-1-e" >
+							<p:submenu label="TRASPASOS SUCS." icon="ui-icon-arrowstop-1-e"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}" >
 								<p:menuitem value="NUEVO"       url="/pages/nuevoTraspasoSuc.jsf" icon="ui-icon-arrowstop-1-e"  />
 								<p:menuitem value="EN PROCESO"  url="/pages/traspasosSuc.jsf"     icon="ui-icon-calculator"     />
 								<p:menuitem value="HISTORICO"   url="/pages/historicoTraspasosSuc.jsf"     icon="ui-icon-calculator"     />
@@ -94,10 +94,10 @@
 
 						</p:submenu>
 						
-						<p:submenu label="INVENTARIOS" icon="ui-icon-clipboard">
-							<p:menuitem value="PRINCIPAL"   url="/pages/inventarioPrincipal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}"/>
-							<p:menuitem value="CONTEO."     url="/pages/pendiente.jsf" icon="ui-icon-shuffle"/>
-							<p:menuitem value="SUCURSALES " url="/pages/inventarioSucursal.jsf" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin and sessionUserMB.usuarioAuthenticated.playsAsSales}" />
+						<p:submenu label="INVENTARIOS" icon="ui-icon-clipboard" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsStock}">
+							<p:menuitem value="PRINCIPAL"   url="/pages/inventarioPrincipal.jsf" icon="ui-icon-home"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}" />
+							<p:menuitem value="CONTEO."     url="/pages/pendiente.jsf" icon="ui-icon-shuffle" rendered="false"/>
+							<p:menuitem value="SUCURSALES " url="/pages/inventarioSucursal.jsf" icon="ui-icon-home"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}"/>
 						</p:submenu>
 						
 						<!--
