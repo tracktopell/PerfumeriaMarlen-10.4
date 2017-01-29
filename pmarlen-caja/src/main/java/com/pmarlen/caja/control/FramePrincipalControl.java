@@ -7,6 +7,7 @@ package com.pmarlen.caja.control;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.Notificacion;
 import com.pmarlen.caja.model.SyncUpdateListener;
+import com.pmarlen.caja.model.VentaSesion;
 import com.pmarlen.caja.view.AperturaCajaJFrame;
 import com.pmarlen.caja.view.CierreCajaJFrame;
 
@@ -27,6 +28,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -48,7 +51,7 @@ import org.apache.log4j.Logger;
  *
  * @author alfredo
  */
-public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
+public class FramePrincipalControl implements ActionListener,SyncUpdateListener,WindowListener{
 	private static Logger logger = Logger.getLogger(FramePrincipalControl.class.getName());
 	private FramePrincipal    framePrincipal;
 	private PanelVentaControl panelVentaControl;
@@ -114,7 +117,8 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 		});
 		
 		//---------------------------------------------------
-		framePrincipal.setDefaultCloseOperation(framePrincipal.EXIT_ON_CLOSE);
+		framePrincipal.setDefaultCloseOperation(framePrincipal.DO_NOTHING_ON_CLOSE);
+		framePrincipal.addWindowListener(this);
 		framePrincipal.getConfigMenu().setEnabled(false);
 		//---------------------------------------------------
 		framePrincipal.getNotificaciones().addActionListener(this);
@@ -464,8 +468,8 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
 	}
 
 	private void salirMenu_actionPerformed() {
-		framePrincipal.dispose();
-		System.exit(0);
+		logger.info("[USER]->salirMenu_actionPerformed: ->dispose, exit0");
+		controlledExit();
 	}
 
 	private void ventaActualMenu_actionPerformed() {
@@ -657,4 +661,55 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener{
             JOptionPane.showMessageDialog(framePrincipal, "La caracteristica por Java AWT Desktop, no esta habilitada","Email Soporte",JOptionPane.ERROR_MESSAGE);
         }
     }
+
+	private void controlledExit(){
+		VentaSesion ventaSesion = ApplicationLogic.getInstance().getVentaSesion();
+		if(ventaSesion.getNumElemVta()>0){
+			
+			ventaActualMenu_actionPerformed();
+			
+			JOptionPane.showMessageDialog(framePrincipal,
+					"  No se puede Cerrar, ahún tiene una venta activa,\n"+
+					"debe terminar esta para poder cerrar la aplicación.","CERRAR",JOptionPane.WARNING_MESSAGE);
+		} else {
+			framePrincipal.dispose();
+			System.exit(0);
+		}
+	}
+	
+	@Override
+	public void windowOpened(WindowEvent e) {
+		logger.info("[USER]->windowOpened:");
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		logger.info("[USER]->windowClosing:");
+		controlledExit();
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		logger.info("[USER]->windowClosed:");
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		logger.info("[USER]->windowIconified:");
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		logger.info("[USER]->windowDeiconified:");
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		logger.info("[USER]->windowActivated:");
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		logger.info("[USER]->windowDeactivated:");
+	}
 }

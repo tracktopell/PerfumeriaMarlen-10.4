@@ -12,6 +12,7 @@ import com.pmarlen.caja.model.VentaSesion;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.ProductoCellRender;
 import com.pmarlen.caja.view.TerminarVentaDlg;
+import com.pmarlen.caja.view.TokenFrame;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.JarpeReportsInfoDTO;
 import com.pmarlen.model.OSValidator;
@@ -410,21 +411,40 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 		} catch (Exception ex) {
 			ex.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), ex.getMessage(), "Venta", JOptionPane.ERROR_MESSAGE);
-
 		} finally {
 			panelVenta.getCodigoBuscar().requestFocus();
 		}
 	}
-	
+	// infinutum : t5517071411 / Aqwert56
+	// reporte: 40643773 3 a 5 dias 018001230000
 	
 	void cancelar_ActionPerformed() {
-		logger.info("[USER]->cancelar_ActionPerformed()");
-		int r = JOptionPane.showConfirmDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "¿Cancelar la Venta Actual?", "Venta", JOptionPane.YES_NO_OPTION);
+		logger.info("[USER]->cancelar_ActionPerformed:");
+		int r = JOptionPane.showConfirmDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "   ¿ Cancelar la Venta Actual ?\nNecesitara autorización por TOKEN.", "Venta", JOptionPane.YES_NO_OPTION);
 		if (r == JOptionPane.YES_OPTION) {
-			estadoInicial();
-			panelVenta.getCodigoBuscar().requestFocus();
+			TokenFrame tf = new TokenFrame(FramePrincipalControl.getInstance().getFramePrincipal());
+
+			tf.setVisible(true);
+
+			if(tf.isAccepted()){
+				autorizadoPorToken = true;
+				logger.info("[USER]->cancelar_ActionPerformed:: Se autorizo.");
+				
+				estadoInicial();
+				panelVenta.getCodigoBuscar().requestFocus();
+
+			} else {
+				logger.debug("[USER]->cancelar_ActionPerformed: NO Se autorizo.");
+				JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "ESTE INCIDENTE SE REPORTARA", "Venta", JOptionPane.YES_NO_OPTION);
+			}
+		} else {
+			logger.debug("[USER]->cancelar_ActionPerformed: NO CANCELO.");
+			JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "ESTE INCIDENTE SE REPORTARA", "Venta", JOptionPane.YES_NO_OPTION);
 		}
 	}
+	
+	boolean autorizadoPorToken = false;
+	
 	
 	void checar_ActionPerformed(){
 		estadoChecando = ! estadoChecando;
