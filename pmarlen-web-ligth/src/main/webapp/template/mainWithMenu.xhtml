@@ -61,20 +61,20 @@
 					<p:menubar>
 						<p:submenu label="OPERACI&Oacute;N" icon="ui-icon-gear" rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}">
 							
-							<p:submenu label="VENTAS" icon="ui-icon-contact">
+							<p:submenu label="VENTAS" icon="ui-icon-contact"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsSales}">
 								<p:menuitem value="NUEVO"       url="/pages/pedidoVenta.jsf" icon="ui-icon-cart"/>
 								<p:menuitem value="EN PROCESO"  url="/pages/pedidosVenta.jsf" icon="ui-icon-calculator"/>								
 								<p:menuitem value="HISTORICO"   url="/pages/historicoPedidosVenta.jsf" icon="ui-icon-clock"/>
 								<p:menuitem value="SUCURSALES"  url="/pages/ventasSucursales.jsf" icon="ui-icon-home"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsStock}"/>
 							</p:submenu>
 							
-							<p:submenu label="COMPRAS" icon="ui-icon-arrowstop-1-s">
+							<p:submenu label="COMPRAS" icon="ui-icon-arrowstop-1-s"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsSales and sessionUserMB.usuarioAuthenticated.playsAsStock}">
 								<p:menuitem value="NUEVA" url="/pages/nuevaCompra.jsf" icon="ui-icon-cart"/>
 								<p:menuitem value="EN PROCESO" url="/pages/compras.jsf" icon="ui-icon-calculator"/>
 								<p:menuitem value="HISTORICO" url="/pages/historicoCompras.jsf" icon="ui-icon-clock"/>
 							</p:submenu>
 							
-							<p:submenu label="DEVOL.(VTA)" icon="ui-icon-arrowreturn-1-w">
+							<p:submenu label="DEVOL.(VTA)" icon="ui-icon-arrowreturn-1-w" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsSales and sessionUserMB.usuarioAuthenticated.playsAsStock}">
 								<p:menuitem value="NUEVA" url="/pages/nuevaDevolucion.jsf" icon="ui-icon-cart"/>
 								<p:menuitem value="EN PROCESO" url="/pages/devoluciones.jsf" icon="ui-icon-calculator"/>
 								<p:menuitem value="HISTORICO" url="/pages/historicoDevoluciones.jsf" icon="ui-icon-clock"/>
@@ -86,7 +86,7 @@
 								<p:menuitem value="EN PROCESO" url="/pages/pendiente.jsf" icon="ui-icon-calculator"/>
 							</p:submenu>
 							
-							<p:submenu label="TRASPASOS SUCS." icon="ui-icon-arrowstop-1-e"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}" >
+							<p:submenu label="TRASPASOS SUCS." icon="ui-icon-arrowstop-1-e" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsSales}" >
 								<p:menuitem value="NUEVO"       url="/pages/nuevoTraspasoSuc.jsf" icon="ui-icon-arrowstop-1-e"  />
 								<p:menuitem value="EN PROCESO"  url="/pages/traspasosSuc.jsf"     icon="ui-icon-calculator"     />
 								<p:menuitem value="HISTORICO"   url="/pages/historicoTraspasosSuc.jsf"     icon="ui-icon-calculator"     />

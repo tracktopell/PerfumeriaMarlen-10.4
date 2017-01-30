@@ -442,8 +442,8 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener,
 		}
 	}
 	
-	private void ventaeliminarProdMenu_actionPerformed() {
-		panelVentaControl.ventaeliminarProdMenu();
+	private void ventaeliminarProdMenu_actionPerformed() {		
+		panelVentaControl.ventaEliminarProdMenu();
 	}
 
 	private void ventaCancelarMenu_actionPerformed() {

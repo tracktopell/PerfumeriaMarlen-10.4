@@ -569,25 +569,51 @@ public class PanelVentaControl implements ActionListener, TableModelListener, Mo
 			} else if (nuevaCantidad > max) {
 				JOptionPane.showMessageDialog(panelVenta, "No puede agregegar > "+max, "Modificar", JOptionPane.WARNING_MESSAGE);
 			} else if(nuevaCantidad == 0){
-				ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().remove(selectedRow);
-				panelVenta.getDetalleVentaJTable().updateUI();
-				renderTotal();
+				ventaEliminarProd(selectedRow);
 			}
 		}
 		panelVenta.getCodigoBuscar().requestFocus();
 
 	}
-
-	void ventaeliminarProdMenu() {
+	
+	void ventaEliminarProdMenu() { 
 		int selectedRow = panelVenta.getDetalleVentaJTable().getSelectedRow();
-		if (selectedRow >= 0) {
-			ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().remove(selectedRow);
-			panelVenta.getDetalleVentaJTable().updateUI();
-			renderTotal();
+		ventaEliminarProd(selectedRow);
+	}
+	
+	private void ventaEliminarProd(int selectedRow) { 
+		final int selectedRowForDelete = selectedRow;
+		new Thread(){
+			@Override
+			public void run() {
+				autorizadoPorToken=false;
+				int r = JOptionPane.showConfirmDialog(FramePrincipalControl.getInstance().getFramePrincipal(), "¿ Eliminar el producto del pedido actual?\nNecesitara autorización por TOKEN.", "Venta", JOptionPane.YES_NO_OPTION);
 
-			panelVenta.getDetalleVentaJTable().getSelectionModel().clearSelection();
-			panelVenta.getCodigoBuscar().requestFocus();
-		}
+				if (r == JOptionPane.YES_OPTION) {
+					TokenFrame tf = new TokenFrame(FramePrincipalControl.getInstance().getFramePrincipal());
+
+					tf.setVisible(true);
+
+					if(tf.isAccepted()){
+						autorizadoPorToken = true;
+						logger.info("[USER]->cancelar_ActionPerformed:: Se autorizo.");
+						
+						ApplicationLogic.getInstance().getVentaSesion().getDetalleVentaTableItemList().remove(selectedRowForDelete);
+						panelVenta.getDetalleVentaJTable().updateUI();
+						renderTotal();
+
+					} else {
+						logger.debug("[USER]->cancelar_ActionPerformed: NO Se autorizo.");
+						JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), 
+								"\tESTE INCIDENTE SE REPORTARA\nSi solo necesitaba checar precio, NO lo agregue\nUtilice esta funcion de checar.", "Venta", JOptionPane.YES_NO_OPTION);
+					}
+				} else {
+					logger.debug("[USER]->cancelar_ActionPerformed: NO CANCELO.");
+					JOptionPane.showMessageDialog(FramePrincipalControl.getInstance().getFramePrincipal(), 
+							"\tESTE INCIDENTE SE REPORTARA\nSi solo necesitaba checar precio, NO lo agregue\nUtilice esta funcion de checar.", "Venta", JOptionPane.YES_NO_OPTION);
+				}
+			}
+		}.start();
 	}
 
 	void verVentaActual() {
