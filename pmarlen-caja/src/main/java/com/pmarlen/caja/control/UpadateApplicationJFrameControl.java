@@ -82,4 +82,9 @@ public class UpadateApplicationJFrameControl implements UpdateApplicationListene
 		this.ua.dispose();
 		actualizando = false;
 	}
+
+	@Override
+	public void notifiedStartUpdate() {
+		
+	}
 }

@@ -629,6 +629,7 @@ public class MemoryDAO {
 					if(compare < 0){
 						Notificacion nuevaNotificacion=new Notificacion("UP_"+remoteCurrentPMCajaVersion,"HAY UNA NUEVA ACTUALIZACION: Ver."+remoteCurrentPMCajaVersion+"\nDEBE REINICIAR POR FAVOR LA APLICACION DE CAJA.");
 						ApplicationLogic.getInstance().add(nuevaNotificacion);
+						ApplicationLogic.getInstance().needsUpdateAppNow();
 					}
 				}
 				

@@ -4,6 +4,7 @@
  */
 package com.pmarlen.caja.control;
 
+import static com.pmarlen.caja.Main.EXIT_UPDATE_REBOOT;
 import com.pmarlen.caja.dao.MemoryDAO;
 import com.pmarlen.caja.model.Notificacion;
 import com.pmarlen.caja.model.SyncUpdateListener;
@@ -16,6 +17,7 @@ import com.pmarlen.caja.view.PanelDevolucion;
 import com.pmarlen.caja.view.PanelVenta;
 import com.pmarlen.caja.view.PanelVentas;
 import com.pmarlen.caja.view.ParamsConfigDialog;
+import com.pmarlen.caja.view.UpadateApplicationJFrame;
 import com.pmarlen.model.Constants;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.U;
@@ -230,6 +232,29 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener,
 		}.start();
 	}
 	
+	private void inmediatlyUpdate(){
+		UpadateApplicationJFrame uaf = new UpadateApplicationJFrame();
+		UpadateApplicationJFrameControl uafc = new UpadateApplicationJFrameControl(uaf);
+		uafc.estadoInicial();
+		logger.debug("main:Updating, wait... for download");
+		while(uafc.isActualizando()){
+			try {						
+				Thread.sleep(500);
+			} catch (InterruptedException ie) {
+				logger.trace("main:InterruptedException");
+			}
+		}
+
+		if(uafc.isReboot()) {
+			logger.info("[USER]->REBOT AFTER UPDATE");
+			
+			System.exit(EXIT_UPDATE_REBOOT);
+		}
+
+		uaf  = null;
+		uafc = null;
+	}
+	
 	private void procesoReloj(){
 		logger.debug("procesoReloj:");
 		relojRunning=true;
@@ -246,9 +271,16 @@ public class FramePrincipalControl implements ActionListener,SyncUpdateListener,
 				framePrincipal.updateStatus();
 				
 				int nsl=ApplicationLogic.getInstance().getNotificacionesSinLeer();
-				boolean nn=ApplicationLogic.getInstance().isNuevaNotificacion();
-				
+				boolean nn = ApplicationLogic.getInstance().isNuevaNotificacion();
+				boolean un = ApplicationLogic.getInstance().isUpdateAppNow();
+				boolean vt = ApplicationLogic.getInstance().getVentaSesion().getNumElemVta()>0;
+
 				framePrincipal.getNotificaciones().setText(String.valueOf(nsl));
+				
+				if(un && !vt) {
+					inmediatlyUpdate();
+				}
+				
 				if(nn){
 					coloridoNotificacion = !coloridoNotificacion;
 					if(coloridoNotificacion){

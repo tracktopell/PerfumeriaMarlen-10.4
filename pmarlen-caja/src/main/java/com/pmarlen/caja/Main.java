@@ -158,6 +158,31 @@ public class Main {
 		}
 		splashFrame.addMessage("...UPDATE ?");
 		if (ApplicationLogic.getInstance().needsUpdateApplciation()) {
+			
+			UpadateApplicationJFrame uaf = new UpadateApplicationJFrame();
+			UpadateApplicationJFrameControl uafc = new UpadateApplicationJFrameControl(uaf);
+			uafc.estadoInicial();
+			logger.debug("main:Updating, wait... for download");
+			while(uafc.isActualizando()){
+				try {						
+					Thread.sleep(500);
+				} catch (InterruptedException ie) {
+					logger.trace("main:InterruptedException");
+				}
+			}
+
+			if(uafc.isReboot()) {
+				logger.info("[USER]->REBOT AFTER UPDATE");
+				splashFrame.addMessage("...REBOOT");
+				splashFrame.setVisible(false);
+				splashFrame.dispose();
+
+				System.exit(EXIT_UPDATE_REBOOT);
+			}
+
+			uaf  = null;
+			uafc = null;
+			/*
 			splashFrame.addMessage("...ASK !");
 			splashFrame.setVisible(false);
 			int respuesta = JOptionPane.showConfirmDialog(null,
@@ -194,7 +219,8 @@ public class Main {
 			} else {
 				logger.info("[USER]->UpdateApp:NO");
 				splashFrame.setVisible(true);
-			}	
+			}
+			*/
 		}
 		
 		splashFrame.addMessage("...MemoryDAO PRELOAD");					

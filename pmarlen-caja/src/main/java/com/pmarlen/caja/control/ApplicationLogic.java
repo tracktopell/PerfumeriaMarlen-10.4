@@ -514,5 +514,13 @@ public class ApplicationLogic {
 		
 		return nsl;
 	}
+	private boolean updateAppNow = false;
+	public void needsUpdateAppNow() {
+		updateAppNow = true;
+	}
+
+	public boolean isUpdateAppNow() {
+		return updateAppNow;
+	}
 	
 }
