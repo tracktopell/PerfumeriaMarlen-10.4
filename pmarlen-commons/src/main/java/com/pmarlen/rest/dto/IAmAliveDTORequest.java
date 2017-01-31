@@ -14,6 +14,8 @@ public class IAmAliveDTORequest implements Serializable{
 	private String loggedIn;
 	private UserAgent userAgent;
 	private CorteCajaDTO corteCajaDTO;
+	private byte[]  currentSnapchotImg;
+	private Long    currentSnapshotTime;	
 
 	public IAmAliveDTORequest() {
 	}
@@ -94,6 +96,22 @@ public class IAmAliveDTORequest implements Serializable{
 
 	public void setCorteCajaDTO(CorteCajaDTO corteCajaDTO) {
 		this.corteCajaDTO = corteCajaDTO;
+	}
+
+	public void setCurrentSnapchotImg(byte[] currentSnapchotImg) {
+		this.currentSnapchotImg = currentSnapchotImg;
+	}
+
+	public byte[] getCurrentSnapchotImg() {
+		return currentSnapchotImg;
+	}
+
+	public void setCurrentSnapshotTime(Long currentSnapshotTime) {
+		this.currentSnapshotTime = currentSnapshotTime;
+	}
+
+	public Long getCurrentSnapshotTime() {
+		return currentSnapshotTime;
 	}
 	
 }

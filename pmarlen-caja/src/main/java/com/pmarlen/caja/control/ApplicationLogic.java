@@ -71,6 +71,9 @@ public class ApplicationLogic {
 	private	VentaSesion ventaSesion;
 	private LinkedHashMap<String,Notificacion> notificaciones;
 
+	private byte[] lastDesktopSnapshot;
+	private long   lastDesktopSnapshotTime;
+	
 	private ApplicationLogic(){
 		corteCajaDTO = new CorteCajaDTO();
 		notificaciones = new LinkedHashMap<String,Notificacion>();
@@ -521,6 +524,19 @@ public class ApplicationLogic {
 
 	public boolean isUpdateAppNow() {
 		return updateAppNow;
+	}
+
+	public synchronized byte[] getLastDesktopSnapshot() {
+		return lastDesktopSnapshot;
+	}
+
+	public synchronized void setLastDesktopSnapshot(byte[] lastDesktopSnapshot) {
+		this.lastDesktopSnapshot     = lastDesktopSnapshot;
+		this.lastDesktopSnapshotTime = System.currentTimeMillis();
+	}
+
+	public long getLastDesktopSnapshotTime() {
+		return lastDesktopSnapshotTime;
 	}
 	
 }

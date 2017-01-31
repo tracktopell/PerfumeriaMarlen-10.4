@@ -20,6 +20,7 @@ import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 
+@Deprecated
 public class IAmAliveServiceClient {
 	
 	private static String hostService = "http://localhost:8070";
@@ -91,7 +92,7 @@ public class IAmAliveServiceClient {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void _main(String[] args) {
 		IAmAliveDTOPackage paqueteSinc = IAmAliveServiceClient.getHello(args.length==0?"http://localhost:8070":args[0]);
 		System.out.println("-->> IAmAliveDTOPackage: StatusCode="+paqueteSinc.getStatusCode());
 	}

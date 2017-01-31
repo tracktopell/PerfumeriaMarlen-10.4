@@ -22,6 +22,7 @@ import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 
+@Deprecated
 public class ZipSyncDTOPackageClient {
 	
 	private static String hostService = "http://localhost:8070";
@@ -126,7 +127,7 @@ public class ZipSyncDTOPackageClient {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void _main(String[] args) {
 		SyncDTOPackage paqueteSinc = ZipSyncDTOPackageClient.getAllOfSucursal(args.length==0?"http://localhost:8070":args[0]);
 		System.out.println("-->> paqueteSinc{"+paqueteSinc+"}");
 	}

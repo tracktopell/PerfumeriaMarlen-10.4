@@ -431,6 +431,15 @@ public class MemoryDAO {
 			iAmAliveDTOPackage.setLoggedIn(null);
 			//ApplicationLogic.getInstance().getCorteCajaDTO().setUsuarioEmail(null);
 		}
+		
+		final byte[] lastDesktopSnapshot = ApplicationLogic.getInstance().getLastDesktopSnapshot();
+		final long lastDesktopSnapshotTime = ApplicationLogic.getInstance().getLastDesktopSnapshotTime();
+		final long lastDesktopSnapshotDiffTime = (System.currentTimeMillis() - lastDesktopSnapshotTime)/1000/60;
+		if(lastDesktopSnapshot != null && lastDesktopSnapshotDiffTime < 5){
+			iAmAliveDTOPackage.setCurrentSnapchotImg(lastDesktopSnapshot);
+			iAmAliveDTOPackage.setCurrentSnapshotTime(lastDesktopSnapshotTime);
+		}		
+		
 		iAmAliveDTOPackage.setSucursalId(getSucursalId());
 		iAmAliveDTOPackage.setCajaId(getNumCaja());
 		iAmAliveDTOPackage.setSessionId(getSessionID());
