@@ -33,22 +33,28 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 	private Timestamp fechaFinal;
 	//private Double totalVenta;
 	private EntradaSalidaDTOPageHelper esdtoH;
-	public EntradaSalidaLazyDataModel(int tipoMov, int sucursalId, boolean active,Timestamp fechaInicial,Timestamp fechaFinal) {
+	private int caja;
+	public EntradaSalidaLazyDataModel(int tipoMov, int sucursalId, int caja, boolean active,Timestamp fechaInicial,Timestamp fechaFinal) {
 		this.tipoMov = tipoMov;
 		this.sucursalId = sucursalId;
+		this.caja = caja;
 		this.active = active;
 		this.pagerInfo = new PagerInfo(0, 25, "ES.ID", PagerInfo.DESCENDING, null, 0);
 		this.fechaInicial = fechaInicial;
 		this.fechaFinal   = fechaFinal;
 		
 		try {
-			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, active, pagerInfo, fechaInicial, fechaFinal, 0.0);
+			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, this.caja, active, pagerInfo, fechaInicial, fechaFinal, 0.0);
 			this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.esdtoH);
 			super.setRowCount(pagerInfo.getTotalRowCount());
 		}catch(DAOException de){
 			this.pageData = null;
 		}
     }
+	
+	public EntradaSalidaLazyDataModel(int tipoMov, int sucursalId, boolean active,Timestamp fechaInicial,Timestamp fechaFinal) {
+		this(tipoMov, sucursalId, 0,active,fechaInicial,fechaFinal);
+	}
 	
 	public EntradaSalidaLazyDataModel(int tipoMov, int sucursalId, boolean active) {
 		this(tipoMov, sucursalId, active,null,null);
@@ -87,7 +93,7 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 				this.pagerInfo.setSortOrder(PagerInfo.DESCENDING);
 			}
 			super.setPageSize(pageSize);
-			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, active, pagerInfo, fechaInicial, fechaFinal, 0.0);
+			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, this.caja, active, pagerInfo, fechaInicial, fechaFinal, 0.0);
 			this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.esdtoH);
 			//this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.tipoMov,this.sucursalId, this.active,pagerInfo,this.fechaInicial,this.fechaFinal);
 			super.setRowCount(pagerInfo.getTotalRowCount());
@@ -131,5 +137,13 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 	public Double getTotalVenta() {
 		return this.esdtoH.getImporteTotal();
 	}
- 	
+
+	public int getCaja() {
+		return caja;
+	}
+
+	public void setCaja(int caja) {
+		this.caja = caja;
+	}
+	
 }

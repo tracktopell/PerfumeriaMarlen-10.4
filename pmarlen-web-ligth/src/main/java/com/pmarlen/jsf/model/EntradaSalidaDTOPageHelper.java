@@ -21,14 +21,16 @@ public class EntradaSalidaDTOPageHelper implements Serializable{
 	private Timestamp fechaInicial;
 	private Timestamp fechaFinal;
 	private Double    importeTotal;
+	private int       caja;
 
-	public EntradaSalidaDTOPageHelper(int tipoMov, int sucursalId, boolean active, PagerInfo pagerInfo, Timestamp fechaInicial, Timestamp fechaFinal, Double importeTotal) {
-		this.tipoMov = tipoMov;
-		this.sucursalId = sucursalId;
-		this.active = active;
-		this.pagerInfo = pagerInfo;
+	public EntradaSalidaDTOPageHelper(int tipoMov, int sucursalId, int caja, boolean active, PagerInfo pagerInfo, Timestamp fechaInicial, Timestamp fechaFinal, Double importeTotal) {
+		this.tipoMov      = tipoMov;
+		this.sucursalId   = sucursalId;
+		this.caja         = caja;
+		this.active       = active;
+		this.pagerInfo    = pagerInfo;
 		this.fechaInicial = fechaInicial;
-		this.fechaFinal = fechaFinal;
+		this.fechaFinal   = fechaFinal;
 		this.importeTotal = importeTotal;
 	}
 	
@@ -130,4 +132,13 @@ public class EntradaSalidaDTOPageHelper implements Serializable{
 	public void setImporteTotal(Double importeTotal) {
 		this.importeTotal = importeTotal;
 	}
+
+	public int getCaja() {
+		return caja;
+	}
+
+	public void setCaja(int caja) {
+		this.caja = caja;
+	}
+	
 }

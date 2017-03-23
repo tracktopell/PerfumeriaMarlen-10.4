@@ -10,7 +10,7 @@
     </ui:define>
 
     <ui:define name="body-title">
-        PEDIDOS DE VENTA EN PEDIDOS DE VENTA SUCURSALES
+        VENTA EN SUCURSALES
     </ui:define>
 
     <ui:define name="body">		
@@ -19,13 +19,19 @@
 
 			<h:panelGrid columns="1" cellpadding="0" id="panel3" columnClasses="leftAlign" width="100%" >						
 				<h:panelGrid columns="2" cellpadding="0" width="100%" columnClasses="columnWidth20 rightAlign, columnWidth80 leftAlign,columnWidth20 rightAlign, columnWidth80 leftAlign">
-					<p:outputLabel for="sucursal" value="SUCURSAL :" />
-
-					<p:selectOneMenu id="sucursal" value="#{ventasSucursalesMB.sucursalId}" >				
-						<f:selectItems  value="#{ventasSucursalesMB.sucursalesList}"/>					
-						<p:ajax listener="#{ventasSucursalesMB.onSucursalChange}" process=":form1:sucursal" update=":form1:"/>
-					</p:selectOneMenu>
-					
+					<p:outputLabel for="sucursal" value="SUCURSAL / CAJA:" />
+					<h:panelGroup>
+						<p:selectOneMenu id="sucursal" value="#{ventasSucursalesMB.sucursalId}" >				
+							<f:selectItems  value="#{ventasSucursalesMB.sucursalesList}"/>					
+							<p:ajax listener="#{ventasSucursalesMB.onSucursalChange}" process=":form1:sucursal" update=":form1:"/>
+						</p:selectOneMenu>
+						
+						<p:selectOneMenu id="caja" value="#{ventasSucursalesMB.caja}" >				
+							<f:selectItems  value="#{ventasSucursalesMB.cajasList}"/>					
+							<p:ajax listener="#{ventasSucursalesMB.onCajaChange}" process=":form1:caja" update=":form1:"/>
+						</p:selectOneMenu>
+						
+					</h:panelGroup>
 					<p:outputLabel for="intervaloFec" value="INTERVALO DE FECHA :" />
 					
 					<h:panelGroup id="fechas" styleClass="alignTop">

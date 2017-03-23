@@ -28,8 +28,10 @@ import org.apache.log4j.Logger;
 
 public class VentasSucursalesMB implements Serializable {
 	private transient static Logger logger = Logger.getLogger(VentasSucursalesMB.class.getSimpleName());
-	private int		sucursalId = -1;		
+	private int		sucursalId = -1;
+	private int		caja       = 0;
 	private ArrayList<SelectItem> sucursalesList;
+	private ArrayList<SelectItem> cajasList;
 
 	class IntervaloFecha implements Serializable{
 		Date fechaInicial;
@@ -85,6 +87,11 @@ public class VentasSucursalesMB implements Serializable {
 		logger.debug("onSucursalChange:sucursalId="+sucursalId);
 		lazyModel = null;
 	}
+	
+	public void onCajaChange() {
+		logger.debug("onCajaChange:caja="+caja);
+		lazyModel = null;
+	}
 
 	public void setEditarPedidoVentaMB(EditarPedidoVentaMB editarPedidoVentaMB) {
 		this.editarPedidoVentaMB = editarPedidoVentaMB;
@@ -120,8 +127,8 @@ public class VentasSucursalesMB implements Serializable {
 
 	public EntradaSalidaLazyDataModel getLazyModel() {
 		if(lazyModel == null) {
-			logger.debug("getLazyModel:sucursalId="+sucursalId);
-			lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,sucursalId,true,
+			logger.info("getLazyModel:sucursalId="+sucursalId+", caja="+caja);
+			lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,sucursalId,caja, true,
 					new Timestamp(fechaInicial.getTime()),new Timestamp(fechaFinal.getTime()));
 		}
 		return lazyModel;
@@ -243,6 +250,19 @@ public class VentasSucursalesMB implements Serializable {
 		return sucursalesList;
 	}
 
+	public ArrayList<SelectItem> getCajasList() {
+		if(cajasList==null){
+			cajasList = new ArrayList<SelectItem>();
+				
+			cajasList.add(new SelectItem(0,"[TODAS LAS CAJAS ]"));
+			cajasList.add(new SelectItem(1 ,"[---- CAJA 1 ----]"));
+			cajasList.add(new SelectItem(2 ,"[---- CAJA 2 ----]"));
+			cajasList.add(new SelectItem(3 ,"[---- CAJA 3 ----]"));
+			cajasList.add(new SelectItem(4 ,"[---- CAJA 4 ----]"));
+		}
+		return cajasList;
+	}
+	
 	/**
 	 * @return the fechaInicial
 	 */
@@ -300,6 +320,14 @@ public class VentasSucursalesMB implements Serializable {
 	
 	public boolean isIntervaloEspecifico() {
 		return intFechaSelec.equals(IF_SPEC);
+	}
+
+	public int getCaja() {
+		return caja;
+	}
+
+	public void setCaja(int caja) {
+		this.caja = caja;
 	}
 	
 }

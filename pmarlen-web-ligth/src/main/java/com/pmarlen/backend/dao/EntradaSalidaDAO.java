@@ -585,12 +585,16 @@ public class EntradaSalidaDAO {
 		return findAllActiveByPage(tipoMov, sucursalId, active, pagerInfo, null, null);
 	}
 
+	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(int tipoMov, int sucursalId, int caja, boolean active, PagerInfo pagerInfo, Timestamp fechaInicial, Timestamp fechaFinal) throws DAOException {
+		return findAllActiveByPage(new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, caja, active, pagerInfo, fechaInicial, fechaFinal, null));
+	}
+	
 	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(int tipoMov, int sucursalId, boolean active, PagerInfo pagerInfo, Timestamp fechaInicial, Timestamp fechaFinal) throws DAOException {
-		return findAllActiveByPage(new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, active, pagerInfo, fechaInicial, fechaFinal, null));
+		return findAllActiveByPage(new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, 0, active, pagerInfo, fechaInicial, fechaFinal, null));
 	}
 
 	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(EntradaSalidaDTOPageHelper esdtoH) throws DAOException {
-		logger.debug("->findAllActiveByPage(tipoMov=" + esdtoH.getTipoMov() + ",sucursalId=" + esdtoH.getSucursalId() + ",active=" + esdtoH.isActive() + ",pagerInfo.filters=" + esdtoH.getPagerInfo().getFilters() + ",fechaInicial=" + esdtoH.getFechaInicial() + ",fechaFinal=" + esdtoH.getFechaFinal() + ",ImporteTotal=" + esdtoH.getImporteTotal() + ")");
+		logger.debug("->findAllActiveByPage(tipoMov=" + esdtoH.getTipoMov() + ",sucursalId=" + esdtoH.getSucursalId() + ",caja="+esdtoH.getCaja()+",active=" + esdtoH.isActive() + ",pagerInfo.filters=" + esdtoH.getPagerInfo().getFilters() + ",fechaInicial=" + esdtoH.getFechaInicial() + ",fechaFinal=" + esdtoH.getFechaFinal() + ",ImporteTotal=" + esdtoH.getImporteTotal() + ")");
 
 		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
@@ -644,6 +648,7 @@ public class EntradaSalidaDAO {
 					+ "AND       ES.ESTADO_ID = ESE.ESTADO_ID\n"
 					+ "AND       ES.TIPO_MOV  = ?\n"
 					+ "AND       ES.SUCURSAL_ID= ?\n"
+					+ (esdtoH.getCaja()>0? "AND       ES.CAJA       = ?\n":"")
 					+ (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null ? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n" : "");
 
 			String q0 = "SELECT	ES.TOTAL "
@@ -676,6 +681,9 @@ public class EntradaSalidaDAO {
 			int vs = 1;
 			ps.setInt(vs++, esdtoH.getTipoMov());
 			ps.setInt(vs++, esdtoH.getSucursalId());
+			if(esdtoH.getCaja()>0){
+				ps.setInt(vs++, esdtoH.getCaja());
+			}
 
 			if (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null) {
 				ps.setTimestamp(vs++, esdtoH.getFechaInicial());
@@ -709,7 +717,9 @@ public class EntradaSalidaDAO {
 				vs = 1;
 				ps.setInt(vs++, esdtoH.getTipoMov());
 				ps.setInt(vs++, esdtoH.getSucursalId());
-
+				if(esdtoH.getCaja()>0){
+					ps.setInt(vs++, esdtoH.getCaja());
+				}
 				if (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null) {
 					ps.setTimestamp(vs++, esdtoH.getFechaInicial());
 					ps.setTimestamp(vs++, esdtoH.getFechaFinal());
@@ -774,6 +784,9 @@ public class EntradaSalidaDAO {
 			vs = 1;
 			ps.setInt(vs++, esdtoH.getTipoMov());
 			ps.setInt(vs++, esdtoH.getSucursalId());
+			if(esdtoH.getCaja()>0){
+				ps.setInt(vs++, esdtoH.getCaja());
+			}
 			Map<String, Object> filtersValuesT = esdtoH.getPagerInfo().getFilters();
 			if (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null) {
 				ps.setTimestamp(vs++, esdtoH.getFechaInicial());
