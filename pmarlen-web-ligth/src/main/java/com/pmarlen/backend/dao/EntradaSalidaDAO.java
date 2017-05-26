@@ -1097,9 +1097,9 @@ public class EntradaSalidaDAO {
 
 	public int insertEntradaSalidaSucursal(Connection conn, EntradaSalida x, List<? extends EntradaSalidaDetalle> pvdList) throws DAOException {
 		int tipoMov = x.getTipoMov();
-		logger.trace("insertEntradaSalidaSucursal: EntradaSalida (" + tipoMov + "): INSERT FECHA:" + x.getFechaCreo() + ", SUCURSAL:" + x.getSucursalId() + ", CAJA:" + x.getCaja() + ", TICKET:" + x.getNumeroTicket());
+		logger.info("insertEntradaSalidaSucursal: EntradaSalida (" + tipoMov + "): INSERT FECHA:" + x.getFechaCreo() + ", SUCURSAL:" + x.getSucursalId() + ", CAJA:" + x.getCaja() + ", TICKET:" + x.getNumeroTicket());
 		for (EntradaSalidaDetalle esd : pvdList) {
-			logger.trace("insertEntradaSalidaSucursal:ESD INSERT & COMMIT, DISCOUNT: " + esd.getCantidad() + " x " + esd.getProductoCodigoBarras() + "[" + esd.getAlmacenId() + "]");
+			logger.info("insertEntradaSalidaSucursal:ESD INSERT & COMMIT, DISCOUNT: " + esd.getCantidad() + " x " + esd.getProductoCodigoBarras() + "[" + esd.getAlmacenId() + "]");
 		}
 
 		int r = -1;
@@ -1120,8 +1120,19 @@ public class EntradaSalidaDAO {
 			rsX.close();
 			psX.close();
 			if (countTicket > 0) {
+				logger.info ("  TICKET COLLISION : ->"+countTicket+"<-");
+				logger.error("  TICKET COLLISION : ->"+countTicket+"<-");
+				psX = conn.prepareStatement("SELECT ID,NUMERO_TICKET FROM ENTRADA_SALIDA WHERE NUMERO_TICKET=?");
+				psX.setString(1, x.getNumeroTicket());
+				rsX = psX.executeQuery();
+				countTicket = 0;
+				while(rsX.next()) {
+					logger.error("\tENTRADA_SALIDA: ID="+rsX.getInt(1)+", NUMERO_TICKET="+rsX.getString(2));
+				}
+				rsX.close();
+				psX.close();
 				//throw new DAOException("NUMERO_TICKET=" + x.getNumeroTicket()+ " EXISTE (COUNT="+countTicket+")");
-				return -1;
+				//return -1;
 			}
 
 			//Timestamp now = new Timestamp(System.currentTimeMillis());

@@ -85,7 +85,7 @@ public class SyncDAO {
 		
 		if(escdList!=null && escdList.size()>0) {
 			Connection conn = null;
-			logger.debug("syncTransaction:---------------- PROCESSING Sent : List<ES_ESD> escdList.size="+escdList.size());
+			logger.info("syncTransaction:---------------- PROCESSING Sent : List<ES_ESD> escdList.size="+escdList.size());
 			
 			LinkedHashMap<String,ES_ESD> escdMap=new LinkedHashMap<String,ES_ESD>();
 			for(ES_ESD esesd: escdList){
@@ -94,7 +94,7 @@ public class SyncDAO {
 			
 			try {
 				conn = getConnectionCommiteable();
-				logger.debug("syncTransaction:BEGIN TRANSACTION");
+				logger.info("syncTransaction:BEGIN TRANSACTION");
 				int indexProccessing=0;
 				
 				List<ES_ESD> escdListVtas = new ArrayList<ES_ESD>();
@@ -114,14 +114,14 @@ public class SyncDAO {
 					
 					List<EntradaSalidaDetalle> esdList = new ArrayList<EntradaSalidaDetalle>();
 					List<ESD> esdl = escd.getEsdList();
-					logger.debug("syncTransaction:\tprepare esdList:");
+					logger.info("syncTransaction:\tprepare esdList:");
 					for(ESD esd: esdl){
 						esdList.add(esd.reverse());
 					}
-					logger.debug("syncTransaction:\tprepare for insertPedidoVentaSucursal:");
+					logger.info("syncTransaction:\tprepare for insertPedidoVentaSucursal:");
 					s.processingES(indexProccessing++);
 					int r=EntradaSalidaDAO.getInstance().insertEntradaSalidaSucursal(conn,es,esdList);
-					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:r="+r);
+					logger.info("syncTransaction:\tend insertPedidoVentaSucursal:r="+r);
 				}
 				
 				for(ES_ESD escd: escdListDevs){
@@ -136,19 +136,19 @@ public class SyncDAO {
 					
 					List<EntradaSalidaDetalle> esdList = new ArrayList<EntradaSalidaDetalle>();
 					List<ESD> esdl = escd.getEsdList();
-					logger.debug("syncTransaction:\tprepare esdList:");
+					logger.info("syncTransaction:\tprepare esdList:");
 					for(ESD esd: esdl){
 						esdList.add(esd.reverse());
 					}
-					logger.debug("syncTransaction:\tprepare for insertPedidoVentaSucursal: DEVOLUCIONES");
+					logger.info("syncTransaction:\tprepare for insertPedidoVentaSucursal: DEVOLUCIONES");
 					s.processingES(indexProccessing++);
 					int r=EntradaSalidaDAO.getInstance().insertEntradaSalidaSucursal(conn,es,esdList);
-					logger.debug("syncTransaction:\tend insertPedidoVentaSucursal:r="+r);
+					logger.info("syncTransaction:\tend insertPedidoVentaSucursal:r="+r);
 				}
 				
 				
-				logger.debug("syncTransaction:END");
-				logger.debug("syncTransaction:COMMIT TRANSACTION");
+				logger.info("syncTransaction:END");
+				logger.info("syncTransaction:COMMIT TRANSACTION");
 				conn.commit();
 				s.setSyncDBStatus(SyncDTOPackage.SYNC_OK);
 			} catch(SQLException e){
