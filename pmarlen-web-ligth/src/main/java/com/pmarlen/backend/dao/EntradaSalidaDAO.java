@@ -914,10 +914,9 @@ public class EntradaSalidaDAO {
 		return findAllActive(tipoMov, sucursalId, false);
 	}
 	
-	public ArrayList<EntradaSalidaQuickView> findFastESByPAge(EntradaSalidaDTOPageHelper esdtoH) throws DAOException {
-		logger.debug("->findFastESByPAge(tipoMov=" + esdtoH.getTipoMov() + ",sucursalId=" + esdtoH.getSucursalId() + ",caja="+esdtoH.getCaja()+",active=" + esdtoH.isActive() + ",pagerInfo.filters=" + esdtoH.getPagerInfo().getFilters() + ",fechaInicial=" + esdtoH.getFechaInicial() + ",fechaFinal=" + esdtoH.getFechaFinal() + ",ImporteTotal=" + esdtoH.getImporteTotal() + ")");
-
-		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
+	public ArrayList<EntradaSalida> findFastESByPAge(int tipoMov, int sucursalId, int caja,boolean active, Timestamp fechaInicial, Timestamp fechaFinal) throws DAOException {
+		
+		ArrayList<EntradaSalida> r = new ArrayList<EntradaSalida>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Connection conn = null;
@@ -930,166 +929,43 @@ public class EntradaSalidaDAO {
 			String fwq0
 					= "FROM  ENTRADA_SALIDA ES\n"
 					+ " WHERE    1=1\n"
-					+ (esdtoH.isActive()? "AND       ES.ESTADO_ID IN (1,2,4,512,1024)\n"
-										: "AND       ES.ESTADO_ID >  4\n")
+					+ (active?	  "AND       ES.ESTADO_ID IN (1,2,4,512,1024)\n"
+								: "AND       ES.ESTADO_ID >  4\n")
 					+ "AND       ES.TIPO_MOV  = ?\n"
 					+ "AND       ES.SUCURSAL_ID= ?\n"
-					+ (esdtoH.getCaja()>0? "AND       ES.CAJA       = ?\n":"")
-					+ (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null ? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n" : "");
+					+ (caja>0? "AND       ES.CAJA       = ?\n":"")
+					+ (fechaInicial != null && fechaFinal != null ? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n" : "");
 
-			String q0 = "SELECT	ES.TOTAL "
+			String q0 = "SELECT	ES.TOTAL,"
 					+ fq0
 					+ fwq0;
 
-			String qT0 = "SELECT	ES.TOTAL "
-					+ fq0
-					+ fwq0;
-
-			//+ "ORDER BY  ES.ID DESC";
-			Map<String, Object> filters = esdtoH.getPagerInfo().getFilters();
-			if (filters != null) {
-				for (String k : filters.keySet()) {
-					q0 += "AND     ES." + k.toUpperCase() + " = ? \n";
-					qT0 += "AND     ES." + k.toUpperCase() + " = ? \n";
-				}
-			}
-			q0 += " GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
-			qT0 += " GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
-
-			if (esdtoH.getPagerInfo().getSortField() != null) {
-				q0 += " ORDER BY " + esdtoH.getPagerInfo().getSortField() + " " + (esdtoH.getPagerInfo().getSortOrder() < 0 ? "DESC" : "ASC") + " \n";
-				qT0 += " ORDER BY " + esdtoH.getPagerInfo().getSortField() + " " + (esdtoH.getPagerInfo().getSortOrder() < 0 ? "DESC" : "ASC") + " \n";
-			}
 			//------------------------------------------------------------------			
-			logger.trace("\t->QUERY COUNT:");
+			logger.info("\t->QUERY :"+q0);
 			ps = conn.prepareStatement(q0);
 
 			int vs = 1;
-			ps.setInt(vs++, esdtoH.getTipoMov());
-			ps.setInt(vs++, esdtoH.getSucursalId());
-			if(esdtoH.getCaja()>0){
-				ps.setInt(vs++, esdtoH.getCaja());
+			ps.setInt(vs++, tipoMov);
+			ps.setInt(vs++, sucursalId);
+			if(caja>0){
+				ps.setInt(vs++, caja);
 			}
 
-			if (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null) {
-				ps.setTimestamp(vs++, esdtoH.getFechaInicial());
-				ps.setTimestamp(vs++, esdtoH.getFechaFinal());
+			if (fechaInicial != null && fechaFinal != null) {
+				ps.setTimestamp(vs++, fechaInicial);
+				ps.setTimestamp(vs++, fechaFinal);
 			} else {
 
 			}
 
-			Map<String, Object> filtersValues = esdtoH.getPagerInfo().getFilters();
-			if (filters != null) {
-
-				for (String k : filtersValues.keySet()) {
-					ps.setObject(vs++, filtersValues.get(k));
-				}
-			}
 			rs = ps.executeQuery();
 			rs.last();
 			int size = rs.getRow();
 			rs.beforeFirst();
-			logger.debug("->rs.last(): rs.getRow()=TotalRowCount=" + size);
-			esdtoH.getPagerInfo().setTotalRowCount(size);
-			rs.close();
-			ps.close();
-			ps = null;
-
-			//------------------------------------------------------------------
-			if (esdtoH.getImporteTotal() != null) {
-				logger.trace("\t->QUERY TOTAL Q:" + qT0);
-				ps = conn.prepareStatement(qT0);
-
-				vs = 1;
-				ps.setInt(vs++, esdtoH.getTipoMov());
-				ps.setInt(vs++, esdtoH.getSucursalId());
-				if(esdtoH.getCaja()>0){
-					ps.setInt(vs++, esdtoH.getCaja());
-				}
-				if (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null) {
-					ps.setTimestamp(vs++, esdtoH.getFechaInicial());
-					ps.setTimestamp(vs++, esdtoH.getFechaFinal());
-				} else {
-
-				}
-
-				filtersValues = esdtoH.getPagerInfo().getFilters();
-				if (filters != null) {
-					for (String k : filtersValues.keySet()) {
-						ps.setObject(vs++, filtersValues.get(k));
-					}
-				}
-				rs = ps.executeQuery();
-
-				double importeBruto = 0.0;
-				double factorIva = 0.0;
-				double importeNOGra = 0.0;
-				double importeDesc = 0.0;
-				double importeTOTAL = 0.0;
-				double importeIVA = 0.0;
-				int porcDescCalc = 0;
-				int porcDescExtra = 0;
-				logger.trace("\t\t->IMBR\tFACTOR_IVA\tPDESCCALC\tPOCDESCEX\tIMP_TOTAL");
-				Double sumTot = 0.0;
-				while (rs.next()) {
-
-					importeBruto = rs.getDouble("IMPORTE_BRUTO");
-					factorIva = rs.getDouble("FACTOR_IVA");
-					porcDescCalc = rs.getInt("PORCENTAJE_DESCUENTO_CALCULADO");
-					porcDescExtra = rs.getInt("PORCENTAJE_DESCUENTO_EXTRA");
-
-					importeNOGra = importeBruto / (1.0 + factorIva);
-					//logger.debug("========================");
-					//logger.debug("PEDIDO ID:        :\t"+x.getId());
-					//logger.debug("IMPORTE BRUTO     :\t"+x.getImporteBruto());
-					//logger.debug("IMPORTE NO GRABADO:\t"+x.getImporteNoGravado());
-					int dtot = porcDescCalc + porcDescExtra;
-
-					importeDesc = (importeNOGra * dtot) / 100.0;
-
-					importeIVA = ((importeNOGra - importeDesc) * Constants.IVA);
-					importeTOTAL = (importeNOGra - importeDesc + importeIVA);
-
-					sumTot += importeTOTAL;
-
-					logger.trace("\t\t->" + importeBruto + "\t" + factorIva + "\t" + porcDescCalc + "\t" + porcDescExtra + "\t" + importeTOTAL);
-				}
-				logger.trace("T O T A L->" + sumTot);
-				esdtoH.setImporteTotal(sumTot);
-
-				rs.close();
-				ps.close();
-				ps = null;
-			}
-			//------------------------------------------------------------------
-			String qR0 = q0 + "LIMIT " + esdtoH.getPagerInfo().getFirst() + "," + esdtoH.getPagerInfo().getPageSize();
-			//logger.debug("\t->QUERY BY PAGE (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"):");
-			logger.debug("\t->QUERY BY PAGE (first=" + esdtoH.getPagerInfo().getFirst() + ",pageSize=" + esdtoH.getPagerInfo().getPageSize() + "):" + q0);
-
-			ps = conn.prepareStatement(qR0);
-			vs = 1;
-			ps.setInt(vs++, esdtoH.getTipoMov());
-			ps.setInt(vs++, esdtoH.getSucursalId());
-			if(esdtoH.getCaja()>0){
-				ps.setInt(vs++, esdtoH.getCaja());
-			}
-			Map<String, Object> filtersValuesT = esdtoH.getPagerInfo().getFilters();
-			if (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null) {
-				ps.setTimestamp(vs++, esdtoH.getFechaInicial());
-				ps.setTimestamp(vs++, esdtoH.getFechaFinal());
-			} else {
-
-			}
-			if (filters != null) {
-				for (String k : filtersValuesT.keySet()) {
-					ps.setObject(vs++, filtersValuesT.get(k));
-				}
-			}
-
-			rs = ps.executeQuery();
+			logger.info("->rs.last(): rs.getRow()=TotalRowCount=" + size);			
 
 			while (rs.next()) {
-				EntradaSalidaQuickView x = new EntradaSalidaQuickView();
+				EntradaSalida x = new EntradaSalida();
 				x.setId((Integer) rs.getObject("ES_ID"));
 				x.setTipoMov((Integer) rs.getObject("TIPO_MOV"));
 				x.setSucursalId((Integer) rs.getObject("SUCURSAL_ID"));
@@ -1097,72 +973,9 @@ public class EntradaSalidaDAO {
 				x.setFechaCreo((Timestamp) rs.getObject("FECHA_CREO"));
 				x.setUsuarioEmailCreo((String) rs.getObject("USUARIO_EMAIL_CREO"));
 				x.setClienteId((Integer) rs.getObject("CLIENTE_ID"));
-				x.setFormaDePagoId((Integer) rs.getObject("FORMA_DE_PAGO_ID"));
-				x.setMetodoDePagoId((Integer) rs.getObject("METODO_DE_PAGO_ID"));
-				x.setFactorIva((Double) rs.getObject("FACTOR_IVA"));
-				x.setComentarios((String) rs.getObject("COMENTARIOS"));
-				x.setCfdId((Integer) rs.getObject("CFD_ID"));
 				x.setNumeroTicket((String) rs.getObject("NUMERO_TICKET"));
 				x.setCaja((Integer) rs.getObject("CAJA"));
-				x.setImporteRecibido((Double) rs.getObject("IMPORTE_RECIBIDO"));
-				x.setAprobacionVisaMastercard((String) rs.getObject("APROBACION_VISA_MASTERCARD"));
-				x.setPorcentajeDescuentoCalculado((Integer) rs.getObject("PORCENTAJE_DESCUENTO_CALCULADO"));
-				x.setPorcentajeDescuentoExtra((Integer) rs.getObject("PORCENTAJE_DESCUENTO_EXTRA"));
-				x.setCondicionesDePago((String) rs.getObject("CONDICIONES_DE_PAGO"));
-				x.setNumDeCuenta((String) rs.getObject("NUM_DE_CUENTA"));
-				x.setAutorizaDescuento((Integer) rs.getObject("AUTORIZA_DESCUENTO"));
-				x.setSubTotal1ra((Double) rs.getObject("SUB_TOTAL_1RA"));
-				x.setSubTotalOpo((Double) rs.getObject("SUB_TOTAL_OPO"));
-				x.setSubTotalReg((Double) rs.getObject("SUB_TOTAL_REG"));
-				x.setPedioSucursal((Integer) rs.getObject("PEDIDO_SUCURSAL"));
-				x.setTotProds((Integer) rs.getObject("TOT_PRODS"));
-				x.setTotal((Double) rs.getObject("TOTAL"));
-				x.setEsIdDev((Integer) rs.getObject("ES_ID_DEV"));
-				x.setEsIdTraOri((Integer) rs.getObject("ES_ID_TRA_ORI"));
-				x.setSucursalIdTraOri((Integer) rs.getObject("SUCURSAL_ID_TRA_ORI"));
-				x.setSucursalIdTraDes((Integer) rs.getObject("SUCURSAL_ID_TRA_DES"));
-
-				x.setTraspasoSucOriNombre((String) rs.getObject("S1_NOMBRE"));
-				x.setTraspasoSucOriClave((String) rs.getObject("S1_CLAVE"));
-				x.setTraspasoSucDesNombre((String) rs.getObject("S2_NOMBRE"));
-				x.setTraspasoSucDesClave((String) rs.getObject("S2_CLAVE"));
-
-				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
-				x.setEstadoDescripcion((String) rs.getObject("E_DESCRIPCION"));
-				x.setUsuarioNombreCompleto((String) rs.getObject("U_NOMBRE_COMPLETO"));
-				x.setClienteRFC((String) rs.getObject("C_RFC"));
-				x.setClienteRazonSocial((String) rs.getObject("C_RAZON_SOCIAL"));
-				x.setClienteNombreEstablecimiento((String) rs.getObject("C_NOMBRE_ESTABLECIMIENTO"));
-				x.setMetodoDePagoDescripcion((String) rs.getObject("MP_DESCRIPCION"));
-				x.setFormaDePagoDescripcion((String) rs.getObject("FP_DESCRIPCION"));
-				x.setCdfNumCFD((String) rs.getObject("CFD_NUM_CFD"));
-				x.setCfdCallingErrorResult((String) rs.getObject("CFD_CALLING_ERROR_RESULT"));
-
-				x.setNumElementos(rs.getInt("NUM_ELEMENTOS"));
-				x.setImporteBruto(rs.getDouble("IMPORTE_BRUTO"));
-
-				x.setImporteNoGravado(x.getImporteBruto() / (1.0 + x.getFactorIva()));
-				//logger.debug("========================");
-				//logger.debug("PEDIDO ID:        :\t"+x.getId());
-				//logger.debug("IMPORTE BRUTO     :\t"+x.getImporteBruto());
-				//logger.debug("IMPORTE NO GRABADO:\t"+x.getImporteNoGravado());
-				if (x.getImporteBruto() != null) {
-					int dtot = 0;
-					dtot += x.getPorcentajeDescuentoCalculado() != null ? x.getPorcentajeDescuentoCalculado() : 0;
-					dtot += x.getPorcentajeDescuentoExtra() != null ? x.getPorcentajeDescuentoExtra() : 0;
-					x.setImporteDescuento((x.getImporteNoGravado() * dtot) / 100.0);
-				} else {
-					x.setImporteDescuento(0.0);
-				}
-				x.setImporteIVA((x.getImporteNoGravado() - x.getImporteDescuento()) * Constants.IVA);
-				x.setImporteTotal(x.getImporteNoGravado() - x.getImporteDescuento() + x.getImporteIVA());
-				//logger.debug("% DESCUENTOS      :\t"+x.getPorcentajeDescuentoCalculado()+"% + "+x.getPorcentajeDescuentoExtra());
-				//logger.debug("I.V.A.            :\t"+x.getImporteIVA());
-				//logger.debug("    T O T A L     :\t"+x.getImporteTotal());
-
-				x.setEstadoActualFecha((Timestamp) rs.getObject("FECHA_ACTUALIZO"));
-				x.setEstadoActualUsuarioEmail((String) rs.getObject("USUARIO_ACTUALIZO"));
-
+				
 				r.add(x);
 			}
 			logger.debug("\t------------------------------");
