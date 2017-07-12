@@ -3,6 +3,9 @@ package com.pmarlen.businesslogic;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GeneradorNumTicket{
 	/**
@@ -10,7 +13,8 @@ public class GeneradorNumTicket{
 	 *	              yyMMddhhmmss000000
 	 *  1505211355120101
 	 */
-    private static final SimpleDateFormat sdf     = new SimpleDateFormat("yyMMddHHmmss");	
+	private static final SimpleDateFormat sdf     = new SimpleDateFormat("yyMMddHHmmss");	
+    private static final SimpleDateFormat sdfIn     = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");	
     private static final DecimalFormat    df2Id   = new DecimalFormat("00");
 	private static final DecimalFormat    df3Id   = new DecimalFormat("000");
 	private static final DecimalFormat    dfT2    = new DecimalFormat("0000000000000000");
@@ -45,10 +49,25 @@ public class GeneradorNumTicket{
 		StringBuilder ticketSB = new StringBuilder(x2.toString()).reverse();		
 		return ticketSB.toString();
     }
+	
+	public static String dissambleNumTicket(String nt){
+		StringBuilder ticketSB = new StringBuilder(nt.toString()).reverse();		
+		long   ntr1 = Long.parseLong(ticketSB.toString());
+		long   ntr2 =  bigLongT3 - ntr1;
+		return ""+ntr2;
+	}
+	
 
     public static void main(String args[]){
-		System.out.println("TIKECT     V3 ="+getNumTicket(new Date(),3,3));
-		System.out.println("TIKECT     V3 ="+getNumTicket(new Date(),3,3));
-		System.out.println("TIKECT     V3 ="+getNumTicket(new Date(),3,3));
+		try {
+			final Date dx1 = sdfIn.parse("2017-07-09 21:26:24.616");
+			// LOG 365737870929288949
+			// GEN 475737870929288949
+			System.out.println("DATE    ="+sdfIn.format(dx1));
+			System.out.println("TIKECT  ="+getNumTicket(dx1,5,1));
+			System.out.println("DISAMBLE="+dissambleNumTicket("365737870929288949"));
+		} catch (ParseException ex) {
+			ex.printStackTrace(System.err);
+		}
     }
 }

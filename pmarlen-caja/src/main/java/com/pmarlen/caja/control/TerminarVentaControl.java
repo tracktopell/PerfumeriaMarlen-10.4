@@ -193,7 +193,8 @@ public class TerminarVentaControl implements ActionListener, ItemListener, Focus
 		
 		String numTicket = null;
 		
-		numTicket = GeneradorNumTicket.getNumTicket(new Date(venta.getEs().getFc()),venta.getEs().getS(),venta.getEs().getJ());
+		//numTicket = GeneradorNumTicket.getNumTicket(new Date(venta.getEs().getFc()),venta.getEs().getS(),venta.getEs().getJ());
+		numTicket = GeneradorNumTicket.getNumTicket(new Date(),venta.getEs().getS(),venta.getEs().getJ());
 		
 		venta.getEs().setNt(numTicket);
 		venta.getEs().setC(Constants.ID_CLIENTE_MOSTRADOR);

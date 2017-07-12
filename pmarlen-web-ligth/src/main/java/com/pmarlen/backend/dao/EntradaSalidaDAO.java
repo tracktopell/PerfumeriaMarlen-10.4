@@ -20,6 +20,7 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaEstadoQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.backend.model.quickviews.PagerInfo;
+import com.pmarlen.businesslogic.GeneradorNumTicket;
 import com.pmarlen.businesslogic.exception.CFDInvokingWSException;
 import com.pmarlen.digifactws20160707.production.client.DigifactClient;
 import com.pmarlen.jsf.model.EntradaSalidaDTOPageHelper;
@@ -1368,8 +1369,7 @@ public class EntradaSalidaDAO {
 			rsX.close();
 			psX.close();
 			if (countTicket > 0) {
-				logger.info ("  TICKET COLLISION : ->"+countTicket+"<-");
-				logger.error("  TICKET COLLISION : ->"+countTicket+"<-");
+				logger.info ("  TICKET COLLISION : ->"+countTicket+"<-: DISSAMBLE: ->"+GeneradorNumTicket.dissambleNumTicket(x.getNumeroTicket())+"<-");
 				psX = conn.prepareStatement("SELECT ID,NUMERO_TICKET FROM ENTRADA_SALIDA WHERE NUMERO_TICKET=?");
 				psX.setString(1, x.getNumeroTicket());
 				rsX = psX.executeQuery();
@@ -1379,8 +1379,7 @@ public class EntradaSalidaDAO {
 				}
 				rsX.close();
 				psX.close();
-				//throw new DAOException("NUMERO_TICKET=" + x.getNumeroTicket()+ " EXISTE (COUNT="+countTicket+")");
-				//return -1;
+				throw new DAOException("NUMERO_TICKET=" + x.getNumeroTicket()+ " EXISTE (COUNT="+countTicket+")");				
 			}
 
 			//Timestamp now = new Timestamp(System.currentTimeMillis());

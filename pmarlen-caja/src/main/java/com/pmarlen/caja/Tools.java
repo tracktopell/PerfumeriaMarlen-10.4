@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import org.apache.log4j.Level;
@@ -28,7 +29,8 @@ public class Tools {
 		LogManager.getRootLogger().setLevel(Level.INFO);
 		String pathToEntradaSalidaJsonFile = "EntradaSalida.json";
 		String pathToCorteCajaJsonFile     = "CorteCajaDTO.json";
-		String fechaFiltro                 = Constants.sdfDate.format(new Date());
+		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+		String fechaFiltro                 = simpleDateFormat.format(new Date());
         boolean inventario        = false;
 		boolean corteCajaResumen  = false;
 		for(String arg: args){
@@ -62,7 +64,7 @@ public class Tools {
 				System.out.println("\tReading:");
 				//final ArrayList fromJson = gson.fromJson(fr, esList.getClass());
 				final ArrayList fromJson = gson.fromJson(fr, new TypeToken<ArrayList<ES_ESD>>(){}.getType());
-				System.out.println("\t\tRead:fromJson="+fromJson);
+				//System.out.println("\t\tRead:fromJson="+fromJson);
 				esList.addAll(fromJson);
 				System.out.println("\tOK, esList.size="+esList.size());				
 			}catch(IOException ioe){
@@ -103,7 +105,7 @@ public class Tools {
 			System.out.print("\t");			
 			System.out.print(fechaFormated);
 			System.out.print("\t");
-			System.out.print(Constants.df2Decimal.format(es.getTot() * fac));
+			System.out.print(String.format("%5.4f",(es.getTot() * fac)));
 			System.out.println();
 		}
 		if(! esList.isEmpty()) {
