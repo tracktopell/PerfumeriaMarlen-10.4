@@ -3,6 +3,7 @@
 <%@ page import="javax.naming.*" %>
 <%@ page import="java.util.*" %>
 
+<%@ page import="org.apache.tomcat.jdbc.pool.DataSource" %>
 
 <%
 	String connectPressed     = request.getParameter("connectPressed");
@@ -37,6 +38,8 @@
 		DataSource ds = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		
+		org.apache.tomcat.jdbc.pool.DataSource tomcat_DataSource;
 
 		try {
 			
@@ -59,6 +62,16 @@
 			resultMessage += "OK, try to get Datasource , lookup(\""+jndiDataSourceName+"\");<br/>";
 			ds = (DataSource) ctx.lookup(jndiDataSourceName);
 			resultMessage += "OK, try to get Connection.<br/>";
+			
+			resultMessage += "DataSource class: ["+ds.getClass()+"]<br/>";
+			tomcat_DataSource = (org.apache.tomcat.jdbc.pool.DataSource)ds;
+			
+			resultMessage += "Tomcat DataSource Active   : ["+tomcat_DataSource.getNumActive()+"]<br/>";
+			resultMessage += "Tomcat DataSource Size     : ["+tomcat_DataSource.getSize()+"]<br/>";
+			resultMessage += "Tomcat DataSource Idle     : ["+tomcat_DataSource.getNumIdle()+"]<br/>";
+			resultMessage += "Tomcat DataSource PoolSize : ["+tomcat_DataSource.getPoolSize()+"]<br/>";
+			resultMessage += "Tomcat DataSource MaxAge   : ["+tomcat_DataSource.getMaxAge()+"]<br/>";
+			
 			conn = ds.getConnection();
 
 			if(sqlTestQuery.trim().length()>6) {
