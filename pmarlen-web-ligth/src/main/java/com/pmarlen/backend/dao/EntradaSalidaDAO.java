@@ -1369,7 +1369,7 @@ public class EntradaSalidaDAO {
 			rsX.close();
 			psX.close();
 			if (countTicket > 0) {
-				logger.info ("  TICKET COLLISION : ->"+countTicket+"<-: DISSAMBLE: ->"+GeneradorNumTicket.dissambleNumTicket(x.getNumeroTicket())+"<-");
+				logger.info ("  TICKET COLLISION  ("+x.getNumeroTicket()+") : ->"+countTicket+"<-: DISSAMBLE: ->"+GeneradorNumTicket.dissambleNumTicket(x.getNumeroTicket())+"<-");
 				psX = conn.prepareStatement("SELECT ID,NUMERO_TICKET FROM ENTRADA_SALIDA WHERE NUMERO_TICKET=?");
 				psX.setString(1, x.getNumeroTicket());
 				rsX = psX.executeQuery();
