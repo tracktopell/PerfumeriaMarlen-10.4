@@ -1,4 +1,4 @@
-package com.pmarlen.digifactws20160707.production.client;
+package com.pmarlen.digifactws2018.production.client;
 
 import com.pmarlen.backend.model.Cfd;
 import com.pmarlen.backend.model.Cliente;
@@ -6,7 +6,7 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.businesslogic.exception.CFDInvokingWSException;
-import com.pmarlen.digifactws20160707.production.*;
+import com.pmarlen.digifactws2018.production.*;
 import com.pmarlen.model.Constants;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class DigifactClient {
 
 		datosCFD.setSerie(serie);
 		datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
-		datosCFD.setTipodeComprobante("F");        
+		datosCFD.setTipodeComprobante("F");
 		//datosCFD.setMetododePago(pedidoVenta.getMetodoDePagoDescripcion().toUpperCase());
 		String mpOrig = pedidoVenta.getMetodoDePagoDescripcion().toUpperCase();
 		if(mpOrig.contains("|")){
@@ -104,9 +104,7 @@ public class DigifactClient {
 		conceptos = new ArrayOfAnyType();
 		for (EntradaSalidaDetalleQuickView esd : esdList) {
 			conceptoWS = new Concepto();
-            //@TO-DO: 
-            // conceptoWS.setNoIdentificacion("");
-            // conceptoWS.setUnidad("");
+
 			conceptoWS.setCantidad(esd.getCantidad());
 			conceptoWS.setUnidad(esd.getProductoUnidadEmpaque());
 			String desc = null;
@@ -140,7 +138,7 @@ public class DigifactClient {
 		//======================================================================
 
 		try {
-			logger.debug("-->> Invocacion a SICOFI : CFD3.3: pedidoVentaId=" + pedidoVenta.getId());            
+			logger.debug("-->> Invocacion a SICOFI: pedidoVentaId=" + pedidoVenta.getId());            
 			String xml = port.generaCFD(usuario, contrasena, datosCFD, receptor, conceptos, impuestos, xmlAddenda);
 			logger.debug("-->>OK recibido el XML desde digifact: mide " + xml.length() + " bytes");
 
@@ -223,5 +221,6 @@ public class DigifactClient {
 			throw new CFDInvokingWSException("SSL Error:"+ex.getMessage());
 		}
 		return cfdVenta;
+		
 	}	
 }
