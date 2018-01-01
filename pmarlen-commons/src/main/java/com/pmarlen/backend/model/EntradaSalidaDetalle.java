@@ -51,7 +51,7 @@ public class EntradaSalidaDetalle implements java.io.Serializable {
 	 * cantidad devuelta
 	 */
 	private Integer  esIdDev;
-
+    
     /** 
      * Default Constructor
      */

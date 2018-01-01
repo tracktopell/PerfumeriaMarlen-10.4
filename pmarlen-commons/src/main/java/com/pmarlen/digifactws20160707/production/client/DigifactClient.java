@@ -104,9 +104,10 @@ public class DigifactClient {
 		conceptos = new ArrayOfAnyType();
 		for (EntradaSalidaDetalleQuickView esd : esdList) {
 			conceptoWS = new Concepto();
-            //@TO-DO: 
-            // conceptoWS.setNoIdentificacion("");
-            // conceptoWS.setUnidad("");
+            
+            conceptoWS.setNoIdentificacion("");
+            conceptoWS.setUnidad("");
+            
 			conceptoWS.setCantidad(esd.getCantidad());
 			conceptoWS.setUnidad(esd.getProductoUnidadEmpaque());
 			String desc = null;

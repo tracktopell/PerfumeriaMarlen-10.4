@@ -84,6 +84,8 @@ public class GeneradorImpresionPedidoVenta {
                 vals.put("cantidad",n);
 				vals.put("ta",Constants.getDescripcionTipoAlmacen(pvd.getApTipoAlmacen()).substring(0,3));
                 vals.put("codigoBarras",pvd.getProductoCodigoBarras());                
+                vals.put("noIdentificiacion",pvd.getNoIdentificacion());
+                vals.put("unidad",pvd.getUnidad());
                 vals.put("descripcion",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
 				vals.put("descripcionCont",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion()+" ("+pvd.getProductoContenido()+pvd.getProductoUnidadMedida()+")");
 				vals.put("precio",df.format(pvd.getPrecioVenta()));
@@ -230,7 +232,9 @@ public class GeneradorImpresionPedidoVenta {
                 vals.put("clave",pvd.getProductoCodigoBarras());
                 vals.put("cantidad",n);
 				vals.put("ta",Constants.getDescripcionTipoAlmacen(pvd.getApTipoAlmacen()).substring(0,3));
-                vals.put("codigoBarras",pvd.getProductoCodigoBarras());                
+                vals.put("codigoBarras",pvd.getProductoCodigoBarras());
+                vals.put("noIdentificiacion",pvd.getNoIdentificacion());
+                vals.put("unidad",pvd.getUnidad());
                 vals.put("descripcion",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
 				vals.put("descripcionCont",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion()+" ("+pvd.getProductoContenido()+pvd.getProductoUnidadMedida()+")");
 				vals.put("precio",df.format(pvd.getPrecioVenta()));
@@ -536,7 +540,6 @@ public class GeneradorImpresionPedidoVenta {
 		return pdfBytes;
     }
 
-
     public static byte[] generaPdfPfacturaPedidoVenta(EntradaSalidaQuickView pedidoVenta,Cfd cfdFactura,ArrayList<EntradaSalidaDetalleQuickView> esdList,Cliente clienteVenta,boolean fullPrint,String usuarioImr) {
 		byte[] pdfBytes = null;
 		try {
@@ -579,6 +582,8 @@ public class GeneradorImpresionPedidoVenta {
 				vals.put("ue",pvd.getProductoUnidadEmpaque());
 				vals.put("ta",Constants.getDescripcionTipoAlmacen(pvd.getApTipoAlmacen()).substring(0,3));
                 vals.put("codigoBarras",pvd.getProductoCodigoBarras());                
+                vals.put("noIdentificiacion",pvd.getNoIdentificacion());
+                vals.put("unidad",pvd.getUnidad());
                 vals.put("descripcion",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
 				vals.put("descripcionCont",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion()+" ("+pvd.getProductoContenido()+pvd.getProductoUnidadMedida()+")");
 				precioNoGrabado=pvd.getPrecioVenta() / (1.0+LogicaFinaciera.getImpuestoIVA());

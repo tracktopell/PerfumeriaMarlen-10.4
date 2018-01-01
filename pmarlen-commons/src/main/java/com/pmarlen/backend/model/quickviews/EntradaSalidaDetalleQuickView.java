@@ -9,7 +9,6 @@ import java.text.DecimalFormat;
  * @author alfredo
  */
 public class EntradaSalidaDetalleQuickView extends EntradaSalidaDetalle implements Comparable<EntradaSalidaDetalleQuickView>{
-	
 	private long rowId;
 	
 	private String productoNombre;
@@ -42,6 +41,9 @@ public class EntradaSalidaDetalleQuickView extends EntradaSalidaDetalle implemen
 	
 	private int canPendteEnOtrosPV;
 
+    private String unidad;    
+
+    private String noIdentificacion;
 	
 	public EntradaSalidaDetalleQuickView() {
 		this.rowId = System.currentTimeMillis();
@@ -243,7 +245,35 @@ public class EntradaSalidaDetalleQuickView extends EntradaSalidaDetalle implemen
 		this.productoUnidadEmpaque = productoUnidadEmpaque;
 	}
 	
-	
+
+    /**
+     * @return the unidad
+     */
+    public String getUnidad() {
+        return unidad;
+    }
+
+    /**
+     * @param unidad the unidad to set
+     */
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
+    }
+
+    /**
+     * @return the noIdentificacion
+     */
+    public String getNoIdentificacion() {
+        return noIdentificacion;
+    }
+
+    /**
+     * @param noIdentificacion the noIdentificacion to set
+     */
+    public void setNoIdentificacion(String noIdentificacion) {
+        this.noIdentificacion = noIdentificacion;
+    }
+		
 
 	public void setCanPendteEnOtrosPV(int canPendteEnOtrosPV) {
 		this.canPendteEnOtrosPV = canPendteEnOtrosPV;

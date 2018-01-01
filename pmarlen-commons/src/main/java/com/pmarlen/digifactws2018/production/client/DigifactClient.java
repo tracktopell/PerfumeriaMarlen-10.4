@@ -107,6 +107,8 @@ public class DigifactClient {
 
 			conceptoWS.setCantidad(esd.getCantidad());
 			conceptoWS.setUnidad(esd.getProductoUnidadEmpaque());
+            conceptoWS.setNoIdentificacion(esd.getNoIdentificacion()); // TO-DO
+            conceptoWS.setUnidad(esd.getUnidad()); // TO-DO
 			String desc = null;
 			desc  = esd.getProductoNombre() + "/" + esd.getProductoPresentacion() ;
 			desc += "(" + esd.getProductoContenido() + " " + esd.getProductoUnidadMedida() + ")";

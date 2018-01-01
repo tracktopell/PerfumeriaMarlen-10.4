@@ -76,14 +76,17 @@
 						<h:outputText value="#{producto.marca}" />
 					</p:column>
 
-					<p:column headerText="NOMBRE" filterBy="#{producto.nombre}" width="15%" filterMatchMode="contains">
+					<p:column headerText="NOMBRE" filterBy="#{producto.nombre}" width="10%" filterMatchMode="contains">
 						<h:outputText value="#{producto.nombre}" />
 					</p:column>
 					
-					<p:column headerText="ABREB." width="5%">
-						<h:outputText value="#{producto.abrebiatura}" />
+					<p:column headerText="NO_IDENTIF." width="5%">
+                        <h:outputText value="#{producto.noIdentificacion}" />
 					</p:column>
-
+                    
+					<p:column headerText="UNIDAD" width="5%">
+                        <h:outputText value="#{producto.noIdentificacion}" />
+					</p:column>
 
 					<p:column headerText="PRESENTACIÓN" sortBy="#{producto.presentacion}" width="5%">
 						<h:outputText value="#{producto.presentacion}" />
@@ -176,7 +179,21 @@
 							<f:validateLength minimum="5" maximum="64" />
 						</p:inputText>
 						<p:message for="producto_abrebiatura" />
+                        
+                        <h:outputLabel for="producto_no_identificacion" value="NO_IDENTIFICACION (SAT):" style="font-weight:bold"/>                    
 
+						<p:inputText id="producto_no_identificacion" value="#{productoMB.selectedEntity.noIdentificacion}" required="true" label="NO_IDENTIFICACION (SAT):" size="10">
+							<f:validateLength minimum="8" maximum="10" />
+						</p:inputText>
+						<p:message for="producto_no_identificacion" />
+
+                        <h:outputLabel for="producto_unidad" value="UNIDAD (SAT):" style="font-weight:bold"/>                    
+
+						<p:inputText id="producto_unidad" value="#{productoMB.selectedEntity.unidad}" required="true" label="UNIDAD (SAT):" size="3">
+							<f:validateLength minimum="3" maximum="5" />
+						</p:inputText>
+						<p:message for="producto_unidad" />
+                        
 						<h:outputLabel for="producto_contenido" value="CONTENIDO:" style="font-weight:bold"/>
 						<p:inputText id="producto_contenido" value="#{productoMB.selectedEntity.contenido}" required="true" label="CONTENIDO:" size="6">
 							<f:convertNumber for="producto_contenido"/>

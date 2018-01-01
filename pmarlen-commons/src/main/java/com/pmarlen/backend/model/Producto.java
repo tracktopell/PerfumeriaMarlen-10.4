@@ -91,6 +91,16 @@ public class Producto implements java.io.Serializable {
     * descontinuado
     */
     private Integer poco;
+    
+    /**
+    * unidad 
+    */
+    private String unidad;    
+
+    /**
+    * noIdentificacion 
+    */
+    private String noIdentificacion;
 
     /** 
      * Default Constructor
@@ -219,6 +229,22 @@ public class Producto implements java.io.Serializable {
 
     public void setCostoVenta(double v) {
         this.costoVenta = v;
+    }
+
+    public String getUnidad() {
+        return unidad;
+    }
+
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
+    }
+
+    public String getNoIdentificacion() {
+        return noIdentificacion;
+    }
+
+    public void setNoIdentificacion(String noIdentificacion) {
+        this.noIdentificacion = noIdentificacion;
     }
 
 

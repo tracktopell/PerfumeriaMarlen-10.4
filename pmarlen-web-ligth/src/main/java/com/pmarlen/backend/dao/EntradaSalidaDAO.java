@@ -22,7 +22,8 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.backend.model.quickviews.PagerInfo;
 import com.pmarlen.businesslogic.GeneradorNumTicket;
 import com.pmarlen.businesslogic.exception.CFDInvokingWSException;
-import com.pmarlen.digifactws20160707.production.client.DigifactClient;
+import com.pmarlen.digifactws2018.production.client.DigifactClient;
+//import com.pmarlen.digifactws20160707.production.client.DigifactClient;
 import com.pmarlen.jsf.model.EntradaSalidaDTOPageHelper;
 import com.pmarlen.model.Constants;
 import com.tracktopell.jdbc.DataSourceFacade;
@@ -356,7 +357,7 @@ public class EntradaSalidaDAO {
 			conn = getConnection();
 
 			ps = conn.prepareStatement(
-					"SELECT   P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,AP.PRECIO,AP.CANTIDAD,"
+					"SELECT   P.CODIGO_BARRAS,P.NOMBRE,P.PRESENTACION,P.INDUSTRIA,P.MARCA,P.LINEA,P.CONTENIDO,P.UNIDAD_MEDIDA,P.UNIDADES_X_CAJA,P.UNIDAD_EMPAQUE,P.UNIDAD,P.NO_IDENTIFICACION,AP.PRECIO,AP.CANTIDAD,"
 					+ "AP.UBICACION,ESD.ID AS ESD_ID,A.ID AS ALMACEN_ID,A.TIPO_ALMACEN,ESD.CANTIDAD AS CANTIDAD_ESD,ESD.PRECIO_VENTA,ESD.DEV,ESD.ESD_ID_DEV\n"
 					+ "FROM   ENTRADA_SALIDA ES,\n"
 					+ "       ENTRADA_SALIDA_DETALLE ESD,\n"
@@ -391,6 +392,8 @@ public class EntradaSalidaDAO {
 				x.setDev((Integer) rs.getObject("DEV"));
 				x.setEsIdDev((Integer) rs.getObject("ESD_ID_DEV"));
 				x.setProductoUnidadEmpaque(rs.getString("UNIDAD_EMPAQUE"));
+                x.setNoIdentificacion(rs.getString("NO_IDENTIFICACION"));
+                x.setUnidad(rs.getString("UNIDAD"));
 				x.setProductoUnidadesPorCaja(rs.getString("UNIDADES_X_CAJA"));
 				x.setCantidad(rs.getInt("CANTIDAD_ESD"));
 				x.setId(rs.getInt("ESD_ID"));
@@ -2115,11 +2118,11 @@ public class EntradaSalidaDAO {
 	}
 
 	public void invocarInicioWSCFDI(EntradaSalidaQuickView pedidoVenta, ArrayList<EntradaSalidaDetalleQuickView> pvdList, Cliente c, Usuario u, Sucursal s) throws DAOException {
-		logger.debug("->invocarInicioWSCFDI:");
+		logger.debug("->invocarInicioWSCFDI (CFDI 3.3):");
 		PreparedStatement ps = null;
 		PreparedStatement psCFD = null;
 		PreparedStatement psESE = null;
-		PreparedStatement psESD = null;
+		PreparedStatement psP   = null;
 
 		ResultSet rsCFD = null;
 		Cfd cfd = null;
@@ -2132,6 +2135,7 @@ public class EntradaSalidaDAO {
 			conn = getConnectionCommiteable();
 			logger.debug("->invocarInicioWSCFDI:BEGIN TRANSACTION.");
 			if (pedidoVenta.getCfdId() != null) {
+                psCFD = conn.prepareStatement("SELECT CODIGO_BARRAS,UNIDAD,NO_IDENTIFICACION FROM PRODUCTO WHERE CODIGO_BARRAS=?");
 				mensajeRefacturado = "REFACTRUADO, POR ULTIMO ERROR";
 				psCFD = conn.prepareStatement("SELECT ID,ULTIMA_ACTUALIZACION,CONTENIDO_ORIGINAL_XML,CALLING_ERROR_RESULT,NUM_CFD,TIPO FROM CFD "
 						+ "WHERE ID=?"
@@ -2159,31 +2163,45 @@ public class EntradaSalidaDAO {
 			}
 			logger.debug("->invocarInicioWSCFDI:before WS invoke.");
 			try {
-				if(pedidoVenta.getId()==115082){
-					logger.info("->invocarInicioWSCFDI:The fucking BUG:");
-					
-					int elemI=0;
-					int difReg=100;
-					
-					
-					for(elemI=0;elemI<pvdList.size();elemI+=difReg){
-						int elemeTope=elemI;
-						if(elemI+difReg >= pvdList.size()){
-							elemeTope=pvdList.size();
-						} else{
-							elemeTope=elemI+difReg;
-						}
-						ArrayList<EntradaSalidaDetalleQuickView> pvdListError = new ArrayList<EntradaSalidaDetalleQuickView>();
-						for(int i=elemI;i<elemeTope;i++){
-							pvdListError.add(pvdList.get(i));
-						}
-						logger.info("->invocarInicioWSCFDI: invoking each 100.");
-						DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdListError, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
-					}
-					
-				}else{
+//				if(pedidoVenta.getId()==115082){
+//					logger.info("->invocarInicioWSCFDI:The fucking BUG:");
+//					
+//					int elemI=0;
+//					int difReg=100;
+//
+//					
+//					for(elemI=0;elemI<pvdList.size();elemI+=difReg){
+//						int elemeTope=elemI;
+//						if(elemI+difReg >= pvdList.size()){
+//							elemeTope=pvdList.size();
+//						} else{
+//							elemeTope=elemI+difReg;
+//						}
+//						ArrayList<EntradaSalidaDetalleQuickView> pvdListError = new ArrayList<EntradaSalidaDetalleQuickView>();
+//						for(int i=elemI;i<elemeTope;i++){
+//							pvdListError.add(pvdList.get(i));
+//						}
+//						logger.info("->invocarInicioWSCFDI: invoking each 100.");
+//						DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdListError, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
+//					}					
+//				}else{
+                    for(EntradaSalidaDetalleQuickView esd: pvdList){
+                        psCFD.clearParameters();
+                        psCFD.setString(1, esd.getProductoCodigoBarras());
+                        ResultSet rsPRods = psCFD.executeQuery();
+                        while (rsPRods.next()) {
+                            String codigoBarras     = rsPRods.getString("CODIGO_BARRAS");
+                            String unidad           = rsPRods.getString("UNIDAD");
+                            String noIdentificacion = rsPRods.getString("NO_IDENTIFICACION");
+                            esd.setUnidad(unidad);
+                            esd.setNoIdentificacion(noIdentificacion);
+                            break;
+                        }
+                    }
+
+
 					DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdList, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
-				}
+//				}
 				
 				
 				logger.info("->invocarInicioWSCFDI:WS will invoked normally.");

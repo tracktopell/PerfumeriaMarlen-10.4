@@ -787,7 +787,7 @@ public class ProductoDAO {
 			conn = getConnection();
 			ps = conn.prepareStatement("SELECT     CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,\n" +
 										"          MULTIMEDIO_ID,M.MIME_TYPE,M.RUTA_CONTENIDO,M.SIZE_BYTES,M.NOMBRE_ARCHIVO,\n" +
-										"          ALMACEN_ID,PRECIO,POCO\n" +
+										"          ALMACEN_ID,PRECIO,POCO,UNIDAD,NO_IDENTIFICACION\n" +
 										"FROM      PRODUCTO P\n" +
 										"LEFT JOIN PRODUCTO_MULTIMEDIO PM ON P.CODIGO_BARRAS  = PM.PRODUCTO_CODIGO_BARRAS\n" +
 										"LEFT JOIN MULTIMEDIO          M  ON PM.MULTIMEDIO_ID = M.ID\n" +
@@ -847,6 +847,8 @@ AND       AP.ALMACEN_ID=1;
 				x.setAbrebiatura((String)rs.getObject("ABREBIATURA"));
 				x.setUnidadesXCaja((Integer)rs.getObject("UNIDADES_X_CAJA"));
 				x.setPoco((Integer)rs.getObject("POCO"));
+                x.setUnidad((String)rs.getObject("UNIDAD"));
+                x.setNoIdentificacion((String)rs.getObject("NO_IDENTIFICACION"));
 				x.setContenido((String)rs.getObject("CONTENIDO"));
 				x.setUnidadMedida((String)rs.getObject("UNIDAD_MEDIDA"));
 				x.setUnidadEmpaque((String)rs.getObject("UNIDAD_EMPAQUE"));
@@ -903,9 +905,9 @@ AND       AP.ALMACEN_ID=1;
 		PreparedStatement psMHP = null;
 		try {
 			conn = getConnectionCommiteable();
-			psAP = conn.prepareStatement("INSERT INTO PRODUCTO(CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,DESCONTINUADO,POCO) "+
-					" VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-					,Statement.RETURN_GENERATED_KEYS);			
+			psAP = conn.prepareStatement("INSERT INTO PRODUCTO(CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,DESCONTINUADO,POCO,UNIDAD,NO_IDENTIFICACION) "+
+					" VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+					,Statement.RETURN_GENERATED_KEYS);	
 			int ci=1;
 			psAP.setObject(ci++,x.getCodigoBarras());
 			psAP.setObject(ci++,x.getIndustria());
@@ -922,6 +924,8 @@ AND       AP.ALMACEN_ID=1;
 			psAP.setObject(ci++,x.getCostoVenta());
 			psAP.setObject(ci++,x.getDescontinuado());
 			psAP.setObject(ci++,x.getPoco());
+            psAP.setObject(ci++,x.getUnidad());
+            psAP.setObject(ci++,x.getNoIdentificacion());            
 
 			r = psAP.executeUpdate();
 			
@@ -985,7 +989,7 @@ AND       AP.ALMACEN_ID=1;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("UPDATE PRODUCTO SET INDUSTRIA=?,LINEA=?,MARCA=?,NOMBRE=?,PRESENTACION=?,ABREBIATURA=?,UNIDADES_X_CAJA=?,CONTENIDO=?,UNIDAD_MEDIDA=?,UNIDAD_EMPAQUE=?,COSTO=?,COSTO_VENTA=?,DESCONTINUADO=?,POCO=? "+
+			ps = conn.prepareStatement("UPDATE PRODUCTO SET INDUSTRIA=?,LINEA=?,MARCA=?,NOMBRE=?,PRESENTACION=?,ABREBIATURA=?,UNIDADES_X_CAJA=?,CONTENIDO=?,UNIDAD_MEDIDA=?,UNIDAD_EMPAQUE=?,COSTO=?,COSTO_VENTA=?,DESCONTINUADO=?,POCO=?,UNIDAD=?,NO_IDENTIFICACION=? "+
 					" WHERE CODIGO_BARRAS=?");
 			
 			int ci=1;
@@ -1003,6 +1007,8 @@ AND       AP.ALMACEN_ID=1;
 			ps.setObject(ci++,x.getCostoVenta());
 			ps.setObject(ci++,x.getDescontinuado());
 			ps.setObject(ci++,x.getPoco());
+            ps.setObject(ci++,x.getUnidad());
+            ps.setObject(ci++,x.getNoIdentificacion());
 			
 			ps.setObject(ci++,x.getCodigoBarras());
 			
