@@ -2134,8 +2134,7 @@ public class EntradaSalidaDAO {
 		try {
 			conn = getConnectionCommiteable();
 			logger.debug("->invocarInicioWSCFDI:BEGIN TRANSACTION.");
-			if (pedidoVenta.getCfdId() != null) {
-                psCFD = conn.prepareStatement("SELECT CODIGO_BARRAS,UNIDAD,NO_IDENTIFICACION FROM PRODUCTO WHERE CODIGO_BARRAS=?");
+			if (pedidoVenta.getCfdId() != null) {                
 				mensajeRefacturado = "REFACTRUADO, POR ULTIMO ERROR";
 				psCFD = conn.prepareStatement("SELECT ID,ULTIMA_ACTUALIZACION,CONTENIDO_ORIGINAL_XML,CALLING_ERROR_RESULT,NUM_CFD,TIPO FROM CFD "
 						+ "WHERE ID=?"
@@ -2185,10 +2184,11 @@ public class EntradaSalidaDAO {
 //						DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdListError, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
 //					}					
 //				}else{
+                    psP = conn.prepareStatement("SELECT CODIGO_BARRAS,UNIDAD,NO_IDENTIFICACION FROM PRODUCTO WHERE CODIGO_BARRAS=?");
                     for(EntradaSalidaDetalleQuickView esd: pvdList){
-                        psCFD.clearParameters();
-                        psCFD.setString(1, esd.getProductoCodigoBarras());
-                        ResultSet rsPRods = psCFD.executeQuery();
+                        psP.clearParameters();
+                        psP.setString(1, esd.getProductoCodigoBarras());
+                        ResultSet rsPRods = psP.executeQuery();
                         while (rsPRods.next()) {
                             String codigoBarras     = rsPRods.getString("CODIGO_BARRAS");
                             String unidad           = rsPRods.getString("UNIDAD");
@@ -2198,7 +2198,6 @@ public class EntradaSalidaDAO {
                             break;
                         }
                     }
-
 
 					DigifactClient.invokeWSFactura(cfd, pedidoVenta, pvdList, c, s.getSerieSicofi(), s.getUsuarioSicofi(), s.getPasswordSicofi());
 //				}
