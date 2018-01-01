@@ -579,12 +579,20 @@ public class GeneradorImpresionPedidoVenta {
                 
                 vals.put("clave",pvd.getProductoCodigoBarras());
                 vals.put("cantidad",n);
-				vals.put("ue",pvd.getProductoUnidadEmpaque());
+                if(pvd.getUnidad()!=null){
+                    vals.put("ue",pvd.getUnidad());
+                }else{
+    				vals.put("ue",pvd.getProductoUnidadEmpaque());
+                }
 				vals.put("ta",Constants.getDescripcionTipoAlmacen(pvd.getApTipoAlmacen()).substring(0,3));
                 vals.put("codigoBarras",pvd.getProductoCodigoBarras());                
                 vals.put("noIdentificiacion",pvd.getNoIdentificacion());
                 vals.put("unidad",pvd.getUnidad());
-                vals.put("descripcion",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
+                if(pvd.getNoIdentificacion()!=null){
+                    vals.put("descripcion","["+pvd.getNoIdentificacion()+"]"+pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
+                }else{
+                    vals.put("descripcion",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
+                }
 				vals.put("descripcionCont",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion()+" ("+pvd.getProductoContenido()+pvd.getProductoUnidadMedida()+")");
 				precioNoGrabado=pvd.getPrecioVenta() / (1.0+LogicaFinaciera.getImpuestoIVA());
 				vals.put("precio",df.format(pvd.getPrecioVenta() / (1.0+LogicaFinaciera.getImpuestoIVA())));
