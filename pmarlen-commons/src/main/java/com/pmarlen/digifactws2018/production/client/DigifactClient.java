@@ -8,15 +8,20 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.businesslogic.exception.CFDInvokingWSException;
 
 import com.pmarlen.model.Constants;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import javax.xml.ws.soap.SOAPFaultException;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 import org.tempuri.ArrayOfConceptoCFDI;
-import org.tempuri.ArrayOfImpuesto;
+import org.tempuri.ArrayOfImpuestoRetenido;
 import org.tempuri.CFDIRequest;
 import org.tempuri.CFDIResponse;
 import org.tempuri.ConceptoCFDI;
@@ -24,7 +29,7 @@ import org.tempuri.ConceptosCFDI;
 import org.tempuri.DatosCFDI;
 import org.tempuri.DigiFact;
 import org.tempuri.DigiFactSoap;
-import org.tempuri.Impuesto;
+import org.tempuri.ImpuestoRetenido;
 import org.tempuri.ReceptorCFDI;
 /**
  *
@@ -62,12 +67,8 @@ public class DigifactClient {
         cfdiRequest.setContrasena(contrasena);
         cfdiRequest.setDatosCFDI(datosCFD);
         cfdiRequest.setConceptosCFD(conceptos);
-		//ArrayOfAnyType impuestos;
-		//Impuesto impuestoWS;
 		String xmlAddenda;
         
-		//String serie = "PMS";
-
 		datosCFD.setSerie(serie);
 		datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
 		datosCFD.setTipodeComprobante("F");
@@ -112,37 +113,40 @@ public class DigifactClient {
         conceptos.setConceptos(conceptosArr);
         
 		for (EntradaSalidaDetalleQuickView esd : esdList) {
-			ConceptoCFDI conceptoWS = new ConceptoCFDI();
+			ConceptoCFDI concepto = new ConceptoCFDI();
                         
-			conceptoWS.setCantidad(esd.getCantidad());
-			conceptoWS.setUnidad(esd.getProductoUnidadEmpaque());
-            conceptoWS.setNoIdentificacion(esd.getNoIdentificacion()); // TO-DO
-            conceptoWS.setUnidad(esd.getUnidad()); // TO-DO
+			concepto.setCantidad(esd.getCantidad());
+			
+            concepto.setNoIdentificacion(esd.getProductoCodigoBarras()); // TO-DO
+            concepto.setClaveProdServ(esd.getNoIdentificacion()); // TO-DO
+            concepto.setClaveUnidad(esd.getUnidad()); // TO-DO
+            concepto.setUnidad(esd.getProductoUnidadEmpaque());
+            concepto.setDescripcion(esd.getProductoNombre()+"/"+esd.getProductoPresentacion());
+            
 			String desc = null;
 			desc  = esd.getProductoNombre() + "/" + esd.getProductoPresentacion() ;
 			desc += "(" + esd.getProductoContenido() + " " + esd.getProductoUnidadMedida() + ")";
-			conceptoWS.setDescripcion(desc );
+			concepto.setDescripcion(desc );
 			double precioPVD_CFD = esd.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
 			double importePVD_CFD = precioPVD_CFD * esd.getCantidad();
-			conceptoWS.setValorUnitario(precioPVD_CFD);
-			conceptoWS.setImporte(importePVD_CFD);
+			concepto.setValorUnitario(precioPVD_CFD);
+			concepto.setImporte(importePVD_CFD);
+                        
+            final ArrayOfImpuestoRetenido impuestos = new ArrayOfImpuestoRetenido();
+            final ImpuestoRetenido impuestoRetenido = new ImpuestoRetenido();
             
-			conceptosArr.getConceptoCFDI().add(conceptoWS);
+            impuestoRetenido.setBase(0.16);
+            impuestoRetenido.setImpuesto("002"); // IVA
+            impuestoRetenido.setTasaOCuota(0.16);
+            impuestoRetenido.setTipoFactor("TASA");
+            impuestoRetenido.setImporte(importePVD_CFD * pedidoVenta.getFactorIva());
+            
+            impuestos.getImpuestoRetenido().add(impuestoRetenido);
+            concepto.setRetenciones(impuestos);
+            
+			conceptosArr.getConceptoCFDI().add(concepto);
 		}
-        ArrayOfImpuesto impuestos = new ArrayOfImpuesto();
-		
-		Impuesto impuestoWS = new Impuesto();
-		impuestoWS.setTasa(pedidoVenta.getFactorIva() * 100.0);
-		impuestoWS.setTipo("IVA");
-		impuestoWS.setImporte(esf.getImporteIVA());
         
-		impuestos.getImpuesto().add(impuestoWS);
-
-        //impuestoWS = new Impuesto();
-		//impuestoWS.setTasa(8);
-		//impuestoWS.setTipoImpuesto("IVAR");
-		//impuestoWS.setImporte(110.39);
-		//impuestos.getAnyType().add(impuestoWS);
 		xmlAddenda = "";
 		//======================================================================
 
@@ -150,9 +154,12 @@ public class DigifactClient {
 			logger.debug("-->> Invocacion a SICOFI: pedidoVentaId=" + pedidoVenta.getId());            
             final CFDIResponse generaCFDIV33 = digiFactSoap12.generaCFDIV33(cfdiRequest);
             
-            String xml = generaCFDIV33.getXMLCFDI();
-			//String xml = port.generaCFD(usuario, contrasena, datosCFD, receptor, conceptos, impuestos, xmlAddenda);
-			logger.debug("-->>OK recibido el XML desde digifact: mide " + xml.length() + " bytes");
+            String xml = generaCFDIV33.getXMLCFDI();			
+            if(xml != null && xml.length()>1){
+                logger.debug("-->>OK recibido el XML desde digifact: mide " + xml.length() + " bytes");
+                saveXML(xml);
+            }
+            
 
 			String folioXML = Constants.extractXMLAtribute("folio", xml);
 			String serieXML = Constants.extractXMLAtribute("serie", xml);
@@ -174,7 +181,6 @@ public class DigifactClient {
 			logger.error("-->>WS param:   datosCFD:"+ReflectionToStringBuilder.toString(datosCFD, ToStringStyle.MULTI_LINE_STYLE));
 			logger.error("-->>WS param:   receptor:"+ReflectionToStringBuilder.toString(receptor, ToStringStyle.MULTI_LINE_STYLE));
 			logger.error("-->>WS param:  conceptos:"+ReflectionToStringBuilder.toString(conceptos, ToStringStyle.MULTI_LINE_STYLE));
-			logger.error("-->>WS param:  impuestos:"+ReflectionToStringBuilder.toString(impuestos, ToStringStyle.MULTI_LINE_STYLE));
 			logger.error("-->>WS param: xmlAddenda:"+ReflectionToStringBuilder.toString(xmlAddenda, ToStringStyle.MULTI_LINE_STYLE));
 			
 			javax.xml.soap.SOAPFault fault = sex.getFault(); //<Fault> node
@@ -212,8 +218,7 @@ public class DigifactClient {
 			logger.error("-->>WS param: contrasena:"+contrasena);
 			logger.error("-->>WS param:   datosCFD:"+ReflectionToStringBuilder.toString(datosCFD, ToStringStyle.MULTI_LINE_STYLE));
 			logger.error("-->>WS param:   receptor:"+ReflectionToStringBuilder.toString(receptor, ToStringStyle.MULTI_LINE_STYLE));
-			logger.error("-->>WS param:  conceptos:"+ReflectionToStringBuilder.toString(conceptos, ToStringStyle.MULTI_LINE_STYLE));
-			logger.error("-->>WS param:  impuestos:"+ReflectionToStringBuilder.toString(impuestos, ToStringStyle.MULTI_LINE_STYLE));
+			logger.error("-->>WS param:  conceptos:"+ReflectionToStringBuilder.toString(conceptos, ToStringStyle.MULTI_LINE_STYLE));			
 			logger.error("-->>WS param: xmlAddenda:"+ReflectionToStringBuilder.toString(xmlAddenda, ToStringStyle.MULTI_LINE_STYLE));
 			
 			cfdVenta.setNumCfd(null);
@@ -235,4 +240,20 @@ public class DigifactClient {
 		return cfdVenta;
 		
 	}	
+    
+    private static void saveXML(String xml){
+        FileOutputStream fos = null;
+        Date today=new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
+        
+        File xmlFileOutput=new File("./","DIGIFACT_WS_CALL_"+sdf.format(today)+"_CFDI.xml");
+        try {
+            fos = new FileOutputStream(xmlFileOutput);
+            fos.write(xml.getBytes());
+            fos.flush();
+            fos.close();
+        } catch (IOException ex) {
+            logger.fatal("...error at saveXML:", ex);
+        }        
+    }
 }
