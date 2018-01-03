@@ -6,7 +6,7 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.businesslogic.exception.CFDInvokingWSException;
-import com.pmarlen.digifactws2018.production.*;
+
 import com.pmarlen.model.Constants;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -15,6 +15,17 @@ import javax.xml.ws.soap.SOAPFaultException;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
+import org.tempuri.ArrayOfConceptoCFDI;
+import org.tempuri.ArrayOfImpuesto;
+import org.tempuri.CFDIRequest;
+import org.tempuri.CFDIResponse;
+import org.tempuri.ConceptoCFDI;
+import org.tempuri.ConceptosCFDI;
+import org.tempuri.DatosCFDI;
+import org.tempuri.DigiFact;
+import org.tempuri.DigiFactSoap;
+import org.tempuri.Impuesto;
+import org.tempuri.ReceptorCFDI;
 /**
  *
  * @author alfredo
@@ -40,31 +51,35 @@ public class DigifactClient {
 			throw new CFDInvokingWSException("SSL Error:"+e.getMessage());
 		}
 		
-		DatosCFD datosCFD;
-		Receptor receptor;
-		ArrayOfAnyType conceptos;
-		Concepto conceptoWS;
-		ArrayOfAnyType impuestos;
-		Impuesto impuestoWS;
+        final DigiFact df=new DigiFact();
+        final DigiFactSoap digiFactSoap12 = df.getDigiFactSoap12();
+        final CFDIRequest cfdiRequest = new CFDIRequest();
+        final DatosCFDI datosCFD = new DatosCFDI();        
+        final ReceptorCFDI receptor = new ReceptorCFDI();
+        final ConceptosCFDI conceptos = new ConceptosCFDI();
+        
+        cfdiRequest.setUsuario(usuario);
+        cfdiRequest.setContrasena(contrasena);
+        cfdiRequest.setDatosCFDI(datosCFD);
+        cfdiRequest.setConceptosCFD(conceptos);
+		//ArrayOfAnyType impuestos;
+		//Impuesto impuestoWS;
 		String xmlAddenda;
-		CFD service = new CFD();
-		CFDSoap port = service.getCFDSoap();
-
-		datosCFD = new DatosCFD();
+        
 		//String serie = "PMS";
 
 		datosCFD.setSerie(serie);
 		datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
 		datosCFD.setTipodeComprobante("F");
-		//datosCFD.setMetododePago(pedidoVenta.getMetodoDePagoDescripcion().toUpperCase());
+		
 		String mpOrig = pedidoVenta.getMetodoDePagoDescripcion().toUpperCase();
 		if(mpOrig.contains("|")){
 			String mpOrigCveVal[]=mpOrig.split("\\|");
 			String mpSHCP = mpOrigCveVal[0];
 			logger.debug("->METODO DE PAGO SHCP:mpOrig="+mpOrig+", mpSHCP="+mpSHCP);
-			datosCFD.setMetododePago(mpSHCP);
+			datosCFD.setMetodoPago(mpSHCP);
 		} else {
-			datosCFD.setMetododePago(mpOrig);
+			datosCFD.setMetodoPago(mpOrig);
 		}
 		datosCFD.setEmailMensaje("FACTURA PEDIDO:" + pedidoVenta.getId());
 
@@ -76,35 +91,29 @@ public class DigifactClient {
 		datosCFD.setTotal(esf.getTotal());
 		datosCFD.setLugarDeExpedicion("ESTADO DE MÉXICO");
 
-		receptor = new Receptor();
+		receptor.setRFC(pedidoVenta.getClienteRFC());
+		receptor.setRazonSocial(pedidoVenta.getClienteRazonSocial());
+        
+        //final String residenciaFiscal = cliente.getCalle().toUpperCase()+" "+cliente.getNumExterior().toUpperCase()+" "+cliente.getNumInterior().toUpperCase()+", "+cliente.getColonia().toUpperCase()+", C.P. "+cliente.getCp().toUpperCase();
+        final String residenciaFiscal = cliente.getDireccionFacturacion();
 
-		receptor.setCalle(cliente.getCalle().toUpperCase());
-		receptor.setNumExt(cliente.getNumExterior().toUpperCase());
-		receptor.setNumInt(cliente.getNumInterior().toUpperCase());
-		receptor.setColonia(cliente.getColonia().toUpperCase());
+		receptor.setResidenciaFiscal(residenciaFiscal);
+        receptor.setUsoCfdi("G01");
 		receptor.setContacto1(cliente.getContacto() != null ? cliente.getContacto() : "ULISES LEÓN RESENDIZ");
 		receptor.setContacto2("LUCIANO LEÓN SANCHEZ");
-		receptor.setCP(cliente.getCp().toUpperCase());
-		receptor.setMunicipio(cliente.getMunicipio().toUpperCase());
+		receptor.setEmail(cliente.getEmail());
+        
 		receptor.setNoCliente(String.valueOf(pedidoVenta.getClienteId()));
 		final String[] telefonos = cliente.getTelefonos().toUpperCase().split(":");
 		receptor.setTelefono1(telefonos[0]);
-		receptor.setTelefono2(telefonos.length > 1 ? telefonos[1] : "");
-		receptor.setCiudad(cliente.getCiudad());
-		receptor.setEstado(cliente.getEstado());
-		receptor.setPais("MÉXICO");
+		receptor.setTelefono2(telefonos.length > 1 ? telefonos[1] : "");		
 
-		receptor.setEmail1(cliente.getEmail());
-		receptor.setEmail2("facturacion@perfumeriamarlen.com.mx");
-		receptor.setEmail3("cdfdigifact@perfumeriamarlen.com.mx");
-
-		receptor.setRFC(pedidoVenta.getClienteRFC());
-		receptor.setRazonSocial(pedidoVenta.getClienteRazonSocial());
-
-		conceptos = new ArrayOfAnyType();
+		ArrayOfConceptoCFDI conceptosArr = new ArrayOfConceptoCFDI();
+        conceptos.setConceptos(conceptosArr);
+        
 		for (EntradaSalidaDetalleQuickView esd : esdList) {
-			conceptoWS = new Concepto();
-
+			ConceptoCFDI conceptoWS = new ConceptoCFDI();
+                        
 			conceptoWS.setCantidad(esd.getCantidad());
 			conceptoWS.setUnidad(esd.getProductoUnidadEmpaque());
             conceptoWS.setNoIdentificacion(esd.getNoIdentificacion()); // TO-DO
@@ -115,19 +124,19 @@ public class DigifactClient {
 			conceptoWS.setDescripcion(desc );
 			double precioPVD_CFD = esd.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
 			double importePVD_CFD = precioPVD_CFD * esd.getCantidad();
-			conceptoWS.setPrecio(precioPVD_CFD);
+			conceptoWS.setValorUnitario(precioPVD_CFD);
 			conceptoWS.setImporte(importePVD_CFD);
-
-			conceptos.getAnyType().add(conceptoWS);
+            
+			conceptosArr.getConceptoCFDI().add(conceptoWS);
 		}
-
-		impuestos = new ArrayOfAnyType();
-
-		impuestoWS = new Impuesto();
+        ArrayOfImpuesto impuestos = new ArrayOfImpuesto();
+		
+		Impuesto impuestoWS = new Impuesto();
 		impuestoWS.setTasa(pedidoVenta.getFactorIva() * 100.0);
-		impuestoWS.setTipoImpuesto("IVA");
+		impuestoWS.setTipo("IVA");
 		impuestoWS.setImporte(esf.getImporteIVA());
-		impuestos.getAnyType().add(impuestoWS);
+        
+		impuestos.getImpuesto().add(impuestoWS);
 
         //impuestoWS = new Impuesto();
 		//impuestoWS.setTasa(8);
@@ -135,13 +144,14 @@ public class DigifactClient {
 		//impuestoWS.setImporte(110.39);
 		//impuestos.getAnyType().add(impuestoWS);
 		xmlAddenda = "";
-            //usuario    = "cfdsuc2@perfumeriamarlen.com.mx";
-		//contrasena = "Pm@rl3n01";
 		//======================================================================
 
 		try {
 			logger.debug("-->> Invocacion a SICOFI: pedidoVentaId=" + pedidoVenta.getId());            
-			String xml = port.generaCFD(usuario, contrasena, datosCFD, receptor, conceptos, impuestos, xmlAddenda);
+            final CFDIResponse generaCFDIV33 = digiFactSoap12.generaCFDIV33(cfdiRequest);
+            
+            String xml = generaCFDIV33.getXMLCFDI();
+			//String xml = port.generaCFD(usuario, contrasena, datosCFD, receptor, conceptos, impuestos, xmlAddenda);
 			logger.debug("-->>OK recibido el XML desde digifact: mide " + xml.length() + " bytes");
 
 			String folioXML = Constants.extractXMLAtribute("folio", xml);
