@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.SOAPFaultException;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -121,8 +122,6 @@ public class DigifactClient {
             concepto.setClaveProdServ(esd.getNoIdentificacion()); // TO-DO
             concepto.setClaveUnidad(esd.getUnidad()); // TO-DO
             concepto.setUnidad(esd.getProductoUnidadEmpaque());
-            concepto.setDescripcion(esd.getProductoNombre()+"/"+esd.getProductoPresentacion());
-            
 			String desc = null;
 			desc  = esd.getProductoNombre() + "/" + esd.getProductoPresentacion() ;
 			desc += "(" + esd.getProductoContenido() + " " + esd.getProductoUnidadMedida() + ")";
@@ -151,30 +150,40 @@ public class DigifactClient {
 		//======================================================================
 
 		try {
-			logger.debug("-->> Invocacion a SICOFI: pedidoVentaId=" + pedidoVenta.getId());            
+			logger.debug("----------------------------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());
+            logger.debug("------->>>> digiFactSoap12.generaCFDIV33:");
             final CFDIResponse generaCFDIV33 = digiFactSoap12.generaCFDIV33(cfdiRequest);
+            logger.debug("-------<<<< digiFactSoap12.generaCFDIV33:");
             
             String xml = generaCFDIV33.getXMLCFDI();			
-            if(xml != null && xml.length()>1){
+            logger.debug("-->> CodigoError="+generaCFDIV33.getCodigoError()+", ErrorCFDI="+generaCFDIV33.getErrorCFDI()+", xml  is null?"+(xml==null));
+            if(generaCFDIV33.getErrorCFDI()!=null && generaCFDIV33.getErrorCFDI().length()>3){
+                throw new WebServiceException("CodigoError="+generaCFDIV33.getCodigoError()+", ErrorCFDI="+generaCFDIV33.getErrorCFDI());
+            } else if(xml != null && xml.length()>1){
                 logger.debug("-->>OK recibido el XML desde digifact: mide " + xml.length() + " bytes");
                 saveXML(xml);
+                
+                String folioXML = Constants.extractXMLAtribute("folio", xml);
+                String serieXML = Constants.extractXMLAtribute("serie", xml);
+                String tipoDeComprobanteXML = Constants.extractXMLAtribute("tipoDeComprobante", xml);
+
+                logger.debug("-->>folioXML " + folioXML + ", serieXML="+serieXML+", tipoDeComprobanteXML="+tipoDeComprobanteXML);
+
+                if (folioXML != null && serieXML != null && tipoDeComprobanteXML != null) {
+                    cfdVenta.setNumCfd(serieXML + folioXML);
+                    cfdVenta.setTipo(tipoDeComprobanteXML);
+                } else{
+                    logger.error("No es posible obtener los atributos: folio, serie, tipoDeComprobante; del XML");
+                }
             }
-            
-
-			String folioXML = Constants.extractXMLAtribute("folio", xml);
-			String serieXML = Constants.extractXMLAtribute("serie", xml);
-			String tipoDeComprobanteXML = Constants.extractXMLAtribute("tipoDeComprobante", xml);
-
-			if (folioXML != null && serieXML != null && tipoDeComprobanteXML != null) {
-				cfdVenta.setNumCfd(serieXML + folioXML);
-				cfdVenta.setTipo(tipoDeComprobanteXML);
-			}
+                        
+			
 
 			cfdVenta.setContenidoOriginalXml(xml.getBytes());
 			cfdVenta.setUltimaActualizacion(new Timestamp(System.currentTimeMillis()));
 			logger.debug("-->>OK invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId());
 			cfdVenta.setCallingErrorResult(null);
-		} catch (SOAPFaultException sex) {			
+		} catch (WebServiceException sex) {			
 			logger.error("-->>SOAP Error en invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId(), sex);
 			logger.error("-->>WS param:    usuario:"+usuario);
 			logger.error("-->>WS param: contrasena:"+contrasena);
@@ -183,24 +192,13 @@ public class DigifactClient {
 			logger.error("-->>WS param:  conceptos:"+ReflectionToStringBuilder.toString(conceptos, ToStringStyle.MULTI_LINE_STYLE));
 			logger.error("-->>WS param: xmlAddenda:"+ReflectionToStringBuilder.toString(xmlAddenda, ToStringStyle.MULTI_LINE_STYLE));
 			
-			javax.xml.soap.SOAPFault fault = sex.getFault(); //<Fault> node
-			logger.error("-->>WS ERROR  fault:"+ReflectionToStringBuilder.toString(fault, ToStringStyle.MULTI_LINE_STYLE));
-			javax.xml.soap.Detail detail = fault.getDetail(); // <detail> node
-			logger.error("-->>WS ERROR  detail:"+ReflectionToStringBuilder.toString(detail, ToStringStyle.MULTI_LINE_STYLE));
-			
-			logger.error("-->>WS ERROR  detailEntries:");
-			
-			Iterator detailEntries = detail.getDetailEntries(); //nodes under <detail>
-			//application / service-provider-specific XML nodes (type javax.xml.soap.DetailEntry) from here
-			while(detailEntries.hasNext()){
-				Object detailObject= detailEntries.next();
-				logger.error("-->>WS ERROR  \tdetail:"+ReflectionToStringBuilder.toString(detailObject, ToStringStyle.MULTI_LINE_STYLE));
-			}
+			String fault = sex.getMessage();
+			logger.error("-->>WS ERROR  message:"+ReflectionToStringBuilder.toString(fault, ToStringStyle.MULTI_LINE_STYLE));			
 			
 			cfdVenta.setNumCfd(null);
 			cfdVenta.setTipo(null);
 			try{
-				String localizedMessage = sex.getMessage().trim()+"|"+sex.getFault().toString().trim();
+				String localizedMessage = sex.getMessage().trim();
 				if (localizedMessage.length() > 254) {
 					cfdVenta.setCallingErrorResult(localizedMessage.substring(0, 254));
 				} else {
