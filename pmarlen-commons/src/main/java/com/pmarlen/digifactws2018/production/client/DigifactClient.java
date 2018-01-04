@@ -72,7 +72,7 @@ public class DigifactClient {
         
 		datosCFD.setSerie(serie);
 		datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
-		datosCFD.setTipodeComprobante("I");
+		datosCFD.setTipodeComprobante("I Ingreso");
         datosCFD.setMoneda("MXN");
 		
 		String mpOrig = pedidoVenta.getMetodoDePagoDescripcion().toUpperCase();
@@ -151,7 +151,7 @@ public class DigifactClient {
 		//======================================================================
 
 		try {
-			logger.debug("----------------------------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());
+			logger.debug("-------[PRUEBA 5]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
             logger.debug("------->>>> digiFactSoap12.generaCFDIV33:");
             final CFDIResponse generaCFDIV33 = digiFactSoap12.generaCFDIV33(cfdiRequest);
             logger.debug("-------<<<< digiFactSoap12.generaCFDIV33:");
