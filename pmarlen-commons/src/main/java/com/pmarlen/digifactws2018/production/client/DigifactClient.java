@@ -186,12 +186,6 @@ public class DigifactClient {
 			cfdVenta.setCallingErrorResult(null);
 		} catch (WebServiceException sex) {			
 			logger.error("-->>SOAP Error en invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId(), sex);
-			logger.error("-->>WS param:    usuario:"+usuario);
-			logger.error("-->>WS param: contrasena:"+contrasena);
-			logger.error("-->>WS param:   datosCFD:"+ReflectionToStringBuilder.toString(datosCFD, ToStringStyle.MULTI_LINE_STYLE));
-			logger.error("-->>WS param:   receptor:"+ReflectionToStringBuilder.toString(receptor, ToStringStyle.MULTI_LINE_STYLE));
-			logger.error("-->>WS param:  conceptos:"+ReflectionToStringBuilder.toString(conceptos, ToStringStyle.MULTI_LINE_STYLE));
-			logger.error("-->>WS param: xmlAddenda:"+ReflectionToStringBuilder.toString(xmlAddenda, ToStringStyle.MULTI_LINE_STYLE));
 			
 			String fault = sex.getMessage();
 			logger.error("-->>WS ERROR  message:"+ReflectionToStringBuilder.toString(fault, ToStringStyle.MULTI_LINE_STYLE));			
@@ -213,12 +207,6 @@ public class DigifactClient {
 			throw new CFDInvokingWSException("SSL Error:"+sex.getMessage());
 		} catch (Exception ex) {
 			logger.error("-->>Error en invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId(), ex);
-			logger.error("-->>WS param:    usuario:"+usuario);
-			logger.error("-->>WS param: contrasena:"+contrasena);
-			logger.error("-->>WS param:   datosCFD:"+ReflectionToStringBuilder.toString(datosCFD, ToStringStyle.MULTI_LINE_STYLE));
-			logger.error("-->>WS param:   receptor:"+ReflectionToStringBuilder.toString(receptor, ToStringStyle.MULTI_LINE_STYLE));
-			logger.error("-->>WS param:  conceptos:"+ReflectionToStringBuilder.toString(conceptos, ToStringStyle.MULTI_LINE_STYLE));			
-			logger.error("-->>WS param: xmlAddenda:"+ReflectionToStringBuilder.toString(xmlAddenda, ToStringStyle.MULTI_LINE_STYLE));
 			
 			cfdVenta.setNumCfd(null);
 			cfdVenta.setTipo(null);
