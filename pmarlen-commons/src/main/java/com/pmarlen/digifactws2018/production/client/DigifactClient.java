@@ -72,7 +72,7 @@ public class DigifactClient {
         
 		datosCFD.setSerie(serie);
 		datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
-		datosCFD.setTipodeComprobante("F");
+		datosCFD.setTipodeComprobante("I");
         datosCFD.setMoneda("MXN");
 		
 		String mpOrig = pedidoVenta.getMetodoDePagoDescripcion().toUpperCase();
