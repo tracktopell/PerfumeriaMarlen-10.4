@@ -151,16 +151,17 @@ public class DigifactClient {
 		//======================================================================
 
 		try {
-			logger.debug("-------[PRUEBA 5]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
+			logger.debug("-------[PRUEBA 7]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
             logger.debug("------->>>> digiFactSoap12.generaCFDIV33:");
             final CFDIResponse generaCFDIV33 = digiFactSoap12.generaCFDIV33(cfdiRequest);
-            logger.debug("-------<<<< digiFactSoap12.generaCFDIV33:");
+            logger.debug("-------<<<< digiFactSoap12.generaCFDIV33:CFDICorrecto?"+generaCFDIV33.isCFDICorrecto());
             
-            String xml = generaCFDIV33.getXMLCFDI();			
-            logger.debug("-->> CodigoError="+generaCFDIV33.getCodigoError()+", ErrorCFDI="+generaCFDIV33.getErrorCFDI()+", xml  is null?"+(xml==null));
-            if(generaCFDIV33.getErrorCFDI()!=null && generaCFDIV33.getErrorCFDI().length()>3){
+            
+            logger.debug("-->> CodigoError="+generaCFDIV33.getCodigoError()+", ErrorCFDI="+generaCFDIV33.getErrorCFDI());
+            if(!generaCFDIV33.isCFDICorrecto()){
                 throw new WebServiceException("CodigoError="+generaCFDIV33.getCodigoError()+", ErrorCFDI="+generaCFDIV33.getErrorCFDI());
-            } else if(xml != null && xml.length()>1){
+            } else {
+                String xml = generaCFDIV33.getXMLCFDI();			
                 logger.debug("-->>OK recibido el XML desde digifact: mide " + xml.length() + " bytes");
                 saveXML(xml);
                 
@@ -176,13 +177,14 @@ public class DigifactClient {
                 } else{
                     logger.error("No es posible obtener los atributos: folio, serie, tipoDeComprobante; del XML");
                 }
+                cfdVenta.setContenidoOriginalXml(xml.getBytes());
+                cfdVenta.setUltimaActualizacion(new Timestamp(System.currentTimeMillis()));
+                logger.debug("-->>OK invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId());
             }
                         
 			
 
-			cfdVenta.setContenidoOriginalXml(xml.getBytes());
-			cfdVenta.setUltimaActualizacion(new Timestamp(System.currentTimeMillis()));
-			logger.debug("-->>OK invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId());
+			
 			cfdVenta.setCallingErrorResult(null);
 		} catch (WebServiceException sex) {			
 			logger.error("-->>SOAP Error en invocacion a DIGIFACT para pedidoVentaID=" + pedidoVenta.getId(), sex);
