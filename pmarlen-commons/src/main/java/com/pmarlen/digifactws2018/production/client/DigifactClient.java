@@ -103,7 +103,7 @@ public class DigifactClient {
         //final String residenciaFiscal = cliente.getCalle().toUpperCase()+" "+cliente.getNumExterior().toUpperCase()+" "+cliente.getNumInterior().toUpperCase()+", "+cliente.getColonia().toUpperCase()+", C.P. "+cliente.getCp().toUpperCase();
         final String residenciaFiscal = cliente.getDireccionFacturacion();
 
-		receptor.setResidenciaFiscal(residenciaFiscal);
+		//receptor.setResidenciaFiscal(residenciaFiscal);        
         receptor.setUsoCfdi("G01");
 		receptor.setContacto1(cliente.getContacto() != null ? cliente.getContacto() : "ULISES LEÓN RESENDIZ");
 		receptor.setContacto2("LUCIANO LEÓN SANCHEZ");
