@@ -72,7 +72,8 @@ public class DigifactClient {
 		String xmlAddenda;
         
 		datosCFD.setSerie(serie);
-		datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
+		//datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
+        datosCFD.setFormadePago("01");
 		datosCFD.setTipodeComprobante("FA");
         datosCFD.setMoneda("MXN");
 		
@@ -82,6 +83,7 @@ public class DigifactClient {
 			String mpSHCP = mpOrigCveVal[0];
 			logger.debug("->METODO DE PAGO SHCP:mpOrig="+mpOrig+", mpSHCP="+mpSHCP);
 			datosCFD.setMetodoPago(mpSHCP);
+            datosCFD.setFormadePago(mpSHCP);
 		} else {
 			datosCFD.setMetodoPago(mpOrig);
 		}
