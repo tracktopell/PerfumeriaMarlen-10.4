@@ -68,11 +68,12 @@ public class DigifactClient {
         cfdiRequest.setContrasena(contrasena);
         cfdiRequest.setDatosCFDI(datosCFD);
         cfdiRequest.setConceptosCFD(conceptos);
+        cfdiRequest.setReceptorCFDI(receptor);
 		String xmlAddenda;
         
 		datosCFD.setSerie(serie);
 		datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
-		datosCFD.setTipodeComprobante("I Ingreso");
+		datosCFD.setTipodeComprobante("FA");
         datosCFD.setMoneda("MXN");
 		
 		String mpOrig = pedidoVenta.getMetodoDePagoDescripcion().toUpperCase();
