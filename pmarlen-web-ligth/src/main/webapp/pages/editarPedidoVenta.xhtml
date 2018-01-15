@@ -363,22 +363,21 @@
 						</h:panelGrid>
 					</h:panelGrid>
 					<h:panelGrid columns="1" id="panel4_2" cellpadding="0" columnClasses="leftAlign" width="100%">
-						<p:outputLabel value="MÉTODO DE PAGO :" />
+						<p:outputLabel value="MÉTODO DE PAGO (CFDI 3.3):" />
 
 						<p:selectOneMenu id="metodoDePago" value="#{editarPedidoVentaMB.pedidoVenta.metodoDePagoId}" disabled="#{not editarPedidoVentaMB.verificable and not editarPedidoVentaMB.surtible}">
 							<f:selectItems  value="#{editarPedidoVentaMB.metodoDePagoList}"/>
 							<p:ajax listener="#{editarPedidoVentaMB.onMetodoDePagoListChange}" process=":form4:panel4_2" update=":form4:panel4_2,:form4:panel4_3"/>
 						</p:selectOneMenu>
 						
-						<p:outputLabel value="NÚMERO DE CUENTA :" />
-						<p:inputText value="#{editarPedidoVentaMB.pedidoVenta.numDeCuenta}" size="20" disabled="#{not editarPedidoVentaMB.verificable and not editarPedidoVentaMB.surtible}"/>
-
-						<p:outputLabel value="FORMA DE PAGO :" />
-
+						<p:outputLabel value="FORMA DE PAGO  (CFDI 3.3):" />
 						<p:selectOneMenu id="formaDePago" value="#{editarPedidoVentaMB.pedidoVenta.formaDePagoId}" disabled="#{not editarPedidoVentaMB.verificable and not editarPedidoVentaMB.surtible}">							
 							<f:selectItems  value="#{editarPedidoVentaMB.formaDePagoList}"/>
 							<p:ajax listener="#{editarPedidoVentaMB.onFormaDePagoListChange}" process=":form4:panel4_2" update=":form4:panel4_2,:form4:panel4_3"/>
 						</p:selectOneMenu>
+                        
+                        <p:outputLabel value="NÚMERO DE CUENTA :" />
+						<p:inputText value="#{editarPedidoVentaMB.pedidoVenta.numDeCuenta}" size="20" disabled="#{not editarPedidoVentaMB.verificable and not editarPedidoVentaMB.surtible}"/>
 
 						<p:outputLabel value="DESCUENTO :" title="HABILITAR O DESHABILITAR LA POLITICA DE DESCUENTO" />
 						<h:panelGroup>

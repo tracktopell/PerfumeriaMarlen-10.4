@@ -79,15 +79,22 @@ public class DigifactClient {
 		datosCFD.setTipodeComprobante("FA");
         datosCFD.setMoneda("MXN");
 		
-		String mpOrig = pedidoVenta.getMetodoDePagoDescripcion().toUpperCase();
+		String mpOrig = pedidoVenta.getMetodoDePagoDescripcion();
 		if(mpOrig.contains("|")){
 			String mpOrigCveVal[]=mpOrig.split("\\|");
 			String mpSHCP = mpOrigCveVal[0];
 			logger.debug("->METODO DE PAGO SHCP:mpOrig="+mpOrig+", mpSHCP="+mpSHCP);
 			
-            datosCFD.setFormadePago(mpSHCP);
+            datosCFD.setMetodoPago(mpSHCP);
 		}
-        datosCFD.setMetodoPago("PUE");
+        String fpOrig = pedidoVenta.getFormaDePagoDescripcion();
+		if(fpOrig.contains("|")){
+			String fpOrigCveVal[]=mpOrig.split("\\|");
+			String fpSHCP = fpOrigCveVal[0];
+			logger.debug("->FORMA DE PAGO SHCP:fpOrig="+mpOrig+", fpSHCP="+fpSHCP);
+			
+            datosCFD.setFormadePago(fpSHCP);
+		}        
         
 		datosCFD.setEmailMensaje("FACTURA PEDIDO:" + pedidoVenta.getId());
 
@@ -143,8 +150,8 @@ public class DigifactClient {
             
             impuestoTrasladado.setBase(importePVD_CFD);
             impuestoTrasladado.setImpuesto("002"); // IVA
-            impuestoTrasladado.setTasaOCuota(0.16);
-            impuestoTrasladado.setTipoFactor("TASA");
+            impuestoTrasladado.setTasaOCuota(Constants.IVA);
+            impuestoTrasladado.setTipoFactor("Tasa");
             impuestoTrasladado.setImporte(importePVD_CFD * pedidoVenta.getFactorIva());
             
             concepto.setTraslados(impuestoTrasladadoArray);

@@ -561,9 +561,11 @@ public class EditarPedidoVentaMB implements Serializable{
 			logger.error(de.getMessage());			
 		}
 		if(formaDePagos != null){
-			formaDePagoList.add(new SelectItem(0,"--SELECCIONE--"));			
+			formaDePagoList.add(new SelectItem(0,"--SELECCIONE--"));
 			for(FormaDePago fp:formaDePagos){
-				formaDePagoList.add(new SelectItem(fp.getId(),fp.getDescripcion()));			
+                if(fp.getId().intValue()>=5){
+                    formaDePagoList.add(new SelectItem(fp.getId(),fp.getDescripcion()));
+                }
 			}
 		}
 		return formaDePagoList;
@@ -585,7 +587,7 @@ public class EditarPedidoVentaMB implements Serializable{
 		if(metodoDePagos != null){
 			metodoDePagoList.add(new SelectItem(0,"--SELECCIONE--"));			
 			for(MetodoDePago fp:metodoDePagos){
-				if(fp.getId().intValue()>=10){
+				if(fp.getId().intValue()>=30){
 					metodoDePagoList.add(new SelectItem(fp.getId(),fp.getDescripcion()));
 				}
 			}

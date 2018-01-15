@@ -321,22 +321,21 @@
 						</h:panelGrid>
 					</h:panelGrid>
 					<h:panelGrid columns="1" id="panel4_2" cellpadding="0" columnClasses="leftAlign" width="100%">
-						<p:outputLabel value="MÉTODO DE PAGO :" />
+						<p:outputLabel value="MÉTODO DE PAGO (CFDI 3.3):" />
 
 						<p:selectOneMenu id="metodoDePago" value="#{pedidoVentaMB.pedidoVenta.metodoDePagoId}" disabled="#{pedidoVentaMB.pedidoFinalizado}">
 							<f:selectItems  value="#{pedidoVentaMB.metodoDePagoList}"/>
 							<p:ajax listener="#{pedidoVentaMB.onMetodoDePagoListChange}" process=":form4:panel4_2" update=":form4:panel4_2,:form4:panel4_3"/>
 						</p:selectOneMenu>
 						
-						<p:outputLabel value="NÚMERO DE CUENTA :" />
-						<p:inputText value="#{pedidoVentaMB.pedidoVenta.numDeCuenta}" size="20" disabled="#{pedidoVentaMB.pedidoFinalizado}"/>
-
-						<p:outputLabel value="FORMA DE PAGO :" />
-
+						<p:outputLabel value="FORMA DE PAGO (CFDI 3.3):" />
 						<p:selectOneMenu id="formaDePago" value="#{pedidoVentaMB.pedidoVenta.formaDePagoId}" disabled="#{pedidoVentaMB.pedidoFinalizado}">							
 							<f:selectItems  value="#{pedidoVentaMB.formaDePagoList}"/>
 							<p:ajax listener="#{pedidoVentaMB.onFormaDePagoListChange}" process=":form4:panel4_2" update=":form4:panel4_2,:form4:panel4_3"/>
 						</p:selectOneMenu>
+                        
+						<p:outputLabel value="NÚMERO DE CUENTA :" />
+						<p:inputText value="#{pedidoVentaMB.pedidoVenta.numDeCuenta}" size="20" disabled="#{pedidoVentaMB.pedidoFinalizado}"/>
 
 						<p:outputLabel value="DESCUENTO :" title="HABILITAR O DESHABILITAR LA POLITICA DE DESCUENTO" />
 						<h:panelGroup>
