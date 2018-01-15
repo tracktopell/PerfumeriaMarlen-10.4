@@ -97,8 +97,9 @@ public class DigifactClient {
 		datosCFD.setSubtotal(esf.getSubTotalNoGrabado());
 		datosCFD.setDescuento(esf.getImporteDescuentoAplicado());
 		datosCFD.setTotal(esf.getTotal());
-		datosCFD.setLugarDeExpedicion("ESTADO DE MÉXICO");
-
+        // C.P. Contante
+		datosCFD.setLugarDeExpedicion("55740");
+        
 		receptor.setRFC(pedidoVenta.getClienteRFC());
 		receptor.setRazonSocial(pedidoVenta.getClienteRazonSocial());
         
