@@ -23,6 +23,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 import org.tempuri.ArrayOfConceptoCFDI;
 import org.tempuri.ArrayOfImpuestoRetenido;
+import org.tempuri.ArrayOfImpuestoTrasladado;
 import org.tempuri.CFDIRequest;
 import org.tempuri.CFDIResponse;
 import org.tempuri.ConceptoCFDI;
@@ -31,6 +32,7 @@ import org.tempuri.DatosCFDI;
 import org.tempuri.DigiFact;
 import org.tempuri.DigiFactSoap;
 import org.tempuri.ImpuestoRetenido;
+import org.tempuri.ImpuestoTrasladado;
 import org.tempuri.ReceptorCFDI;
 /**
  *
@@ -82,11 +84,11 @@ public class DigifactClient {
 			String mpOrigCveVal[]=mpOrig.split("\\|");
 			String mpSHCP = mpOrigCveVal[0];
 			logger.debug("->METODO DE PAGO SHCP:mpOrig="+mpOrig+", mpSHCP="+mpSHCP);
-			datosCFD.setMetodoPago(mpSHCP);
+			
             datosCFD.setFormadePago(mpSHCP);
-		} else {
-			datosCFD.setMetodoPago(mpOrig);
 		}
+        datosCFD.setMetodoPago("PUE");
+        
 		datosCFD.setEmailMensaje("FACTURA PEDIDO:" + pedidoVenta.getId());
 
 		EntradaSalidaFooter esf = new EntradaSalidaFooter();
@@ -117,6 +119,7 @@ public class DigifactClient {
 		ArrayOfConceptoCFDI conceptosArr = new ArrayOfConceptoCFDI();
         conceptos.setConceptos(conceptosArr);
         
+        final ArrayOfImpuestoTrasladado impuestoTrasladadoArray= new  ArrayOfImpuestoTrasladado();        
 		for (EntradaSalidaDetalleQuickView esd : esdList) {
 			ConceptoCFDI concepto = new ConceptoCFDI();
                         
@@ -135,17 +138,16 @@ public class DigifactClient {
 			concepto.setValorUnitario(precioPVD_CFD);
 			concepto.setImporte(importePVD_CFD);
                         
-            final ArrayOfImpuestoRetenido impuestos = new ArrayOfImpuestoRetenido();
-            final ImpuestoRetenido impuestoRetenido = new ImpuestoRetenido();
+            ImpuestoTrasladado impuestoTrasladado = new ImpuestoTrasladado();
             
-            impuestoRetenido.setBase(0.16);
-            impuestoRetenido.setImpuesto("002"); // IVA
-            impuestoRetenido.setTasaOCuota(0.16);
-            impuestoRetenido.setTipoFactor("TASA");
-            impuestoRetenido.setImporte(importePVD_CFD * pedidoVenta.getFactorIva());
+            impuestoTrasladado.setBase(importePVD_CFD);
+            impuestoTrasladado.setImpuesto("002"); // IVA
+            impuestoTrasladado.setTasaOCuota(0.16);
+            impuestoTrasladado.setTipoFactor("TASA");
+            impuestoTrasladado.setImporte(importePVD_CFD * pedidoVenta.getFactorIva());
             
-            impuestos.getImpuestoRetenido().add(impuestoRetenido);
-            concepto.setRetenciones(impuestos);
+            concepto.setTraslados(impuestoTrasladadoArray);
+            impuestoTrasladadoArray.getImpuestoTrasladado().add(impuestoTrasladado);
             
 			conceptosArr.getConceptoCFDI().add(concepto);
 		}
@@ -154,7 +156,7 @@ public class DigifactClient {
 		//======================================================================
 
 		try {
-			logger.debug("-------[PRUEBA 7]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
+			logger.debug("-------[PRUEBA 8 , la BUENA? ]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
             logger.debug("------->>>> digiFactSoap12.generaCFDIV33:");
             final CFDIResponse generaCFDIV33 = digiFactSoap12.generaCFDIV33(cfdiRequest);
             logger.debug("-------<<<< digiFactSoap12.generaCFDIV33:CFDICorrecto?"+generaCFDIV33.isCFDICorrecto());
