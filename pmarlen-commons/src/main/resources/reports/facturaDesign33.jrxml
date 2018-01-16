@@ -605,7 +605,7 @@
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00">
 				<reportElement x="468" y="0" width="40" height="12" uuid="41ff0ea2-7f08-4e2d-a735-69e4a18b67dd">
-					<printWhenExpression><![CDATA[! $F{ivaXConcepto}]]></printWhenExpression>
+					<printWhenExpression><![CDATA[! $F{isEmptyRow}]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2" rightPadding="2">
 					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
@@ -625,7 +625,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{importeRealCDesc}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -648,7 +648,7 @@
 				<textElement textAlignment="Center">
 					<font size="5" isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["ESTE DOCUMENTO ES UNA REPRESENTACI\u00D3N IMPRESA DE UN C.F.D.I. $P{ComprobanteVersion}"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["ESTE DOCUMENTO ES UNA REPRESENTACI\u00D3N IMPRESA DE UN C.F.D.I. 3.3"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="528" y="122" width="28" height="7" uuid="24a40db5-b112-40f3-b0b1-fe640272085a"/>
@@ -761,7 +761,7 @@
 			<textField>
 				<reportElement x="106" y="93" width="450" height="30" uuid="0520cc06-b769-4a56-a09c-26bfe0084802"/>
 				<textElement>
-					<font size="6" isItalic="false"/>
+					<font size="5" isItalic="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{cadenaOriginalSAT}]]></textFieldExpression>
 			</textField>
@@ -782,14 +782,14 @@
 			<textField isStretchWithOverflow="true">
 				<reportElement x="106" y="32" width="335" height="25" uuid="0520cc06-b769-4a56-a09c-26bfe0084802"/>
 				<textElement>
-					<font size="6" isItalic="false"/>
+					<font size="5" isItalic="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{selloDigitalEmisor}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="106" y="65" width="450" height="20" uuid="0520cc06-b769-4a56-a09c-26bfe0084802"/>
 				<textElement>
-					<font size="6" isItalic="false"/>
+					<font size="5" isItalic="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{selloDigitalSAT}]]></textFieldExpression>
 			</textField>
@@ -802,7 +802,7 @@
 				<textElement textAlignment="Center">
 					<font size="5" isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["ESTE DOCUMENTO ES UNA REPRESENTACI\u00D3N IMPRESA DE UN C.F.D.I. $P{ComprobanteVersion}"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["ESTE DOCUMENTO ES UNA REPRESENTACI\u00D3N IMPRESA DE UN C.F.D.I. 3.3"]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="129" width="556" height="1" uuid="228a99fd-2379-4af8-a1b6-5f2dc8a3a4dc"/>
