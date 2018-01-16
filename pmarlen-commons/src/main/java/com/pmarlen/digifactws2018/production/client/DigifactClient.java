@@ -73,7 +73,7 @@ public class DigifactClient {
         cfdiRequest.setReceptorCFDI(receptor);
 		String xmlAddenda;
         
-		datosCFD.setSerie(serie);		
+		datosCFD.setSerie(serie);
 		datosCFD.setTipodeComprobante("FA");
         datosCFD.setMoneda("MXN");
 		logger.debug("->PorcentajeDescuentoCalculado = "+pedidoVenta.getPorcentajeDescuentoCalculado()+"%");
