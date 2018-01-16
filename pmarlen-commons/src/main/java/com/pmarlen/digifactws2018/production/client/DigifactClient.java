@@ -126,12 +126,12 @@ public class DigifactClient {
 		ArrayOfConceptoCFDI conceptosArr = new ArrayOfConceptoCFDI();
         conceptos.setConceptos(conceptosArr);
         
-        final ArrayOfImpuestoTrasladado impuestoTrasladadoArray= new  ArrayOfImpuestoTrasladado();
         double subTotal    = 0.0;
         double subTotalIVA = 0.0;
         double total       = 0.0;
         double importeIVA  = 0.0;
 		for (EntradaSalidaDetalleQuickView esd : esdList) {
+            final ArrayOfImpuestoTrasladado impuestoTrasladadoArray= new  ArrayOfImpuestoTrasladado();
 			ConceptoCFDI concepto = new ConceptoCFDI();
                         
 			concepto.setCantidad(esd.getCantidad());
@@ -168,8 +168,11 @@ public class DigifactClient {
 		}
         
         total = subTotal + subTotalIVA;
-        datosCFD.setSubtotal (subTotal);
-		datosCFD.setTotal(total);
+        
+        //datosCFD.setSubtotal (subTotal);
+		//datosCFD.setTotal(total);
+        datosCFD.setSubtotal (esf.getSubTotalNoGrabado());
+        datosCFD.setSubtotal (esf.getTotal());
         
         logger.debug("--->> REAL:*SUBTOTAL     = "+subTotal); 
         logger.debug("--->> REAL: SUBTOTAL IVA = "+subTotalIVA); 
@@ -179,7 +182,7 @@ public class DigifactClient {
 		//======================================================================
 
 		try {
-			logger.debug("-------[PRUEBA 12 , la BUENA? ]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
+			logger.debug("-------[PRUEBA 13 , la BUENAAAA? ]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
             logger.debug("------->>>> digiFactSoap12.generaCFDIV33:");
             final CFDIResponse generaCFDIV33 = digiFactSoap12.generaCFDIV33(cfdiRequest);
             logger.debug("-------<<<< digiFactSoap12.generaCFDIV33:CFDICorrecto?"+generaCFDIV33.isCFDICorrecto());
