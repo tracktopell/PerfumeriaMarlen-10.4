@@ -601,11 +601,11 @@
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{precioNoGrabado}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{descuentoXConceptoReal}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00;-#,##0.00">
 				<reportElement x="468" y="0" width="40" height="12" uuid="41ff0ea2-7f08-4e2d-a735-69e4a18b67dd">
-					<printWhenExpression><![CDATA[! $F{descuentoXConceptoReal}]]></printWhenExpression>
+					<printWhenExpression><![CDATA[! $F{ivaXConcepto}]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2" rightPadding="2">
 					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
@@ -798,11 +798,11 @@
 				<imageExpression><![CDATA[$P{imageQR}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="145" y="123" width="240" height="7" uuid="a10ff203-96d1-4b8f-b970-180ecdda85c6"/>
+				<reportElement x="145" y="123" width="250" height="7" uuid="a10ff203-96d1-4b8f-b970-180ecdda85c6"/>
 				<textElement textAlignment="Center">
 					<font size="5" isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["ESTE DOCUMENTO ES UNA REPRESENTACI\u00D3N IMPRESA DE UN C.F.D.I."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["ESTE DOCUMENTO ES UNA REPRESENTACI\u00D3N IMPRESA DE UN C.F.D.I. $P{ComprobanteVersion}"]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="129" width="556" height="1" uuid="228a99fd-2379-4af8-a1b6-5f2dc8a3a4dc"/>
