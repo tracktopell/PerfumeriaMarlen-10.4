@@ -10,7 +10,6 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.businesslogic.LogicaFinaciera;
 import com.pmarlen.model.Constants;
 import com.pmarlen.model.JarpeReportsInfoDTO;
-import com.pmarlen.rest.dto.I;
 import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -566,7 +565,7 @@ public class GeneradorImpresionPedidoVenta {
 			esf.calculaParaFacturaTotalesDesde(pedidoVenta, esdList);
 			
             InputStream isXMLCFD = new ByteArrayInputStream(cfdFactura.getContenidoOriginalXml());
-			HashMap cfdMap = ParseCFDXML.parseCFDXML(isXMLCFD);
+			HashMap cfdMap = ParseCFD33XML.parseCFDXML(isXMLCFD);
 			byte[] qrImage = QRImageGenerator.getQRImage(cfdMap.get("QR").toString());
 			ByteArrayInputStream baosImageQR = new ByteArrayInputStream(qrImage);
 			
@@ -605,8 +604,8 @@ public class GeneradorImpresionPedidoVenta {
                     vals.put("descripcion",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
                 }
 				vals.put("descripcionCont",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion()+" ("+pvd.getProductoContenido()+pvd.getProductoUnidadMedida()+")");
-				precioNoGrabado=pvd.getPrecioVenta() / (1.0+LogicaFinaciera.getImpuestoIVA());
-				vals.put("precio",df.format(pvd.getPrecioVenta() / (1.0+LogicaFinaciera.getImpuestoIVA())));
+				precioNoGrabado                     =pvd.getPrecioVenta() / (1.0+LogicaFinaciera.getImpuestoIVA());
+				vals.put("precio"         ,"---");
 			    vals.put("precioNoGrabado",df.format(precioNoGrabado));
 				
 				vals.put("precioIVA",df.format(pvd.getPrecioVenta() * LogicaFinaciera.getImpuestoIVA()));
@@ -654,6 +653,7 @@ public class GeneradorImpresionPedidoVenta {
 			parameters.put("lugarExp" , lugarExpedicion);
             parameters.put("fechaYHoraExp" ,cfdMap.get("fecha").toString().replace("T", " "));
             parameters.put("noSerCertSAT" ,cfdMap.get("noCertificadoSAT"));
+            parameters.put("ComprobanteVersion" ,cfdMap.get("ComprobanteVersion"));
             
             parameters.put("cliente",clienteVenta.getRazonSocial());
             parameters.put("rfc",clienteVenta.getRfc());
