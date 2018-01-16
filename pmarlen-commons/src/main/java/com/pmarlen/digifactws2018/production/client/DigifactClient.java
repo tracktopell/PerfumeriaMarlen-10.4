@@ -171,8 +171,9 @@ public class DigifactClient {
         
         //datosCFD.setSubtotal (subTotal);
 		//datosCFD.setTotal(total);
+        
         datosCFD.setSubtotal (esf.getSubTotalNoGrabado());
-        datosCFD.setSubtotal (esf.getTotal());
+        datosCFD.setTotal    (esf.getTotal());
         
         logger.debug("--->> REAL:*SUBTOTAL     = "+subTotal); 
         logger.debug("--->> REAL: SUBTOTAL IVA = "+subTotalIVA); 
