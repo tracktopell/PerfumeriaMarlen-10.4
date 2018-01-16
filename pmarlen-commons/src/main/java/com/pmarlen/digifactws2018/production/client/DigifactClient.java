@@ -46,6 +46,10 @@ public class DigifactClient {
 		
 		try{
 			logger.debug("Adding trust to certificates");
+            
+            System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
+            System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dumpTreshold"         , "999999");
+            
 			System.setProperty ( "javax.net.ssl.trustStore ","com.pmarlen.digifactws20160707.NaiveTrustManager");
             System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
             System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
@@ -99,10 +103,7 @@ public class DigifactClient {
 		EntradaSalidaFooter esf = new EntradaSalidaFooter();
 		esf.calculaParaFacturaTotalesDesde(pedidoVenta, esdList);
 
-		datosCFD.setSubtotal(esf.getSubTotalNoGrabado());
-		datosCFD.setDescuento(esf.getImporteDescuentoAplicado());
-		datosCFD.setTotal(esf.getTotal());
-        // C.P. Contante
+		// C.P. Contante
 		datosCFD.setLugarDeExpedicion("55740");
         
 		receptor.setRFC(pedidoVenta.getClienteRFC());
@@ -125,7 +126,11 @@ public class DigifactClient {
 		ArrayOfConceptoCFDI conceptosArr = new ArrayOfConceptoCFDI();
         conceptos.setConceptos(conceptosArr);
         
-        final ArrayOfImpuestoTrasladado impuestoTrasladadoArray= new  ArrayOfImpuestoTrasladado();        
+        final ArrayOfImpuestoTrasladado impuestoTrasladadoArray= new  ArrayOfImpuestoTrasladado();
+        double subTotal    = 0.0;
+        double subTotalIVA = 0.0;
+        double total       = 0.0;
+        double importeIVA  = 0.0;
 		for (EntradaSalidaDetalleQuickView esd : esdList) {
 			ConceptoCFDI concepto = new ConceptoCFDI();
                         
@@ -141,6 +146,7 @@ public class DigifactClient {
 			concepto.setDescripcion(desc );
 			double precioPVD_CFD = esd.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
 			double importePVD_CFD = precioPVD_CFD * esd.getCantidad();
+            subTotal += importePVD_CFD;
 			concepto.setValorUnitario(precioPVD_CFD);
 			concepto.setImporte(importePVD_CFD);
                         
@@ -150,19 +156,30 @@ public class DigifactClient {
             impuestoTrasladado.setImpuesto("002"); // IVA
             impuestoTrasladado.setTasaOCuota(Constants.IVA);
             impuestoTrasladado.setTipoFactor("Tasa");
-            impuestoTrasladado.setImporte(importePVD_CFD * pedidoVenta.getFactorIva());
+            importeIVA = importePVD_CFD * pedidoVenta.getFactorIva();            
+            impuestoTrasladado.setImporte(importeIVA);
+            subTotalIVA += importeIVA;
             
             concepto.setTraslados(impuestoTrasladadoArray);
             impuestoTrasladadoArray.getImpuestoTrasladado().add(impuestoTrasladado);
             
 			conceptosArr.getConceptoCFDI().add(concepto);
+            logger.debug("\t--->> REAL:  CONCEPTO: VU="+esd.getCantidad()+" * "+precioPVD_CFD+" = "+importePVD_CFD+" , IVA="+importeIVA); 
 		}
+        
+        total = subTotal + subTotalIVA;
+        datosCFD.setSubtotal (subTotal);
+		datosCFD.setTotal(total);
+        
+        logger.debug("--->> REAL:*SUBTOTAL     = "+subTotal); 
+        logger.debug("--->> REAL: SUBTOTAL IVA = "+subTotalIVA); 
+        logger.debug("--->> REAL:*TOTAL        = "+total); 
         
 		xmlAddenda = "";
 		//======================================================================
 
 		try {
-			logger.debug("-------[PRUEBA 10 , la BUENA? ]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
+			logger.debug("-------[PRUEBA 12 , la BUENA? ]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
             logger.debug("------->>>> digiFactSoap12.generaCFDIV33:");
             final CFDIResponse generaCFDIV33 = digiFactSoap12.generaCFDIV33(cfdiRequest);
             logger.debug("-------<<<< digiFactSoap12.generaCFDIV33:CFDICorrecto?"+generaCFDIV33.isCFDICorrecto());
