@@ -56,7 +56,6 @@
 	<field name="ue" class="java.lang.String"/>
 	<field name="isEmptyRow" class="java.lang.Boolean"/>
 	<field name="precioIVA" class="java.lang.String"/>
-    <field name="importe" class="java.lang.String"/>
     <field name="importeReal" class="java.lang.String"/>    
     <field name="descuentoXConceptoReal" class="java.lang.String"/>    
     <field name="ivaXConcepto" class="java.lang.String"/>

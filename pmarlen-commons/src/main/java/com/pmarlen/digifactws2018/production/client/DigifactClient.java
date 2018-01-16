@@ -197,9 +197,9 @@ public class DigifactClient {
                 logger.debug("-->>OK recibido el XML desde digifact: mide " + xml.length() + " bytes");
                 saveXML(xml);
                 
-                String folioXML = Constants.extractXMLAtribute("folio", xml);
-                String serieXML = Constants.extractXMLAtribute("serie", xml);
-                String tipoDeComprobanteXML = Constants.extractXMLAtribute("tipoDeComprobante", xml);
+                String folioXML = Constants.extractXMLAtribute("Folio", xml);
+                String serieXML = Constants.extractXMLAtribute("Serie", xml);
+                String tipoDeComprobanteXML = Constants.extractXMLAtribute("TipoDeComprobante", xml);
 
                 logger.debug("-->>folioXML " + folioXML + ", serieXML="+serieXML+", tipoDeComprobanteXML="+tipoDeComprobanteXML);
 
