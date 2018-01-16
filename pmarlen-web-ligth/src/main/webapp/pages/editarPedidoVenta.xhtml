@@ -175,6 +175,7 @@
 									<h:graphicImage value="/images/nota_interna.png" title="PDF NOTA DE VENTA ##{editarPedidoVentaMB.pedidoVenta.id} INTERNA P/ALMACÉN"/>
 								</h:outputLink>
 								<p:spacer width="10"/>
+                                <h:outputText value="[cdfNumCFD=#{editarPedidoVentaMB.pedidoVenta.cdfNumCFD}]"/>
 								<h:outputLink value="#{request.contextPath}/docs/facturas/Factura_PerfumeriaMarlen_No_#{editarPedidoVentaMB.pedidoVenta.id}.pdf" rendered="#{not empty editarPedidoVentaMB.pedidoVenta.cdfNumCFD}" target="_blank">
 									<h:graphicImage value="/images/factura_email.png" title="PDF FACTURA DE VENTA ##{editarPedidoVentaMB.pedidoVenta.id}"/>
 								</h:outputLink>

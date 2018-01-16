@@ -550,7 +550,7 @@ public class GeneradorImpresionPedidoVenta {
             
 			logger.debug("Default Locale:"+Locale.getDefault());
             
-			reportFileName = "facturaDesignNueva";
+			reportFileName = "facturaDesign33";
 			
 			reportPath = reportDesignDir + reportFileName + ".jrxml";
 			compiledReportClassPath = reportDesignDir + reportFileName + ".jasper";
@@ -572,13 +572,24 @@ public class GeneradorImpresionPedidoVenta {
 			
 			Image imageQR = ImageIO.read(baosImageQR);			
 			double precioNoGrabado=0.0;
+            double descs = 0.0;
+            if(pedidoVenta.getPorcentajeDescuentoCalculado()!=null){
+                descs += pedidoVenta.getPorcentajeDescuentoCalculado()/100.0;
+            }
+            if(pedidoVenta.getPorcentajeDescuentoExtra()!=null){
+                descs += pedidoVenta.getPorcentajeDescuentoExtra()/100.0;
+            }
+            double importeReal=0.0;
+            double descuentoXConceptoReal=0.0;
+            double importeRealCDesc=0.0;
+            double ivaXConcepto=0.0;
 			for(EntradaSalidaDetalleQuickView pvd:esdList){
 				Map<String,Object> vals = new HashMap<String,Object> ();
                 
                 n = pvd.getCantidad();
                 
                 vals.put("clave",pvd.getProductoCodigoBarras());
-                vals.put("cantidad",n);
+                vals.put("cantidad",n);                
                 if(pvd.getUnidad()!=null){
                     vals.put("ue",pvd.getUnidad());
                 }else{
@@ -586,7 +597,7 @@ public class GeneradorImpresionPedidoVenta {
                 }
 				vals.put("ta",Constants.getDescripcionTipoAlmacen(pvd.getApTipoAlmacen()).substring(0,3));
                 vals.put("codigoBarras",pvd.getProductoCodigoBarras());                
-                vals.put("noIdentificiacion",pvd.getNoIdentificacion());
+                vals.put("cveProdServicio",pvd.getNoIdentificacion());
                 vals.put("unidad",pvd.getUnidad());
                 if(pvd.getNoIdentificacion()!=null){
                     vals.put("descripcion","["+pvd.getNoIdentificacion()+"]"+pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
@@ -601,8 +612,16 @@ public class GeneradorImpresionPedidoVenta {
 				vals.put("precioIVA",df.format(pvd.getPrecioVenta() * LogicaFinaciera.getImpuestoIVA()));
                 vals.put("ppc"  ,pvd.getProductoUnidadesPorCaja());
 				vals.put("ubic"  ,pvd.getApUbicacion());
-				
+                
+				importeReal = n*precioNoGrabado;
+                descuentoXConceptoReal = importeReal * descs;
+                importeRealCDesc       = descuentoXConceptoReal -descuentoXConceptoReal;
+                ivaXConcepto           = importeRealCDesc * LogicaFinaciera.getImpuestoIVA();
                 vals.put("importe",df.format(n*precioNoGrabado));
+                vals.put("importeReal",df.format(importeReal));
+                vals.put("descuentoXConceptoReal",df.format(descuentoXConceptoReal));
+                vals.put("importeRealCDesc",df.format(importeRealCDesc));
+                vals.put("ivaXConcepto",df.format(ivaXConcepto));
                 vals.put("cont",pvd.getProductoContenido()+" "+pvd.getProductoUnidadMedida());
                 vals.put("isEmptyRow",false);
                 col.add(vals);
@@ -627,6 +646,7 @@ public class GeneradorImpresionPedidoVenta {
 			parameters.put("imageQR"    ,imageQR);			
 			parameters.put("pedidoVentaId" ,String.valueOf(pedidoVenta.getId()));            
             parameters.put("noFactura" ,""+pedidoVenta.getCdfNumCFD());
+            parameters.put("usoCFDI" ,"G01");
             parameters.put("printImages" ,fullPrint);
             parameters.put("folioFiscal" ,cfdMap.get("UUID"));
             parameters.put("fechaYHoraCert" ,cfdMap.get("FechaTimbrado").toString().replace("T", " "));
