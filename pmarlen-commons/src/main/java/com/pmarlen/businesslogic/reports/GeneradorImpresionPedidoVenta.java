@@ -613,14 +613,16 @@ public class GeneradorImpresionPedidoVenta {
 				vals.put("ubic"  ,pvd.getApUbicacion());
                 
 				importeReal = n*precioNoGrabado;
-                descuentoXConceptoReal = importeReal * descs;
-                importeRealCDesc       = descuentoXConceptoReal -descuentoXConceptoReal;
+                descuentoXConceptoReal = importeReal * descs;                
                 ivaXConcepto           = importeRealCDesc * LogicaFinaciera.getImpuestoIVA();
-                vals.put("importe",df.format(n*precioNoGrabado));
-                vals.put("importeReal",df.format(importeReal));
-                vals.put("descuentoXConceptoReal",df.format(descuentoXConceptoReal));
-                vals.put("importeRealCDesc",df.format(importeRealCDesc));
-                vals.put("ivaXConcepto",df.format(ivaXConcepto));
+                importeRealCDesc       = descuentoXConceptoReal - descuentoXConceptoReal;
+                
+                vals.put("importeReal"                  ,df.format(importeReal));
+                vals.put("descuentoXConceptoReal"       ,df.format(descuentoXConceptoReal));
+                vals.put("importeRealCDesc"             ,df.format(importeRealCDesc));
+                vals.put("ivaXConcepto"                 ,df.format(ivaXConcepto));
+                vals.put("importe"                      ,df.format(importeRealCDesc));
+                
                 vals.put("cont",pvd.getProductoContenido()+" "+pvd.getProductoUnidadMedida());
                 vals.put("isEmptyRow",false);
                 col.add(vals);
