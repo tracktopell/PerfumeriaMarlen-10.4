@@ -73,28 +73,26 @@ public class DigifactClient {
         cfdiRequest.setReceptorCFDI(receptor);
 		String xmlAddenda;
         
-		datosCFD.setSerie(serie);
-		//datosCFD.setFormadePago(pedidoVenta.getFormaDePagoDescripcion().toUpperCase());
-        datosCFD.setFormadePago("01");
+		datosCFD.setSerie(serie);		
 		datosCFD.setTipodeComprobante("FA");
         datosCFD.setMoneda("MXN");
-		
-		String mpOrig = pedidoVenta.getMetodoDePagoDescripcion();
-		if(mpOrig.contains("|")){
-			String mpOrigCveVal[]=mpOrig.split("\\|");
+		logger.debug("->PorcentajeDescuentoCalculado = "+pedidoVenta.getPorcentajeDescuentoCalculado()+"%");
+        logger.debug("->PorcentajeDescuentoExtra     = "+pedidoVenta.getPorcentajeDescuentoExtra()    +"%");
+		String metodoDePagoOrig = pedidoVenta.getMetodoDePagoDescripcion();
+		if(metodoDePagoOrig.contains("|")){
+			String mpOrigCveVal[]=metodoDePagoOrig.split("\\|");
 			String mpSHCP = mpOrigCveVal[0];
-			logger.debug("->METODO DE PAGO SHCP:mpOrig="+mpOrig+", mpSHCP="+mpSHCP);
+			logger.debug("->METODO DE PAGO SHCP:metodoDePagoOrig="+metodoDePagoOrig+", mpSHCP="+mpSHCP);
 			
-            datosCFD.setMetodoPago(mpSHCP);
+            datosCFD.setMetodoPago(mpSHCP);            
 		}
-        String fpOrig = pedidoVenta.getFormaDePagoDescripcion();
-		if(fpOrig.contains("|")){
-			String fpOrigCveVal[]=mpOrig.split("\\|");
+        String formaDePagoOrig = pedidoVenta.getFormaDePagoDescripcion();
+		if(formaDePagoOrig.contains("|")){
+			String fpOrigCveVal[]=formaDePagoOrig.split("\\|");
 			String fpSHCP = fpOrigCveVal[0];
-			logger.debug("->FORMA DE PAGO SHCP:fpOrig="+mpOrig+", fpSHCP="+fpSHCP);
-			
-            datosCFD.setFormadePago(fpSHCP);
-		}        
+			logger.debug("->FORMA DE PAGO SHCP:formaDePagoOrig="+formaDePagoOrig+", fpSHCP="+fpSHCP);			
+            datosCFD.setFormadePago(fpSHCP);            
+		}
         
 		datosCFD.setEmailMensaje("FACTURA PEDIDO:" + pedidoVenta.getId());
 
@@ -164,7 +162,7 @@ public class DigifactClient {
 		//======================================================================
 
 		try {
-			logger.debug("-------[PRUEBA 8 , la BUENA? ]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
+			logger.debug("-------[PRUEBA 10 , la BUENA? ]------->> Invocacion a SICOFI:digiFactSoap12.generaCFDIV33: pedidoVentaId=" + pedidoVenta.getId());            
             logger.debug("------->>>> digiFactSoap12.generaCFDIV33:");
             final CFDIResponse generaCFDIV33 = digiFactSoap12.generaCFDIV33(cfdiRequest);
             logger.debug("-------<<<< digiFactSoap12.generaCFDIV33:CFDICorrecto?"+generaCFDIV33.isCFDICorrecto());
