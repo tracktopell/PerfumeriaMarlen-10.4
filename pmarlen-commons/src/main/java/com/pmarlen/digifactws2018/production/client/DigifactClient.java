@@ -126,6 +126,13 @@ public class DigifactClient {
 		ArrayOfConceptoCFDI conceptosArr = new ArrayOfConceptoCFDI();
         conceptos.setConceptos(conceptosArr);
         
+        double descs = 0.0;
+        if(pedidoVenta.getPorcentajeDescuentoCalculado()!=null){
+            descs += pedidoVenta.getPorcentajeDescuentoCalculado()/100.0;
+        }
+        if(pedidoVenta.getPorcentajeDescuentoExtra()!=null){
+            descs += pedidoVenta.getPorcentajeDescuentoExtra()/100.0;
+        }
         double subTotal    = 0.0;
         double subTotalIVA = 0.0;
         double total       = 0.0;
@@ -145,18 +152,20 @@ public class DigifactClient {
 			desc += "(" + esd.getProductoContenido() + " " + esd.getProductoUnidadMedida() + ")";
 			concepto.setDescripcion(desc );
 			double precioPVD_CFD = esd.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
-			double importePVD_CFD = precioPVD_CFD * esd.getCantidad();
+            double valorUnitario = precioPVD_CFD*(1-descs);
+			double importePVD_CFD = valorUnitario * esd.getCantidad();
             subTotal += importePVD_CFD;
-			concepto.setValorUnitario(precioPVD_CFD);
+            
+			concepto.setValorUnitario(valorUnitario);
 			concepto.setImporte(importePVD_CFD);
                         
             ImpuestoTrasladado impuestoTrasladado = new ImpuestoTrasladado();
             
-            impuestoTrasladado.setBase(importePVD_CFD);
+            impuestoTrasladado.setBase(valorUnitario);
             impuestoTrasladado.setImpuesto("002"); // IVA
             impuestoTrasladado.setTasaOCuota(Constants.IVA);
             impuestoTrasladado.setTipoFactor("Tasa");
-            importeIVA = importePVD_CFD * pedidoVenta.getFactorIva();            
+            importeIVA = valorUnitario * pedidoVenta.getFactorIva();            
             impuestoTrasladado.setImporte(importeIVA);
             subTotalIVA += importeIVA;
             

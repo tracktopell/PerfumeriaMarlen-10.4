@@ -578,6 +578,7 @@ public class GeneradorImpresionPedidoVenta {
             if(pedidoVenta.getPorcentajeDescuentoExtra()!=null){
                 descs += pedidoVenta.getPorcentajeDescuentoExtra()/100.0;
             }
+            double precioReal=0.0;
             double importeReal=0.0;
             double descuentoXConceptoReal=0.0;
             double importeRealCDesc=0.0;
@@ -604,27 +605,26 @@ public class GeneradorImpresionPedidoVenta {
                     vals.put("descripcion",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion());
                 }
 				vals.put("descripcionCont",pvd.getProductoNombre()+"/"+pvd.getProductoPresentacion()+" ("+pvd.getProductoContenido()+pvd.getProductoUnidadMedida()+")");
-				precioNoGrabado                     =pvd.getPrecioVenta() / (1.0+LogicaFinaciera.getImpuestoIVA());
-				vals.put("precio"         ,"---");
-			    vals.put("precioNoGrabado",df.format(precioNoGrabado));
-				
-				vals.put("precioIVA",df.format(pvd.getPrecioVenta() * LogicaFinaciera.getImpuestoIVA()));
-                vals.put("ppc"  ,pvd.getProductoUnidadesPorCaja());
-				vals.put("ubic"  ,pvd.getApUbicacion());
+				precioNoGrabado      = pvd.getPrecioVenta() / (1.0+LogicaFinaciera.getImpuestoIVA());
                 
-				importeReal = n*precioNoGrabado;
+				importeReal            = n * precioNoGrabado;
                 descuentoXConceptoReal = importeReal * descs;                
+                importeRealCDesc       = importeReal - descuentoXConceptoReal;
                 ivaXConcepto           = importeRealCDesc * LogicaFinaciera.getImpuestoIVA();
-                importeRealCDesc       = descuentoXConceptoReal - descuentoXConceptoReal;
                 
-                vals.put("importeReal"                  ,df.format(importeReal));
+                vals.put("precio"         ,"---");
+			    vals.put("precioNoGrabado",df.format(precioNoGrabado));
+                vals.put("ppc"  ,pvd.getProductoUnidadesPorCaja());
+				vals.put("ubic"  ,pvd.getApUbicacion());                
+                vals.put("precioIVA",df.format(pvd.getPrecioVenta() * LogicaFinaciera.getImpuestoIVA()));                
                 vals.put("descuentoXConceptoReal"       ,df.format(descuentoXConceptoReal));
-                vals.put("importeRealCDesc"             ,df.format(importeRealCDesc));
-                vals.put("ivaXConcepto"                 ,df.format(ivaXConcepto));
-                vals.put("importe"                      ,df.format(importeRealCDesc));
-                
+                vals.put("ivaXConcepto"                 ,df.format(ivaXConcepto));                
+                vals.put("importeReal"                  ,"---");
+                vals.put("importe"                      ,"---");                
+                vals.put("importeRealCDesc"             ,df.format(importeRealCDesc));                 
                 vals.put("cont",pvd.getProductoContenido()+" "+pvd.getProductoUnidadMedida());
                 vals.put("isEmptyRow",false);
+                
                 col.add(vals);
 			}
 						
@@ -702,8 +702,8 @@ public class GeneradorImpresionPedidoVenta {
 			}else{
 				parameters.put("descuento" ,null);
 			}
-			parameters.put("iva" ,df.format(esf.getImporteIVA()));
             
+			parameters.put("iva" ,df.format(esf.getImporteIVA()));            
             parameters.put("total" ,df.format(esf.getTotal()));  
             
             String intDecParts[] = dfEnt.format(esf.getTotal()).split("\\.");
