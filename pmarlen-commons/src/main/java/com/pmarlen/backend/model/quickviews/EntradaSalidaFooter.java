@@ -197,10 +197,9 @@ public class EntradaSalidaFooter implements Serializable{
 			}
 			if(pddb == 0){
 				if (subTotalBruto >= 5000 && subTotalBruto < 10000) {
-					descuentoCalculado = 5;
-					
+					descuentoCalculado = 5;					
 				} else if (subTotalBruto >= 10000) {
-					descuentoCalculado = 10;					
+					descuentoCalculado = 10;
 				}
 				descuentoExtra = pv.getPorcentajeDescuentoExtra();
 				if(descuentoExtra == null){
@@ -215,13 +214,14 @@ public class EntradaSalidaFooter implements Serializable{
 			
 			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;			
 		}
-		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA subTotalBruto="+subTotalBruto);
-		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA subTotalNoGrabado="+subTotalNoGrabado);		
+		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA subTotalBruto           ="+subTotalBruto);
+		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA subTotalNoGrabado       ="+subTotalNoGrabado);		
 		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA importeDescuentoAplicado="+importeDescuentoAplicado);
 		importeIVA = (subTotalNoGrabado - importeDescuentoAplicado) * Constants.IVA;
-		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA iva="+importeIVA);
+		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA                      iva="+importeIVA);
 		total = subTotalNoGrabado - importeDescuentoAplicado + importeIVA;		
-		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA total="+total);
+        logger.debug("->calculaParaFacturaTotalesDesde: FACTURA                          ------------------");
+		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA               T O T A L ="+total);
 	}
 
 	/**
