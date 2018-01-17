@@ -22,7 +22,12 @@ public class EntradaSalidaFooter implements Serializable{
 	private Double importeDescuentoExtra;
 	private Double importeDescuentoAplicado;
 	private Double importeIVA;
-	private Double total;
+	private Double total;  
+    private Double cfd_subTotal;
+    private Double cfd_iva;
+    private Double cfd_total;
+    private Double cfdi_descIncluido;
+    
 	private Integer totalUnidades;
 	
 	private static Logger logger= Logger.getLogger(EntradaSalidaFooter.class.getSimpleName());
@@ -43,6 +48,10 @@ public class EntradaSalidaFooter implements Serializable{
 		this.importeIVA = 0.0;
 		this.total = 0.0;
 		this.totalUnidades = 0;
+        this.cfd_subTotal = 0.0;
+        this.cfd_iva = 0.0;
+        this.cfd_total = 0.0;
+        this.cfdi_descIncluido = 0.0;
 	}
 	
 	public void calculaTotalesSucDesde(EntradaSalidaQuickView pv,List<? extends EntradaSalidaDetalle> dvpList){
@@ -70,7 +79,7 @@ public class EntradaSalidaFooter implements Serializable{
 			importeRegNG       = (importeReg / Constants.MAS_IVA);
 			subTotalNoGrabado += importeRegNG;
 			subTotalBruto     += importeReg;
-			
+            
 		}
 		descuentoCalculado = 0;
 		descuentoExtra = 0;
@@ -164,26 +173,23 @@ public class EntradaSalidaFooter implements Serializable{
 		total = subTotalNoGrabado + importeIVA - importeDescuentoAplicado ;
 	}
 	
-	public void calculaParaFacturaTotalesDesde(EntradaSalida pv,List<? extends EntradaSalidaDetalle> dvpList){
+	public void calculaParaFacturaTotalesDesde(EntradaSalida pv,List<EntradaSalidaDetalleQuickView> esdList){
 		reset();
 		double importeReg = 0.0;
 		double importeRegNG = 0.0;
+        
+        double factorDescuentos = 0.0;
 		totalUnidades = 0;
-		for(EntradaSalidaDetalle dvp: dvpList){
-			totalUnidades     += dvp.getCantidad();
-			importeReg         = dvp.getCantidad()*dvp.getPrecioVenta();			
-			importeRegNG       = (importeReg / Constants.MAS_IVA);
-			subTotalNoGrabado += importeRegNG;
-			subTotalBruto     += importeReg;
-			logger.debug("->\t"+dvp.getCantidad()+" * "+(dvp.getPrecioVenta()/Constants.MAS_IVA)+" = "+importeRegNG);
-		}
 		descuentoCalculado = 0;
 		descuentoExtra = 0;
 		descuentoAplicado =0;
 		importeDescuentoExtra = 0.0;
 		importeDescuentoAplicado = 0.0;
+        
+        for(EntradaSalidaDetalleQuickView esd: esdList){
+            subTotalBruto += esd.getCantidad() * esd.getPrecioVenta();
+        }
 		if(pv.getAutorizaDescuento()!=null && pv.getAutorizaDescuento().intValue()==1){
-			
 			Integer pdc = pv.getPorcentajeDescuentoCalculado();
 			Integer pde = pv.getPorcentajeDescuentoExtra();
 			int     pddb = 0;
@@ -207,21 +213,52 @@ public class EntradaSalidaFooter implements Serializable{
 				}				
 			}
 			descuentoAplicado         = descuentoCalculado + descuentoExtra;
-			//importeDescuentoExtra     = (subTotalBruto * descuentoExtra)/100.0;						
-			//importeDescuentoCalculado = (subTotalBruto * descuentoCalculado)/100.0;			
 			importeDescuentoExtra     = (subTotalNoGrabado * descuentoExtra)/100.0;						
-			importeDescuentoCalculado = (subTotalNoGrabado * descuentoCalculado)/100.0;			
-			
-			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;			
+			importeDescuentoCalculado = (subTotalNoGrabado * descuentoCalculado)/100.0;						
+			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;
 		}
-		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA subTotalBruto           ="+subTotalBruto);
-		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA subTotalNoGrabado       ="+subTotalNoGrabado);		
-		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA importeDescuentoAplicado="+importeDescuentoAplicado);
-		importeIVA = (subTotalNoGrabado - importeDescuentoAplicado) * Constants.IVA;
-		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA                      iva="+importeIVA);
-		total = subTotalNoGrabado - importeDescuentoAplicado + importeIVA;		
-        logger.debug("->calculaParaFacturaTotalesDesde: FACTURA                          ------------------");
-		logger.debug("->calculaParaFacturaTotalesDesde: FACTURA               T O T A L ="+total);
+        
+        factorDescuentos = (descuentoAplicado/100.0);
+        logger.debug("(DESC?"+pv.getAutorizaDescuento()+") pv.DC="+pv.getPorcentajeDescuentoCalculado()+", pv.DE="+pv.getPorcentajeDescuentoExtra()+"\tDESC_CALC="+descuentoCalculado + ",DESC_EXTRA="+descuentoExtra);
+		for(EntradaSalidaDetalleQuickView esd: esdList){
+            importeReg         = esd.getPrecioVenta();			
+			importeRegNG       = (importeReg / Constants.MAS_IVA);
+    
+            final double cfd_valorUnitario = importeRegNG * (1.0 - factorDescuentos);
+            
+            esd.setCfd_valorUnitario (cfd_valorUnitario);
+            esd.setCfd_importe       (cfd_valorUnitario * esd.getCantidad());
+            esd.setCfd_base          (cfd_valorUnitario);
+            esd.setCfd_importeIVA    (cfd_valorUnitario * esd.getCantidad() * pv.getFactorIva());
+            
+            esd.setCfdi_valorOriginal(importeRegNG);
+            esd.setCfdi_descuento    (importeRegNG * factorDescuentos);
+            esd.setCfdi_iva          (importeRegNG * factorDescuentos * pv.getFactorIva());
+            esd.setCfdi_importeFinal (cfd_valorUnitario * esd.getCantidad());
+            
+			totalUnidades     += esd.getCantidad();
+			
+			subTotalNoGrabado += importeRegNG * esd.getCantidad();
+			subTotalBruto     += importeReg   * esd.getCantidad();
+            
+            cfd_subTotal        += esd.getCfd_importe();
+            cfd_iva             += esd.getCfd_importeIVA();
+            cfd_total           += esd.getCfd_importe() + esd.getCfd_importeIVA();
+            cfdi_descIncluido   += esd.getCfdi_descuento() * esd.getCantidad();
+            
+			logger.debug("\t["+
+                    esd.getCantidad()+"\t"+
+                    esd.getCfd_valorUnitario()  +"\t"+esd.getCfd_importe()      +"\t"+esd.getCfd_base()+"\t"+esd.getCfd_importeIVA()    +"]\t"+
+                    "{"+
+                    esd.getCfdi_valorOriginal() +"\t"+esd.getCfdi_descuento()   +"\t"+esd.getCfdi_iva()+"\t"+esd.getCfdi_importeFinal() +"}");
+		}
+		importeIVA = (subTotalNoGrabado - importeDescuentoAplicado) * Constants.IVA;		
+		total      = subTotalNoGrabado - importeDescuentoAplicado + importeIVA;		
+        logger.debug("----------------------------");
+        logger.debug("CFD  SUBTOTAL :"+cfd_subTotal);
+        logger.debug("          IVA :"+cfd_iva);
+        logger.debug("CFDI DESC.INC.:"+cfdi_descIncluido);
+        logger.debug("CFD     TOTAL :"+cfd_total);
 	}
 
 	/**
@@ -300,6 +337,34 @@ public class EntradaSalidaFooter implements Serializable{
 	public Integer getTotalUnidades() {
 		return totalUnidades;
 	}
+
+    /**
+     * @return the cfd_subTotal
+     */
+    public Double getCfd_subTotal() {
+        return cfd_subTotal;
+    }
+
+    /**
+     * @return the cfd_iva
+     */
+    public Double getCfd_iva() {
+        return cfd_iva;
+    }
+
+    /**
+     * @return the cfd_total
+     */
+    public Double getCfd_total() {
+        return cfd_total;
+    }
+
+    /**
+     * @return the cfdi_descIncluido
+     */
+    public Double getCfdi_descIncluido() {
+        return cfdi_descIncluido;
+    }
 
 	@Override
 	public String toString() {

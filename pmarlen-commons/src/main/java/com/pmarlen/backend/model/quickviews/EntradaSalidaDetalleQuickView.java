@@ -44,7 +44,16 @@ public class EntradaSalidaDetalleQuickView extends EntradaSalidaDetalle implemen
     private String unidad;    
 
     private String noIdentificacion;
-	
+    
+    private Double cfd_valorUnitario;
+    private Double cfd_importe;
+    private Double cfd_base;
+    private Double cfd_importeIVA;
+    private Double cfdi_valorOriginal;
+    private Double cfdi_descuento;
+    private Double cfdi_iva;
+    private Double cfdi_importeFinal;
+    
 	public EntradaSalidaDetalleQuickView() {
 		this.rowId = System.currentTimeMillis();
 	}
@@ -297,4 +306,116 @@ public class EntradaSalidaDetalleQuickView extends EntradaSalidaDetalle implemen
 			return getId().compareTo(o.getId());
 		}		
 	}
+
+    /**
+     * @return the cfd_valorUnitario
+     */
+    public Double getCfd_valorUnitario() {
+        return cfd_valorUnitario;
+    }
+
+    /**
+     * @param cfd_valorUnitario the cfd_valorUnitario to set
+     */
+    public void setCfd_valorUnitario(Double cfd_valorUnitario) {
+        this.cfd_valorUnitario = cfd_valorUnitario;
+    }
+
+    /**
+     * @return the cfd_importe
+     */
+    public Double getCfd_importe() {
+        return cfd_importe;
+    }
+
+    /**
+     * @param cfd_importe the cfd_importe to set
+     */
+    public void setCfd_importe(Double cfd_importe) {
+        this.cfd_importe = cfd_importe;
+    }
+
+    /**
+     * @return the cfd_base
+     */
+    public Double getCfd_base() {
+        return cfd_base;
+    }
+
+    /**
+     * @param cfd_base the cfd_base to set
+     */
+    public void setCfd_base(Double cfd_base) {
+        this.cfd_base = cfd_base;
+    }
+
+    /**
+     * @return the cfd_importeIVA
+     */
+    public Double getCfd_importeIVA() {
+        return cfd_importeIVA;
+    }
+
+    /**
+     * @param cfd_importeIVA the cfd_importeIVA to set
+     */
+    public void setCfd_importeIVA(Double cfd_importeIVA) {
+        this.cfd_importeIVA = cfd_importeIVA;
+    }
+
+    /**
+     * @return the cfdi_valorOriginal
+     */
+    public Double getCfdi_valorOriginal() {
+        return cfdi_valorOriginal;
+    }
+
+    /**
+     * @param cfdi_valorOriginal the cfdi_valorOriginal to set
+     */
+    public void setCfdi_valorOriginal(Double cfdi_valorOriginal) {
+        this.cfdi_valorOriginal = cfdi_valorOriginal;
+    }
+
+    /**
+     * @return the cfdi_descuento
+     */
+    public Double getCfdi_descuento() {
+        return cfdi_descuento;
+    }
+
+    /**
+     * @param cfdi_descuento the cfdi_descuento to set
+     */
+    public void setCfdi_descuento(Double cfdi_descuento) {
+        this.cfdi_descuento = cfdi_descuento;
+    }
+
+    /**
+     * @return the cfdi_iva
+     */
+    public Double getCfdi_iva() {
+        return cfdi_iva;
+    }
+
+    /**
+     * @param cfdi_iva the cfdi_iva to set
+     */
+    public void setCfdi_iva(Double cfdi_iva) {
+        this.cfdi_iva = cfdi_iva;
+    }
+
+    /**
+     * @return the cfdi_importeFinal
+     */
+    public Double getCfdi_importeFinal() {
+        return cfdi_importeFinal;
+    }
+
+    /**
+     * @param cfdi_importeFinal the cfdi_importeFinal to set
+     */
+    public void setCfdi_importeFinal(Double cfdi_importeFinal) {
+        this.cfdi_importeFinal = cfdi_importeFinal;
+    }
 }

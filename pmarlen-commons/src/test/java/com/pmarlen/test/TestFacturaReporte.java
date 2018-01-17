@@ -6,6 +6,7 @@ import com.pmarlen.backend.model.quickviews.EntradaSalidaDetalleQuickView;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaFooter;
 import com.pmarlen.backend.model.quickviews.EntradaSalidaQuickView;
 import com.pmarlen.businesslogic.reports.GeneradorImpresionPedidoVenta;
+import com.pmarlen.model.Constants;
 import com.sun.media.jfxmedia.logging.Logger;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -115,6 +116,8 @@ public class TestFacturaReporte {
         
         pedidoVenta = new EntradaSalidaQuickView();        
         pedidoVenta.setId(12345);
+        pedidoVenta.setAutorizaDescuento(1);
+        pedidoVenta.setFactorIva(Constants.IVA);
         pedidoVenta.setPorcentajeDescuentoExtra(10);
         pedidoVenta.setFormaDePagoDescripcion ("PPD|PAGO EN PARCIALIDADES O DIFERIDO");
         pedidoVenta.setMetodoDePagoDescripcion("99|POR DEFINIR");

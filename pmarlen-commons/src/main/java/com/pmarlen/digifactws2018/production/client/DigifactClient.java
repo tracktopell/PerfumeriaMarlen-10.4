@@ -133,10 +133,7 @@ public class DigifactClient {
         if(pedidoVenta.getPorcentajeDescuentoExtra()!=null){
             descs += pedidoVenta.getPorcentajeDescuentoExtra()/100.0;
         }
-        double subTotal    = 0.0;
-        double subTotalIVA = 0.0;
-        double total       = 0.0;
-        double importeIVA  = 0.0;
+        
 		for (EntradaSalidaDetalleQuickView esd : esdList) {
             final ArrayOfImpuestoTrasladado impuestoTrasladadoArray= new  ArrayOfImpuestoTrasladado();
 			ConceptoCFDI concepto = new ConceptoCFDI();
@@ -151,42 +148,30 @@ public class DigifactClient {
 			desc  = esd.getProductoNombre() + "/" + esd.getProductoPresentacion() ;
 			desc += "(" + esd.getProductoContenido() + " " + esd.getProductoUnidadMedida() + ")";
 			concepto.setDescripcion(desc );
-			double precioPVD_CFD = esd.getPrecioVenta() / (1.0 + pedidoVenta.getFactorIva());
-            double valorUnitario = precioPVD_CFD*(1-descs);
-			double importePVD_CFD = valorUnitario * esd.getCantidad();
-            subTotal += importePVD_CFD;
-            
-			concepto.setValorUnitario(valorUnitario);
-			concepto.setImporte(importePVD_CFD);
+			            
+			concepto.setValorUnitario(esd.getCfd_valorUnitario());
+			concepto.setImporte      (esd.getCfd_importe());
                         
             ImpuestoTrasladado impuestoTrasladado = new ImpuestoTrasladado();
             
-            impuestoTrasladado.setBase(valorUnitario);
+            impuestoTrasladado.setBase(esd.getCfd_base());
             impuestoTrasladado.setImpuesto("002"); // IVA
             impuestoTrasladado.setTasaOCuota(Constants.IVA);
-            impuestoTrasladado.setTipoFactor("Tasa");
-            importeIVA = valorUnitario * pedidoVenta.getFactorIva();            
-            impuestoTrasladado.setImporte(importeIVA);
-            subTotalIVA += importeIVA;
+            impuestoTrasladado.setTipoFactor("Tasa");            
+            impuestoTrasladado.setImporte(esd.getCfd_importeIVA());            
             
             concepto.setTraslados(impuestoTrasladadoArray);
             impuestoTrasladadoArray.getImpuestoTrasladado().add(impuestoTrasladado);
             
 			conceptosArr.getConceptoCFDI().add(concepto);
-            logger.debug("\t--->> REAL:  CONCEPTO: VU="+esd.getCantidad()+" * "+precioPVD_CFD+" = "+importePVD_CFD+" , IVA="+importeIVA); 
 		}
-        
-        total = subTotal + subTotalIVA;
-        
-        //datosCFD.setSubtotal (subTotal);
-		//datosCFD.setTotal(total);
         
         datosCFD.setSubtotal (esf.getSubTotalNoGrabado());
         datosCFD.setTotal    (esf.getTotal());
         
-        logger.debug("--->> REAL:*SUBTOTAL     = "+subTotal); 
-        logger.debug("--->> REAL: SUBTOTAL IVA = "+subTotalIVA); 
-        logger.debug("--->> REAL:*TOTAL        = "+total); 
+        logger.debug("--->> REAL:*SUBTOTAL     = "+esf.getCfd_subTotal()); 
+        logger.debug("--->> REAL: SUBTOTAL IVA = "+esf.getCfd_iva()); 
+        logger.debug("--->> REAL:*TOTAL        = "+esf.getCfd_total()); 
         
 		xmlAddenda = "";
 		//======================================================================
