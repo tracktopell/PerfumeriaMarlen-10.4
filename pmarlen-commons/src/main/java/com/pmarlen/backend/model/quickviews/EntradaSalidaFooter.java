@@ -230,7 +230,7 @@ public class EntradaSalidaFooter implements Serializable{
             esd.setCfd_valorUnitario (cfd_valorUnitario);
             esd.setCfd_importe       (cfd_valorUnitario * esd.getCantidad());
             esd.setCfd_base          (cfd_valorUnitario);
-            esd.setCfd_importeIVA    (cfd_valorUnitario * esd.getCantidad() * pv.getFactorIva());
+            esd.setCfd_importeIVA    (cfd_valorUnitario * pv.getFactorIva());
             
             esd.setCfdi_valorOriginal(importeRegNG);
             esd.setCfdi_descuento    (importeRegNG * (1.0 - factorDescuentos));
@@ -243,8 +243,8 @@ public class EntradaSalidaFooter implements Serializable{
 			subTotalBruto     += importeReg   * esd.getCantidad();
             
             cfd_subTotal        += esd.getCfd_importe();
-            cfd_iva             += esd.getCfd_importeIVA();
-            cfd_total           += esd.getCfd_importe() + esd.getCfd_importeIVA();
+            cfd_iva             += esd.getCfd_importeIVA() * esd.getCantidad();
+            cfd_total           += esd.getCfd_importe() + ( esd.getCfd_importeIVA() * esd.getCantidad() );
             cfdi_descIncluido   += esd.getCfdi_descuento() * esd.getCantidad();
             
 			logger.debug("\t["+
