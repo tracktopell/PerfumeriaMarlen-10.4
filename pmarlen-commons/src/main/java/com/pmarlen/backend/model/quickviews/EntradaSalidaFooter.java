@@ -217,9 +217,10 @@ public class EntradaSalidaFooter implements Serializable{
 			importeDescuentoCalculado = (subTotalNoGrabado * descuentoCalculado)/100.0;						
 			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;
 		}
-        
+        subTotalBruto=0.0;
+        cfd_subTotal =0.0;
         factorDescuentos = (descuentoAplicado/100.0);
-        logger.debug("(DESC?"+pv.getAutorizaDescuento()+") pv.DC="+pv.getPorcentajeDescuentoCalculado()+", pv.DE="+pv.getPorcentajeDescuentoExtra()+"\tDESC_CALC="+descuentoCalculado + ",DESC_EXTRA="+descuentoExtra);
+        logger.debug("factorDescuentos="+factorDescuentos+" (DESC?"+pv.getAutorizaDescuento()+") pv.DC="+pv.getPorcentajeDescuentoCalculado()+", pv.DE="+pv.getPorcentajeDescuentoExtra()+"\tDESC_CALC="+descuentoCalculado + ",DESC_EXTRA="+descuentoExtra);
 		for(EntradaSalidaDetalleQuickView esd: esdList){
             importeReg         = esd.getPrecioVenta();			
 			importeRegNG       = (importeReg / Constants.MAS_IVA);
@@ -232,8 +233,8 @@ public class EntradaSalidaFooter implements Serializable{
             esd.setCfd_importeIVA    (cfd_valorUnitario * esd.getCantidad() * pv.getFactorIva());
             
             esd.setCfdi_valorOriginal(importeRegNG);
-            esd.setCfdi_descuento    (importeRegNG * factorDescuentos);
-            esd.setCfdi_iva          (importeRegNG * factorDescuentos * pv.getFactorIva());
+            esd.setCfdi_descuento    (importeRegNG * (1.0 - factorDescuentos));
+            esd.setCfdi_iva          (importeRegNG * (1.0 - factorDescuentos) * (1.0+pv.getFactorIva()));
             esd.setCfdi_importeFinal (cfd_valorUnitario * esd.getCantidad());
             
 			totalUnidades     += esd.getCantidad();

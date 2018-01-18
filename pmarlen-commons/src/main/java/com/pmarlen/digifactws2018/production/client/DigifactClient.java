@@ -78,8 +78,8 @@ public class DigifactClient {
 		String xmlAddenda;
         
 		datosCFD.setSerie(serie);
-		//datosCFD.setTipodeComprobante("FA");
-        datosCFD.setTipodeComprobante("I");
+		
+        datosCFD.setTipodeComprobante("FA");
         datosCFD.setMoneda("MXN");
 		logger.debug("->PorcentajeDescuentoCalculado = "+pedidoVenta.getPorcentajeDescuentoCalculado()+"%");
         logger.debug("->PorcentajeDescuentoExtra     = "+pedidoVenta.getPorcentajeDescuentoExtra()    +"%");
