@@ -78,7 +78,8 @@ public class DigifactClient {
 		String xmlAddenda;
         
 		datosCFD.setSerie(serie);
-		datosCFD.setTipodeComprobante("FA");
+		//datosCFD.setTipodeComprobante("FA");
+        datosCFD.setTipodeComprobante("I");
         datosCFD.setMoneda("MXN");
 		logger.debug("->PorcentajeDescuentoCalculado = "+pedidoVenta.getPorcentajeDescuentoCalculado()+"%");
         logger.debug("->PorcentajeDescuentoExtra     = "+pedidoVenta.getPorcentajeDescuentoExtra()    +"%");
@@ -100,8 +101,6 @@ public class DigifactClient {
         
 		datosCFD.setEmailMensaje("FACTURA PEDIDO:" + pedidoVenta.getId());
 
-		EntradaSalidaFooter esf = new EntradaSalidaFooter();
-		esf.calculaParaFacturaTotalesDesde(pedidoVenta, esdList);
 
 		// C.P. Contante
 		datosCFD.setLugarDeExpedicion("55740");
@@ -126,14 +125,9 @@ public class DigifactClient {
 		ArrayOfConceptoCFDI conceptosArr = new ArrayOfConceptoCFDI();
         conceptos.setConceptos(conceptosArr);
         
-        double descs = 0.0;
-        if(pedidoVenta.getPorcentajeDescuentoCalculado()!=null){
-            descs += pedidoVenta.getPorcentajeDescuentoCalculado()/100.0;
-        }
-        if(pedidoVenta.getPorcentajeDescuentoExtra()!=null){
-            descs += pedidoVenta.getPorcentajeDescuentoExtra()/100.0;
-        }
-        
+        EntradaSalidaFooter esf = new EntradaSalidaFooter();
+		esf.calculaParaFacturaTotalesDesde(pedidoVenta, esdList);
+
 		for (EntradaSalidaDetalleQuickView esd : esdList) {
             final ArrayOfImpuestoTrasladado impuestoTrasladadoArray= new  ArrayOfImpuestoTrasladado();
 			ConceptoCFDI concepto = new ConceptoCFDI();
@@ -166,8 +160,8 @@ public class DigifactClient {
 			conceptosArr.getConceptoCFDI().add(concepto);
 		}
         
-        datosCFD.setSubtotal (esf.getSubTotalNoGrabado());
-        datosCFD.setTotal    (esf.getTotal());
+        datosCFD.setSubtotal (esf.getCfd_subTotal());
+        datosCFD.setTotal    (esf.getCfd_total());
         
         logger.debug("--->> REAL:*SUBTOTAL     = "+esf.getCfd_subTotal()); 
         logger.debug("--->> REAL: SUBTOTAL IVA = "+esf.getCfd_iva()); 
