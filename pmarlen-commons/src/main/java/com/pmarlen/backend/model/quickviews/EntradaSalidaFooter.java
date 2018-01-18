@@ -221,11 +221,22 @@ public class EntradaSalidaFooter implements Serializable{
         cfd_subTotal =0.0;
         factorDescuentos = (descuentoAplicado/100.0);
         logger.debug("factorDescuentos="+factorDescuentos+" (DESC?"+pv.getAutorizaDescuento()+") pv.DC="+pv.getPorcentajeDescuentoCalculado()+", pv.DE="+pv.getPorcentajeDescuentoExtra()+"\tDESC_CALC="+descuentoCalculado + ",DESC_EXTRA="+descuentoExtra);
+        double subTotalNG=0.0;
+        double subTotal  =0.0;
+        double subTotalIVA=0.0;
 		for(EntradaSalidaDetalleQuickView esd: esdList){
             importeReg         = esd.getPrecioVenta();			
 			importeRegNG       = (importeReg / Constants.MAS_IVA);
     
-            final double cfd_valorUnitario = importeRegNG * (1.0 - factorDescuentos);
+            double cfd_valorUnitario = 0.0;
+            if(factorDescuentos>0.0){
+                cfd_valorUnitario = importeRegNG * (1.0 - factorDescuentos);
+            }else{
+                cfd_valorUnitario = importeRegNG;
+            }
+            subTotal               += importeReg        * esd.getCantidad();
+            subTotalNG             += cfd_valorUnitario * esd.getCantidad();
+            subTotalIVA            += cfd_valorUnitario * esd.getCantidad() * pv.getFactorIva();
             
             esd.setCfd_valorUnitario (cfd_valorUnitario);
             esd.setCfd_importe       (cfd_valorUnitario * esd.getCantidad());
@@ -234,7 +245,7 @@ public class EntradaSalidaFooter implements Serializable{
             
             esd.setCfdi_valorOriginal(importeRegNG);
             esd.setCfdi_descuento    (importeRegNG * (1.0 - factorDescuentos));
-            esd.setCfdi_iva          (importeRegNG * (1.0 - factorDescuentos) * (1.0+pv.getFactorIva()));
+            esd.setCfdi_iva          (importeRegNG * (1.0 - factorDescuentos) * (pv.getFactorIva()));
             esd.setCfdi_importeFinal (cfd_valorUnitario * esd.getCantidad());
             
 			totalUnidades     += esd.getCantidad();
@@ -245,21 +256,33 @@ public class EntradaSalidaFooter implements Serializable{
             cfd_subTotal        += esd.getCfd_importe();
             cfd_iva             += esd.getCfd_importeIVA();
             cfd_total           += esd.getCfd_importe() + esd.getCfd_importeIVA();
-            cfdi_descIncluido   += esd.getCfdi_descuento() * esd.getCantidad();
+            cfdi_descIncluido   += esd.getCfdi_descuento();
             
-			logger.debug("\t["+
-                    esd.getCantidad()+"\t"+
-                    esd.getCfd_valorUnitario()  +"\t"+esd.getCfd_importe()      +"\t"+esd.getCfd_base()+"\t"+esd.getCfd_importeIVA()    +"]\t"+
+			logger.debug("\t"+
+                    esd.getCantidad()+"|"+
+                    esd.getCfd_valorUnitario()  +"|"+esd.getCfd_importe()      +"|"+esd.getCfd_base()+"|"+esd.getCfd_importeIVA()    +"]\t"+
                     "{"+
-                    esd.getCfdi_valorOriginal() +"\t"+esd.getCfdi_descuento()   +"\t"+esd.getCfdi_iva()+"\t"+esd.getCfdi_importeFinal() +"}");
+                    esd.getCfdi_valorOriginal() +"|"+esd.getCfdi_descuento()   +"|"+esd.getCfdi_iva()+"|"+esd.getCfdi_importeFinal() +"}");
 		}
 		importeIVA = (subTotalNoGrabado - importeDescuentoAplicado) * Constants.IVA;		
 		total      = subTotalNoGrabado - importeDescuentoAplicado + importeIVA;		
         logger.debug("----------------------------");
-        logger.debug("CFD  SUBTOTAL :"+cfd_subTotal);
-        logger.debug("          IVA :"+cfd_iva);
-        logger.debug("CFDI DESC.INC.:"+cfdi_descIncluido);
-        logger.debug("CFD     TOTAL :"+cfd_total);
+        logger.debug("   TOTAL BRUTO :"+subTotalBruto);
+        logger.debug("   DESC. BRUTO :"+(subTotalBruto*factorDescuentos) );
+        logger.debug(" TOTAL F BRUTO :"+(subTotalBruto - (subTotalBruto*factorDescuentos)) );
+        logger.debug("     IVA BRUTO :"+((subTotalBruto - (subTotalBruto*factorDescuentos)) * pv.getFactorIva()) );
+        logger.debug("  SUBTOT BRUTO :"+((subTotalBruto - (subTotalBruto*factorDescuentos)) / (1.0+pv.getFactorIva())) );
+        
+        logger.debug("    **SUBTOTAL :"+subTotalNG);
+        logger.debug("   ***SUBTOTAL :"+((subTotal  * (1.0 - factorDescuentos)) - subTotalIVA));
+        logger.debug(" CFD  SUBTOTAL :"+cfd_subTotal);
+        logger.debug("    **     IVA :"+subTotalIVA);
+        logger.debug("   ***     IVA :"+subTotalIVA);
+        logger.debug("           IVA :"+cfd_iva);        
+        logger.debug(" CFDI DESC.INC.:"+cfdi_descIncluido);
+        logger.debug("     **  TOTAL :"+(subTotalNG+subTotalIVA));
+        logger.debug("    ***  TOTAL :"+(subTotal  * (1.0 - factorDescuentos)));        
+        logger.debug("CFD  T O T A L :"+cfd_total);
 	}
 
 	/**

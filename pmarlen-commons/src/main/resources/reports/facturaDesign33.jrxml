@@ -499,7 +499,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="false" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<textFieldExpression><![CDATA["DESC."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["PREC C/ DESC."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="388" y="0" width="40" height="12" uuid="5eafd372-0d20-4666-8244-282f24f7a886"/>
@@ -512,7 +512,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="false" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<textFieldExpression><![CDATA["PRECIO U."]]></textFieldExpression>
+				<textFieldExpression><![CDATA["PREC ORIG."]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>

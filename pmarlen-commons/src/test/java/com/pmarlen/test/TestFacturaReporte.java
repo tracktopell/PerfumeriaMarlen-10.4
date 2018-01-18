@@ -109,16 +109,25 @@ public class TestFacturaReporte {
     public void setUp() {
         
         facturaData=new Object[][]{
-            new Object[]{1,12,"7503020722011","53131613",    5.15},
-            new Object[]{1,12,"7509546056357","53131608",    5.84},
-            new Object[]{2,3 ,"7509546056357","53131608",    0.01},
+            new Object[]{1,72,"7503007859099","53131626", 29.85},
+            new Object[]{1,48,"7502244764845","47131824", 15.21},
+            new Object[]{1,24,"7502244767143","47131830", 15.21},
+            new Object[]{1,36,"6371"         ,"47131810", 13.9 },
+            new Object[]{1,24,"7502244767389","47131801", 24.97},
+            new Object[]{1,24,"7502244767396","47131801", 24.97},
+            new Object[]{1,12,"7502244767112","53131608",119.5 },
+            new Object[]{1,12,"7502244766900","53131608",119.5 },
+            new Object[]{1,72,"7502244764487","53131608", 29.85},
+            new Object[]{1,96,"7509546056357","53131608",  6.77},
+            new Object[]{1,24,"7502245720079","53131602" ,29.93},
+            new Object[]{1,12,"7509546056357","53131608",  6.77}
         };
         
         pedidoVenta = new EntradaSalidaQuickView();        
         pedidoVenta.setId(12345);
         pedidoVenta.setAutorizaDescuento(1);
         pedidoVenta.setFactorIva(Constants.IVA);
-        pedidoVenta.setPorcentajeDescuentoExtra(10);
+        pedidoVenta.setPorcentajeDescuentoExtra(0);
         pedidoVenta.setFormaDePagoDescripcion ("PPD|PAGO EN PARCIALIDADES O DIFERIDO");
         pedidoVenta.setMetodoDePagoDescripcion("99|POR DEFINIR");
         
@@ -161,7 +170,8 @@ public class TestFacturaReporte {
         EntradaSalidaFooter esf=new EntradaSalidaFooter();
         esf.calculaParaFacturaTotalesDesde(pedidoVenta, esdList);
     }
-       
+    
+    @Ignore
     @Test
     public void testGeneraPDF() throws Exception{
         FileOutputStream fos=null;
