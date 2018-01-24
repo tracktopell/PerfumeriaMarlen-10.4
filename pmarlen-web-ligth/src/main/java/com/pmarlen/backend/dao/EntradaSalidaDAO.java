@@ -28,6 +28,9 @@ import com.pmarlen.jsf.model.EntradaSalidaDTOPageHelper;
 import com.pmarlen.model.Constants;
 import com.tracktopell.jdbc.DataSourceFacade;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -267,8 +270,29 @@ public class EntradaSalidaDAO {
 				x.setCdfNumCFD((String) rs.getObject("CFD_NUM_CFD"));
 				x.setCfdCallingErrorResult((String)rs.getObject("CFD_CALLING_ERROR_RESULT"));
                 Blob bc = rs.getBlob("CFD_CONTENIDO_ORIGINAL_XML");
-                if (bc != null && bc.length()>0) {                    
-                    x.setCFDContenidoXML(new String(bc.getBytes(0, (int) bc.length())));
+                if (bc != null && bc.length()>0) {
+                    logger.debug("trying to read: CFD_CONTENIDO_ORIGINAL: blob: length="+bc.length());
+                    InputStream is = null;
+                    try{
+                        is = bc.getBinaryStream();
+                        if(is!=null){
+                            logger.debug("trying to read: CFD_CONTENIDO_ORIGINAL: tring read InputStream");
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            byte[] buffer=new byte[255];
+                            int rb=0;
+                            while((rb=is.read(buffer, 0, buffer.length))!= -1){
+                                baos.write(buffer, 0, rb);
+                                baos.flush();
+                            }
+                            is.close();
+                            baos.close();
+                            x.setCFDContenidoXML(new String(baos.toByteArray()));
+                            logger.debug("...OK CFD_CONTENIDO_ORIGINAL, read !!");
+                        }
+                    }catch(IOException ioe){
+                        logger.error(":( read CDF from EntradaSalida", ioe);
+                        x.setCFDContenidoXML(null);
+                    }
                 } else{
                     x.setCFDContenidoXML(null);
                 }
