@@ -165,6 +165,7 @@ public class TestFacturaReporte {
     public void tearDown() {
     }
     
+    @Ignore
     @Test
     public void testCalculaTotalesFactura() {
         EntradaSalidaFooter esf=new EntradaSalidaFooter();
