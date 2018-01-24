@@ -334,9 +334,13 @@ public class EntradaSalidaDAO {
 				try {
 					rs.close();
 					ps.close();
-
-					rsESE.close();
-					psESE.close();
+                    
+                    if(rsESE !=null){
+                        rsESE.close();
+                    }
+                    if(psESE!=null){
+                        psESE.close();
+                    }
 
 					conn.close();
 				} catch (SQLException ex) {
