@@ -189,7 +189,12 @@ public class EntradaSalidaFooter implements Serializable{
         for(EntradaSalidaDetalleQuickView esd: esdList){
             subTotalBruto += esd.getCantidad() * esd.getPrecioVenta();
         }
+        
+        subTotalNoGrabado = subTotalBruto/Constants.MAS_IVA;
+        
+        logger.info("===>> Recalcular Descuentos ? (DESC?"+pv.getAutorizaDescuento()+") pv.getAutorizaDescuento().intValue()==1?"+(pv.getAutorizaDescuento().intValue()==1));
 		if(pv.getAutorizaDescuento()!=null && pv.getAutorizaDescuento().intValue()==1){
+            logger.info("\t===>> Recalculando Decuentos!");
 			Integer pdc = pv.getPorcentajeDescuentoCalculado();
 			Integer pde = pv.getPorcentajeDescuentoExtra();
 			int     pddb = 0;
@@ -213,17 +218,18 @@ public class EntradaSalidaFooter implements Serializable{
 				}				
 			}
 			descuentoAplicado         = descuentoCalculado + descuentoExtra;
-			importeDescuentoExtra     = (subTotalNoGrabado * descuentoExtra)/100.0;						
-			importeDescuentoCalculado = (subTotalNoGrabado * descuentoCalculado)/100.0;						
+			importeDescuentoExtra     = (subTotalNoGrabado * descuentoExtra)/100.0;
+			importeDescuentoCalculado = (subTotalNoGrabado * descuentoCalculado)/100.0;
 			importeDescuentoAplicado  = importeDescuentoCalculado + importeDescuentoExtra;
 		}
         subTotalBruto=0.0;
         cfd_subTotal =0.0;
         factorDescuentos = (descuentoAplicado/100.0);
-        logger.info("factorDescuentos="+factorDescuentos+" (DESC?"+pv.getAutorizaDescuento()+") pv.DC="+pv.getPorcentajeDescuentoCalculado()+", pv.DE="+pv.getPorcentajeDescuentoExtra()+"\tDESC_CALC="+descuentoCalculado + ",DESC_EXTRA="+descuentoExtra);
+        logger.info("-->Despues de Recalcular, subTotalNoGrabado="+subTotalNoGrabado+", factorDescuentos="+factorDescuentos+" pv.DC="+pv.getPorcentajeDescuentoCalculado()+", pv.DE="+pv.getPorcentajeDescuentoExtra()+"\tDESC_CALC="+descuentoCalculado + ",DESC_EXTRA="+descuentoExtra+", importeDescuentoAplicado="+importeDescuentoAplicado);
         double subTotalNG=0.0;
         double subTotal  =0.0;
         double subTotalIVA=0.0;
+        subTotalNoGrabado = 0.0;
 		for(EntradaSalidaDetalleQuickView esd: esdList){
             importeReg         = esd.getPrecioVenta();			
 			importeRegNG       = (importeReg / Constants.MAS_IVA);
