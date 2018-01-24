@@ -280,6 +280,7 @@ public class EntradaSalidaFooter implements Serializable{
         logger.info("   ***     IVA :"+subTotalIVA);
         logger.info("           IVA :"+cfd_iva);        
         logger.info(" CFDI DESC.INC.:"+cfdi_descIncluido);
+        logger.info("    DESC. APLIC:"+importeDescuentoAplicado);
         logger.info("     **  TOTAL :"+(subTotalNG+subTotalIVA));
         logger.info("    ***  TOTAL :"+(subTotal  * (1.0 - factorDescuentos)));        
         logger.info("CFD  T O T A L :"+cfd_total);
