@@ -290,8 +290,8 @@
 									<h:panelGroup>
 										<h:outputText value="ELEMENTOS DETALLE: #{editarPedidoVentaMB.sizeList}, TOTAL UNIDADES INDIVIDUALES : #{editarPedidoVentaMB.pedidoVentaFooter.totalUnidades}" />
 									</h:panelGroup>
-									<h:outputText value="#{editarPedidoVentaMB.getImporteMoneda(editarPedidoVentaMB.pedidoVentaFooter.subTotalBruto)}" 
-                                                  title="= #{editarPedidoVentaMB.getImporteDesglosado(editarPedidoVentaMB.pedidoVentaFooter.total)}"/>
+                                    <h:outputText value="#{editarPedidoVentaMB.getImporteMoneda(editarPedidoVentaMB.pedidoVentaFooter.total)}" 
+                                                  title="= #{editarPedidoVentaMB.getImporteDesglosado(editarPedidoVentaMB.pedidoVentaFooter.subTotalNoGrabado)} - #{editarPedidoVentaMB.getImporteDesglosado(editarPedidoVentaMB.pedidoVentaFooter.importeDescuentoAplicado)} + #{editarPedidoVentaMB.getImporteDesglosado(editarPedidoVentaMB.pedidoVentaFooter.importeIVA)}"/>
 								</h:panelGrid>
 								
 							</f:facet>
