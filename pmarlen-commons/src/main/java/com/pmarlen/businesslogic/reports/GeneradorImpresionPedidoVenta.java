@@ -539,6 +539,17 @@ public class GeneradorImpresionPedidoVenta {
 		return pdfBytes;
     }
 
+    /**
+     * EL MAS IMPORTANTE
+     * --------------------
+     * @param pedidoVenta
+     * @param cfdFactura
+     * @param esdList
+     * @param clienteVenta
+     * @param fullPrint
+     * @param usuarioImr
+     * @return 
+     */
     public static byte[] generaPdfPfacturaPedidoVenta(EntradaSalidaQuickView pedidoVenta,Cfd cfdFactura,ArrayList<EntradaSalidaDetalleQuickView> esdList,Cliente clienteVenta,boolean fullPrint,String usuarioImr) {
 		byte[] pdfBytes = null;
 		try {
@@ -687,9 +698,13 @@ public class GeneradorImpresionPedidoVenta {
             parameters.put("cadenaOriginalSAT"  ,cfdMap.get("cadenaOriginal"));            
             parameters.put("selloDigitalEmisor" ,cfdMap.get("sello"));
             parameters.put("selloDigitalSAT"    ,cfdMap.get("selloSAT"));			
-            parameters.put("subtotal" , df.format(esf.getCfd_subTotal()));
-			parameters.put("descuento" ,df.format(esf.getCfdi_descIncluido()));            
-			parameters.put("iva" ,df.format(esf.getCfd_iva()));            
+            //parameters.put("subtotal" , df.format(esf.getCfd_subTotal()));
+            parameters.put("subtotal" , df.format(esf.getSubTotalNoGrabado()));
+            
+			//parameters.put("descuento" ,df.format(esf.getCfdi_descIncluido()));
+            parameters.put("descuento" ,df.format(esf.getImporteDescuentoAplicado()));
+            
+			parameters.put("iva" ,df.format(esf.getCfd_iva()));
             parameters.put("total" ,df.format(esf.getCfd_total()));
             
             String intDecParts[] = dfEnt.format(esf.getTotal()).split("\\.");

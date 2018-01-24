@@ -105,8 +105,8 @@ public class DigifactClient {
 		// C.P. Contante
 		datosCFD.setLugarDeExpedicion("55740");
         
-		receptor.setRFC(pedidoVenta.getClienteRFC());
-		receptor.setRazonSocial(pedidoVenta.getClienteRazonSocial());
+		receptor.setRFC(cliente.getCp().toUpperCase());
+		receptor.setRazonSocial(cliente.getRazonSocial());
         
         //final String residenciaFiscal = cliente.getCalle().toUpperCase()+" "+cliente.getNumExterior().toUpperCase()+" "+cliente.getNumInterior().toUpperCase()+", "+cliente.getColonia().toUpperCase()+", C.P. "+cliente.getCp().toUpperCase();
         final String residenciaFiscal = cliente.getDireccionFacturacion();
