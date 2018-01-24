@@ -266,7 +266,13 @@ public class EntradaSalidaDAO {
 				x.setFormaDePagoDescripcion((String) rs.getObject("FP_DESCRIPCION"));
 				x.setCdfNumCFD((String) rs.getObject("CFD_NUM_CFD"));
 				x.setCfdCallingErrorResult((String)rs.getObject("CFD_CALLING_ERROR_RESULT"));
-                x.setCFDContenidoXML((String)rs.getObject("CFD_CONTENIDO_ORIGINAL_XML"));
+                Blob bc = rs.getBlob("CFD_CONTENIDO_ORIGINAL_XML");
+                if (bc != null && bc.length()>0) {                    
+                    x.setCFDContenidoXML(new String(bc.getBytes(0, (int) bc.length())));
+                } else{
+                    x.setCFDContenidoXML(null);
+                }
+                
 				x.setNumElementos(rs.getInt("NUM_ELEMENTOS"));
 				x.setImporteBruto(rs.getDouble("IMPORTE_BRUTO"));
 
