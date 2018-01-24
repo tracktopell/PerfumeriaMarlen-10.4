@@ -52,7 +52,7 @@ public class EditarPedidoVentaMB implements Serializable{
 	protected ArrayList<EntradaSalidaDetalleQuickView> resultadoBusqueda;
 	protected EntradaSalidaDetalleQuickView resultadoBusquedaSI;
 	protected StreamedContent file;
-	
+    protected String CFDIContenidoXML;
 	protected String cadenaBusqueda;
 	protected int tipoAlmacen;
 	protected String resultadoBusquedaSelected;
@@ -750,6 +750,9 @@ public class EditarPedidoVentaMB implements Serializable{
 		try{						
 			logger.trace("guardar:pedidoVenta.id:"+entradaSalida.getId());
 			logger.trace("guardar:pedidoVenta.cfdVentaId:"+entradaSalida.getCfdId());
+            if(CFDIContenidoXML!=null && CFDIContenidoXML.length() > 10){
+                entradaSalida.setCFDContenidoXML(CFDIContenidoXML);
+            }
 			EntradaSalidaDAO.getInstance().update(entradaSalida,entityList,sessionUserMB.getUsuarioAuthenticated());
 			logger.trace("guardar:OK Guardar.");
 			
@@ -937,7 +940,15 @@ public class EditarPedidoVentaMB implements Serializable{
     public StreamedContent getFile() {
         return file;
     }
-	
+
+    public String getCFDIContenidoXML() {
+        return CFDIContenidoXML;
+    }
+
+    public void setCFDIContenidoXML(String CFDIContenidoXML) {
+        this.CFDIContenidoXML = CFDIContenidoXML;
+    }
+    
 	protected boolean actualizarEstadoPorResultadoWS = false;
 	
 	protected int tiempoTrasncurridoInvocarCFD=0;

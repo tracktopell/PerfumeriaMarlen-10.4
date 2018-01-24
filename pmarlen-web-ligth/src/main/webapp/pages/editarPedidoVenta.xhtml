@@ -454,6 +454,12 @@
 
 							<h:outputText value="#FACTURA :" rendered="#{not empty editarPedidoVentaMB.pedidoVenta.cdfNumCFD}"/>
 							<h:outputText value="#{editarPedidoVentaMB.pedidoVenta.cdfNumCFD}" rendered="#{not empty editarPedidoVentaMB.pedidoVenta.cdfNumCFD}"/>
+                            
+                            <h:outputText value="CFD_XML :" 
+                                          rendered="#{not empty editarPedidoVentaMB.pedidoVenta.cdfNumCFD and sessionUserMB.usuarioAuthenticated.playsAsRoot}"/>
+                            <h:inputTextarea    value="#{editarPedidoVentaMB.pedidoVenta.CFDContenidoXML}" 
+                                                rendered="#{not empty editarPedidoVentaMB.pedidoVenta.cdfNumCFD and sessionUserMB.usuarioAuthenticated.playsAsRoot}"
+                                                cols="15" rows="3" style="font-family: monospace; font-size: xx-small; color: red;" />
 							
 							<h:outputText value="SUCURSAL :"/>
 							<h:outputText value="#{editarPedidoVentaMB.pedidoVenta.sucursalNombre}"/>

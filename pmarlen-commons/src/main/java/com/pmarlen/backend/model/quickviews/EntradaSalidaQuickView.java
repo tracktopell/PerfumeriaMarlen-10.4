@@ -71,7 +71,9 @@ public class EntradaSalidaQuickView extends EntradaSalida {
 	private String traspasoSucDesNombre;
 	
 	private String traspasoSucDesClave;
-	
+
+    private String CFDContenidoXML;
+
     /** 
      * Default Constructor
      */
@@ -452,5 +454,13 @@ public class EntradaSalidaQuickView extends EntradaSalida {
 	public void setClienteDirFacturacion(String clienteDirFacturacion) {
 		this.clienteDirFacturacion = clienteDirFacturacion;
 	}
-	
+    
+    public String getCFDContenidoXML() {
+        return CFDContenidoXML;
+    }
+
+    public void setCFDContenidoXML(String CFDContenidoXML) {
+        this.CFDContenidoXML = CFDContenidoXML;
+    }
+    	
 }

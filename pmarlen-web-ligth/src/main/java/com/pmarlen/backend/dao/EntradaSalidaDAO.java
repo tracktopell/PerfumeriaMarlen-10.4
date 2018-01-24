@@ -190,6 +190,7 @@ public class EntradaSalidaDAO {
 					+ "MP.DESCRIPCION AS MP_DESCRIPCION,\n"
 					+ "CFD.NUM_CFD AS CFD_NUM_CFD,\n"
 					+ "CFD.CALLING_ERROR_RESULT AS CFD_CALLING_ERROR_RESULT,\n"
+                    + "CFD.CONTENIDO_ORIGINAL_XML AS CFD_CONTENIDO_ORIGINAL_XML,\n"
 					+ "COUNT(1) NUM_ELEMENTOS, \n"
 					+ "S1.NOMBRE AS S1_NOMBRE,\n"
 					+ "S2.NOMBRE AS S2_NOMBRE,\n"
@@ -265,7 +266,7 @@ public class EntradaSalidaDAO {
 				x.setFormaDePagoDescripcion((String) rs.getObject("FP_DESCRIPCION"));
 				x.setCdfNumCFD((String) rs.getObject("CFD_NUM_CFD"));
 				x.setCfdCallingErrorResult((String)rs.getObject("CFD_CALLING_ERROR_RESULT"));
-
+                x.setCFDContenidoXML((String)rs.getObject("CFD_CONTENIDO_ORIGINAL_XML"));
 				x.setNumElementos(rs.getInt("NUM_ELEMENTOS"));
 				x.setImporteBruto(rs.getDouble("IMPORTE_BRUTO"));
 
@@ -1697,6 +1698,7 @@ public class EntradaSalidaDAO {
 
 	public int update(EntradaSalida x, ArrayList<? extends EntradaSalidaDetalle> pvdList, Usuario u) throws DAOException {
 		PreparedStatement ps = null;
+        PreparedStatement psCFD = null;
 		PreparedStatement psESE = null;
 		PreparedStatement psESD = null;
 
@@ -1737,6 +1739,19 @@ public class EntradaSalidaDAO {
 
 			r = ps.executeUpdate();
 
+            if(x.getCfdId() != null && x instanceof EntradaSalidaQuickView){
+                int rCFD=0;
+                EntradaSalidaQuickView esqv=(EntradaSalidaQuickView)x;
+                if(esqv.getCFDContenidoXML() != null){
+                    psCFD = conn.prepareStatement("UPDATE CFD SET CONTENIDO_ORIGINAL_XML=? WHERE ID=?");
+                    psCFD.setObject(1, new ByteArrayInputStream(esqv.getCFDContenidoXML().getBytes()));
+                    psCFD.setInt   (2, x.getCfdId());
+                    logger.debug("UPDATING CONTENIDO_ORIGINAL_XML FOR CFD_ID="+x.getCfdId());
+                    rCFD=psCFD.executeUpdate();
+                    logger.debug("OK; UPDATING CFD, R="+rCFD);
+                    psCFD.close();                    
+                }            
+            }
 			int rESD = conn.createStatement().executeUpdate("DELETE FROM ENTRADA_SALIDA_DETALLE WHERE ENTRADA_SALIDA_ID=" + x.getId());
 			logger.debug("=>DELETE FROM ENTRADA_SALIDA_DETALLE WHERE ENTRADA_SALIDA_ID=" + x.getId() + "; affected=" + rESD);
 
