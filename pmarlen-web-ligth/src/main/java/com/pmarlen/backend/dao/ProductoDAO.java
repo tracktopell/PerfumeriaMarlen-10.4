@@ -505,7 +505,7 @@ public class ProductoDAO {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			String q = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,DESCONTINUADO,POCO\n"+
+			String q = "SELECT CODIGO_BARRAS,INDUSTRIA,LINEA,MARCA,NOMBRE,PRESENTACION,ABREBIATURA,UNIDADES_X_CAJA,DESCONTINUADO,POCO,CONTENIDO,UNIDAD_MEDIDA,UNIDAD_EMPAQUE,COSTO,COSTO_VENTA,UNIDAD,NO_IDENTIFICACION\n"+
 					"FROM PRODUCTO";
 			
 			ps = conn.prepareStatement(q);
@@ -528,6 +528,8 @@ public class ProductoDAO {
 				x.setUnidadEmpaque((String)rs.getObject("UNIDAD_EMPAQUE"));
 				x.setCosto((Double)rs.getObject("COSTO"));
 				x.setCostoVenta((Double)rs.getObject("COSTO_VENTA"));
+				x.setUnidad((String)rs.getObject("UNIDAD"));
+				x.setNoIdentificacion((String)rs.getObject("NO_IDENTIFICACION"));
 				r.add(x);
 			}
 		}catch(SQLException ex) {
