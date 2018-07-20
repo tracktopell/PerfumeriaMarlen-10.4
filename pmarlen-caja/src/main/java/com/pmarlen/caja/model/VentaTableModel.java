@@ -81,6 +81,7 @@ public class VentaTableModel implements TableModel{
 		if(columnIndex == 0)
 			return	xr.getS()==ES_ESD.STATUS_SYNC_LOCAL?"LOCAL"		:
 					xr.getS()==ES_ESD.STATUS_SYNC_SENT ?"ENVIADO"	:
+					xr.getS()==ES_ESD.STATUS_SYNC_RESENT?"X REENVIAR":
 					xr.getS()==ES_ESD.STATUS_SYNC_ERROR?"ERROR"		:
 														("("+xr.getS()+")?");
 		else if(columnIndex == 1)

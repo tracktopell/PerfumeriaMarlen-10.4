@@ -40,6 +40,7 @@ public class ContextAndSessionListener implements ServletContextListener, HttpSe
 		TimeZone defaultTZ = TimeZone.getDefault();		
         logger.info("contextInitialized: TimeZone.getDefault()="+defaultTZ.getDisplayName()+", Time=defaultformat:"+sdfDefault.format(dateSystem)+", ExtendedFormat:"+sdfExtended.format(dateSystem));  
         logger.info("contextInitialized: Locale:"+Locale.getDefault());
+		logger.info("contextInitialized: SERVER PWD:"+System.getProperty("user.dir"));
 		logger.info("contextInitialized: WEBDataSourceFacade.registerStrategy:");
         WEBDataSourceFacade.registerStrategy();		
 		logger.info("contextInitialized: ConnectionPoolKeepAliveService.getInstance().start:");

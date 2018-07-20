@@ -1410,14 +1410,15 @@ public class EntradaSalidaDAO {
 				logger.info ("  TICKET COLLISION  ("+x.getNumeroTicket()+") : ->"+countTicket+"<-: DISSAMBLE: ->"+GeneradorNumTicket.dissambleNumTicket(x.getNumeroTicket())+"<-");
 				psX = conn.prepareStatement("SELECT ID,NUMERO_TICKET FROM ENTRADA_SALIDA WHERE NUMERO_TICKET=?");
 				psX.setString(1, x.getNumeroTicket());
-				rsX = psX.executeQuery();
-				countTicket = 0;
+				rsX = psX.executeQuery();				
 				while(rsX.next()) {
 					logger.error("\tENTRADA_SALIDA: ID="+rsX.getInt(1)+", NUMERO_TICKET="+rsX.getString(2));
 				}
 				rsX.close();
 				psX.close();
-				throw new DAOException("NUMERO_TICKET=" + x.getNumeroTicket()+ " EXISTE (COUNT="+countTicket+")");				
+				logger.error("MAY BE THIS TICKET WHERE ALREADY SAVED, THEN WE COULD SKIP :) ");
+				return 1;
+				//throw new DAOException("NUMERO_TICKET=" + x.getNumeroTicket()+ " EXISTE (COUNT="+countTicket+")");
 			}
 
 			//Timestamp now = new Timestamp(System.currentTimeMillis());

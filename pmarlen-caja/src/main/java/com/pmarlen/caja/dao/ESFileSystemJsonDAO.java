@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +32,21 @@ public class ESFileSystemJsonDAO {
 	private static final String fileName = "EntradaSalida.json";
 	private static final ArrayList<ES_ESD> esList = new ArrayList<ES_ESD>();
     private static boolean firstLoad=false;
+	private static Date dateForFizNOtSent=null;
+	private static final String dateAfterNotSent = "20180620";
+
+	public static Date getDateForFizNotSent() {
+		if(dateForFizNOtSent == null){
+			try{				
+				dateForFizNOtSent = Constants.sdfDate.parse(dateAfterNotSent);
+			}catch(ParseException pe){
+				logger.error("->dateForFizNOtSent, error:");
+			}
+		}
+		return dateForFizNOtSent;
+	}
+
+	
 	public static void commit(ES_ESD escd){
 		
 		int tm = escd.getEs().getTm();
@@ -88,7 +104,7 @@ public class ESFileSystemJsonDAO {
 	}
 	
 	static void setSentAllES(){
-		logger.debug("setSentAllES: esList="+esList.size());
+		logger.info("setSentAllES: esList="+esList.size());
         if(!firstLoad){
             laod();
         }
@@ -97,12 +113,15 @@ public class ESFileSystemJsonDAO {
             logger.trace("setSentAllES:\t->esList["+ixc+"]:set SENT TO: es="+es_esd.getEs().toShrotString());
 			if(es_esd.getS()==ES_ESD.STATUS_SYNC_LOCAL){
 				es_esd.setS(ES_ESD.STATUS_SYNC_SENT);
-			}
+			} else if(es_esd.getS()==ES_ESD.STATUS_SYNC_RESENT){
+				logger.trace("setSentAllES:\t\t->esList["+ixc+"]: WAS RESENT, NOW set SENT TO: es="+es_esd.getEs().toShrotString());
+				es_esd.setS(ES_ESD.STATUS_SYNC_SENT);
+			} 
 		}
 	}
 	
     static void operactionSentFailed(){
-		logger.debug("operactionSentFailed(): esList="+esList.size());
+		logger.info("operactionSentFailed(): esList="+esList.size());
         if(!firstLoad){
             laod();
         }
@@ -110,26 +129,37 @@ public class ESFileSystemJsonDAO {
 		for(ES_ESD es_esd: esList) {
             logger.debug("operactionSentFailed():\t-> esList["+ixc+"]: es="+es_esd.getEs().toShrotString());
 			if(es_esd.getS()==ES_ESD.STATUS_SYNC_LOCAL){
-				es_esd.setS(ES_ESD.STATUS_SYNC_ERROR);
+				es_esd.setS(ES_ESD.STATUS_SYNC_RESENT);
+				logger.info("operactionSentFailed():\t\t-> WE WILL TRY TO SENT AGAIN !!");
+			} else if(es_esd.getS() == ES_ESD.STATUS_SYNC_RESENT){
+				es_esd.setS(ES_ESD.STATUS_SYNC_RESENT);
+				logger.info("operactionSentFailed():\t\t-> WE WILL TRY TO RE SENT AGAIN !!");
 			}
 		}
 
 	}
     
-	static void laod(){        
+	static void laod(){
 		File fileToLoad = new File(fileName);
 		if(fileToLoad.exists() && esList.isEmpty()){
-			logger.debug("load:Json File found:"+fileName);
+			logger.info("load:Json File found:"+fileName);
 			Gson gson=new Gson();
 			try {
 				FileReader fr = new FileReader(fileToLoad);
-				logger.debug("load:Reading:");
+				logger.info("load:Reading:");
 				//final ArrayList fromJson = gson.fromJson(fr, esList.getClass());
 				final ArrayList fromJson = gson.fromJson(fr, new TypeToken<ArrayList<ES_ESD>>(){}.getType());				
 				esList.addAll(fromJson);
-				logger.debug("load: After read, added, esList.size="+esList.size());
-                for(ES_ESD esd_es:esList){
-                    logger.trace("load:\tes_esd="+esd_es);
+				logger.info("load: After read, added, esList.size="+esList.size());
+				final long dateSentErrorAfer = getDateForFizNotSent().getTime();
+                for(ES_ESD es_esd:esList){
+					if(es_esd.getS()==ES_ESD.STATUS_SYNC_ERROR){
+						if(es_esd.getEs().getFc() >= dateSentErrorAfer){
+							es_esd.setS(ES_ESD.STATUS_SYNC_RESENT);
+							logger.trace("load:\t\tresent ="+es_esd);
+						}
+					}
+                    logger.trace("load:\tes_esd="+es_esd);
                 }
                 firstLoad=true;
 			}catch(IOException ioe){
@@ -191,12 +221,12 @@ public class ESFileSystemJsonDAO {
 		
 		return nsList;
 	}
-
 	public static ArrayList<ES_ESD> getEsListNotSent() {
 		ArrayList<ES_ESD> nsList=new ArrayList<ES_ESD>();
 		
 		for(ES_ESD e: esList){
 			if(e.getS()==ES_ESD.STATUS_SYNC_LOCAL ||e.getS()==ES_ESD.STATUS_SYNC_RESENT){
+				logger.info("==>>getEsListNotSent: adding for Sent:"+e.getEs().getNt()+" "+new Date(e.getEs().getFc()));
 				nsList.add(e);
 			}
 		}

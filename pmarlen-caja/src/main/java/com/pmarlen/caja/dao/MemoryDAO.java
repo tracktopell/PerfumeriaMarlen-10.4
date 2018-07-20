@@ -204,8 +204,8 @@ public class MemoryDAO {
 	public final static int SYNC_STATE_ERROR                 = 99;
 	
 	private final static long TIMESLEEP_MS        = 1000L;
-	private final static int  DOWNLOADPERIOD_SECS = 120;
-	private final static int  IMALIVEPERIOD_SECS  = 30;
+	private final static int  DOWNLOADPERIOD_SECS = 240;
+	private final static int  IMALIVEPERIOD_SECS  = 120;
     private final static int  CIERREPERIOD_SECS   = 2;
 	
 	public static void getPaqueteSyncPoll() {

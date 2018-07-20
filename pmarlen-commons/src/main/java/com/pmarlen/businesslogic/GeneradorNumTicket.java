@@ -18,6 +18,7 @@ public class GeneradorNumTicket{
     private static final DecimalFormat    df2Id   = new DecimalFormat("00");
 	private static final DecimalFormat    df3Id   = new DecimalFormat("000");
 	private static final DecimalFormat    dfT2    = new DecimalFormat("0000000000000000");
+	private static final DecimalFormat    dfT1    = new DecimalFormat("000000000000000000");
 	private static final DecimalFormat    df2Tot  = new DecimalFormat("000000.00");	
 	//MAXLONG                           9223372036854775807L;
     private static final long bigLong  =  999999999999999999L;
@@ -41,31 +42,55 @@ public class GeneradorNumTicket{
 		sb.append(sdf.format(d));
 		sb.append(df2Id.format(Math.random()*100.0));
 		
-		//System.err.println("sb:->"+sb+"<-");
+		System.err.println("sb:->"+sb+"<-");
 		long   nt= Long.parseLong(sb.toString());
-		//System.err.println("nt:->"+nt+"<-");
+		System.err.println("nt:->"+nt+"<-");
 		String x2 = dfT2.format(bigLongT3 - nt);
-		//System.err.println("x2:->"+x2+"<-");
-		StringBuilder ticketSB = new StringBuilder(x2.toString()).reverse();		
+		System.err.println("x2:->"+x2+"<-");
+		StringBuilder ticketSB = new StringBuilder(x2.toString()).reverse();
+		System.err.println("ti:->"+ticketSB+"<-");		
 		return ticketSB.toString();
     }
 	
 	public static String dissambleNumTicket(String nt){
 		StringBuilder ticketSB = new StringBuilder(nt.toString()).reverse();		
+		
+		System.err.println("ds:---------------------------");		
+		System.err.println("ds:->"+nt+"<-");		
+		System.err.println("rt:->"+ticketSB+"<-");		
 		long   ntr1 = Long.parseLong(ticketSB.toString());
+		System.err.println("lo:->"+bigLongT3+" - "+ntr1+"<-");												
 		long   ntr2 =  bigLongT3 - ntr1;
-		return ""+ntr2;
+		System.err.println("on:->"+ntr2+"<-");				
+		final String cdisnt = dfT1.format(ntr2);
+		System.err.println("cd:->"+cdisnt+"<-");				
+		return cdisnt;
 	}
 	
 
     public static void main(String args[]){
 		try {
 			final Date dx1 = sdfIn.parse("2017-07-09 21:26:24.616");
-			// LOG 365737870929288949
-			// GEN 475737870929288949
+			//DATE    =2017-07-09 21:26:24.616
+			//     090604189729288969
+			//     000000000000000000
+			//sb:->050117070921262403<-
+			//nt:->50117070921262403<-
+			//x2:->949882929078737596<-
+			//ti:->695737870929288949<-
+			//ds:---------------------------
+			//ds:->695737870929288949<-
+			//rt:->949882929078737596<-
+			//lo:->999999999999999999 - 949882929078737596<-
+			//on:->50117070921262403<-
+			//cd:->50117070921262403<-
+			//TIKECT[0] =695737870929288949, 50117070921262403
 			System.out.println("DATE    ="+sdfIn.format(dx1));
-			System.out.println("TIKECT  ="+getNumTicket(dx1,5,1));
-			System.out.println("DISAMBLE="+dissambleNumTicket("365737870929288949"));
+			for(int i=0;i<10;i++){
+				final String nt = getNumTicket(dx1,5,1);
+				final String tn = dissambleNumTicket(nt);
+				System.out.println("TIKECT["+i+"] ="+nt+", "+tn);
+			}
 		} catch (ParseException ex) {
 			ex.printStackTrace(System.err);
 		}
