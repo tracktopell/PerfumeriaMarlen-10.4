@@ -33,7 +33,7 @@ public class ESFileSystemJsonDAO {
 	private static final ArrayList<ES_ESD> esList = new ArrayList<ES_ESD>();
     private static boolean firstLoad=false;
 	private static Date dateForFizNOtSent=null;
-	private static final String dateAfterNotSent = "20180620";
+	private static final String dateAfterNotSent = "20180701";
 
 	public static Date getDateForFizNotSent() {
 		if(dateForFizNOtSent == null){
