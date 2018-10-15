@@ -1,5 +1,6 @@
 package com.pmarlen.jsf;
 
+import com.pmarlen.jsf.model.EntradaSalidaFasterLazyDataModel;
 import com.pmarlen.jsf.model.EntradaSalidaLazyDataModel;
 import com.pmarlen.model.Constants;
 import java.io.Serializable;
@@ -8,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import org.apache.log4j.Logger;
 
 @ManagedBean(name="historicoPedidosVentaMB")
@@ -15,24 +17,23 @@ import org.apache.log4j.Logger;
 public class HistoricoPedidosVentaMB  implements Serializable{
 	private transient static Logger logger = Logger.getLogger(HistoricoPedidosVentaMB.class.getName());
 	
-	private EntradaSalidaLazyDataModel lazyModel;
+	private EntradaSalidaFasterLazyDataModel lazyModel;
 	
 	@ManagedProperty(value = "#{editarPedidoVentaMB}")
 	private EditarPedidoVentaMB editarPedidoVentaMB;	
 	
-	//ArrayList<EntradaSalidaQuickView> pedidosVentas;
 	private int viewRows;
 	
 	@PostConstruct
 	public void init(){
 		logger.trace("init:");
-		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,1,false);
 		viewRows = 25;
+		lazyModel = new EntradaSalidaFasterLazyDataModel(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,1,false,viewRows);
 	}
 	
 	public void refrescar(){
 		logger.trace("refrescar:");
-		lazyModel = new EntradaSalidaLazyDataModel(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,1,false);
+		lazyModel = new EntradaSalidaFasterLazyDataModel(Constants.TIPO_MOV_SALIDA_ALMACEN_VENTA,1,false,viewRows);
 	}
 
 	public void setEditarPedidoVentaMB(EditarPedidoVentaMB editarPedidoVentaMB) {
@@ -67,7 +68,7 @@ public class HistoricoPedidosVentaMB  implements Serializable{
 		return Constants.getImporteMoneda(f);
 	}
 
-	public EntradaSalidaLazyDataModel getLazyModel() {
+	public EntradaSalidaFasterLazyDataModel getLazyModel() {
 		return lazyModel;
 	}
 	

@@ -936,6 +936,151 @@ public class EntradaSalidaDAO {
 		}
 		return r;
 	}
+	
+	public ArrayList<EntradaSalidaQuickView> findAllFasterByPage(EntradaSalidaDTOPageHelper esdtoH) throws DAOException {
+		logger.debug("->findAllFasterByPage(tipoMov=" + esdtoH.getTipoMov() + ",sucursalId=" + esdtoH.getSucursalId() + ",caja="+esdtoH.getCaja()+",active=" + esdtoH.isActive() + ",pagerInfo.filters=" + esdtoH.getPagerInfo().getFilters() + ",fechaInicial=" + esdtoH.getFechaInicial() + ",fechaFinal=" + esdtoH.getFechaFinal() + ",ImporteTotal=" + esdtoH.getImporteTotal() + ")");
+		
+		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			String fq0
+					= ",ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,"
+					+ "ES.NUMERO_TICKET,ES.CAJA\n";
+
+			String fwq0
+					= " FROM     ENTRADA_SALIDA         ES\n"					
+					+ " WHERE    1=1\n"
+					+ "AND       ES.TIPO_MOV  = ?\n"
+					+ "AND       ES.SUCURSAL_ID= ?\n"
+					+ (esdtoH.isActive() ? 
+						  " AND  ES.ESTADO_ID IN (1,2,4,512,1024)\n"
+						: " AND  ES.ESTADO_ID >  4\n")
+					+ (esdtoH.getCaja()>0? "AND       ES.CAJA       = ?\n":"")
+					+ (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null ? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n" : "");
+
+			String q0 = "SELECT	ES.TOTAL "
+					+ fq0
+					+ fwq0;
+
+			String qT0 = "SELECT ES.TOTAL "
+					+ fq0
+					+ fwq0;
+
+			//+ "ORDER BY  ES.ID DESC";
+			Map<String, Object> filters = esdtoH.getPagerInfo().getFilters();
+			if (filters != null) {
+				for (String k : filters.keySet()) {
+					q0 += "AND     ES." + k.toUpperCase() + " = ? \n";
+					qT0 += "AND     ES." + k.toUpperCase() + " = ? \n";
+				}
+			}
+			
+			if (esdtoH.getPagerInfo().getSortField() != null) {
+				q0 += " ORDER BY " + esdtoH.getPagerInfo().getSortField() + " " + (esdtoH.getPagerInfo().getSortOrder() < 0 ? "DESC" : "ASC") + " \n";
+				qT0 += " ORDER BY " + esdtoH.getPagerInfo().getSortField() + " " + (esdtoH.getPagerInfo().getSortOrder() < 0 ? "DESC" : "ASC") + " \n";
+			}
+			//------------------------------------------------------------------			
+			logger.info("\t->QUERY COUNT:"+q0);
+			ps = conn.prepareStatement(q0);
+
+			int vs = 1;
+			ps.setInt(vs++, esdtoH.getTipoMov());
+			ps.setInt(vs++, esdtoH.getSucursalId());
+			if(esdtoH.getCaja()>0){
+				ps.setInt(vs++, esdtoH.getCaja());
+			}
+
+			if (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null) {
+				ps.setTimestamp(vs++, esdtoH.getFechaInicial());
+				ps.setTimestamp(vs++, esdtoH.getFechaFinal());
+			} else {
+
+			}
+
+			Map<String, Object> filtersValues = esdtoH.getPagerInfo().getFilters();
+			if (filters != null) {
+
+				for (String k : filtersValues.keySet()) {
+					ps.setObject(vs++, filtersValues.get(k));
+				}
+			}
+			rs = ps.executeQuery();
+			rs.last();
+			int size = rs.getRow();
+			rs.beforeFirst();
+			logger.debug("->rs.last(): rs.getRow()=TotalRowCount=" + size);
+			esdtoH.getPagerInfo().setTotalRowCount(size);
+			rs.close();
+			ps.close();
+			ps = null;
+
+			//------------------------------------------------------------------
+			String qR0 = q0 + "LIMIT " + esdtoH.getPagerInfo().getFirst() + "," + esdtoH.getPagerInfo().getPageSize();			
+			logger.debug("\t->QUERY BY PAGE (first=" + esdtoH.getPagerInfo().getFirst() + ",pageSize=" + esdtoH.getPagerInfo().getPageSize() + "):" + q0);
+
+			ps = conn.prepareStatement(qR0);
+			vs = 1;
+			ps.setInt(vs++, esdtoH.getTipoMov());
+			ps.setInt(vs++, esdtoH.getSucursalId());
+			if(esdtoH.getCaja()>0){
+				ps.setInt(vs++, esdtoH.getCaja());
+			}
+			Map<String, Object> filtersValuesT = esdtoH.getPagerInfo().getFilters();
+			if (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null) {
+				ps.setTimestamp(vs++, esdtoH.getFechaInicial());
+				ps.setTimestamp(vs++, esdtoH.getFechaFinal());
+			} else {
+
+			}
+			if (filters != null) {
+				for (String k : filtersValuesT.keySet()) {
+					ps.setObject(vs++, filtersValuesT.get(k));
+				}
+			}
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				EntradaSalidaQuickView x = new EntradaSalidaQuickView();
+				x.setId((Integer) rs.getObject("ES_ID"));
+				x.setTipoMov((Integer) rs.getObject("TIPO_MOV"));
+				x.setSucursalId((Integer) rs.getObject("SUCURSAL_ID"));
+				x.setEstadoId((Integer) rs.getObject("ESTADO_ID"));
+				x.setFechaCreo((Timestamp) rs.getObject("FECHA_CREO"));
+				x.setUsuarioEmailCreo((String) rs.getObject("USUARIO_EMAIL_CREO"));
+				x.setClienteId((Integer) rs.getObject("CLIENTE_ID"));
+				x.setFormaDePagoId((Integer) rs.getObject("FORMA_DE_PAGO_ID"));
+				x.setMetodoDePagoId((Integer) rs.getObject("METODO_DE_PAGO_ID"));
+				x.setFactorIva((Double) rs.getObject("FACTOR_IVA"));
+				x.setComentarios((String) rs.getObject("COMENTARIOS"));
+				x.setCfdId((Integer) rs.getObject("CFD_ID"));
+				x.setNumeroTicket((String) rs.getObject("NUMERO_TICKET"));
+				x.setCaja((Integer) rs.getObject("CAJA"));
+
+				r.add(x);
+			}
+			logger.debug("\t------------------------------");
+			logger.debug("\t->READ :" + r.size() + " RECORDS BY PAGE.");
+		} catch (SQLException ex) {
+			logger.error("SQLException:", ex);
+			throw new DAOException("InQuery:" + ex.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+					ps.close();
+					conn.close();
+				} catch (SQLException ex) {
+					logger.error("\tfindAll:clossing:", ex);
+				}
+			}
+		}
+		return r;
+	}
 
 	public ArrayList<EntradaSalida> findFastAllActiveByPage(EntradaSalidaDTOPageHelper esdtoH) throws DAOException {
 		logger.debug("->findAllActiveByPage(tipoMov=" + esdtoH.getTipoMov() + ",sucursalId=" + esdtoH.getSucursalId() + ",caja="+esdtoH.getCaja()+",active=" + esdtoH.isActive() + ",pagerInfo.filters=" + esdtoH.getPagerInfo().getFilters() + ",fechaInicial=" + esdtoH.getFechaInicial() + ",fechaFinal=" + esdtoH.getFechaFinal() + ",ImporteTotal=" + esdtoH.getImporteTotal() + ")");

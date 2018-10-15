@@ -30,7 +30,7 @@
 			
 			afternoon,cupertino,cruze,redmond,start,delta
 		-->
-        <param-value>afternoon</param-value>
+        <param-value>delta</param-value>
     </context-param>
 	<context-param>
 		<param-name>primefaces.FONT_AWESOME</param-name>
