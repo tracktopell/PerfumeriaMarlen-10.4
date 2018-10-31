@@ -24,4 +24,7 @@ pmarlen-commons/nbactions.xml
 pmarlen-web-ligth/nb-configuration.xml
 pmarlen-web-ligth/faces-config.NavData
 pmarlen-web-ligth/faces-config.NavData
-/pmarlen-commons/nbproject/
+/pmarlen-commons/nbproject/.project
+.settings
+.project
+*/.classpath

@@ -41,5 +41,13 @@ C) Building with Maven 3.x
     3.2 - Explore development database
 
 	mysql --default-character-set=utf8 -u PMDB104_DEVE_USR -pPMDB104_DEVE_PWD PMDB104_DEVE
-	
+
+D) Eclipse Maven & extra configuration
+
+	Open configurations to avoid malisious validations:
+		Window > Preferences > Web > JavaServer Faces Tools > Validation > Type assignment problems
+			Method expression expected: Error -> Ignore|Warning
+			Value expression expected:  Error -> Ignore|Warning
+			
+
 ----------------------------------------------------------------------------------------------------------------------------

@@ -126,4 +126,12 @@
 		</plugins> 	
 	</reporting>
  -->	
+ 	<profiles>
+		<profile>
+			<id>local_dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+        </profile>
+    </profiles>
 </project>
