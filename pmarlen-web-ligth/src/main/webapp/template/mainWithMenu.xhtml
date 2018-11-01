@@ -24,19 +24,21 @@
 
 			<h:form id="formHeader">
 
-				<h:panelGrid columns="2" style="width: 100%" columnClasses="columnWidth30 centerAlign, columnWidth70 leftAlign">
-					<h:panelGrid columns="3" columnClasses="columnWidth10 centerAlign, columnWidth80 leftAlign,columnWidth10 centerAlign ">
+				<h:panelGrid columns="2" style="width: 100%;" cellpadding = "0" cellspacing = "1" columnClasses="columnWidth30 centerAlign, columnWidth70 leftAlign">                    
+                    
+                    <h:panelGrid columns="3" columnClasses="columnWidth10 centerAlign, columnWidth80 leftAlign,columnWidth10 centerAlign " 
+                                 cellpadding = "0" cellspacing = "1" rendered="true">
 						
 						<h:outputLink id="link1" value="#{request.contextPath}/pages/home.jsf">
-							<p:graphicImage value="/images/PM_NewLogo_40x40.png" alt="(LOGO)" title="PERFUMERIA-MARLEN > INICIO"/>
+							<p:graphicImage value="/images/PM_NewLogo_30x30.png" alt="PM" title="PERFUMERIA-MARLEN > INICIO"/>
 						</h:outputLink>
 						
-						<h:panelGrid columns="1">
+						<h:panelGrid columns="1" cellpadding = "0" cellspacing = "0">
 							<h:panelGroup>
-								<h:outputText value="PERFUMERIA MARLEN S.A. DE C.V." styleClass="titleHeader"/>
+								<h:outputText value="PERFUMERIA MARLEN S.A. DE C.V. DISTRIBUCIONES" styleClass="titleHeader"/>
 							</h:panelGroup>
 							<h:panelGroup>
-								<h:outputText value="DISTRIBUCIONES" styleClass="subtitleHeader"/>
+								<h:outputText value="L30" styleClass="subtitleHeader"/>
 							</h:panelGroup>
 							
 						</h:panelGrid>
@@ -56,8 +58,7 @@
 						</h:panelGroup>
 						
 					</h:panelGrid>
-				
-					
+									
 					<p:menubar>
 						<p:submenu label="OPERACI&Oacute;N" icon="ui-icon-gear" rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}">
 							
@@ -240,7 +241,7 @@
                         </h:panelGroup>                        
 					</h:panelGrid>
                     
-					<p:poll interval="60" 
+					<p:poll interval="300" 
                             listener="#{systemInfoMB.updateTime}" 
                             onerror="errorGetTime();"                            
                             onsuccess="successGetTime();"

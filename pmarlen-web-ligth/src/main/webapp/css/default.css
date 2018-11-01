@@ -6,11 +6,16 @@ user: #{sessionUserMB.usuarioAuthenticated.nombreCompleto}
     Author     : alfredo
 */
 
+body {
+   margin: 0;
+   padding: 0;
+}
+
 .ui-widget{
-    font-size: 90%;
+    font-size: 80%;
 }
 .ui-widget .ui-widget {
-    font-size: 95%;
+    font-size: 90%;
 }
 
 .no-rounded-panel{
@@ -36,7 +41,7 @@ user: #{sessionUserMB.usuarioAuthenticated.nombreCompleto}
 }
 
 html { 
-  background: url(../images/Fractal_Lion_Stars_BG.jpg) no-repeat center center fixed; 
+  background: url(../images/Polygon_BG_v0.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
