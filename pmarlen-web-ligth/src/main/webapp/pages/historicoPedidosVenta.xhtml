@@ -23,6 +23,7 @@
 							  paginator="true" lazy="true"
 							  id="pvTable" emptyMessage="-- SIN ELEMENTOS --" 							  
 							  rows="#{historicoPedidosVentaMB.viewRows}"
+							  scrollable="true" scrollWidth="100%"
 							  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} [#{historicoPedidosVentaMB.sizeList}]"
 							  rowsPerPageTemplate="10,25,100">
 					
@@ -34,31 +35,50 @@
 
 					</f:facet>
 					
-					<p:column headerText="#" width="10%" filterBy="#{pv.id}" filterMatchMode="contains">						
-						<p:panelGrid columns="1" columnClasses="centerAlign" >
-							<p:commandButton actionListener="#{historicoPedidosVentaMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
-							<h:panelGroup>
-								<h:outputLink id="pdfLink" value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pv.id}.pdf" target="_blank">
-									<h:graphicImage value="/images/nota_16x16.png" title="PDF NOTA DE VENTA ##{pv.id}"/>
-								</h:outputLink>
-								<p:spacer width="5"/>
-								<h:outputLink id="pdfLinkNoImages" value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pv.id}_paraImprimir.pdf" target="_blank">
-									<h:graphicImage value="/images/nota_16x16.png" title="PDF NOTA DE VENTA ##{pv.id} PARA IMPRIMIR HOJAS MEMBRETADAS"/>
-								</h:outputLink>
-
-							</h:panelGroup>
-						</p:panelGrid>
-					</p:column>
-					
-					
-					<p:column headerText="CREADO" width="15%">
-						<p:panelGrid columns="1" columnClasses="centerAlign" style="border: none; border-collapse: none; ">							
-							<h:outputText value="CREADO / #{pv.fechaCreo} (#{pv.usuarioEmailCreo}) "/>
-							
-						</p:panelGrid>
+					<p:column headerText="#" width="5%" filterBy="#{pv.id}" filterMatchMode="contains">						
 						
+							<p:commandButton actionListener="#{historicoPedidosVentaMB.editar(pv.id)}" value="#{pv.id}" onsuccess="edit();"/>
+							<h:outputLink id="pdfLink" value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pv.id}.pdf" target="_blank">
+								<h:graphicImage value="/images/nota_16x16.png" title="PDF NOTA DE VENTA ##{pv.id}"/>
+							</h:outputLink>
+							<h:outputLink id="pdfLinkNoImages" value="#{request.contextPath}/docs/notas/Nota_PerfumeriaMarlen_No_#{pv.id}_paraImprimir.pdf" target="_blank">
+								<h:graphicImage value="/images/nota_imprimir16x16.png" title="PDF NOTA DE VENTA ##{pv.id} PARA IMPRIMIR HOJAS MEMBRETADAS"/>
+							</h:outputLink>
+
 					</p:column>
 					
+					<p:column headerText="CREADO" width="5%">
+						<h:outputText value="#{pv.fechaCreo}">
+							<f:convertDateTime pattern="yyyy/MM/dd HH:mm" />
+						</h:outputText>	
+					</p:column>
+					<p:column headerText="SUC" width="5%">
+						<h:outputText value="#{pv.sucursalId}"/>
+					</p:column>
+					<p:column headerText="USUARIO" width="10%">						
+						<h:outputText value="#{pv.usuarioEmailCreo}"/>																			
+					</p:column>
+					
+					<p:column headerText="CLIENTE" width="10%">
+						<h:outputText value="#{historicoPedidosVentaMB.getCliente(pv.clienteId)}"/>
+					</p:column>
+					
+					<p:column headerText="FOR DE PAGO" width="5%">
+						<h:outputText value="#{historicoPedidosVentaMB.getFormaDePago(pv.formaDePagoId)}"/>
+					</p:column>
+					
+					<p:column headerText="MET DE PAGO" width="5%">
+						<h:outputText value="#{historicoPedidosVentaMB.getMetodoDePago(pv.metodoDePagoId)}"/>
+					</p:column>
+					
+					<p:column headerText="IVA" width="5%">
+						<h:outputText value="#{pv.factorIva}"/>	
+					</p:column>
+					
+					<p:column headerText="COMENT" width="5%">
+						<h:outputText value="#{pv.comentarios}"/>
+					</p:column>
+
 					<f:facet name="footer">
 
 						<h:outputText value="ELEMENTOS : #{historicoPedidosVentaMB.sizeList}" rendered="true"/>

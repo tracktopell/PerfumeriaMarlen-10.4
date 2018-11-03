@@ -1,19 +1,25 @@
 package com.pmarlen.jsf;
 
+import com.pmarlen.backend.dao.ClienteDAO;
+import com.pmarlen.backend.dao.DAOException;
+import com.pmarlen.backend.dao.FormaDePagoDAO;
+import com.pmarlen.backend.dao.MetodoDePagoDAO;
+import com.pmarlen.backend.model.Cliente;
+import com.pmarlen.backend.model.FormaDePago;
+import com.pmarlen.backend.model.MetodoDePago;
 import com.pmarlen.jsf.model.EntradaSalidaFasterLazyDataModel;
-import com.pmarlen.jsf.model.EntradaSalidaLazyDataModel;
 import com.pmarlen.model.Constants;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import org.apache.log4j.Logger;
 
 @ManagedBean(name="historicoPedidosVentaMB")
-@SessionScoped
+//@SessionScoped
+@ViewScoped
 public class HistoricoPedidosVentaMB  implements Serializable{
 	private transient static Logger logger = Logger.getLogger(HistoricoPedidosVentaMB.class.getName());
 	
@@ -71,5 +77,45 @@ public class HistoricoPedidosVentaMB  implements Serializable{
 	public EntradaSalidaFasterLazyDataModel getLazyModel() {
 		return lazyModel;
 	}
+	
+	public String getCliente(Integer idX){
+		Cliente x = new Cliente();		
+		try{
+			x.setId(idX);
+			x = ClienteDAO.getInstance().findBy(x);
+			logger.info("-->>getCliente("+idX+"):"+x.getRazonSocial());
+			return x.getRazonSocial();
+		}catch(DAOException de){
+			logger.error("-->>getCliente:"+de.getMessage());			
+			return String.valueOf(idX);
+		}		
+	}
+
+	public String getFormaDePago(Integer idX){
+		FormaDePago x = new FormaDePago();		
+		try{
+			x.setId(idX);
+			x = FormaDePagoDAO.getInstance().findBy(x);
+			logger.info("-->>getFormaDePago("+idX+"):"+x.getDescripcion());
+			return x.getDescripcion();
+		}catch(DAOException de){
+			logger.error("-->>getFormaDePago:"+de.getMessage());			
+			return String.valueOf(idX);
+		}
+	}
+	
+	public String getMetodoDePago(Integer idX){
+		MetodoDePago x = new MetodoDePago();		
+		try{
+			x.setId(idX);
+			x = MetodoDePagoDAO.getInstance().findBy(x);
+			logger.info("-->>getMetodoDePago("+idX+"):"+x.getDescripcion());
+			return x.getDescripcion();
+		}catch(DAOException de){
+			logger.error("-->>getMetodoDePago:"+de.getMessage());			
+			return String.valueOf(idX);
+		}
+	}
+	
 	
 }

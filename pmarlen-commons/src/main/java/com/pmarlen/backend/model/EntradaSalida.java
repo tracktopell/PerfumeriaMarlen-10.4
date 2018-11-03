@@ -55,7 +55,7 @@ public class EntradaSalida implements java.io.Serializable {
     /**
     * metodo de pago id
     */
-    private Integer metodoDePagoId;
+	private Integer metodoDePagoId;
     
     /**
     * factor iva
