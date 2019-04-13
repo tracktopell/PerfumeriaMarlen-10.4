@@ -16,7 +16,7 @@
 			<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/images/turboload/Logo_T3.gif" />
 			<link rel="icon"          type="image/x-icon" href="#{request.contextPath}/images/Logo_icono_3.ico"/>
 			<ui:insert name="extraCss">
-				<!-- HERE INSSERT EXTRA CSS -->
+				<!-- HERE INSERT EXTRA CSS -->
 			</ui:insert>
         </h:head>
 
@@ -101,29 +101,6 @@
 							<p:menuitem value="SUCURSALES " url="/pages/inventarioSucursal.jsf" icon="ui-icon-home"  rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}"/>
 						</p:submenu>
 						
-						<!--
-						<p:submenu label="SUCURSALES" icon="ui-icon-home" rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}">
-							<p:submenu label="SÁN MARTÍN" icon="ui-icon-calculator">
-								<p:menuitem value="VENTAS"     icon="ui-icon-contact"          url="/pages/pendiente.jsf"/>
-								<p:menuitem value="DEVOL V."   icon="ui-icon-arrowreturn-1-w"  url="/pages/pendiente.jsf"/>
-							</p:submenu>
-							
-							<p:submenu label="TECÁMAC" icon="ui-icon-calculator">
-								<p:menuitem value="VENTAS"     icon="ui-icon-contact"          url="/pages/pendiente.jsf"/>
-								<p:menuitem value="DEVOL V."   icon="ui-icon-arrowreturn-1-w"  url="/pages/pendiente.jsf"/>							
-							</p:submenu>
-							
-							<p:submenu label="OJO DE AGUA" icon="ui-icon-calculator">
-								<p:menuitem value="VENTAS"     icon="ui-icon-contact"          url="/pages/pendiente.jsf"/>
-								<p:menuitem value="DEVOL V."   icon="ui-icon-arrowreturn-1-w"  url="/pages/pendiente.jsf"/>						
-							</p:submenu>
-							
-							<p:submenu label="LOS REYES" icon="ui-icon-calculator">
-								<p:menuitem value="VENTAS"     icon="ui-icon-contact"          url="/pages/pendiente.jsf"/>
-								<p:menuitem value="DEVOL V."   icon="ui-icon-arrowreturn-1-w"  url="/pages/pendiente.jsf"/>						
-							</p:submenu>							
-						</p:submenu>
-						-->
 						<p:submenu label="ADMINISTRACI&Oacute;N" icon="ui-icon-suitcase"  rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}">
 							
 							<p:submenu label="CAT&Aacute;LOGOS" icon="ui-icon-newwin">
@@ -134,6 +111,7 @@
 							</p:submenu>
 														
 							<p:submenu label="SISTEMA" icon="ui-icon-newwin" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
+								<p:menuitem value="SESIONES ACTIVAS" url="/pages/sesionesActivas.jsf" icon="ui-icon-clock" ></p:menuitem>
 								<p:menuitem value="USUARIOS" url="/pages/usuario.jsf" icon="ui-icon-person" />
 								<p:menuitem value="SUCURSALES" url="/pages/pendiente.jsf" icon="ui-icon-star" />
 								<p:menuitem value="TOKEN"      url="/pages/token.jsf" icon="ui-icon-locked"/>
@@ -141,23 +119,6 @@
 							
 						</p:submenu>
 						
-						<p:submenu label="REPORTES" icon="ui-icon-script">
-							<p:submenu label="VENTAS" icon="ui-icon-check" rendered="#{sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
-								<p:menuitem value="X #PEDIDO" url="/pages/pendiente.jsf" icon="ui-icon-star"/>
-								<p:menuitem value="X PRODUCTO" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
-								<p:menuitem value="X LINEA-MARCA" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
-								<p:menuitem value="X PROVEEDOR" url="/pages/pendiente.jsf" icon="ui-icon-bookmark"/>
-							</p:submenu>								
-						</p:submenu>
-
-						<p:submenu label="CONTROL" icon="ui-icon-locked" rendered="#{sessionUserMB.usuarioAuthenticated.habilitado and sessionUserMB.usuarioAuthenticated.playsAsAdmin}">
-							<p:menuitem value="SESIONES ACTIVAS" url="/pages/sesionesActivas.jsf" icon="ui-icon-clock" ></p:menuitem>
-							<p:menuitem value="CONFIGURACIONES" url="/pages/pendiente.jsf" icon="ui-icon-wrench"  ></p:menuitem>
-							<p:menuitem value="REINICIAR SERVIDOR" url="/pages/pendiente.jsf" icon="ui-icon-power" ></p:menuitem>
-							<p:menuitem value="SQL" url="/pages/pendiente.jsf" icon="ui-icon-disk" ></p:menuitem>
-							<p:menuitem value="RESPALDO" url="/pages/pendiente.jsf" icon="ui-icon-alert"  ></p:menuitem>
-						</p:submenu>
-
 						<f:facet name="options">
 							<p:menuButton value="#{sessionUserMB.usuarioAuthenticated.nombreCompleto}" >
 								<p:menuitem value="AYUDA" url="/pages/ayuda.jsf" icon="ui-icon-help"  rendered="#{sessionUserMB.usuarioAuthenticated.habilitado}"/>

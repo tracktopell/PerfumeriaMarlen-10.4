@@ -74,6 +74,7 @@ public class MemoryDAO {
 		properties.put("sucursal","1");
 		properties.put("caja","1");
 		properties.put("host","localhost");
+		properties.put("alternativehost","pm-aws-i1.dyndns.org");
 		properties.put("port","8070");
 		properties.put("context","/l30");
 		properties.put("textSystemPrinterColumns","38");
@@ -106,9 +107,15 @@ public class MemoryDAO {
 		
 		if(fileProperties.exists() && fileProperties.canRead()){
 			try {
-				logger.debug("->Properties local File found, reading File Properties:"+fileProperties+"");
+				logger.info("->Properties local File found, reading File Properties:"+fileProperties+"");
 				properties.load(new FileInputStream(fileProperties));
-				logger.debug("->ok, Properties read:"+properties);
+				logger.info("->ok, Properties read:"+properties);
+
+				if(properties.get("alternativehost") == null){
+					logger.info("->adding alternativehost to Properties");
+					properties.put("alternativehost","pm-aws-i1.dyndns.org");
+				}
+
 				exsistFile = true;
 			}catch(IOException ioe){				
 				logger.error( "Can`t read File for properties", ioe);
@@ -204,9 +211,9 @@ public class MemoryDAO {
 	public final static int SYNC_STATE_ERROR                 = 99;
 	
 	private final static long TIMESLEEP_MS        = 1000L;
-	private final static int  DOWNLOADPERIOD_SECS = 240;
-	private final static int  IMALIVEPERIOD_SECS  = 120;
-    private final static int  CIERREPERIOD_SECS   = 2;
+	private final static int  DOWNLOADPERIOD_SECS = 1800; // 30 min.
+	private final static int  IMALIVEPERIOD_SECS  = 600;  // 10 min.
+    private final static int  CIERREPERIOD_SECS   = 30;    
 	
 	public static void getPaqueteSyncPoll() {
 		
