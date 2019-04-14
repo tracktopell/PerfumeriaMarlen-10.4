@@ -211,8 +211,8 @@ public class MemoryDAO {
 	public final static int SYNC_STATE_ERROR                 = 99;
 	
 	private final static long TIMESLEEP_MS        = 1000L;
-	private final static int  DOWNLOADPERIOD_SECS = 1800; // 30 min.
-	private final static int  IMALIVEPERIOD_SECS  = 600;  // 10 min.
+	private final static int  DOWNLOADPERIOD_SECS = 180; // current 3 min.  AWS shuld be  30 min.
+	private final static int  IMALIVEPERIOD_SECS  = 60;  // current 1 min.  AWS shouldbe  10 min.
     private final static int  CIERREPERIOD_SECS   = 30;    
 	
 	public static void getPaqueteSyncPoll() {
