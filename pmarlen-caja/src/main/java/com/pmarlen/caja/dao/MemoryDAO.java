@@ -472,25 +472,16 @@ public class MemoryDAO {
 		try{
 			String stdout = runSpecialCommand("lsusb");
 			logger.debug("buildIAmALivePackageDTO: lsusb: -->"+stdout+"<--");
-		//	iAmAliveDTOPackage.setDevicesInfoUSB(stdout);
+			iAmAliveDTOPackage.setDevicesInfoUSB(stdout);
 		}catch(Exception ise){
 			logger.error("error running command: lsusb");
-		//	iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
+			iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
 		}
 		
 		iAmALiveBuild++;
 		return iAmAliveDTOPackage;
 	}
 	
-	public static void main(String[] args) {
-		try{
-			String stdout = runSpecialCommand("lsusb");
-			System.out.println(stdout);
-		}catch(IllegalStateException ise){
-			ise.printStackTrace(System.err);
-			
-		}	
-	}
 	private static String runSpecialCommand(String cmd){
 		String stdout=null;
 		StringBuilder sbouterr = new StringBuilder();
@@ -530,10 +521,9 @@ public class MemoryDAO {
 			}
 			sbouterr.append("\"");
 			sbouterr.append("}");
-			stdout = sbouterr.toString();
-			
-		} catch(IOException ioe){
-			throw new IllegalStateException("Error exec:"+ioe);
+			stdout = sbouterr.toString();			
+		} catch(Exception ioe){
+			throw new IllegalStateException("Error exec:"+ioe.toString());
 		}
 		
 		return stdout;
