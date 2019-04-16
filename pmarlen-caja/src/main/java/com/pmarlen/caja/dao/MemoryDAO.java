@@ -472,10 +472,10 @@ public class MemoryDAO {
 		try{
 			String stdout = runSpecialCommand("lsusb");
 			logger.debug("buildIAmALivePackageDTO: lsusb: -->"+stdout+"<--");
-			iAmAliveDTOPackage.setDevicesInfoUSB(stdout);
+			//iAmAliveDTOPackage.setDevicesInfoUSB(stdout);
 		}catch(Exception ise){
 			logger.error("error running command: lsusb");
-			iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
+			//iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
 		}
 		
 		iAmALiveBuild++;
