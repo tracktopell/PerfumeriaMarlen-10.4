@@ -67,7 +67,7 @@ public class IAmAliveService {
 				cajaSessionInfo.setSucursal(String.valueOf(syncDTORequest.getSucursalId()));
 				cajaSessionInfo.setRemoteAddr(callerIpAddress);
 				cajaSessionInfo.setUserAgent(syncDTORequest.getUserAgent());
-				cajaSessionInfo.setDevicesInfoUSB(syncDTORequest.getDevicesInfoUSB());
+				//cajaSessionInfo.setDevicesInfoUSB(syncDTORequest.getDevicesInfoUSB());
 				ContextAndSessionListener.cajaSessionInfoHT.put(syncDTORequest.getSessionId(), cajaSessionInfo);
 			}
 			if (syncDTORequest.getLoggedIn() != null) {
