@@ -14,6 +14,7 @@ public class IAmAliveDTORequest implements Serializable{
 	private String loggedIn;
 	private UserAgent userAgent;
 	private CorteCajaDTO corteCajaDTO;
+	private String  devicesInfoUSB;
 	private byte[]  currentSnapchotImg;
 	private Long    currentSnapshotTime;	
 
@@ -112,6 +113,14 @@ public class IAmAliveDTORequest implements Serializable{
 
 	public Long getCurrentSnapshotTime() {
 		return currentSnapshotTime;
+	}
+
+	public String getDevicesInfoUSB() {
+		return devicesInfoUSB;
+	}
+
+	public void setDevicesInfoUSB(String devicesInfoUSB) {
+		this.devicesInfoUSB = devicesInfoUSB;
 	}
 	
 }

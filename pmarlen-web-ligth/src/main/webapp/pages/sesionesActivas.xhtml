@@ -79,8 +79,8 @@
 						<h:outputText value="#{sessionCajaInfo.lastAccesedTimeDiff}" />
 					</p:column>
 					
-					<p:column headerText="DIR. REMOTA" width="10%">
-						<h:outputText value="#{sessionCajaInfo.remoteAddr}" />
+					<p:column headerText="USB DEVICES INFO" width="10%">
+						<h:outputText value="java-ver:#{sessionCajaInfo.devicesInfoUSB}" />
 					</p:column>
 					
 					<p:column headerText="USER-AGENT" width="35%">
@@ -90,12 +90,14 @@
 							<h:outputText value="user:#{sessionCajaInfo.userAgent.userInSession}" />
 							<h:outputText value="ver:#{sessionCajaInfo.userAgent.version}" />
 							<h:outputText value="dir:#{sessionCajaInfo.userAgent.workingDirectory}" />
+							
+							<h:outputText value="remAddr:#{sessionCajaInfo.remoteAddr}" />
 						</h:panelGrid>
 					</p:column>
 
 				</p:dataTable>
 				
-				<p:poll interval="5" listener="#{systemInfoMB.updateTime}" update="entityTable,entityTable2" />				
+				<p:poll interval="30" listener="#{systemInfoMB.updateTime}" update="entityTable,entityTable2" />				
 
 				<p:overlayPanel widgetVar="corteCajaOP" showEffect="fade" hideEffect="fade" dismissable="false" showCloseIcon="true">
 					<p:outputPanel id="corteCajaDetail">

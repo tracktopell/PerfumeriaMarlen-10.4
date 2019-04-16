@@ -469,8 +469,73 @@ public class MemoryDAO {
 			iAmAliveDTOPackage.setCorteCajaDTO(lastSavedCC);
 		}
 		
+		try{
+			String stdout = runSpecialCommand("lsusb");
+			iAmAliveDTOPackage.setDevicesInfoUSB(stdout);
+		}catch(IllegalStateException ise){
+			logger.error("error running command:");
+			iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
+		}
+		
 		iAmALiveBuild++;
 		return iAmAliveDTOPackage;
+	}
+	
+	public static void main(String[] args) {
+		try{
+			String stdout = runSpecialCommand("lsusb");
+			System.out.println(stdout);
+		}catch(IllegalStateException ise){
+			ise.printStackTrace(System.err);
+			
+		}	
+	}
+	private static String runSpecialCommand(String cmd){
+		String stdout=null;
+		StringBuilder sbouterr = new StringBuilder();
+		
+		Runtime rt = Runtime.getRuntime();
+		String[] commands = {cmd};
+		try{
+			Process proc = rt.exec(commands);
+
+			BufferedReader stdInput = new BufferedReader(new 
+				 InputStreamReader(proc.getInputStream()));
+
+			BufferedReader stdError = new BufferedReader(new 
+				 InputStreamReader(proc.getErrorStream()));
+
+			sbouterr.append("{\"stdout\":\"");
+			String s = null;
+			int numLines;
+			numLines=0;
+			while ((s = stdInput.readLine()) != null) {
+				if(numLines>0){
+					sbouterr.append("|");
+				}
+				sbouterr.append(s);
+				numLines++;
+			}
+			sbouterr.append("\"");
+			
+			sbouterr.append(",\"stderr\":\"");
+			numLines=0;
+			while ((s = stdError.readLine()) != null) {
+				if(numLines>0){
+					sbouterr.append("|");
+				}
+				sbouterr.append(s);
+				numLines++;
+			}
+			sbouterr.append("\"");
+			sbouterr.append("}");
+			stdout = sbouterr.toString();
+			
+		} catch(IOException ioe){
+			throw new IllegalStateException("Error exec:"+ioe);
+		}
+		
+		return stdout;
 	}
 	
 	private static IAmAliveDTOPackage iAmAliveDTOPackage=null;
