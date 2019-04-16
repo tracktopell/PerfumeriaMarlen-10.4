@@ -469,13 +469,13 @@ public class MemoryDAO {
 			iAmAliveDTOPackage.setCorteCajaDTO(lastSavedCC);
 		}
 		
-		try{
-			String stdout = runSpecialCommand("lsusb");
-			iAmAliveDTOPackage.setDevicesInfoUSB(stdout);
-		}catch(IllegalStateException ise){
-			logger.error("error running command:");
-			iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
-		}
+		//try{
+		//	String stdout = runSpecialCommand("lsusb");
+		//	iAmAliveDTOPackage.setDevicesInfoUSB(stdout);
+		//}catch(IllegalStateException ise){
+		//	logger.error("error running command:");
+		//	iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
+		//}
 		
 		iAmALiveBuild++;
 		return iAmAliveDTOPackage;
