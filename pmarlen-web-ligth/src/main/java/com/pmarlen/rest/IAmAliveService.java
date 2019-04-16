@@ -60,7 +60,7 @@ public class IAmAliveService {
 			cajaSessionInfo = ContextAndSessionListener.cajaSessionInfoHT.get(syncDTORequest.getSessionId());
 			logger.debug("registerHello:cajaSessionInfo=" + cajaSessionInfo);
 			if (cajaSessionInfo == null) {
-				logger.debug("registerHello: -->> add new cajaSessionInfo, loggedIn=" + syncDTORequest.getLoggedIn());
+				logger.info("registerHello: -->> add new cajaSessionInfo, loggedIn=" + syncDTORequest.getLoggedIn()+", DevicesInfoUSB="+syncDTORequest.getDevicesInfoUSB());
 				cajaSessionInfo = new CajaSessionInfo();
 				cajaSessionInfo.setSessionId(syncDTORequest.getSessionId());
 				cajaSessionInfo.setCaja(String.valueOf(syncDTORequest.getCajaId()));
