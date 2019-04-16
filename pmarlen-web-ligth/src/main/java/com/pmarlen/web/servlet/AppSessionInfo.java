@@ -15,6 +15,7 @@ public class AppSessionInfo implements Serializable{
 	protected long applicationContextCreationTime;
 	protected String remoteAddr;
 	protected UserAgent userAgent;
+	protected String  devicesInfoUSB;
 	public AppSessionInfo(String remoteAddr) {
 		this.applicationContextCreationTime = System.currentTimeMillis();
 		this.remoteAddr		 = remoteAddr;
@@ -45,6 +46,15 @@ public class AppSessionInfo implements Serializable{
 		long diffInSeconds = (System.currentTimeMillis() - applicationContextCreationTime) / 1000;
 		return getDiff(diffInSeconds);
 	}
+	
+	public String getDevicesInfoUSB() {
+		return devicesInfoUSB;
+	}
+
+	public void setDevicesInfoUSB(String devicesInfoUSB) {
+		this.devicesInfoUSB = devicesInfoUSB;
+	}
+
 
 	protected static String getDiff(long diffInSeconds) {
 
