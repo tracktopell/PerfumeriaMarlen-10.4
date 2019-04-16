@@ -465,17 +465,18 @@ public class MemoryDAO {
 			logger.debug("buildIAmALivePackageDTO: A) corteCajaDTOEnviar="+corteCajaDTOEnviar);
 			iAmAliveDTOPackage.setCorteCajaDTO(corteCajaDTOEnviar);
 		} else {
-            logger.debug("buildIAmALivePackageDTO: B) lastSavedCC="+lastSavedCC);
+			logger.debug("buildIAmALivePackageDTO: B) lastSavedCC="+lastSavedCC);
 			iAmAliveDTOPackage.setCorteCajaDTO(lastSavedCC);
 		}
 		
-		//try{
-		//	String stdout = runSpecialCommand("lsusb");
+		try{
+			String stdout = runSpecialCommand("lsusb");
+			logger.debug("buildIAmALivePackageDTO: lsusb: -->"+stdout+"<--");
 		//	iAmAliveDTOPackage.setDevicesInfoUSB(stdout);
-		//}catch(IllegalStateException ise){
-		//	logger.error("error running command:");
+		}catch(Exception ise){
+			logger.error("error running command: lsusb");
 		//	iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
-		//}
+		}
 		
 		iAmALiveBuild++;
 		return iAmAliveDTOPackage;
