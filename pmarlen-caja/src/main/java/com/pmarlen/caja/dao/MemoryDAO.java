@@ -41,6 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
@@ -470,12 +471,64 @@ public class MemoryDAO {
 		}
 		
 		try{
-			//String stdout = runSpecialCommand("lsusb");
-			//logger.debug("buildIAmALivePackageDTO: lsusb: -->"+stdout+"<--");			
-			//iAmAliveDTOPackage.setDevicesInfoUSB(stdout);
+			String stdout = null;
+			
+			logger.info("------------>>> buildIAmALivePackageDTO: lsusb: os.name="+System.getProperty("os.name"));
+			
+			if(System.getProperty("os.name").toLowerCase().contains("linux")){
+				stdout=runSpecialCommand("lsusb");
+				logger.info("buildIAmALivePackageDTO: lsusb: LINUX -->"+stdout+"<--");
+				String[] linesUSB = stdout.split("\\|");
+				List<String> linesUSBList=new ArrayList<>();
+				for(String lineUSB: linesUSB){
+					String[] valuesUSBInfo=lineUSB.split("\\s+");					
+					logger.info("\tbuildIAmALivePackageDTO: line="+lineUSB+" -> "+Arrays.asList(valuesUSBInfo));
+					if(valuesUSBInfo.length >=6){
+						StringBuilder sbLineUSBInfo=new StringBuilder();
+						sbLineUSBInfo.append(valuesUSBInfo[5]).append("@");
+						for(int j=6;j<valuesUSBInfo.length;j++){
+							sbLineUSBInfo.append(valuesUSBInfo[j]).append(" ");
+						}
+						linesUSBList.add(sbLineUSBInfo.toString().trim());
+						logger.info("\t\tbuildIAmALivePackageDTO: add sbLineUSBInfo="+sbLineUSBInfo.toString().trim());
+					} else {
+						linesUSBList.add(lineUSB);
+						logger.info("\t\tbuildIAmALivePackageDTO: add lineUSB:"+lineUSB);
+					}															
+				}
+				logger.info("===========>> buildIAmALivePackageDTO: setDevicesInfoUSB:"+linesUSBList.toString());
+				iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
+				
+			} else if(System.getProperty("os.name").toLowerCase().contains("mac")){
+				stdout=runSpecialCommand("/opt/local/bin/lsusb");
+				logger.info("buildIAmALivePackageDTO: lsusb: MAC-->"+stdout+"<--");			
+				String[] linesUSB = stdout.split("\\|");
+				List<String> linesUSBList=new ArrayList<>();
+				for(String lineUSB: linesUSB){
+					String[] valuesUSBInfo=lineUSB.split("\\s+");					
+					logger.info("\tbuildIAmALivePackageDTO: line="+lineUSB+" -> "+Arrays.asList(valuesUSBInfo));
+					if(valuesUSBInfo.length >=6){
+						StringBuilder sbLineUSBInfo=new StringBuilder();
+						sbLineUSBInfo.append(valuesUSBInfo[5]).append("@");
+						for(int j=6;j<valuesUSBInfo.length;j++){
+							sbLineUSBInfo.append(valuesUSBInfo[j]).append(" ");
+						}
+						linesUSBList.add(sbLineUSBInfo.toString().trim());
+						logger.info("\t\tbuildIAmALivePackageDTO: add sbLineUSBInfo="+sbLineUSBInfo.toString().trim());
+					} else {
+						linesUSBList.add(lineUSB);
+						logger.info("\t\tbuildIAmALivePackageDTO: add lineUSB:"+lineUSB);
+					}															
+				}
+				logger.info("===========>> buildIAmALivePackageDTO: setDevicesInfoUSB:"+linesUSBList.toString());
+				iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
+			} else{
+				logger.info("buildIAmALivePackageDTO: we haven't lsusb");
+			}
+			
 		}catch(Exception ise){
-			logger.error("error running command: lsusb");
-			//iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
+			logger.error("error running command: lsusb:",ise);
+			iAmAliveDTOPackage.setDevicesInfoUSB("lsusb:ERROR_EXEC");
 		}
 		
 		iAmALiveBuild++;
@@ -484,7 +537,7 @@ public class MemoryDAO {
 	
 	private static String runSpecialCommand(String cmd){
 		String stdout=null;
-		StringBuilder sbouterr = new StringBuilder();
+		StringBuilder sbout = new StringBuilder();
 		
 		Runtime rt = Runtime.getRuntime();
 		String[] commands = {cmd};
@@ -493,35 +546,18 @@ public class MemoryDAO {
 
 			BufferedReader stdInput = new BufferedReader(new 
 				 InputStreamReader(proc.getInputStream()));
-
-			BufferedReader stdError = new BufferedReader(new 
-				 InputStreamReader(proc.getErrorStream()));
-
-			sbouterr.append("{\"stdout\":\"");
+					
 			String s = null;
 			int numLines;
 			numLines=0;
 			while ((s = stdInput.readLine()) != null) {
 				if(numLines>0){
-					sbouterr.append("|");
+					sbout.append("|");
 				}
-				sbouterr.append(s);
+				sbout.append(s);
 				numLines++;
 			}
-			sbouterr.append("\"");
-			
-			sbouterr.append(",\"stderr\":\"");
-			numLines=0;
-			while ((s = stdError.readLine()) != null) {
-				if(numLines>0){
-					sbouterr.append("|");
-				}
-				sbouterr.append(s);
-				numLines++;
-			}
-			sbouterr.append("\"");
-			sbouterr.append("}");
-			stdout = sbouterr.toString();			
+			stdout = sbout.toString();			
 		} catch(Exception ioe){
 			throw new IllegalStateException("Error exec:"+ioe.toString());
 		}
