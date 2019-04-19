@@ -496,8 +496,8 @@ public class MemoryDAO {
 						logger.info("\t\tbuildIAmALivePackageDTO: add lineUSB:"+lineUSB);
 					}															
 				}
-				logger.info("===========>> buildIAmALivePackageDTO: setDevicesInfoUSB:"+linesUSBList.toString());
-				iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
+				logger.info("===========>> buildIAmALivePackageDTO: NOT setDevicesInfoUSB:"+linesUSBList.toString());
+				//iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
 				
 			} else if(System.getProperty("os.name").toLowerCase().contains("mac")){
 				stdout=runSpecialCommand("/opt/local/bin/lsusb");
@@ -520,8 +520,8 @@ public class MemoryDAO {
 						logger.info("\t\tbuildIAmALivePackageDTO: add lineUSB:"+lineUSB);
 					}															
 				}
-				logger.info("===========>> buildIAmALivePackageDTO: setDevicesInfoUSB:"+linesUSBList.toString());
-				iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
+				logger.info("===========>> buildIAmALivePackageDTO: NOT setDevicesInfoUSB:"+linesUSBList.toString());
+				//iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
 			} else{
 				logger.info("buildIAmALivePackageDTO: we haven't lsusb");
 			}
