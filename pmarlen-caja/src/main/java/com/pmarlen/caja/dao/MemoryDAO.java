@@ -223,14 +223,14 @@ public class MemoryDAO {
 		logger.debug("getPaqueteSyncPoll:========================>>BEFORE while<<========================("+runnigPool+")");
 		syncPollState = SYNC_STATE_BEFORE_RUNNING;
 		for(xt=0;runnigPool;xt++){
-			logger.trace("getPaqueteSyncPoll:\t----------------->> while running, download");
+			logger.debug("getPaqueteSyncPoll:\t----------------->> while running, download");
 			if(xt % DOWNLOADPERIOD_SECS == 0){
 				try {
 					syncPollState = SYNC_STATE_BEFORE_CONNECTING;
-					logger.trace("getPaqueteSyncPoll: -->  [  DOWNLOAD  ] syncPollState="+syncPollState);
+					logger.debug("getPaqueteSyncPoll: -->  [  DOWNLOAD  ] syncPollState="+syncPollState);
 					download();
 					syncPollState = SYNC_STATE_BEFORE_DOWNLOADED;
-					logger.trace("getPaqueteSyncPoll:\t----------------->> OK, downloded, read locally, syncPollState="+syncPollState);
+					logger.debug("getPaqueteSyncPoll:\t----------------->> OK, downloded, read locally, syncPollState="+syncPollState);
 					readLocally();
 					syncPollState = SYNC_STATE_READ;
 				}catch(ConnectException ce){
@@ -272,9 +272,9 @@ public class MemoryDAO {
                     logger.debug("getPaqueteSyncPoll: CIERRE ==>> CIERRE MAS RAPIDO !!");
                     try {					
                         syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
-                        logger.trace("getPaqueteSyncPoll: CIERRE --> [  DOWNLOAD ]syncPollState="+syncPollState);
+                        logger.debug("getPaqueteSyncPoll: CIERRE --> [  DOWNLOAD ]syncPollState="+syncPollState);
                         download();
-                        logger.trace("getPaqueteSyncPoll: CIERRE --> after download : syncPollState="+syncPollState);
+                        logger.debug("getPaqueteSyncPoll: CIERRE --> after download : syncPollState="+syncPollState);
                         readLocally();
                         syncPollState = SYNC_STATE_READ;
                     }catch(ConnectException ce){
@@ -291,13 +291,13 @@ public class MemoryDAO {
                         syncPollState = SYNC_STATE_ERROR;
                     }
                 } else{
-                    logger.trace("getPaqueteSyncPoll: NO ES ESTADO DE CIERRE:enviandoCierreCaja="+enviandoCierreCaja+", corteCajaDTOEnviar="+corteCajaDTOEnviar);
+                    logger.debug("getPaqueteSyncPoll: NO ES ESTADO DE CIERRE:enviandoCierreCaja="+enviandoCierreCaja+", corteCajaDTOEnviar="+corteCajaDTOEnviar);
                     //continue;
                 }
 			}
 			
 			try {
-				logger.trace("getPaqueteSyncPoll:\t----------------->> while running, sleep for TIMESLEEP_MS="+TIMESLEEP_MS+" ms , DOWNLOADPERIOD_SECS="+DOWNLOADPERIOD_SECS+" ms.., syncPollState="+syncPollState);
+				logger.debug("getPaqueteSyncPoll:\t----------------->> while running, sleep for TIMESLEEP_MS="+TIMESLEEP_MS+" ms , DOWNLOADPERIOD_SECS="+DOWNLOADPERIOD_SECS+" ms.., syncPollState="+syncPollState);
 				Thread.sleep(TIMESLEEP_MS);
 			}catch(Exception e){
 				logger.error("getPaqueteSyncPoll:->sleep ? ",e);
@@ -408,12 +408,12 @@ public class MemoryDAO {
 			os.close();
 			long t4=System.currentTimeMillis();
 			File fileZip =  new File(fileName);
-			logger.trace("download:  fileZip = "+fileZip.length()+" bytes. == "+rl);						
-			logger.trace("download:  T = "+(t4-t0));
-			logger.trace("download:+T1 = "+(t1-t0));
-			logger.trace("download:+T2 = "+(t2-t1));
-			logger.trace("download:+T3 = "+(t3-t2));					
-			logger.trace("download:+T4 = "+(t4-t3));			
+			logger.debug("download:  fileZip = "+fileZip.length()+" bytes. == "+rl);						
+			logger.debug("download:  T = "+(t4-t0));
+			logger.debug("download:+T1 = "+(t1-t0));
+			logger.debug("download:+T2 = "+(t2-t1));
+			logger.debug("download:+T3 = "+(t3-t2));					
+			logger.debug("download:+T4 = "+(t4-t3));			
 		} catch (ClientHandlerException e) {
 			logger.debug("download:ClientHandlerException Cause:="+e.getCause().getClass());
 			if(e.getCause() instanceof ConnectException){
@@ -579,15 +579,15 @@ public class MemoryDAO {
 			
 			String jsonInput = null;
 			IAmAliveDTORequest iAmAliveDTORequest = buildIAmALivePackageDTO();
-			logger.trace("iamalive:-->> building: IAmAliveDTORequest="+iAmAliveDTORequest+", before send.");
+			logger.debug("iamalive:-->> building: IAmAliveDTORequest="+iAmAliveDTORequest+", before send.");
 			
 			long t1=System.currentTimeMillis();
 			
 			jsonInput = gson.toJson(iAmAliveDTORequest);
 			
-			logger.trace("iamalive:...invoking with:IAmAliveDTORequest="+jsonInput);
+			logger.debug("iamalive:...invoking with:IAmAliveDTORequest="+jsonInput);
 			ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,jsonInput);
-			logger.trace("iamalive:...get response");
+			logger.debug("iamalive:...get response");
 			long t2=System.currentTimeMillis();
 			if(enviandoCierreCaja && iAmAliveDTORequest.getCorteCajaDTO().getTipoEvento() == Constants.TIPO_EVENTO_CIERRE) {
 				enviandoCierreCaja = false;
@@ -604,24 +604,24 @@ public class MemoryDAO {
 			}
 			iAmALiveOKEnviadas++;
 			
-			logger.trace("iamalive:OK, not error, trying get JSON response");
+			logger.debug("iamalive:OK, not error, trying get JSON response");
 			byte byteArr[]=new byte[0];
 			byte[] output = response.getEntity(byteArr.getClass());
 			long t3=System.currentTimeMillis();
-			logger.trace("iamalive:Output from Server:output.length="+output.length);
+			logger.debug("iamalive:Output from Server:output.length="+output.length);
 			String content = new String(output);			
 			String jsonContent=new String(content);					
-			logger.trace("iamalive:jsonContent:"+jsonContent);
+			logger.debug("iamalive:jsonContent:"+jsonContent);
 			
 			if(jsonContent != null) {
 				iAmAliveDTOPackage = gson.fromJson(jsonContent, IAmAliveDTOPackage.class);			
 				long t4=System.currentTimeMillis();
 
-				logger.trace("iamalive:  T = "+(t4-t0));
-				logger.trace("iamalive:+T1 = "+(t1-t0));
-				logger.trace("iamalive:+T2 = "+(t2-t1));
-				logger.trace("iamalive:+T3 = "+(t3-t2));					
-				logger.trace("iamalive:+T4 = "+(t4-t3));
+				logger.debug("iamalive:  T = "+(t4-t0));
+				logger.debug("iamalive:+T1 = "+(t1-t0));
+				logger.debug("iamalive:+T2 = "+(t2-t1));
+				logger.debug("iamalive:+T3 = "+(t3-t2));					
+				logger.debug("iamalive:+T4 = "+(t4-t3));
 			}
 		} catch (ClientHandlerException e) {
 			logger.debug("iamalive:ClientHandlerException:",e);
@@ -690,7 +690,7 @@ public class MemoryDAO {
 				byte buffer[] =new byte[1024];
 				ByteArrayOutputStream baos= new ByteArrayOutputStream();
 				if(ze.getName().endsWith(".json")){
-					logger.trace("readLocally:\tReading from:"+ze.getName()+", "+ze.getSize()+" bytes");
+					logger.debug("readLocally:\tReading from:"+ze.getName()+", "+ze.getSize()+" bytes");
 					InputStream is = zf.getInputStream(ze);
 					int r=0;
 					while((r=is.read(buffer))!=-1){
@@ -699,14 +699,14 @@ public class MemoryDAO {
 					}
 					baos.close();
 					is.close();
-					logger.trace("readLocally:\tOK read.");
+					logger.debug("readLocally:\tOK read.");
 					
 					content = baos.toByteArray();
-					logger.trace("readLocally:\tcontent.length="+content.length);
+					logger.debug("readLocally:\tcontent.length="+content.length);
 					
 					jsonContent=new String(content);					
 					
-					logger.trace("readLocally:\tjsonContent.size="+jsonContent.length());
+					logger.debug("readLocally:\tjsonContent.size="+jsonContent.length());
 					//logger.debug("jsonContent="+jsonContent);
 				}
 			}
@@ -760,23 +760,23 @@ public class MemoryDAO {
 				
 				List<I> lp = paqueteSinc.getInventarioSucursalList();
 				productosParaBuscar = new HashMap<String,I>();
-				logger.trace("readLocally:productosParaBuscar, begin");
+				logger.debug("readLocally:productosParaBuscar, begin");
 				long t0=System.currentTimeMillis();
 				for(I p: lp){
 					productosParaBuscar.put(p.getCb(),p);
 				}
 				long t=t0-System.currentTimeMillis();
-				logger.trace("readLocally:productosParaBuscar, ready T="+t);
-				logger.trace("readLocally:paqueteSinc.getSucursal="+paqueteSinc.getSucursal());				
+				logger.debug("readLocally:productosParaBuscar, ready T="+t);
+				logger.debug("readLocally:paqueteSinc.getSucursal="+paqueteSinc.getSucursal());				
 				if(paqueteSinc.getSucursal()!=null){
-					logger.trace("readLocally:paqueteSinc.getSucursal.clave="+paqueteSinc.getSucursal().getClave());
+					logger.debug("readLocally:paqueteSinc.getSucursal.clave="+paqueteSinc.getSucursal().getClave());
 				}
 				logger.debug("readLocally: --------------- LOADING All Objects in Memory ------------");
 				almacenList = paqueteSinc.getAlmacenList();
 				usuarioList = paqueteSinc.getUsuarioList();
-				logger.trace("readLocally: usuarioList:");
+				logger.debug("readLocally: usuarioList:");
 				for(U u:usuarioList){
-					logger.trace("\treadLocally: usuarioList: U:"+u.getE()+", perfiles:"+u.getPerfiles()+" a:"+u.getA());
+					logger.debug("\treadLocally: usuarioList: U:"+u.getE()+", perfiles:"+u.getPerfiles()+" a:"+u.getA());
 				}
 				clienteList = paqueteSinc.getClienteList();
 				metodoDePagoList = paqueteSinc.getMetodoDePagoList();
@@ -787,8 +787,8 @@ public class MemoryDAO {
 					sucursal = new Sucursal();
 					sucursal.setClave("????");
 				}
-				logger.trace("readLocally:sucursal="+sucursal);
-				logger.trace("readLocally:almacenList="+almacenList);
+				logger.debug("readLocally:sucursal="+sucursal);
+				logger.debug("readLocally:almacenList="+almacenList);
 				ApplicationLogic.getInstance().setAlmacen(almacenList);
 
 				if(syncUpdateListener != null){
@@ -1048,7 +1048,7 @@ public class MemoryDAO {
                 CorteCajaDTO cc = null;
 				fileReader = new FileReader(fx);
 				cc = gson.fromJson(fileReader, CorteCajaDTO.class);
-                logger.trace("readLastSavedCorteCajaDTOApertura:\t\t->"+cc);			
+                logger.debug("readLastSavedCorteCajaDTOApertura:\t\t->"+cc);			
                 cortesTS.add(cc);
 				fileReader.close();
 			}catch(Exception ioe){
@@ -1104,7 +1104,7 @@ public class MemoryDAO {
                 CorteCajaDTO cc = null;
 				fileReader = new FileReader(fx);
 				cc = gson.fromJson(fileReader, CorteCajaDTO.class);
-                logger.trace("isInAperturaCorteCajaDTO:\t\t->"+cc);			
+                logger.debug("isInAperturaCorteCajaDTO:\t\t->"+cc);			
                 cortesTS.add(cc);
 				fileReader.close();
 			}catch(Exception ioe){
@@ -1155,7 +1155,7 @@ public class MemoryDAO {
                 CorteCajaDTO cc = null;
 				fileReader = new FileReader(fx);
 				cc = gson.fromJson(fileReader, CorteCajaDTO.class);
-                logger.trace("readLastSavedCorteCajaDTOCierre:\t\t->"+cc);
+                logger.debug("readLastSavedCorteCajaDTOCierre:\t\t->"+cc);
                 cortesTS.add(cc);
 				fileReader.close();
 			}catch(Exception ioe){
