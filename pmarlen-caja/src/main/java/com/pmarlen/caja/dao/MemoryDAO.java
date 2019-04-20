@@ -212,8 +212,8 @@ public class MemoryDAO {
 	public final static int SYNC_STATE_ERROR                 = 99;
 	
 	private final static long TIMESLEEP_MS        = 1000L;
-	private final static int  DOWNLOADPERIOD_SECS = 180; // current 3 min.  AWS shuld be  30 min.
-	private final static int  IMALIVEPERIOD_SECS  = 60;  // current 1 min.  AWS shouldbe  10 min.
+	private final static int  DOWNLOADPERIOD_SECS = 90;  // current 1.5 min.  AWS shuld be  30 min.
+	private final static int  IMALIVEPERIOD_SECS  = 60;  // current 1   min.  AWS shouldbe  10 min.
     private final static int  CIERREPERIOD_SECS   = 30;    
 	
 	public static void getPaqueteSyncPoll() {
@@ -223,7 +223,7 @@ public class MemoryDAO {
 		logger.debug("getPaqueteSyncPoll:========================>>BEFORE while<<========================("+runnigPool+")");
 		syncPollState = SYNC_STATE_BEFORE_RUNNING;
 		for(xt=0;runnigPool;xt++){
-			logger.debug("getPaqueteSyncPoll:\t----------------->> while running, download");
+			logger.debug("getPaqueteSyncPoll:\t----------------->> while running: ["+xt+"]");
 			if(xt % DOWNLOADPERIOD_SECS == 0){
 				try {
 					syncPollState = SYNC_STATE_BEFORE_CONNECTING;
@@ -304,6 +304,7 @@ public class MemoryDAO {
 			}
 						
 		}
+		logger.debug("getPaqueteSyncPoll:----------------->> AFTER while, end");
 	}
 
 	public static int getSyncPollState() {
