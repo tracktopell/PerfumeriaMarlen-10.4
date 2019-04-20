@@ -249,21 +249,21 @@ public class MemoryDAO {
 			} else if(xt % IMALIVEPERIOD_SECS == 0){
 				try {					
 					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
-					logger.trace("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
+					logger.info("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
 					iamalive();
-					logger.trace("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
+					logger.info("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
 					syncPollState = SYNC_STATE_IMLIVE;
 				}catch(ConnectException ce){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:"+ce);
+					logger.info("getPaqueteSyncPoll: after call iamalive:",ce);
 					syncPollState = SYNC_STATE_CONNECTION;					
 				}catch(FileNotFoundException fnfe){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:"+fnfe);
+					logger.info("getPaqueteSyncPoll: after call iamalive:",fnfe);
 					syncPollState = SYNC_STATE_SERVER_4XX;					
 				}catch(IOException e){
-					logger.debug("getPaqueteSyncPoll: after call iamalive:"+e);
+					logger.info("getPaqueteSyncPoll: after call iamalive:"+e);
 					syncPollState = SYNC_STATE_IO_ERROR;					
 				}catch(Exception e){
-					logger.error("getPaqueteSyncPoll: after call iamalive:",e);
+					logger.info("getPaqueteSyncPoll: after call iamalive:",e);
 					syncPollState = SYNC_STATE_ERROR;
 				}
 			} else if(xt % CIERREPERIOD_SECS == 0){
@@ -497,7 +497,7 @@ public class MemoryDAO {
 					}															
 				}
 				logger.info("===========>> buildIAmALivePackageDTO: NOT setDevicesInfoUSB:"+linesUSBList.toString());
-				//iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
+				iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
 				
 			} else if(System.getProperty("os.name").toLowerCase().contains("mac")){
 				stdout=runSpecialCommand("/opt/local/bin/lsusb");
@@ -521,7 +521,7 @@ public class MemoryDAO {
 					}															
 				}
 				logger.info("===========>> buildIAmALivePackageDTO: NOT setDevicesInfoUSB:"+linesUSBList.toString());
-				//iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
+				iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
 			} else{
 				logger.info("buildIAmALivePackageDTO: we haven't lsusb");
 			}
@@ -624,7 +624,7 @@ public class MemoryDAO {
 				logger.trace("iamalive:+T4 = "+(t4-t3));
 			}
 		} catch (ClientHandlerException e) {
-			//logger.debug("iamalive:ClientHandlerException Cause:="+e.getCause().getClass());
+			logger.debug("iamalive:ClientHandlerException:",e);
 			if(e.getCause() instanceof ConnectException){
 				throw (ConnectException)e.getCause();
 			} else {
