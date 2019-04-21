@@ -2,6 +2,7 @@ package com.pmarlen.rest;
 
 import com.pmarlen.backend.dao.CorteCajaDAO;
 import com.pmarlen.backend.dao.DAOException;
+import com.pmarlen.backend.dao.SyncDAO;
 import com.pmarlen.backend.model.CorteCaja;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.IAmAliveDTOPackage;
@@ -56,6 +57,7 @@ public class IAmAliveService {
 	static IAmAliveDTOPackage registerHello(IAmAliveDTORequest syncDTORequest, String callerIpAddress) {
 		logger.debug("registerHello: syncDTORequest:CorteCajaDTO=" + syncDTORequest.getCorteCajaDTO());
 		CajaSessionInfo cajaSessionInfo = null;
+		String pmarlencaja_version =  null;
 		if (syncDTORequest.getSessionId() != null) {
 			cajaSessionInfo = ContextAndSessionListener.cajaSessionInfoHT.get(syncDTORequest.getSessionId());
 			logger.debug("registerHello:cajaSessionInfo=" + cajaSessionInfo);
@@ -75,10 +77,11 @@ public class IAmAliveService {
 			if (syncDTORequest.getLoggedIn() != null) {
 				cajaSessionInfo.setLoggedIn(syncDTORequest.getLoggedIn());
 			}
+			pmarlencaja_version = SyncDAO.getCurrentPMCajaVersion();
 			cajaSessionInfo.setLastAccesedTime(System.currentTimeMillis());
 			registerCorteCaja(syncDTORequest.getCorteCajaDTO());
 		}
-		IAmAliveDTOPackage r = new IAmAliveDTOPackage(1);
+		IAmAliveDTOPackage r = new IAmAliveDTOPackage(1,pmarlencaja_version);
 		return r;
 	}
 

@@ -212,8 +212,8 @@ public class MemoryDAO {
 	public final static int SYNC_STATE_ERROR                 = 99;
 	
 	private final static long TIMESLEEP_MS        = 1000L;
-	private final static int  DOWNLOADPERIOD_SECS = 90;  // current 1.5 min.  AWS shuld be  30 min.
-	private final static int  IMALIVEPERIOD_SECS  = 60;  // current 1   min.  AWS shouldbe  10 min.
+	private final static int  DOWNLOADPERIOD_SECS = 600;  // current 10  min.  AWS shuld be  30 min.
+	private final static int  IMALIVEPERIOD_SECS  = 60;   // current 1   min.  AWS shouldbe  10 min.
     private final static int  CIERREPERIOD_SECS   = 30;    
 	
 	public static void getPaqueteSyncPoll() {
@@ -624,6 +624,19 @@ public class MemoryDAO {
 				logger.debug("iamalive:+T3 = "+(t3-t2));					
 				logger.debug("iamalive:+T4 = "+(t4-t3));
 			}
+						
+			String remoteCurrentPMCajaVersion = iAmAliveDTOPackage.getCurrentPMCajaVersion();
+			logger.debug("iamalive:paqueteSinc:iAmAliveDTOPackage.getCurrentPMCajaVersion="+remoteCurrentPMCajaVersion);
+			if(remoteCurrentPMCajaVersion != null){
+				int compare = ApplicationLogic.getInstance().compareRemoteVersion(remoteCurrentPMCajaVersion);
+				logger.debug("iamalive:paqueteSinc:compare="+compare);
+				if(compare < 0){
+					Notificacion nuevaNotificacion=new Notificacion("UP_"+remoteCurrentPMCajaVersion,"HAY UNA NUEVA ACTUALIZACION: Ver."+remoteCurrentPMCajaVersion+"\nDEBE REINICIAR POR FAVOR LA APLICACION DE CAJA.");
+					ApplicationLogic.getInstance().add(nuevaNotificacion);
+					ApplicationLogic.getInstance().needsUpdateAppNow();
+				}
+			}
+			
 		} catch (ClientHandlerException e) {
 			logger.debug("iamalive:ClientHandlerException:",e);
 			if(e.getCause() instanceof ConnectException){
