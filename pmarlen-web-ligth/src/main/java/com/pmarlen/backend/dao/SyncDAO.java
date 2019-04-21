@@ -59,12 +59,8 @@ public class SyncDAO {
 		return DataSourceFacade.getStrategy().getConnectionCommiteable();
 	}
 	
-	public SyncDTOPackage syncTransaction(SyncDTORequest syncDTORequest, boolean getAllData) throws DAOException{
-		SyncDTOPackage s= new SyncDTOPackage();
-		int sucId=syncDTORequest.getiAmAliveDTORequest().getSucursalId();
-		List<ES_ESD> escdList = syncDTORequest.getEscdList();		
-		logger.debug("syncTransaction:sucId="+sucId);
-		
+	public static String getCurrentPMCajaVersion(){
+		String pmarlencaja_version =  null;
 		File filePMCajaLastVersion =  new File("/usr/local/pmcajadist/classes/version.properties");
 		logger.debug("syncTransaction:filePMCajaLastVersion:"+filePMCajaLastVersion);
 		if(filePMCajaLastVersion.exists() && filePMCajaLastVersion.isFile() && filePMCajaLastVersion.canRead()){
@@ -72,16 +68,22 @@ public class SyncDAO {
 			try {
 				porpVersionPMCaja.load(new FileInputStream(filePMCajaLastVersion));
 				logger.debug("syncTransaction:porpVersionPMCaja:"+porpVersionPMCaja);				
-				String pmarlencaja_version = porpVersionPMCaja.getProperty("pmarlencaja.version");
-				if(pmarlencaja_version != null){
-					s.setCurrentPMCajaVersion(pmarlencaja_version);
-				}
+				pmarlencaja_version = porpVersionPMCaja.getProperty("pmarlencaja.version");
+				
 			}catch(IOException ioe){
-				logger.debug("syncTransaction:filePMCajaLastVersion:"+filePMCajaLastVersion+": "+ioe);
-				s.setCurrentPMCajaVersion(null);
+				logger.debug("syncTransaction:filePMCajaLastVersion:"+filePMCajaLastVersion+": "+ioe);				
 			}
 		}
+		return pmarlencaja_version;
+	}
+	
+	public SyncDTOPackage syncTransaction(SyncDTORequest syncDTORequest, boolean getAllData) throws DAOException{
+		SyncDTOPackage s= new SyncDTOPackage();
+		int sucId=syncDTORequest.getiAmAliveDTORequest().getSucursalId();
+		List<ES_ESD> escdList = syncDTORequest.getEscdList();		
+		logger.debug("syncTransaction:sucId="+sucId);
 		
+		s.setCurrentPMCajaVersion(getCurrentPMCajaVersion());
 		
 		if(escdList!=null && escdList.size()>0) {
 			Connection conn = null;
