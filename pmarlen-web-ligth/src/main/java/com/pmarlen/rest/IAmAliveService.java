@@ -4,13 +4,14 @@ import com.pmarlen.backend.dao.CorteCajaDAO;
 import com.pmarlen.backend.dao.DAOException;
 import com.pmarlen.backend.dao.SyncDAO;
 import com.pmarlen.backend.model.CorteCaja;
+import com.pmarlen.backend.model.InfoCaja;
+import com.pmarlen.backend.model.MonitorDeCajas;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
 import com.pmarlen.web.servlet.CajaSessionInfo;
 import com.pmarlen.web.servlet.ContextAndSessionListener;
 import java.util.ArrayList;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -19,8 +20,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
 import org.apache.log4j.Logger;
 
 /**
@@ -71,6 +70,20 @@ public class IAmAliveService {
 				cajaSessionInfo.setUserAgent(syncDTORequest.getUserAgent());
 				if(syncDTORequest.getDevicesInfoUSB()!=null){
 					cajaSessionInfo.setDevicesInfoUSB(syncDTORequest.getDevicesInfoUSB());
+					if(syncDTORequest.getDevicesInfoUSB().contains("|")){
+						final String[] devicesInfoUSBarr = syncDTORequest.getDevicesInfoUSB().split("|");
+						InfoCaja infoCaja = MonitorDeCajas.getInfoCaja(syncDTORequest.getUserAgent().getUserInSession());
+						if(infoCaja!=null){
+							infoCaja.setVersion(syncDTORequest.getUserAgent().getVersion());						
+							infoCaja.turnOffAllUSB();
+							for(String dia: devicesInfoUSBarr){
+								String[] diarr = dia.split("^");
+								String usbdevid=diarr[0];
+								infoCaja.getUsbDeviceMap().get(usbdevid).setConnected(true);
+							}
+							cajaSessionInfo.setInfoCaja(infoCaja);
+						}
+					}
 				}
 				ContextAndSessionListener.cajaSessionInfoHT.put(syncDTORequest.getSessionId(), cajaSessionInfo);
 			}

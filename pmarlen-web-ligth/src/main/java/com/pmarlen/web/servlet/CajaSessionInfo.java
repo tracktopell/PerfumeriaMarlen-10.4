@@ -4,6 +4,7 @@
  */
 package com.pmarlen.web.servlet;
 
+import com.pmarlen.backend.model.InfoCaja;
 import java.io.Serializable;
 
 /**
@@ -18,15 +19,16 @@ public class CajaSessionInfo extends AppSessionInfo  implements Serializable{
 	private String sucursal;
 	private String caja;
 	private String loggedIn;
-	private boolean requestedResetAll;
-	
+	private boolean requestedResetAll;	
 	private long lastAccesedTime;
+	private InfoCaja infoCaja;
 	
 	public CajaSessionInfo() {
 		super("-");
 		this.sucursal = "?";
 		this.caja = "?";
 		this.loggedIn = "?";
+		this.infoCaja= null;
 		requestedResetAll = false;
 	}
 
@@ -116,4 +118,12 @@ public class CajaSessionInfo extends AppSessionInfo  implements Serializable{
 	public void setRequestedResetAll(boolean b) {
 		requestedResetAll = b;
 	}
+
+	public void setInfoCaja(InfoCaja infoCaja) {
+		this.infoCaja = infoCaja;
+	}
+
+	public InfoCaja getInfoCaja() {
+		return infoCaja;
+	}	
 }
