@@ -1,5 +1,6 @@
 package com.pmarlen.web.servlet;
 
+import com.pmarlen.backend.model.MonitorDeCajas;
 import com.pmarlen.model.Constants;
 import com.tracktopell.jdbc.WEBDataSourceFacade;
 import java.text.SimpleDateFormat;
@@ -59,7 +60,7 @@ public class ContextAndSessionListener implements ServletContextListener, HttpSe
 			workingDir = "/usr/local/pmarlen_PROD_work/";
 		}
 		com.pmarlen.businesslogic.reports.GeneradorImpresionPedidoVenta.setWorkingDir(workingDir);
-
+		MonitorDeCajas.init();
 		ConnectionPoolKeepAliveService.getInstance().start();
     }
 

@@ -108,12 +108,12 @@ public class MemoryDAO {
 		
 		if(fileProperties.exists() && fileProperties.canRead()){
 			try {
-				logger.info("->Properties local File found, reading File Properties:"+fileProperties+"");
+				logger.debug("->Properties local File found, reading File Properties:"+fileProperties+"");
 				properties.load(new FileInputStream(fileProperties));
-				logger.info("->ok, Properties read:"+properties);
+				logger.debug("->ok, Properties read:"+properties);
 
 				if(properties.get("alternativehost") == null){
-					logger.info("->adding alternativehost to Properties");
+					logger.debug("->adding alternativehost to Properties");
 					properties.put("alternativehost","pm-aws-i1.dyndns.org");
 				}
 
@@ -249,21 +249,21 @@ public class MemoryDAO {
 			} else if(xt % IMALIVEPERIOD_SECS == 0){
 				try {					
 					syncPollState = SYNC_STATE_BEFORE_CONNECTINGLIVE;
-					logger.info("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
+					logger.debug("getPaqueteSyncPoll: --> [  I'AM ALIVE  ]syncPollState="+syncPollState);
 					iamalive();
-					logger.info("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
+					logger.debug("getPaqueteSyncPoll: --> after iamalive : syncPollState="+syncPollState);
 					syncPollState = SYNC_STATE_IMLIVE;
 				}catch(ConnectException ce){
-					logger.info("getPaqueteSyncPoll: after call iamalive:",ce);
+					logger.debug("getPaqueteSyncPoll: after call iamalive:",ce);
 					syncPollState = SYNC_STATE_CONNECTION;					
 				}catch(FileNotFoundException fnfe){
-					logger.info("getPaqueteSyncPoll: after call iamalive:",fnfe);
+					logger.debug("getPaqueteSyncPoll: after call iamalive:",fnfe);
 					syncPollState = SYNC_STATE_SERVER_4XX;					
 				}catch(IOException e){
-					logger.info("getPaqueteSyncPoll: after call iamalive:"+e);
+					logger.debug("getPaqueteSyncPoll: after call iamalive:"+e);
 					syncPollState = SYNC_STATE_IO_ERROR;					
 				}catch(Exception e){
-					logger.info("getPaqueteSyncPoll: after call iamalive:",e);
+					logger.debug("getPaqueteSyncPoll: after call iamalive:",e);
 					syncPollState = SYNC_STATE_ERROR;
 				}
 			} else if(xt % CIERREPERIOD_SECS == 0){
@@ -474,57 +474,76 @@ public class MemoryDAO {
 		try{
 			String stdout = null;
 			
-			logger.info("------------>>> buildIAmALivePackageDTO: lsusb: os.name="+System.getProperty("os.name"));
+			logger.debug("------------>>> buildIAmALivePackageDTO: lsusb: os.name="+System.getProperty("os.name"));
 			
 			if(System.getProperty("os.name").toLowerCase().contains("linux")){
 				stdout=runSpecialCommand("lsusb");
-				logger.info("buildIAmALivePackageDTO: lsusb: LINUX -->"+stdout+"<--");
+				logger.debug("buildIAmALivePackageDTO: lsusb: LINUX -->"+stdout+"<--");
 				String[] linesUSB = stdout.split("\\|");
 				List<String> linesUSBList=new ArrayList<>();
 				for(String lineUSB: linesUSB){
 					String[] valuesUSBInfo=lineUSB.split("\\s+");					
-					logger.info("\tbuildIAmALivePackageDTO: line="+lineUSB+" -> "+Arrays.asList(valuesUSBInfo));
+					logger.debug("\tbuildIAmALivePackageDTO: line="+lineUSB+" -> "+Arrays.asList(valuesUSBInfo));
 					if(valuesUSBInfo.length >=6){
 						StringBuilder sbLineUSBInfo=new StringBuilder();
-						sbLineUSBInfo.append(valuesUSBInfo[5]).append("@");
+						sbLineUSBInfo.append(valuesUSBInfo[5]).append("^");
 						for(int j=6;j<valuesUSBInfo.length;j++){
 							sbLineUSBInfo.append(valuesUSBInfo[j]).append(" ");
 						}
 						linesUSBList.add(sbLineUSBInfo.toString().trim());
-						logger.info("\t\tbuildIAmALivePackageDTO: add sbLineUSBInfo="+sbLineUSBInfo.toString().trim());
+						logger.debug("\t\tbuildIAmALivePackageDTO: add sbLineUSBInfo="+sbLineUSBInfo.toString().trim());
 					} else {
 						linesUSBList.add(lineUSB);
-						logger.info("\t\tbuildIAmALivePackageDTO: add lineUSB:"+lineUSB);
+						logger.debug("\t\tbuildIAmALivePackageDTO: add lineUSB:"+lineUSB);
 					}															
 				}
-				logger.info("===========>> buildIAmALivePackageDTO: NOT setDevicesInfoUSB:"+linesUSBList.toString());
-				iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
+				logger.debug("===========>> buildIAmALivePackageDTO: NOT setDevicesInfoUSB:"+linesUSBList.toString());
+				StringBuilder sbLineUSBInfoTotal=new StringBuilder();
+				int numLinUsb=0;
+				for(String lu:linesUSBList){
+					if(numLinUsb>0){
+						sbLineUSBInfoTotal.append("|");
+					}
+					sbLineUSBInfoTotal.append(lu);
+					numLinUsb++;
+				}
+				iAmAliveDTOPackage.setDevicesInfoUSB(sbLineUSBInfoTotal.toString());
 				
 			} else if(System.getProperty("os.name").toLowerCase().contains("mac")){
 				stdout=runSpecialCommand("/opt/local/bin/lsusb");
-				logger.info("buildIAmALivePackageDTO: lsusb: MAC-->"+stdout+"<--");			
+				logger.debug("buildIAmALivePackageDTO: lsusb: MAC-->"+stdout+"<--");			
 				String[] linesUSB = stdout.split("\\|");
 				List<String> linesUSBList=new ArrayList<>();
+				
 				for(String lineUSB: linesUSB){
 					String[] valuesUSBInfo=lineUSB.split("\\s+");					
-					logger.info("\tbuildIAmALivePackageDTO: line="+lineUSB+" -> "+Arrays.asList(valuesUSBInfo));
+					logger.debug("\tbuildIAmALivePackageDTO: line="+lineUSB+" -> "+Arrays.asList(valuesUSBInfo));
 					if(valuesUSBInfo.length >=6){
 						StringBuilder sbLineUSBInfo=new StringBuilder();
-						sbLineUSBInfo.append(valuesUSBInfo[5]).append("@");
+						sbLineUSBInfo.append(valuesUSBInfo[5]).append("^");
 						for(int j=6;j<valuesUSBInfo.length;j++){
 							sbLineUSBInfo.append(valuesUSBInfo[j]).append(" ");
 						}
 						linesUSBList.add(sbLineUSBInfo.toString().trim());
-						logger.info("\t\tbuildIAmALivePackageDTO: add sbLineUSBInfo="+sbLineUSBInfo.toString().trim());
+						logger.debug("\t\tbuildIAmALivePackageDTO: add sbLineUSBInfo="+sbLineUSBInfo.toString().trim());
 					} else {
 						linesUSBList.add(lineUSB);
-						logger.info("\t\tbuildIAmALivePackageDTO: add lineUSB:"+lineUSB);
-					}															
+						logger.debug("\t\tbuildIAmALivePackageDTO: add lineUSB:"+lineUSB);
+					}
 				}
-				logger.info("===========>> buildIAmALivePackageDTO: NOT setDevicesInfoUSB:"+linesUSBList.toString());
-				iAmAliveDTOPackage.setDevicesInfoUSB(linesUSBList.toString());
+				logger.debug("===========>> buildIAmALivePackageDTO: NOT setDevicesInfoUSB:"+linesUSBList.toString());
+				StringBuilder sbLineUSBInfoTotal=new StringBuilder();
+				int numLinUsb=0;
+				for(String lu:linesUSBList){
+					if(numLinUsb>0){
+						sbLineUSBInfoTotal.append("|");
+					}
+					sbLineUSBInfoTotal.append(lu);
+					numLinUsb++;
+				}
+				iAmAliveDTOPackage.setDevicesInfoUSB(sbLineUSBInfoTotal.toString());
 			} else{
-				logger.info("buildIAmALivePackageDTO: we haven't lsusb");
+				logger.debug("buildIAmALivePackageDTO: we haven't lsusb");
 			}
 			
 		}catch(Exception ise){
@@ -654,7 +673,7 @@ public class MemoryDAO {
 		boolean deleteFile = false;
 		for(File fd: filesToDelete){
 			deleteFile = false;
-			logger.info("->resetAll:filesToDelete:"+fd);
+			logger.debug("->resetAll:filesToDelete:"+fd);
 			if(fd.getName().contains("CorteCajaDTO")){
 				deleteFile = true;
 			} else if(fd.getName().contains("fileModel.zip")){
@@ -664,9 +683,9 @@ public class MemoryDAO {
 			}
 			
 			if(deleteFile){
-				logger.info("->resetAll:\tDELETE:"+fd);
+				logger.debug("->resetAll:\tDELETE:"+fd);
 				boolean resultDelte = fd.delete();
-				logger.info("->resetAll:\t\tDELETED ?:"+resultDelte);
+				logger.debug("->resetAll:\t\tDELETED ?:"+resultDelte);
 			}
 		}	
 	}
@@ -734,9 +753,9 @@ public class MemoryDAO {
 				logger.debug("readLocally:paqueteSinc:paqueteSinc.getSyncDBStatus():"+Integer.toBinaryString(paqueteSinc.getSyncDBStatus())+"<-");
 				
 				if(paqueteSinc.getNextSyncSpecialAction()!=null){
-					logger.info("readLocally:paqueteSinc:nextSyncSpecialAction="+paqueteSinc.getNextSyncSpecialAction());
+					logger.debug("readLocally:paqueteSinc:nextSyncSpecialAction="+paqueteSinc.getNextSyncSpecialAction());
 					if(paqueteSinc.getNextSyncSpecialAction() == SyncDTOPackage.SPECIAL_ACTION_RESET_ALL) {
-						logger.info("readLocally:paqueteSinc:SPECIAL_ACTION_RESET_ALL");
+						logger.debug("readLocally:paqueteSinc:SPECIAL_ACTION_RESET_ALL");
 						if(syncUpdateListener != null){
 							syncUpdateListener.resetAll();
 						}
@@ -996,7 +1015,7 @@ public class MemoryDAO {
 	}
 	
 	public static void resuqestResetAll() {
-		logger.info("==========================>> RESET <<======================");
+		logger.debug("==========================>> RESET <<======================");
 		File currDir = new File(".");
 		File[] allFiles = currDir.listFiles();
 		boolean deleteFile=false;
@@ -1013,7 +1032,7 @@ public class MemoryDAO {
 			if(deleteFile){					
 				f.setWritable(true);
 				boolean deleted = f.delete();
-				logger.info("resetAction: delete:"+f+" ? "+deleted);
+				logger.debug("resetAction: delete:"+f+" ? "+deleted);
 			}
 		}
 	}
