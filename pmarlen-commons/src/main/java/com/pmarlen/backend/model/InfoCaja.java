@@ -2,6 +2,8 @@ package com.pmarlen.backend.model;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -96,7 +98,7 @@ public class InfoCaja implements java.io.Serializable {
 		}
 	}
 
-	private List<PMarlenUSBDevice> allAllDevices=null;
+	private List<PMarlenUSBDevice> allAllDevices;
 	
 	public List<PMarlenUSBDevice> getAllDevices(){
 		if(allAllDevices == null){
