@@ -1,21 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.pmarlen.web.servlet;
 
 import com.pmarlen.rest.dto.UserAgent;
 import java.io.Serializable;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
- * @author alfredo
+ * @author alfredo estrada
  */
 public class AppSessionInfo implements Serializable{
 	protected long applicationContextCreationTime;
 	protected String remoteAddr;
 	protected UserAgent userAgent;
-	protected String  devicesInfoUSB;
+	protected String  devicesInfoUSB;	
+	private List<String> devicesInfoUSBList;
+	
 	public AppSessionInfo(String remoteAddr) {
 		this.applicationContextCreationTime = System.currentTimeMillis();
 		this.remoteAddr		 = remoteAddr;
@@ -53,8 +53,19 @@ public class AppSessionInfo implements Serializable{
 
 	public void setDevicesInfoUSB(String devicesInfoUSB) {
 		this.devicesInfoUSB = devicesInfoUSB;
+		this.devicesInfoUSBList=null;
 	}
-
+	
+	public List<String> getDevicesInfoUSBList() {
+		if( devicesInfoUSBList == null){
+			List<String> devicesInfoUSBList = new ArrayList<>();
+			String[] arr=devicesInfoUSB.split("|");
+			for(String a: arr){
+				devicesInfoUSBList.add(a);
+			}
+		}
+		return devicesInfoUSBList;
+	}
 
 	protected static String getDiff(long diffInSeconds) {
 
