@@ -71,17 +71,22 @@ public class IAmAliveService {
 				cajaSessionInfo.setUserAgent(syncDTORequest.getUserAgent());
 				if(syncDTORequest.getDevicesInfoUSB()!=null){
 					cajaSessionInfo.setDevicesInfoUSB(syncDTORequest.getDevicesInfoUSB());
+					
+					logger.info("registerHello: \t-->> searching: in infoCaja.getUsbDeviceMap().keys():"+infoCaja.getUsbDeviceMap().keys());
+					
 					if(syncDTORequest.getDevicesInfoUSB().contains("|")){
 						final String[] devicesInfoUSBarr = syncDTORequest.getDevicesInfoUSB().split("|");
 						InfoCaja infoCaja = MonitorDeCajas.getInfoCaja(syncDTORequest.getUserAgent().getUserInSession());
 						if(infoCaja!=null){
 							infoCaja.setVersion(syncDTORequest.getUserAgent().getVersion());						
 							infoCaja.turnOffAllUSB();
+							
 							for(String dia: devicesInfoUSBarr){
 								if(dia.contains("^")){
 									String[] diarr = dia.split("^");
 									if(diarr.length>1){
 										String usbdevid=diarr[0];
+										logger.info("registerHello: \t\t-->> searching: usbdevid="+usbdevid);
 										PMarlenUSBDevice usbdev = infoCaja.getUsbDeviceMap().get(usbdevid);
 										if(usbdev!=null){
 											usbdev.setConnected(true);
