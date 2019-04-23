@@ -75,7 +75,7 @@ public class IAmAliveService {
 						final String[] devicesInfoUSBarr = syncDTORequest.getDevicesInfoUSB().split("|");
 						InfoCaja infoCaja = MonitorDeCajas.getInfoCaja(syncDTORequest.getUserAgent().getUserInSession());
 						if(infoCaja!=null){
-							logger.info("registerHello: \t-->> searching: in infoCaja.getUsbDeviceMap().keys():"+infoCaja.getUsbDeviceMap().keys());
+							logger.info("registerHello: \t-->> searching: in infoCaja.getUsbDeviceMap().keySet:"+infoCaja.getUsbDeviceMap().keySet());
 							
 							infoCaja.setVersion(syncDTORequest.getUserAgent().getVersion());						
 							infoCaja.turnOffAllUSB();
