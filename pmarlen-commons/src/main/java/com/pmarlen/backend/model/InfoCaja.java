@@ -97,9 +97,10 @@ public class InfoCaja implements java.io.Serializable {
 	}
 
 	private List<PMarlenUSBDevice> allAllDevices=null;
+	
 	public List<PMarlenUSBDevice> getAllDevices(){
 		if(allAllDevices == null){
-			allAllDevices = newArrayList<PMarlenUSBDevice>();
+			allAllDevices = new ArrayList<PMarlenUSBDevice>();
 			for(PMarlenUSBDevice u:usbDeviceMap.values()){
 				allAllDevices.add(u);
 			}
