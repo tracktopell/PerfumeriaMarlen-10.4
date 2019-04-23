@@ -95,8 +95,15 @@ public class InfoCaja implements java.io.Serializable {
 			d.setConnected(false);
 		}
 	}
-	
-	public Collection<PMarlenUSBDevice> getAllDevices(){
-		return usbDeviceMap.values();
+
+	private List<PMarlenUSBDevice> allAllDevices=null;
+	public List<PMarlenUSBDevice> getAllDevices(){
+		if(allAllDevices == null){
+			allAllDevices = newArrayList<PMarlenUSBDevice>();
+			for(PMarlenUSBDevice u:usbDeviceMap.values()){
+				allAllDevices.add(u);
+			}
+		}
+		return allAllDevices;
 	}
 }
