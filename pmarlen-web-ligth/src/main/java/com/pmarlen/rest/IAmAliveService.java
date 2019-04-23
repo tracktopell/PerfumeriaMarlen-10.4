@@ -6,6 +6,7 @@ import com.pmarlen.backend.dao.SyncDAO;
 import com.pmarlen.backend.model.CorteCaja;
 import com.pmarlen.backend.model.InfoCaja;
 import com.pmarlen.backend.model.MonitorDeCajas;
+import com.pmarlen.backend.model.PMarlenUSBDevice;
 import com.pmarlen.rest.dto.CorteCajaDTO;
 import com.pmarlen.rest.dto.IAmAliveDTOPackage;
 import com.pmarlen.rest.dto.IAmAliveDTORequest;
@@ -77,9 +78,16 @@ public class IAmAliveService {
 							infoCaja.setVersion(syncDTORequest.getUserAgent().getVersion());						
 							infoCaja.turnOffAllUSB();
 							for(String dia: devicesInfoUSBarr){
-								String[] diarr = dia.split("^");
-								String usbdevid=diarr[0];
-								infoCaja.getUsbDeviceMap().get(usbdevid).setConnected(true);
+								if(dia.contains("^")){
+									String[] diarr = dia.split("^");
+									if(diarr.length>1){
+										String usbdevid=diarr[0];
+										PMarlenUSBDevice usbdev = infoCaja.getUsbDeviceMap().get(usbdevid);
+										if(usbdev!=null){
+											usbdev.setConnected(true);
+										}
+									}
+								}
 							}
 							cajaSessionInfo.setInfoCaja(infoCaja);
 						}
