@@ -80,7 +80,7 @@
 					<p:column headerText="USB DEVICES INFO" width="25%">
 						<h:outputText value="LIST:"  title="#{sessionCajaInfo.devicesInfoUSB}" />
 						<br/>
-						<h:outputText value="DEVICES:" value="#{sessionCajaInfo.infoCaja.allDevices}"
+						<h:outputText value="ALL_DEVICES: #{sessionCajaInfo.infoCaja.allDevices}"
 								   rendered="#{not empty sessionCajaInfo.infoCaja}"/>
 						<br/>
 						<ui:repeat value="#{sessionCajaInfo.infoCaja.allDevices}" var="usb">
