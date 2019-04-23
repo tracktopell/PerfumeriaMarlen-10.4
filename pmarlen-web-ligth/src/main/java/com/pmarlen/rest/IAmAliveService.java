@@ -70,14 +70,13 @@ public class IAmAliveService {
 				cajaSessionInfo.setRemoteAddr(callerIpAddress);
 				cajaSessionInfo.setUserAgent(syncDTORequest.getUserAgent());
 				if(syncDTORequest.getDevicesInfoUSB()!=null){
-					cajaSessionInfo.setDevicesInfoUSB(syncDTORequest.getDevicesInfoUSB());
-					
-					logger.info("registerHello: \t-->> searching: in infoCaja.getUsbDeviceMap().keys():"+infoCaja.getUsbDeviceMap().keys());
-					
+					cajaSessionInfo.setDevicesInfoUSB(syncDTORequest.getDevicesInfoUSB());					
 					if(syncDTORequest.getDevicesInfoUSB().contains("|")){
 						final String[] devicesInfoUSBarr = syncDTORequest.getDevicesInfoUSB().split("|");
 						InfoCaja infoCaja = MonitorDeCajas.getInfoCaja(syncDTORequest.getUserAgent().getUserInSession());
 						if(infoCaja!=null){
+							logger.info("registerHello: \t-->> searching: in infoCaja.getUsbDeviceMap().keys():"+infoCaja.getUsbDeviceMap().keys());
+							
 							infoCaja.setVersion(syncDTORequest.getUserAgent().getVersion());						
 							infoCaja.turnOffAllUSB();
 							
