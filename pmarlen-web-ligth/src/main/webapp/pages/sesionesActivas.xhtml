@@ -78,8 +78,10 @@
 					</p:column>
 					
 					<p:column headerText="USB DEVICES INFO" width="25%">
-						<h:outputText value="LIST:"  title="#{sessionCajaInfo.devicesInfoUSB}" />
-						<br/>						
+						<ui:repeat value="#{sessionCajaInfo.devicesInfoUSBList}" var="usbR">
+							<h:outputText value="#{usbR}"/>
+							<br/>
+						</ui:repeat>
 						<ui:repeat value="#{sessionCajaInfo.infoCaja.allDevices}" var="usb">
 							<h:outputText value="#{usb.usbID} #{usb.type}" style="color:#{usb.connected?'green':'gray'};"/>
 							<br/>
