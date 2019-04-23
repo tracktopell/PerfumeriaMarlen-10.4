@@ -80,11 +80,8 @@
 					<p:column headerText="USB DEVICES INFO" width="25%">
 						<h:outputText value="LIST:"  title="#{sessionCajaInfo.devicesInfoUSB}" />
 						<br/>
-						<ui:repeat var="usb" value="#{sessionCajaInfo.infoCaja.allDevices}"
-								   rendered="#{not empty sessionCajaInfo.infoCaja}">
-							<h:outputText value="usb:#{usb.usbID} type:#{usb.usbID} connected:#{usb.connected}" />
-							<br/>
-						</ui:repeat>
+						<h:outputText value="DEVICES:" value="#{sessionCajaInfo.infoCaja.allDevices}"
+								   rendered="#{not empty sessionCajaInfo.infoCaja}"/>						
 					</p:column>
 					
 					<p:column headerText="USER-AGENT" width="30%">
