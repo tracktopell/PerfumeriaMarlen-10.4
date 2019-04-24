@@ -36,6 +36,7 @@
 		<environment.jdbc.root_password>root</environment.jdbc.root_password>
 		<environment.pmcajadist>/usr/local/pmarlen-caja-DEVE_dist</environment.pmcajadist>		
 		<environment.work.dir>/usr/local/pmarlen_DEVE_work</environment.work.dir>
+		<environment.pmbackupdir>/usr/local/pmarlen_mysqldump</environment.pmbackupdir>
 	</properties>
 
 	<dependencies>

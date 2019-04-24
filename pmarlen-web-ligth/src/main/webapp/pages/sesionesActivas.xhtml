@@ -83,7 +83,8 @@
 							<br/>
 						</ui:repeat>
 						<ui:repeat value="#{sessionCajaInfo.infoCaja.allDevices}" var="usb">
-							<h:outputText value="#{usb.usbID} #{usb.type}" style="color:#{usb.connected?'green':'gray'};"/>
+							<h:outputText	value="#{usb.type}" style="color:#{usb.connected?'lime':'lightgray'};"
+											title="#{usb.usbID}"/>
 							<br/>
 						</ui:repeat>
 					</p:column>
