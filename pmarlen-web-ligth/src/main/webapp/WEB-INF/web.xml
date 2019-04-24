@@ -84,9 +84,14 @@
         <servlet-class>com.pmarlen.web.servlet.ImageServlet</servlet-class>
     </servlet>
 	<servlet>
-        <servlet-name>RespaldarDB</servlet-name>
-        <servlet-class>com.pmarlen.web.servlet.RespaldarDB</servlet-class>
+        <servlet-name>DownloadDBBackup</servlet-name>
+        <servlet-class>com.pmarlen.web.servlet.DownloadDBBackup</servlet-class>
+        <init-param>
+            <param-name>pmbackupdir</param-name>
+            <param-value>${environment.pmbackupdir}</param-value> 
+        </init-param>
     </servlet>
+
 	<!-- Map these files with JSF -->
 
 	
@@ -169,9 +174,9 @@
         <servlet-name>PMCajaUpdateServlet</servlet-name>
         <url-pattern>/pmcajaupdate/*</url-pattern>
     </servlet-mapping>
-	<servlet-mapping>
-        <servlet-name>RespaldarDB</servlet-name>
-        <url-pattern>/respaldardb/PMDB103_mysqldump.sql.tgz</url-pattern>
+    <servlet-mapping>
+        <servlet-name>DownloadDBBackup</servlet-name>
+        <url-pattern>/downloaddbbackup/*</url-pattern>
     </servlet-mapping>    
 
     <!--
