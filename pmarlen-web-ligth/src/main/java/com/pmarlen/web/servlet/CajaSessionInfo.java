@@ -126,4 +126,11 @@ public class CajaSessionInfo extends AppSessionInfo  implements Serializable{
 	public InfoCaja getInfoCaja() {
 		return infoCaja;
 	}	
+
+	@Override
+	public String toString() {
+		return "CajaSessionInfo{" + "sessionId=" + sessionId + ", sucursal=" + sucursal + ", caja=" + caja + ", loggedIn=" + loggedIn + ", requestedResetAll=" + requestedResetAll + ", lastAccesedTime=" + lastAccesedTime + ", infoCaja=" + infoCaja + '}';
+	}
+	
+	
 }

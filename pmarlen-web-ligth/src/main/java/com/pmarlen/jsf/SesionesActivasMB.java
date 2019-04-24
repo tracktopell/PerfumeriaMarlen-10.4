@@ -88,27 +88,27 @@ public class SesionesActivasMB implements Serializable{
 
 	
 	
-	private static Hashtable<Integer,String> sucursalInfo= null;
+	private static Hashtable<Integer,Sucursal> sucursalInfo= null;
 
-	public static Hashtable<Integer, String> getSucursalInfo() {		
+	public static Hashtable<Integer, Sucursal> getSucursalInfo() {		
 		if(sucursalInfo == null){
 			ArrayList<Sucursal> sucursales = null;
 			try {
 				sucursales = SucursalDAO.getInstance().findAll();
-				sucursalInfo=new Hashtable<Integer,String>();
+				sucursalInfo=new Hashtable<Integer,Sucursal>();
 				for(Sucursal s: sucursales){
-					sucursalInfo.put(s.getId(), s.getNombre().replace("PERFUMERIA MARLEN S.A. DE C.V. ", "..."));
+					sucursalInfo.put(s.getId(), s);
 				}
 			}catch(DAOException de){
 				logger.error("No se cargaron las Sucursales:"+de.getMessage());
-				sucursalInfo=new Hashtable<Integer,String>();
+				sucursalInfo=new Hashtable<Integer,Sucursal>();
 			}
 			
 		}
 		return sucursalInfo;
 	}
 	
-	public String getSucursalInfo(int sucId){		
+	public Sucursal getSucursalInfo(int sucId){
 		return getSucursalInfo().get(sucId);
 	}
 

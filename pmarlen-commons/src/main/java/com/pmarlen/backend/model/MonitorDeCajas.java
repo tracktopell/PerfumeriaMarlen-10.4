@@ -25,6 +25,12 @@ public class MonitorDeCajas implements java.io.Serializable {
 			new PMarlenUSBDevice("046d:c534", "Logitech, Inc. Unifying Receiver",		USBDeviceType.KEYBORAD_WIRELESS)
 		}));
 		
+		installedInfoCajaMap.put("pms1c3",new InfoCaja("pms1c3","?", "?", new PMarlenUSBDevice[]{
+			new PMarlenUSBDevice("05ac:0237", "Apple, Inc. Internal Keyboard/Trackpad (ISO)",	USBDeviceType.KEYBORAD_TRACKPAD),
+			new PMarlenUSBDevice("05ac:8005", "Apple, Inc. OHCI Root Hub Simulation",			USBDeviceType.OHCI_ROOTHUB),
+			new PMarlenUSBDevice("05ac:8006", "Apple, Inc. EHCI Root Hub Simulation",			USBDeviceType.EHCI_ROOTHUB)
+		}));
+		
 		installedInfoCajaMap.put("pms1c2",new InfoCaja("pms1c2", "?", "?", new PMarlenUSBDevice[]{
 			new PMarlenUSBDevice("05e0:1200", "Symbol Technologies Bar Code Scanner",	USBDeviceType.BARCODE_SCANNER),
 			new PMarlenUSBDevice("04b8:0e15", "Seiko Epson Corp.",						USBDeviceType.EPSON_PRINTER),
