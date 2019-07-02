@@ -11,8 +11,8 @@ cloud-prod-deploy:
 
 cloud-test-deploy:
 	mvn clean install -P cloud_test
-	~/tomcat7_test/bin/shutdown.sh
-	~/tomcat7_test/bin/startup.sh
+	sudo service tomcat7 stop
+	sudo service tomcat7 start
 	mvn -pl pmarlen-web-ligth tomcat7:deploy -P cloud_test
 
 #-------------------------------------------------------------------

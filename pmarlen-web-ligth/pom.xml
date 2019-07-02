@@ -464,8 +464,8 @@
 				<environment.stage>Production</environment.stage>
 				<environment.log4j.rootLogger>INFO</environment.log4j.rootLogger>
 				<environment.webdescriptor.session-timeout>60</environment.webdescriptor.session-timeout>
-				<environment.jdbc.url>jdbc:mysql://localhost/PMDB104_PROD?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
-				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB104_PROD?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
+				<environment.jdbc.url>jdbc:mysql://pmawsrds.cndxkvcxi9kg.us-east-2.rds.amazonaws.com/PMDB104_PROD?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
+				<environment.jdbc.urlNotScapped>jdbc:mysql://pmawsrds.cndxkvcxi9kg.us-east-2.rds.amazonaws.com/PMDB104_PROD?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
 				<environment.jdbc.db>PMDB104_PROD</environment.jdbc.db>
 				<environment.jdbc.jndi>jdbc/PMDB104_PROD_DS</environment.jdbc.jndi>
 				<environment.jdbc.user>PMDB104_PROD_USR</environment.jdbc.user>
@@ -501,8 +501,8 @@
 				<environment.stage>SystemTest</environment.stage>
 				<environment.log4j.rootLogger>DEBUG</environment.log4j.rootLogger>
 				<environment.webdescriptor.session-timeout>15</environment.webdescriptor.session-timeout>
-				<environment.jdbc.url>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
-				<environment.jdbc.urlNotScapped>jdbc:mysql://localhost/PMDB104_DEVE?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
+				<environment.jdbc.url>jdbc:mysql://pmawsrds.cndxkvcxi9kg.us-east-2.rds.amazonaws.com/PMDB104_DEVE?characterEncoding=UTF-8&amp;amp;useOldAliasMetadataBehavior=true&amp;amp;autoReconnect=true</environment.jdbc.url>
+				<environment.jdbc.urlNotScapped>jdbc:mysql://pmawsrds.cndxkvcxi9kg.us-east-2.rds.amazonaws.com/PMDB104_DEVE?characterEncoding=UTF-8&amp;useOldAliasMetadataBehavior=true&amp;autoReconnect=true</environment.jdbc.urlNotScapped>
 				<environment.jdbc.db>PMDB104_DEVE</environment.jdbc.db>
 				<environment.jdbc.jndi>jdbc/PMDB104_DEVE_DS</environment.jdbc.jndi>
 				<environment.jdbc.user>PMDB104_DEVE_USR</environment.jdbc.user>
