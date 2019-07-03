@@ -1,6 +1,12 @@
+<%-- 
+    Document   : loginsimple
+    Created on : 02-jul-2019, 13:26:48
+    Author     : alfredo
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.pmarlen.web.security.managedbean.SystemInfoMB"%>
 <%@page import="com.pmarlen.model.Constants"%>
-<%@ page pageEncoding="UTF-8" %>
 <%
 	String browserDetails = request.getHeader("User-Agent");
 	String userAgent = browserDetails;
@@ -51,71 +57,62 @@
 	long to = request.getSession().getMaxInactiveInterval() * 1000 + 3000;
 	//System.out.println("login.jsp->[" + request.getSession().getId() + "]: timeOut=" + (to / 1000) + " secs. =" + ((to / 1000 / 60.0)) + " mins.");
 %>
-<head>
-	<title>PMARLEN:ENTRADA</title>
-	<script type="text/JavaScript">
-		<!--
-		var redirectTime = "<%=to%>";
-		var redirectURL  = "<%=request.getContextPath()%>/";
-		function timedRedirect() {
-		setTimeout("location.href = redirectURL;",redirectTime);
-		}
 
-		function autoCompletteEmail(txtUserMail){
-		var txt=txtUserMail.value.toLowerCase();
-		//alert("->txt="+txt);
-		if(txt.indexOf("@")<0 && txt.indexOf("@perfumeriamarlen.com.mx")<0){
-		txtUserMail.value = txtUserMail.value+ "@perfumeriamarlen.com.mx"; 
-		return true;
-		}
-		return false;
-		}	
-		//   -->
-	</script>
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/login_css/login_bg.css"     type='text/css'/>
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/login_css/login.css"     type='text/css'/>
-</head>
-<body  onload="timedRedirect();">
-	<br/>
-	<br/>
-	<br/>
-	<div class="ribbon"></div>
-	<div class="login">
-		<br/>
-		<p>
-			<img src="<%=request.getContextPath()%>/images/PM_NewLogo_2.png"/>
-		</p>
-		<h3>Entrada al Sistema.</h3>
-		<p>Introdusca su informaci&oacute;n</p>
-		<form action="j_security_check" method="post" id="loginForm">
-			<div class="input">
-				<div class="blockinput">
-					<i class="icon-envelope-alt"></i><input type="mail" name="j_username" placeholder="Correo Electronico" onblur="autoCompletteEmail(this);">
-				</div>
-				<div class="blockinput">
-					<i class="icon-unlock"></i><input type="password"  name="j_password" placeholder="Contraseña">
-				</div>		
-			</div>
-			<button>ENTRAR</button>
-			<%
-				if (request.getParameter("error") != null) {
-			%>
-			<br/>
-			<p class="error_login">ERROR EN CORREO O CONTRASE&Ntilde;A</p>
-			<%
-			} else {
-			%>
-			<%
-				}
-			%>									
-		</form>
-	</div>
-	<div class="footer-bar-<%=SystemInfoMB.getEnvironmentStaticlay()%>">
-		<a href="#" title="Sistema de Adminisraci&oacute;n de Almacen Ver. <%=Constants.getServerVersion()%> (<%=SystemInfoMB.getEnvironmentStaticlay()%>) Git RevID: <%=Constants.getGitSHA1()%>">
-			Perfumeria Marlen - L30 / Construido: <%=Constants.getBuildTimestamp()%></a> | 
-		<a href="<%=request.getContextPath()%>/pmcajaupdate/pmarlen-caja-installer.jar" title="Instaador Java de Sistema de Punto de Venta L30">L30 Caja</a> | 
-		<a href="<%=request.getContextPath()%>/pmcajaupdate/version.properties" title="Versi&oacute;n del Sistema de Punto de Venta L30">ver.</a> | 
-		<a href="#" title="[<%=os%>,<%=browser%>]">UA</a>
-	</div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<title>PMARLEN:ENTRADA</title>
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/login_css/loginsimple.css"     type='text/css'/>
+		<script type="text/JavaScript">
+			<!--
+			var redirectTime = "<%=to%>";
+			var redirectURL  = "<%=request.getContextPath()%>/";
+			function timedRedirect() {
+				setTimeout("location.href = redirectURL;",redirectTime);
+			}
 
-</body>
+			function autoCompletteEmail(txtUserMail){
+			var txt=txtUserMail.value.toLowerCase();
+			//alert("->txt="+txt);
+			if(txt.indexOf("@")<0 && txt.indexOf("@perfumeriamarlen.com.mx")<0){
+				txtUserMail.value = txtUserMail.value+ "@perfumeriamarlen.com.mx"; 
+				return true;
+			}
+			return false;
+			}	
+			//   -->
+		</script>
+
+	</head>
+
+	<body onload="timedRedirect();">
+
+
+		<div id="container">
+			<form action="j_security_check" method="post" id="loginForm">
+				<p class="cont-center">
+					<img src="<%=request.getContextPath()%>/images/PM_NewLogo_2.png"/>
+				</p>
+				<h3 class="cont-center">L30</h3>
+				<p class="cont-center">Introdusca su informaci&oacute;n</p>
+
+				<label for="username">Correo electrónico:</label>
+				<input type="text" id="username" name="j_username"/>
+				<label for="password">Contraseña:</label>
+				<input type="password" id="password" name="j_password"/>
+				<div id="lower">
+					<input type="submit" value="ENTRAR"/>
+				</div><!--/ lower-->
+			</form>
+		</div><!--/ container-->
+		<div class="footer-bar-<%=SystemInfoMB.getEnvironmentStaticlay()%>">
+			<a href="#" title="Sistema de Adminisraci&oacute;n de Almacen Ver. <%=Constants.getServerVersion()%> (<%=SystemInfoMB.getEnvironmentStaticlay()%>) Git RevID: <%=Constants.getGitSHA1()%>">
+				Perfumeria Marlen - L30 @ AWS / Construido: <%=Constants.getBuildTimestamp()%></a> | 
+			<a href="<%=request.getContextPath()%>/pmcajaupdate/pmarlen-caja-installer.jar" title="Instaador Java de Sistema de Punto de Venta L30">L30 Caja</a> | 
+			<a href="<%=request.getContextPath()%>/pmcajaupdate/version.properties" title="Versi&oacute;n del Sistema de Punto de Venta L30">ver.</a> | 
+			<a href="#" title="[<%=os%>,<%=browser%>]">UA</a>
+		</div>
+
+	</body>
+</html>

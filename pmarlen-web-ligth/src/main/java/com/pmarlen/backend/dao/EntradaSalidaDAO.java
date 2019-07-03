@@ -620,6 +620,7 @@ public class EntradaSalidaDAO {
 		return r;
 	}
 
+	/*
 	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(int tipoMov, int sucursalId, boolean active, PagerInfo pagerInfo) throws DAOException {
 		return findAllActiveByPage(tipoMov, sucursalId, active, pagerInfo, null, null);
 	}
@@ -630,7 +631,7 @@ public class EntradaSalidaDAO {
 	
 	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(int tipoMov, int sucursalId, boolean active, PagerInfo pagerInfo, Timestamp fechaInicial, Timestamp fechaFinal) throws DAOException {
 		return findAllActiveByPage(new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, 0, active, pagerInfo, fechaInicial, fechaFinal, null));
-	}
+	}*/
 
 	public ArrayList<EntradaSalidaQuickView> findAllActiveByPage(EntradaSalidaDTOPageHelper esdtoH) throws DAOException {
 		logger.debug("->findAllActiveByPage(tipoMov=" + esdtoH.getTipoMov() + ",sucursalId=" + esdtoH.getSucursalId() + ",caja="+esdtoH.getCaja()+",active=" + esdtoH.isActive() + ",pagerInfo.filters=" + esdtoH.getPagerInfo().getFilters() + ",fechaInicial=" + esdtoH.getFechaInicial() + ",fechaFinal=" + esdtoH.getFechaFinal() + ",ImporteTotal=" + esdtoH.getImporteTotal() + ")");
@@ -667,20 +668,21 @@ public class EntradaSalidaDAO {
 					+ "S2.CLAVE  AS S2_CLAVE\n";
 
 			String fwq0
-					= " FROM       ENTRADA_SALIDA_ESTADO  ESE,\n"
+					= " FROM     ENTRADA_SALIDA_ESTADO  ESE,\n"
 					+ "          ENTRADA_SALIDA_DETALLE ESD,\n"
 					+ "          ENTRADA_SALIDA         ES\n"
-					+ "LEFT JOIN CFD            CFD ON ES.CFD_ID      = CFD.ID\n"
-					+ "LEFT JOIN SUCURSAL       S   ON ES.SUCURSAL_ID       = S.ID\n"
-					+ "LEFT JOIN SUCURSAL       S1  ON ES.SUCURSAL_ID_TRA_ORI = S1.ID\n"
-					+ "LEFT JOIN SUCURSAL       S2  ON ES.SUCURSAL_ID_TRA_DES = S2.ID\n"
-					+ "LEFT JOIN ESTADO         E   ON ES.ESTADO_ID         = E.ID\n"
-					+ "LEFT JOIN USUARIO        U   ON ES.USUARIO_EMAIL_CREO= U.EMAIL\n"
-					+ "LEFT JOIN CLIENTE        C   ON ES.CLIENTE_ID        = C.ID\n"
-					+ "LEFT JOIN FORMA_DE_PAGO  FP  ON ES.FORMA_DE_PAGO_ID  = FP.ID\n"
-					+ "LEFT JOIN METODO_DE_PAGO MP  ON ES.METODO_DE_PAGO_ID = MP.ID\n"
+					+ "LEFT JOIN CFD            CFD ON  ES.CFD_ID              = CFD.ID\n"
+					+ "LEFT JOIN SUCURSAL       S   ON  ES.SUCURSAL_ID         = S.ID\n"
+					+ "LEFT JOIN SUCURSAL       S1  ON  ES.SUCURSAL_ID_TRA_ORI = S1.ID\n"
+					+ "LEFT JOIN SUCURSAL       S2  ON  ES.SUCURSAL_ID_TRA_DES = S2.ID\n"
+					+ "LEFT JOIN ESTADO         E   ON  ES.ESTADO_ID           = E.ID\n"
+					+ "LEFT JOIN USUARIO        U   ON  ES.USUARIO_EMAIL_CREO  = U.EMAIL\n"
+					+ "LEFT JOIN CLIENTE        C   ON  ES.CLIENTE_ID          = C.ID\n"
+					+ "LEFT JOIN FORMA_DE_PAGO  FP  ON  ES.FORMA_DE_PAGO_ID    = FP.ID\n"
+					+ "LEFT JOIN METODO_DE_PAGO MP  ON  ES.METODO_DE_PAGO_ID   = MP.ID\n"
 					+ " WHERE    1=1\n"
-					+ (esdtoH.isActive() ? "AND       ES.ESTADO_ID IN (1,2,4,512,1024)\n"
+					+ (esdtoH.isActive() ? 
+					          "AND       ES.ESTADO_ID IN (1,2,4,512,1024)\n"
 							: "AND       ES.ESTADO_ID >  4\n")
 					+ "AND       ES.ID        = ESD.ENTRADA_SALIDA_ID\n"
 					+ "AND       ES.ID        = ESE.ENTRADA_SALIDA_ID\n"
@@ -936,7 +938,7 @@ public class EntradaSalidaDAO {
 		}
 		return r;
 	}
-	
+	/*
 	public ArrayList<EntradaSalidaQuickView> findAllFasterByPage(EntradaSalidaDTOPageHelper esdtoH) throws DAOException {
 		logger.debug("->findAllFasterByPage(tipoMov=" + esdtoH.getTipoMov() + ",sucursalId=" + esdtoH.getSucursalId() + ",caja="+esdtoH.getCaja()+",active=" + esdtoH.isActive() + ",pagerInfo.filters=" + esdtoH.getPagerInfo().getFilters() + ",fechaInicial=" + esdtoH.getFechaInicial() + ",fechaFinal=" + esdtoH.getFechaFinal() + ",ImporteTotal=" + esdtoH.getImporteTotal() + ")");
 		
@@ -1081,11 +1083,12 @@ public class EntradaSalidaDAO {
 		}
 		return r;
 	}
+	*/
 
-	public ArrayList<EntradaSalida> findFastAllActiveByPage(EntradaSalidaDTOPageHelper esdtoH) throws DAOException {
-		logger.debug("->findAllActiveByPage(tipoMov=" + esdtoH.getTipoMov() + ",sucursalId=" + esdtoH.getSucursalId() + ",caja="+esdtoH.getCaja()+",active=" + esdtoH.isActive() + ",pagerInfo.filters=" + esdtoH.getPagerInfo().getFilters() + ",fechaInicial=" + esdtoH.getFechaInicial() + ",fechaFinal=" + esdtoH.getFechaFinal() + ",ImporteTotal=" + esdtoH.getImporteTotal() + ")");
+	public ArrayList<EntradaSalidaQuickView> findFastAllActiveByPage(EntradaSalidaDTOPageHelper esdtoH) throws DAOException {
+		logger.debug("->findFastAllActiveByPage(tipoMov=" + esdtoH.getTipoMov() + ",sucursalId=" + esdtoH.getSucursalId() + ",caja="+esdtoH.getCaja()+",active=" + esdtoH.isActive() + ",pagerInfo.filters=" + esdtoH.getPagerInfo().getFilters() + ",fechaInicial=" + esdtoH.getFechaInicial() + ",fechaFinal=" + esdtoH.getFechaFinal() + ",ImporteTotal=" + esdtoH.getImporteTotal() + ")");
 
-		ArrayList<EntradaSalida> r = new ArrayList<EntradaSalida>();
+		ArrayList<EntradaSalidaQuickView> r = new ArrayList<EntradaSalidaQuickView>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Connection conn = null;
@@ -1093,26 +1096,59 @@ public class EntradaSalidaDAO {
 			conn = getConnection();
 
 			String fq0
-					= "ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,"
+					= ",ES.ID ES_ID,ES.TIPO_MOV,ES.SUCURSAL_ID,ES.ESTADO_ID,ES.FECHA_CREO,ES.USUARIO_EMAIL_CREO,ES.CLIENTE_ID,ES.FORMA_DE_PAGO_ID,ES.METODO_DE_PAGO_ID,ES.FACTOR_IVA,ES.COMENTARIOS,ES.CFD_ID,"
 					+ "ES.NUMERO_TICKET,ES.CAJA,ES.IMPORTE_RECIBIDO,ES.APROBACION_VISA_MASTERCARD,ES.PORCENTAJE_DESCUENTO_CALCULADO,ES.PORCENTAJE_DESCUENTO_EXTRA,ES.CONDICIONES_DE_PAGO,ES.NUM_DE_CUENTA,ES.AUTORIZA_DESCUENTO,"
-					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,TOT_PRODS,ES.ES_ID_DEV,ES.ES_ID_TRA_ORI,ES.SUCURSAL_ID_TRA_ORI,ES.SUCURSAL_ID_TRA_DES\n";
-			
+					+ "ES.SUB_TOTAL_1RA,ES.SUB_TOTAL_OPO,ES.SUB_TOTAL_REG,ES.TOTAL,ES.PEDIDO_SUCURSAL,TOT_PRODS,ES.ES_ID_DEV,ES.ES_ID_TRA_ORI,ES.SUCURSAL_ID_TRA_ORI,SUCURSAL_ID_TRA_DES,\n"
+					+ "CFD.ID AS CFD_ID,\n"
+					+ "S.NOMBRE AS SUCURSAL_NOMBRE,\n"
+					+ "E.DESCRIPCION AS E_DESCRIPCION,\n"
+					+ "U.NOMBRE_COMPLETO AS U_NOMBRE_COMPLETO,\n"
+					+ "C.RFC AS C_RFC,\n"
+					+ "C.RAZON_SOCIAL AS C_RAZON_SOCIAL,\n"
+					+ "C.NOMBRE_ESTABLECIMIENTO AS C_NOMBRE_ESTABLECIMIENTO,\n"
+					+ "FP.DESCRIPCION AS FP_DESCRIPCION,\n"
+					+ "MP.DESCRIPCION AS MP_DESCRIPCION,\n"
+					+ "CFD.NUM_CFD AS CFD_NUM_CFD,\n"
+					+ "CFD.CALLING_ERROR_RESULT AS CFD_CALLING_ERROR_RESULT,\n"
+					+ "COUNT(1) NUM_ELEMENTOS, \n"
+					+ "SUM(ESD.CANTIDAD * ESD.PRECIO_VENTA) AS IMPORTE_BRUTO, \n"
+					+ "ESE.FECHA AS FECHA_ACTUALIZO, \n"
+					+ "ESE.USUARIO_EMAIL AS USUARIO_ACTUALIZO,\n"
+					+ "S1.NOMBRE AS S1_NOMBRE,\n"
+					+ "S2.NOMBRE AS S2_NOMBRE,\n"
+					+ "S1.CLAVE  AS S1_CLAVE,\n"
+					+ "S2.CLAVE  AS S2_CLAVE\n";
 
 			String fwq0
-					= " FROM     ENTRADA_SALIDA         ES\n"					
+					= " FROM     ENTRADA_SALIDA_ESTADO  ESE,\n"
+					+ "          ENTRADA_SALIDA_DETALLE ESD,\n"
+					+ "          ENTRADA_SALIDA         ES\n"
+					+ "LEFT JOIN CFD            CFD ON  ES.CFD_ID              = CFD.ID\n"
+					+ "LEFT JOIN SUCURSAL       S   ON  ES.SUCURSAL_ID         = S.ID\n"
+					+ "LEFT JOIN SUCURSAL       S1  ON  ES.SUCURSAL_ID_TRA_ORI = S1.ID\n"
+					+ "LEFT JOIN SUCURSAL       S2  ON  ES.SUCURSAL_ID_TRA_DES = S2.ID\n"
+					+ "LEFT JOIN ESTADO         E   ON  ES.ESTADO_ID           = E.ID\n"
+					+ "LEFT JOIN USUARIO        U   ON  ES.USUARIO_EMAIL_CREO  = U.EMAIL\n"
+					+ "LEFT JOIN CLIENTE        C   ON  ES.CLIENTE_ID          = C.ID\n"
+					+ "LEFT JOIN FORMA_DE_PAGO  FP  ON  ES.FORMA_DE_PAGO_ID    = FP.ID\n"
+					+ "LEFT JOIN METODO_DE_PAGO MP  ON  ES.METODO_DE_PAGO_ID   = MP.ID\n"
 					+ " WHERE    1=1\n"
-					+ (esdtoH.isActive() ? "AND       ES.ESTADO_ID IN (1,2,4,512,1024)\n"
-										:  "AND       ES.ESTADO_ID >  4\n")
+					+ (esdtoH.isActive() ? 
+					          "AND       ES.ESTADO_ID IN (1,2,4,512,1024)\n"
+							: "AND       ES.ESTADO_ID >  4\n")
+					+ "AND       ES.ID        = ESD.ENTRADA_SALIDA_ID\n"
+					+ "AND       ES.ID        = ESE.ENTRADA_SALIDA_ID\n"
+					+ "AND       ES.ESTADO_ID = ESE.ESTADO_ID\n"
 					+ "AND       ES.TIPO_MOV  = ?\n"
 					+ "AND       ES.SUCURSAL_ID= ?\n"
 					+ (esdtoH.getCaja()>0? "AND       ES.CAJA       = ?\n":"")
 					+ (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null ? "AND  ES.FECHA_CREO >= ? AND ES.FECHA_CREO <= ?\n" : "");
 
-			String q0 = "SELECT	"
+			String q0 = "SELECT	ES.TOTAL "
 					+ fq0
 					+ fwq0;
 
-			String qT0 = "SELECT "
+			String qT0 = "SELECT	ES.TOTAL "
 					+ fq0
 					+ fwq0;
 
@@ -1121,15 +1157,18 @@ public class EntradaSalidaDAO {
 			if (filters != null) {
 				for (String k : filters.keySet()) {
 					q0 += "AND     ES." + k.toUpperCase() + " = ? \n";
+					qT0 += "AND     ES." + k.toUpperCase() + " = ? \n";
 				}
 			}
-			q0 += " GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
+			q0  += " GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
+			qT0 += " GROUP BY  ESD.ENTRADA_SALIDA_ID\n";
 
 			if (esdtoH.getPagerInfo().getSortField() != null) {
-				q0 += " ORDER BY " + esdtoH.getPagerInfo().getSortField() + " " + (esdtoH.getPagerInfo().getSortOrder() < 0 ? "DESC" : "ASC") + " \n";				
+				q0  += " ORDER BY " + esdtoH.getPagerInfo().getSortField() + " " + (esdtoH.getPagerInfo().getSortOrder() < 0 ? "DESC" : "ASC") + " \n";
+				qT0 += " ORDER BY " + esdtoH.getPagerInfo().getSortField() + " " + (esdtoH.getPagerInfo().getSortOrder() < 0 ? "DESC" : "ASC") + " \n";
 			}
 			//------------------------------------------------------------------			
-			logger.debug("\t->QUERY COUNT:");
+			logger.trace("\t->QUERY COUNT:");
 			ps = conn.prepareStatement(q0);
 
 			int vs = 1;
@@ -1159,11 +1198,76 @@ public class EntradaSalidaDAO {
 			rs.beforeFirst();
 			logger.debug("->rs.last(): rs.getRow()=TotalRowCount=" + size);
 			esdtoH.getPagerInfo().setTotalRowCount(size);
-			
 			rs.close();
 			ps.close();
 			ps = null;
 
+			//------------------------------------------------------------------
+			if (esdtoH.getImporteTotal() != null) {
+				logger.trace("\t->QUERY TOTAL Q:" + qT0);
+				ps = conn.prepareStatement(qT0);
+
+				vs = 1;
+				ps.setInt(vs++, esdtoH.getTipoMov());
+				ps.setInt(vs++, esdtoH.getSucursalId());
+				if(esdtoH.getCaja()>0){
+					ps.setInt(vs++, esdtoH.getCaja());
+				}
+				if (esdtoH.getFechaInicial() != null && esdtoH.getFechaFinal() != null) {
+					ps.setTimestamp(vs++, esdtoH.getFechaInicial());
+					ps.setTimestamp(vs++, esdtoH.getFechaFinal());
+				} else {
+
+				}
+
+				filtersValues = esdtoH.getPagerInfo().getFilters();
+				if (filters != null) {
+					for (String k : filtersValues.keySet()) {
+						ps.setObject(vs++, filtersValues.get(k));
+					}
+				}
+				rs = ps.executeQuery();
+
+				double importeBruto = 0.0;
+				double factorIva = 0.0;
+				double importeNOGra = 0.0;
+				double importeDesc = 0.0;
+				double importeTOTAL = 0.0;
+				double importeIVA = 0.0;
+				int porcDescCalc = 0;
+				int porcDescExtra = 0;
+				logger.trace("\t\t->IMBR\tFACTOR_IVA\tPDESCCALC\tPOCDESCEX\tIMP_TOTAL");
+				Double sumTot = 0.0;
+				while (rs.next()) {
+
+					importeBruto = rs.getDouble("IMPORTE_BRUTO");
+					factorIva = rs.getDouble("FACTOR_IVA");
+					porcDescCalc = rs.getInt("PORCENTAJE_DESCUENTO_CALCULADO");
+					porcDescExtra = rs.getInt("PORCENTAJE_DESCUENTO_EXTRA");
+
+					importeNOGra = importeBruto / (1.0 + factorIva);
+					//logger.debug("========================");
+					//logger.debug("PEDIDO ID:        :\t"+x.getId());
+					//logger.debug("IMPORTE BRUTO     :\t"+x.getImporteBruto());
+					//logger.debug("IMPORTE NO GRABADO:\t"+x.getImporteNoGravado());
+					int dtot = porcDescCalc + porcDescExtra;
+
+					importeDesc = (importeNOGra * dtot) / 100.0;
+
+					importeIVA = ((importeNOGra - importeDesc) * Constants.IVA);
+					importeTOTAL = (importeNOGra - importeDesc + importeIVA);
+
+					sumTot += importeTOTAL;
+
+					logger.trace("\t\t->" + importeBruto + "\t" + factorIva + "\t" + porcDescCalc + "\t" + porcDescExtra + "\t" + importeTOTAL);
+				}
+				logger.trace("T O T A L->" + sumTot);
+				esdtoH.setImporteTotal(sumTot);
+
+				rs.close();
+				ps.close();
+				ps = null;
+			}
 			//------------------------------------------------------------------
 			String qR0 = q0 + "LIMIT " + esdtoH.getPagerInfo().getFirst() + "," + esdtoH.getPagerInfo().getPageSize();
 			//logger.debug("\t->QUERY BY PAGE (first="+pagerInfo.getFirst()+",pageSize="+pagerInfo.getPageSize()+"):");
@@ -1192,7 +1296,7 @@ public class EntradaSalidaDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				EntradaSalida x = new EntradaSalida();
+				EntradaSalidaQuickView x = new EntradaSalidaQuickView();
 				x.setId((Integer) rs.getObject("ES_ID"));
 				x.setTipoMov((Integer) rs.getObject("TIPO_MOV"));
 				x.setSucursalId((Integer) rs.getObject("SUCURSAL_ID"));
@@ -1224,6 +1328,47 @@ public class EntradaSalidaDAO {
 				x.setEsIdTraOri((Integer) rs.getObject("ES_ID_TRA_ORI"));
 				x.setSucursalIdTraOri((Integer) rs.getObject("SUCURSAL_ID_TRA_ORI"));
 				x.setSucursalIdTraDes((Integer) rs.getObject("SUCURSAL_ID_TRA_DES"));
+
+				x.setTraspasoSucOriNombre((String) rs.getObject("S1_NOMBRE"));
+				x.setTraspasoSucOriClave((String) rs.getObject("S1_CLAVE"));
+				x.setTraspasoSucDesNombre((String) rs.getObject("S2_NOMBRE"));
+				x.setTraspasoSucDesClave((String) rs.getObject("S2_CLAVE"));
+
+				x.setSucursalNombre((String) rs.getObject("SUCURSAL_NOMBRE"));
+				x.setEstadoDescripcion((String) rs.getObject("E_DESCRIPCION"));
+				x.setUsuarioNombreCompleto((String) rs.getObject("U_NOMBRE_COMPLETO"));
+				x.setClienteRFC((String) rs.getObject("C_RFC"));
+				x.setClienteRazonSocial((String) rs.getObject("C_RAZON_SOCIAL"));
+				x.setClienteNombreEstablecimiento((String) rs.getObject("C_NOMBRE_ESTABLECIMIENTO"));
+				x.setMetodoDePagoDescripcion((String) rs.getObject("MP_DESCRIPCION"));
+				x.setFormaDePagoDescripcion((String) rs.getObject("FP_DESCRIPCION"));
+				x.setCdfNumCFD((String) rs.getObject("CFD_NUM_CFD"));
+				x.setCfdCallingErrorResult((String) rs.getObject("CFD_CALLING_ERROR_RESULT"));
+
+				x.setNumElementos(rs.getInt("NUM_ELEMENTOS"));
+				x.setImporteBruto(rs.getDouble("IMPORTE_BRUTO"));
+
+				x.setImporteNoGravado(x.getImporteBruto() / (1.0 + x.getFactorIva()));
+				//logger.debug("========================");
+				//logger.debug("PEDIDO ID:        :\t"+x.getId());
+				//logger.debug("IMPORTE BRUTO     :\t"+x.getImporteBruto());
+				//logger.debug("IMPORTE NO GRABADO:\t"+x.getImporteNoGravado());
+				if (x.getImporteBruto() != null) {
+					int dtot = 0;
+					dtot += x.getPorcentajeDescuentoCalculado() != null ? x.getPorcentajeDescuentoCalculado() : 0;
+					dtot += x.getPorcentajeDescuentoExtra() != null ? x.getPorcentajeDescuentoExtra() : 0;
+					x.setImporteDescuento((x.getImporteNoGravado() * dtot) / 100.0);
+				} else {
+					x.setImporteDescuento(0.0);
+				}
+				x.setImporteIVA((x.getImporteNoGravado() - x.getImporteDescuento()) * Constants.IVA);
+				x.setImporteTotal(x.getImporteNoGravado() - x.getImporteDescuento() + x.getImporteIVA());
+				//logger.debug("% DESCUENTOS      :\t"+x.getPorcentajeDescuentoCalculado()+"% + "+x.getPorcentajeDescuentoExtra());
+				//logger.debug("I.V.A.            :\t"+x.getImporteIVA());
+				//logger.debug("    T O T A L     :\t"+x.getImporteTotal());
+
+				x.setEstadoActualFecha((Timestamp) rs.getObject("FECHA_ACTUALIZO"));
+				x.setEstadoActualUsuarioEmail((String) rs.getObject("USUARIO_ACTUALIZO"));
 
 				r.add(x);
 			}

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.pmarlen.jsf.model;
 
 import com.pmarlen.backend.dao.DAOException;
@@ -34,6 +28,7 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 	//private Double totalVenta;
 	private EntradaSalidaDTOPageHelper esdtoH;
 	private int caja;
+	
 	public EntradaSalidaLazyDataModel(int tipoMov, int sucursalId, int caja, boolean active,Timestamp fechaInicial,Timestamp fechaFinal) {
 		this.tipoMov = tipoMov;
 		this.sucursalId = sucursalId;
@@ -56,7 +51,7 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 		this(tipoMov, sucursalId, 0,active,fechaInicial,fechaFinal);
 	}
 	
-	public EntradaSalidaLazyDataModel(int tipoMov, int sucursalId, boolean active) {
+public EntradaSalidaLazyDataModel(int tipoMov, int sucursalId, boolean active) {
 		this(tipoMov, sucursalId, active,null,null);
     }
      
@@ -95,7 +90,6 @@ public class EntradaSalidaLazyDataModel extends LazyDataModel<EntradaSalidaQuick
 			super.setPageSize(pageSize);
 			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, this.caja, active, pagerInfo, fechaInicial, fechaFinal, 0.0);
 			this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.esdtoH);
-			//this.pageData = EntradaSalidaDAO.getInstance().findAllActiveByPage(this.tipoMov,this.sucursalId, this.active,pagerInfo,this.fechaInicial,this.fechaFinal);
 			super.setRowCount(pagerInfo.getTotalRowCount());
 		}catch(DAOException de){
 			this.pageData = null;

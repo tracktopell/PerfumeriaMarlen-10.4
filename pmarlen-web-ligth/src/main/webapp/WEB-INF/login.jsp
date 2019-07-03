@@ -112,7 +112,7 @@
 	</div>
 	<div class="footer-bar-<%=SystemInfoMB.getEnvironmentStaticlay()%>">
 		<a href="#" title="Sistema de Adminisraci&oacute;n de Almacen Ver. <%=Constants.getServerVersion()%> (<%=SystemInfoMB.getEnvironmentStaticlay()%>) Git RevID: <%=Constants.getGitSHA1()%>">
-			Perfumeria Marlen - L30 / Construido: <%=Constants.getBuildTimestamp()%></a> | 
+			Perfumeria Marlen - L30 @ AWS / Construido: <%=Constants.getBuildTimestamp()%></a> | 
 		<a href="<%=request.getContextPath()%>/pmcajaupdate/pmarlen-caja-installer.jar" title="Instaador Java de Sistema de Punto de Venta L30">L30 Caja</a> | 
 		<a href="<%=request.getContextPath()%>/pmcajaupdate/version.properties" title="Versi&oacute;n del Sistema de Punto de Venta L30">ver.</a> | 
 		<a href="#" title="[<%=os%>,<%=browser%>]">UA</a>

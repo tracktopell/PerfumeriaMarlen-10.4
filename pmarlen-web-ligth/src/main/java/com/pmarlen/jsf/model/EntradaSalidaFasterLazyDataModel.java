@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.pmarlen.jsf.model;
 
 import com.pmarlen.backend.dao.DAOException;
@@ -34,6 +28,9 @@ public class EntradaSalidaFasterLazyDataModel extends LazyDataModel<EntradaSalid
 	//private Double totalVenta;
 	private EntradaSalidaDTOPageHelper esdtoH;
 	private int caja;
+	public static final int defaultPowsPerPage=25;
+	
+	//public EntradaSalidaLazyDataModel    (int tipoMov, int sucursalId, int caja, boolean active,Timestamp fechaInicial,Timestamp fechaFinal) {
 	
 	public EntradaSalidaFasterLazyDataModel(int tipoMov, int sucursalId, int caja, boolean active,Timestamp fechaInicial,Timestamp fechaFinal, int rowsPerPage) {
 		this.tipoMov = tipoMov;
@@ -45,10 +42,8 @@ public class EntradaSalidaFasterLazyDataModel extends LazyDataModel<EntradaSalid
 		this.fechaFinal   = fechaFinal;
 		
 		try {
-			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, this.caja, active, pagerInfo, fechaInicial, fechaFinal, 0.0);
-			
-			this.pageData = EntradaSalidaDAO.getInstance().findAllFasterByPage(this.esdtoH);
-			
+			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, this.caja, active, pagerInfo, fechaInicial, fechaFinal, 0.0);			
+			this.pageData = EntradaSalidaDAO.getInstance().findFastAllActiveByPage(this.esdtoH);			
 			super.setRowCount(pagerInfo.getTotalRowCount());
 		}catch(DAOException de){
 			this.pageData = null;
@@ -62,6 +57,14 @@ public class EntradaSalidaFasterLazyDataModel extends LazyDataModel<EntradaSalid
 	public EntradaSalidaFasterLazyDataModel(int tipoMov, int sucursalId, boolean active, int rowsPerPage) {
 		this(tipoMov, sucursalId, active,null,null,rowsPerPage);
     }
+	
+	public EntradaSalidaFasterLazyDataModel(int tipoMov, int sucursalId, boolean active,Timestamp fechaInicial,Timestamp fechaFinal) {
+		this(tipoMov, sucursalId, 0,active,fechaInicial,fechaFinal,defaultPowsPerPage);
+	}
+
+	public EntradaSalidaFasterLazyDataModel(int tipoMov, int sucursalId, boolean active) {
+		this(tipoMov, sucursalId, active,null,null);
+	}
      
     @Override
     public EntradaSalidaQuickView getRowData(String rowKey) {
@@ -96,10 +99,8 @@ public class EntradaSalidaFasterLazyDataModel extends LazyDataModel<EntradaSalid
 				this.pagerInfo.setSortOrder(PagerInfo.DESCENDING);
 			}
 			super.setPageSize(pageSize);
-			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, this.caja, active, pagerInfo, fechaInicial, fechaFinal, 0.0);
-			
-			this.pageData = EntradaSalidaDAO.getInstance().findAllFasterByPage(this.esdtoH);
-			
+			this.esdtoH = new EntradaSalidaDTOPageHelper(tipoMov, sucursalId, this.caja, active, pagerInfo, fechaInicial, fechaFinal, 0.0);						
+			this.pageData = EntradaSalidaDAO.getInstance().findFastAllActiveByPage(this.esdtoH);			
 			super.setRowCount(pagerInfo.getTotalRowCount());
 		}catch(DAOException de){
 			this.pageData = null;
