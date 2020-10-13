@@ -44,7 +44,7 @@
 		-->
 		<slf4j.version>1.7.7</slf4j.version>
 		<logback.version>1.1.2</logback.version>
-		<junit.version>4.11</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<derby.version>10.10.2.0</derby.version>
 		<jasperreports.version>6.2.0</jasperreports.version>
 		<jasperfonts.version>6.0.0</jasperfonts.version>
